@@ -3,6 +3,7 @@ import {words} from "../constants/index.js";
 import Button from "../components/Button.jsx";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
+import AnimatedCounter from "../components/AnimatedCounter.jsx";
 
 const Hero = () => {
     useGSAP(() => {
@@ -14,7 +15,6 @@ const Hero = () => {
     });
     return (
         <section id="hero" className="relative overflow-hidden">
-
             {/* Background Image */}
             <div className="absolute top-0 left-0 z-10">
                 <img src="/images/bg.png" alt=""/>
@@ -55,15 +55,25 @@ const Hero = () => {
                         <p className="text-white/80 md:text-xl max-w-2xl leading-relaxed mt-4">
                             Hi, I’m{" "}
                             <span
-                                className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]">
+                                className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400
+               bg-clip-text text-transparent animate-gradient-x
+               drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]">
     Eddy Zhang
   </span>
-                            — a Sydney-based full-stack developer passionate about building
+                            — a{" "}
                             <span className="text-cyan-300 font-semibold drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">
-    {" "}
-                                scalable, high-performance systems.
+    full-stack developer
   </span>{" "}
+                            with{" "}
+                            <span className="text-emerald-300 font-semibold">
+    3 years of full-time experience
+  </span>{" "}
+                            and{" "}
+                            <span className="text-emerald-300 font-semibold">
+    5 years in total software development
+  </span>.
                         </p>
+
 
                         {/*Button */}
                         <Button
@@ -73,10 +83,30 @@ const Hero = () => {
                         />
                     </div>
                 </header>
+                {/* RIGHT: Video */}
+                <figure className="video-layout flex justify-center items-center">
+                    <div
+                        className="relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center"
+                        style={{
+                            filter: "drop-shadow(0 0 35px rgba(56,189,248,0.5))",
+                        }}
+                    >
+                        <div
+                            className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border border-white/10 bg-black/30">
+                            <video
+                                src="/videos/eddy_intro.mp4"
+                                controls
+                                loop
+                                playsInline
+                                preload="metadata"
+                                className="absolute top-0 left-0 w-full h-full object-cover"
+                            />
+                        </div>
+                    </div>
+                </figure>
             </div>
-
-
-
+        {/* Counter Section */}
+        <AnimatedCounter />
         </section>
     )
 }

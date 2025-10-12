@@ -33,13 +33,11 @@ const words = [
   { text: "Docker", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
 ];
 
-
-
 const counterItems = [
-  { value: 15, suffix: "+", label: "Years of Experience" },
-  { value: 200, suffix: "+", label: "Satisfied Clients" },
-  { value: 108, suffix: "+", label: "Completed Projects" },
-  { value: 90, suffix: "%", label: "Client Retention Rate" },
+  { value: 5, suffix: "+", label: "Years in Software Development" },
+  { value: 3, suffix: "+", label: "Years of Professional Experience" },
+  { value: 7, suffix: "+", label: "Cloud Microservices Built & Deployed" },
+  { value: 100, suffix: "%", label: "Automation Coverage in CI/CD Pipelines" },
 ];
 
 const logoIconsList = [

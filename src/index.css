@@ -98,8 +98,8 @@ section {
         @apply bg-black-200 py-2 px-4 rounded-full w-fit text-sm md:text-base text-nowrap;
     }
 
-    .hero-3d-layout {
-        @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-20 top-24 xl:-right-20 right-0;
+    .video-layout {
+        @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-7 top-54 right-2 xl:-right-35 right-0;
     }
 
     .navbar {
@@ -118,41 +118,49 @@ section {
         }
 
         .logo {
-            @apply text-white-50 text-xl md:text-2xl font-semibold transition-transform duration-300 hover:scale-105;
+            @apply text-white font-extrabold text-2xl md:text-3xl tracking-tight transition-transform duration-300 hover:scale-105;
         }
 
         nav.desktop {
             @apply hidden lg:flex items-center;
 
             ul {
-                @apply flex space-x-8;
+                @apply flex space-x-10;
 
                 li {
-                    @apply text-white-50 relative;
+                    @apply text-white/90 relative text-lg md:text-xl font-medium; /* 字体加大 */
 
                     span {
                         @apply transition-colors duration-300 hover:text-white;
                     }
 
                     .underline {
-                        @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full;
+                        @apply absolute -bottom-1 left-0 w-0 h-[2px]
+                        bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400
+                        rounded-full transition-all duration-500 ease-out
+                        group-hover:w-full group-hover:shadow-[0_0_10px_rgba(56,189,248,0.6)];
                     }
                 }
             }
         }
 
         .contact-btn {
-            @apply flex;
+            @apply flex items-center;
 
             .inner {
-                @apply px-5 py-2 rounded-lg bg-white text-black group-hover:bg-black-50 transition-colors duration-300;
+                @apply flex items-center gap-2 px-6 py-3 rounded-lg text-lg md:text-xl
+                bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400
+                text-black font-semibold shadow-[0_0_15px_rgba(56,189,248,0.3)]
+                hover:shadow-[0_0_25px_rgba(56,189,248,0.6)]
+                transform hover:scale-105 transition-all duration-500;
+            }
 
-                span {
-                    @apply group-hover:text-white transition-colors duration-300;
-                }
+            span {
+                @apply transition-all duration-300 group-hover:translate-x-1;
             }
         }
     }
+
 
     .app-showcase {
         @apply w-full mt-20 px-5 md:px-20 py-10 md:py-20 flex items-center justify-center;
