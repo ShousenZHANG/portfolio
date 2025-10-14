@@ -89,9 +89,7 @@ Glowing top line + professional tagline:
 
 ## 🌐 Live Demo
 
-👉 **[eddy-zhang-portfolio.vercel.app](https://eddy-zhang-portfolio.vercel.app)**  
-or  
-👉 **[eddy-zhang.github.io/portfolio](https://eddy-zhang.github.io/portfolio)**
+👉 **[eddy-zhang-portfolio.vercel.app](https://portfolio-theta-woad-v9k65kquy2.vercel.app/)**  
 
 ---
 
