@@ -97,7 +97,7 @@ Glowing top line + professional tagline:
 
 ```bash
 # 1️⃣ Clone the repository
-git clone https://github.com/eddy-zhang/portfolio.git
+git clone https://github.com/ShousenZHANG/portfolio.git
 cd portfolio
 
 # 2️⃣ Install dependencies
