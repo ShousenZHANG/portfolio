@@ -35,19 +35,6 @@ dist-ssr/
 *.tmp
 *.bak
 
-# Public assets
-# ⚠️ Keep critical assets like images, videos, 3D models, resume PDFs
-# but ignore heavy dev/test files or sensitive items.
-public/temp/
-public/test/
-public/*.psd
-public/*.zip
-public/*.bak
-public/*.tmp
-public/files/
-public/images/
-public/videos/
-
 # OS specific
 Thumbs.db
 ehthumbs.db
