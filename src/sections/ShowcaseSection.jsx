@@ -126,69 +126,71 @@ const AppShowcase = () => {
             </div>
 
             {/* 📜 Right: Description + Award Info */}
-            <div className="lg:w-1/2 w-full text-center lg:text-left">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Scalable Competition Platform
-              </h2>
-
-              <p className="text-white/80 md:text-lg leading-relaxed mb-6">
-                Built a cloud-native competition system with{" "}
-                <span className="text-cyan-300 font-semibold">
-        7+ Spring Cloud microservices
-      </span>
-                , enabling JWT SSO, role-based access control, and async messaging
-                via RabbitMQ. Deployed with Jenkins & Docker Compose for{" "}
-                <span className="text-emerald-300 font-semibold">
-        95%+ CI/CD consistency
-      </span>{" "}
-                and 80% faster setup.
-              </p>
-
-              {/* 🏆 Award Section */}
-              <div
-                  className="bg-gradient-to-r from-cyan-400/10 via-sky-400/10 to-emerald-400/10 border border-cyan-400/20 rounded-xl p-5 shadow-[0_0_25px_rgba(56,189,248,0.25)] mb-6 transition-all duration-500 hover:shadow-[0_0_40px_rgba(56,189,248,0.45)]">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">🏆</span>
-                  <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
-                    Runner-up – Best Project in AI for Education
-                  </h3>
-                </div>
-                <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  Recognized at{" "}
-                  <span className="text-cyan-300 font-semibold">Coding Fest 2025</span>{" "}
-                  (University of Sydney, School of Computer Science) for excellence in{" "}
-                  <span className="text-emerald-300 font-semibold">
+              <div className="lg:w-1/2 w-full text-center lg:text-left">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                      Scalable Competition Platform
+                  </h2>
+                  <p className="text-white/80 md:text-lg leading-relaxed mb-6">
+                      Built a cloud-native competition system with{" "}
+                      <span className="text-cyan-300 font-semibold">
+    7+ Spring Cloud microservices
+  </span>
+                      , enabling JWT SSO, role-based access control, and async messaging via RabbitMQ.
+                      Deployed with Docker Compose for{" "}
+                      <span className="text-emerald-300 font-semibold">
+    95%+ CI/CD consistency
+  </span>{" "}
+                      and 80% faster setup, contributing over{" "}
+                      <span className="text-sky-300 font-semibold">
+    40,000 lines of production-level code
+  </span>{" "}
+                      across backend and integration modules.
+                  </p>
+                  {/* 🏆 Award Section */}
+                  <div
+                      className="bg-gradient-to-r from-cyan-400/10 via-sky-400/10 to-emerald-400/10 border border-cyan-400/20 rounded-xl p-5 shadow-[0_0_25px_rgba(56,189,248,0.25)] mb-6 transition-all duration-500 hover:shadow-[0_0_40px_rgba(56,189,248,0.45)]">
+                      <div className="flex items-center gap-3 mb-2">
+                          <span className="text-2xl">🏆</span>
+                          <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
+                              Runner-up – Best Project in AI for Education
+                          </h3>
+                      </div>
+                      <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                          Recognized at{" "}
+                          <span className="text-cyan-300 font-semibold">Coding Fest 2025</span>{" "}
+                          (University of Sydney, School of Computer Science) for excellence in{" "}
+                          <span className="text-emerald-300 font-semibold">
       innovation and community impact.
     </span>
-                </p>
-                <p className="text-white/70 text-sm md:text-base mt-2">
-                  Sponsored by{" "}
-                  <span className="text-[#2684FF] font-semibold">Atlassian</span>{" "}
-                  and{" "}
-                  <span className="text-[#E32B23] font-semibold">Flow Traders</span>.
-                </p>
+                      </p>
+                      <p className="text-white/70 text-sm md:text-base mt-2">
+                          Sponsored by{" "}
+                          <span className="text-[#2684FF] font-semibold">Atlassian</span>{" "}
+                          and{" "}
+                          <span className="text-[#E32B23] font-semibold">Flow Traders</span>.
+                      </p>
 
-                {/* 🔗 View Certificate Button */}
-                <a
-                    href="https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
-                >
-                  View Award Certificate →
-                </a>
+                      {/* 🔗 View Certificate Button */}
+                      <a
+                          href="https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
+                      >
+                          View Award Certificate →
+                      </a>
+                  </div>
+
+                  {/* 🔗 GitHub Button */}
+                  <a
+                      href="https://github.com/ShousenZHANG/project-contest-platform.git"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 px-6 py-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
+                  >
+                      View on GitHub →
+                  </a>
               </div>
-
-              {/* 🔗 GitHub Button */}
-              <a
-                  href="https://github.com/ShousenZHANG/project-contest-platform.git"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-2 px-6 py-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
-              >
-                View on GitHub →
-              </a>
-            </div>
           </div>
 
             {/* ⚙️ Project 2 */}

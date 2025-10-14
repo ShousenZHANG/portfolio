@@ -7,15 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Environment variables
+.env
+.env.*.local
+
+# IDE and editor files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,4 +30,25 @@ dist-ssr
 *.sln
 *.sw?
 
-public/
+# Temporary and cache files
+.cache/
+*.tmp
+*.bak
+
+# Public assets
+# ⚠️ Keep critical assets like images, videos, 3D models, resume PDFs
+# but ignore heavy dev/test files or sensitive items.
+public/temp/
+public/test/
+public/*.psd
+public/*.zip
+public/*.bak
+public/*.tmp
+public/files/
+public/images/
+public/videos/
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini

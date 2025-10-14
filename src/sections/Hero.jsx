@@ -3,6 +3,7 @@ import {words} from "../constants/index.js";
 import Button from "../components/Button.jsx";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
+import {Download} from "lucide-react";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
 
 const Hero = () => {
@@ -74,13 +75,30 @@ const Hero = () => {
   </span>.
                         </p>
 
+                        {/* Buttons */}
+                        <div className="flex flex-wrap gap-4 mt-6">
+                            {/* View Work Button */}
+                            <Button
+                                text="See My Work"
+                                className="md:w-80 md:h-16 w-60 h-12"
+                                id="counter"
+                            />
 
-                        {/*Button */}
-                        <Button
-                            text="See My Work"
-                            className="md:w-80 md:h-16 w-60 h-12"
-                            id="counter"
-                        />
+                            {/* Download Resume Button */}
+                            <a
+                                href="/files/Eddy_Zhang_CV.pdf"
+                                download="Eddy_Zhang_Resume.pdf"
+                                className="md:w-80 md:h-16 w-60 h-12 flex items-center justify-center rounded-xl
+               border border-sky-400/40 bg-sky-600/20 text-white font-semibold
+               hover:bg-sky-500/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.3)]
+               transition-all duration-500 ease-out backdrop-blur-sm"
+                            >
+    <span className="flex items-center gap-2">
+      <Download className="w-5 h-5 text-sky-300 group-hover:text-sky-100 transition-colors duration-300" />
+      Download CV
+    </span>
+                            </a>
+                        </div>
                     </div>
                 </header>
                 {/* RIGHT: Video */}
