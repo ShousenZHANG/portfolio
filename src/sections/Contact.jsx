@@ -162,12 +162,24 @@ const Contact = () => {
                 {loading ? "Sending..." : "Send Message 🚀"}
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 via-transparent to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </button>
-
               {/* Success Message */}
               {sent && (
-                  <p className="text-emerald-400 text-center mt-4 font-medium animate-fade-in">
-                    ✅ Message sent successfully! I’ll get back to you shortly.
-                  </p>
+                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                    <div className="bg-[#0d1117] border border-sky-400/40 rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
+                      <h3 className="text-2xl text-sky-300 font-semibold mb-3">
+                        ✅ Message Sent!
+                      </h3>
+                      <p className="text-white/80 mb-6">
+                        Thanks for reaching out — I’ll reply soon 🚀
+                      </p>
+                      <button
+                          onClick={() => setSent(false)}
+                          className="px-5 py-2 bg-sky-600/40 rounded-lg hover:bg-sky-500/50 transition-all"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
               )}
             </form>
           </div>
