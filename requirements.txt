@@ -1,0 +1,4 @@
+connectonion
+requests
+fastapi
+PyPDF2

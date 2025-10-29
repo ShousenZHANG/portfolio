@@ -6,6 +6,7 @@ import Experience from "./sections/Experience.jsx";
 import TechStack from "./sections/TechStack.jsx";
 import Contact from "./sections/Contact.jsx";
 import Footer from "./sections/Footer.jsx";
+import JDAssistant from "./components/JDAssistant.jsx";
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
             <TechStack />
             <Contact />
             <Footer />
+            <JDAssistant />
         </>
     );
 }
