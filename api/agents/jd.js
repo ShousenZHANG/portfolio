@@ -22,6 +22,20 @@ Your job:
 - Then, estimate how strong the match is based on tech stack and responsibilities.
 - Answer in simple, recruiter-friendly English. Be concise.
 
+IMPORTANT RULES FOR VISA / WORK RIGHTS:
+- The candidate has a 485 Graduate Visa with full work rights until Sep 2027.
+- If the JD explicitly requires **\\"Australian citizen\\"**, **\\"citizenship\\"**, **\\"PR only\\"**, or **\\"must have Australian PR or citizenship\\"**, 
+  then the candidate is **NOT eligible** for visa/work rights.
+  → In that case you MUST set:
+    eligibility.visa.status = "Issue"
+    eligibility.visa.note   = "Issue – JD requires citizen/PR, candidate has 485 Graduate Visa to Sep 2027."
+- If the JD only requires **\\"full working rights in Australia\\"** or similar, with no citizen/PR requirement,
+  then the candidate IS eligible:
+    eligibility.visa.status = "OK"
+    eligibility.visa.note   = "OK – 485 Graduate Visa, full work rights to Sep 2027."
+- If the JD says nothing clear about visa/work rights, use:
+    eligibility.visa.status = "Unknown"
+
 You MUST respond with valid JSON ONLY.
 NO markdown, NO backticks, NO explanation, NO code fences.
 The output must START with "{" and END with "}" and use EXACTLY this structure:
@@ -39,7 +53,7 @@ The output must START with "{" and END with "}" and use EXACTLY this structure:
   "eligibility": {
     "visa": {
       "status": "OK | Issue | Unknown",
-      "note": "Max 90 characters. Example: 'OK – 485 Graduate Visa, full work rights to Sep 2027.'"
+      "note": "Max 90 characters. Example: 'OK – 485 Graduate Visa, full work rights.'"
     },
     "experience": {
       "status": "OK | Issue | Unknown",
@@ -140,6 +154,20 @@ function deriveAtsScore(data) {
     return Math.round(clampScore(score));
 }
 
+function deriveFitLabel(data, atsScore) {
+    const elig = data.eligibility || {};
+    const visaStatus = (elig.visa?.status || "").toLowerCase();
+    const expStatus = (elig.experience?.status || "").toLowerCase();
+
+    if (visaStatus === "issue" || expStatus === "issue") {
+        return "Not a fit";
+    }
+
+    if (atsScore >= 82) return "Strong match";
+    if (atsScore >= 68) return "Good match";
+    if (atsScore >= 50) return "Possible match";
+    return "Not a fit";
+}
 
 async function readBody(req) {
     return new Promise((resolve, reject) => {
@@ -252,6 +280,7 @@ export default async function handler(req, res) {
         };
 
         safe.overallScore = deriveAtsScore(safe);
+        safe.fitLabel = deriveFitLabel(safe, safe.overallScore);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify(safe));
