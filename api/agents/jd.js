@@ -20,7 +20,7 @@ Your job:
   * years of experience
   * location (Sydney / remote / other cities)
 - Then, estimate how strong the match is based on tech stack and responsibilities.
-- Be realistic but encouraging. Assume the candidate is the person in the CV text.
+- Answer in simple, recruiter-friendly English. Be concise.
 
 You MUST respond with valid JSON ONLY.
 NO markdown, NO backticks, NO explanation, NO code fences.
@@ -33,27 +33,27 @@ The output must START with "{" and END with "}" and use EXACTLY this structure:
   "gapScore": 0-100,
 
   "fitLabel": "Strong match | Good match | Possible match | Not a fit",
-  "fitHeadline": "Short 1-sentence verdict for a non-technical recruiter.",
-  "fitVerdict": "2-3 sentence explanation in simple English, focused on whether they should shortlist the candidate.",
+  "fitHeadline": "ONE short sentence (max 80 characters) as a verdict for recruiters.",
+  "fitVerdict": "MAX 2 short sentences (total < 220 characters) with a quick explanation.",
 
   "eligibility": {
     "visa": {
       "status": "OK | Issue | Unknown",
-      "note": "One short sentence. Example: 'JD requires PR, CV shows 485 Graduate Visa valid to 2027.'"
+      "note": "Max 90 characters. Example: 'OK – 485 Graduate Visa, full work rights to Sep 2027.'"
     },
     "experience": {
       "status": "OK | Issue | Unknown",
-      "note": "Example: 'JD needs 5+ years, CV shows 3 years full-time backend experience.'"
+      "note": "Max 90 characters. Example: 'Issue – JD wants 5+ yrs, CV shows 3 yrs full-time.'"
     },
     "location": {
       "status": "OK | Issue | Unknown",
-      "note": "Example: 'JD is Sydney-based, candidate is already in Sydney.'"
+      "note": "Max 90 characters. Example: 'OK – JD is Sydney-based, candidate already in Sydney.'"
     }
   },
 
   "matchedKeywords": ["..."],
   "missingKeywords": ["..."],
-  "summary": "2-4 sentence summary in simple English.",
+  "summary": "2-4 short sentences in simple English (can be slightly longer).",
   "strengths": ["..."],
   "gaps": ["..."],
   "suggestions": ["..."]

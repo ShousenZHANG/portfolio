@@ -92,6 +92,29 @@ function normalizeResult(data) {
     };
 }
 
+function formatEligibilityLine(label, item) {
+    if (!item || !item.note) return null;
+    const status = (item.status || '').toLowerCase();
+
+    let icon = '•';
+    let color = 'text-neutral-300';
+    if (status === 'ok') {
+        icon = '✔';
+        color = 'text-emerald-300';
+    } else if (status === 'issue') {
+        icon = '⚠';
+        color = 'text-amber-300';
+    }
+
+    return (
+        <p className="text-[11px] text-neutral-200" key={label}>
+            <span className={`${color} mr-1`}>{icon}</span>
+            <span className="font-medium text-neutral-100">{label}:</span>{' '}
+            <span>{item.note}</span>
+        </p>
+    );
+}
+
 export default function JDChatWidget() {
     const [open, setOpen] = useState(false);
     const [jd, setJd] = useState('');
@@ -258,19 +281,20 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                 {result && (
                     <div className="space-y-4">
-                        <div className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-3">
+                        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] px-3.5 py-3.5">
                             <div className="flex items-center justify-between gap-3">
-                                <div className="flex flex-col">
-          <span className="text-[11px] uppercase tracking-[0.13em] text-neutral-400">
-            Verdict
-          </span>
-                                    <span className="text-[14px] font-semibold text-neutral-50">
-            {result.fitHeadline || 'Overall fit assessment'}
-          </span>
+                                <div className="space-y-0.5">
+                                    <p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">
+                                        Verdict
+                                    </p>
+                                    <p className="text-[14px] font-semibold leading-snug text-neutral-50">
+                                        {result.fitHeadline || 'Overall fit for this role'}
+                                    </p>
                                 </div>
                                 <span
                                     className={`
-            inline-flex items-center justify-center rounded-full px-2.5 py-1 text-[11px] font-semibold
+            inline-flex items-center justify-center rounded-full px-2.5 py-1
+            text-[11px] font-semibold shadow-sm
             ${
                                         result.fitLabel?.startsWith('Strong')
                                             ? 'bg-emerald-400 text-black'
@@ -288,33 +312,19 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
         </span>
                             </div>
 
-                            <div className="mt-2 grid grid-cols-1 gap-1.5 text-[11px] text-neutral-200">
-                                {result.eligibility?.visa && (
-                                    <div>
-                                        <span className="font-semibold text-neutral-100">Visa / Work rights:&nbsp;</span>
-                                        <span>{result.eligibility.visa.note}</span>
-                                    </div>
-                                )}
-                                {result.eligibility?.experience && (
-                                    <div>
-                                        <span className="font-semibold text-neutral-100">Experience:&nbsp;</span>
-                                        <span>{result.eligibility.experience.note}</span>
-                                    </div>
-                                )}
-                                {result.eligibility?.location && (
-                                    <div>
-                                        <span className="font-semibold text-neutral-100">Location:&nbsp;</span>
-                                        <span>{result.eligibility.location.note}</span>
-                                    </div>
-                                )}
+                            <div className="mt-2 space-y-1.5">
+                                {formatEligibilityLine('Visa / Work rights', result.eligibility?.visa)}
+                                {formatEligibilityLine('Experience', result.eligibility?.experience)}
+                                {formatEligibilityLine('Location', result.eligibility?.location)}
                             </div>
 
                             {result.fitVerdict && (
-                                <div className="mt-2 text-[11px] text-neutral-300">
+                                <p className="mt-2 text-[11px] text-neutral-400">
                                     {result.fitVerdict}
-                                </div>
+                                </p>
                             )}
                         </div>
+
                         <div className="flex items-center justify-between">
                             <div className="text-[15px] font-semibold tracking-tight text-neutral-50">
                                 Overall Match
