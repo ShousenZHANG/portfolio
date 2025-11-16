@@ -171,10 +171,6 @@ export default function JDChatWidget() {
         }
     };
 
-    const copyReply = async () => {
-        if (result?.replyTemplate) await navigator.clipboard.writeText(result.replyTemplate);
-    };
-
     /** ---------- Compact dark-glass panel ---------- */
     const Panel = (
         <div className="w-[min(380px,94vw)] bg-[#0e0e10]/95 text-white border border-white/10 rounded-2xl backdrop-blur-md">
@@ -198,7 +194,7 @@ export default function JDChatWidget() {
                     value={jd}
                     onChange={(e) => setJd(e.target.value)}
                     placeholder="Paste the JD here (stack, responsibilities, experience band, visa, location)…"
-                    className="h-28 resize-none bg-black/40 text-white placeholder:text-neutral-400 border-white/10"
+                    className="h-28 resize-none bg-black/40 text-white placeholder:text-neutral-400 border-white/10 thin-scrollbar"
                     spellCheck={false}
                     autoCorrect="off"
                     autoCapitalize="off"
@@ -243,7 +239,11 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             <Separator className="bg-white/10" />
 
             {/* Result */}
-            <div className="max-h-[300px] min-h-[80px] overflow-auto px-4 py-3" aria-live="polite">
+            <div
+                className="max-h-[320px] min-h-[96px] overflow-auto px-4 py-4 thin-scrollbar
+             bg-black/30 rounded-b-2xl"
+                aria-live="polite"
+            >
                 {!result && !loading && (
                     <div className="text-[13px] text-neutral-300">
                         No JD analysed yet. Paste a JD above and hit <span
@@ -254,14 +254,26 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 {result && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <div className="text-sm font-medium">Overall Match</div>
-                            <Badge variant="secondary"
-                                   className="text-[11px] px-2 py-1 bg-white/10 text-white border-white/15">
+                            <div className="text-[15px] font-semibold tracking-tight text-neutral-50">
+                                Overall Match
+                            </div>
+                            <Badge
+                                variant="secondary"
+                                className="text-[12px] px-2.5 py-1 rounded-full
+               bg-gradient-to-r from-cyan-400 to-indigo-500
+               text-black shadow-sm border-none"
+                            >
                                 {Math.round(result.score.overall)}%
                             </Badge>
                         </div>
-                        <Progress value={result.score.overall} className="bg-white/10"/>
-                        <div className="grid grid-cols-3 gap-2 text-[11px] text-neutral-300">
+
+                        <Progress
+                            value={result.score.overall}
+                            className="h-1.5 mt-2 bg-white/10 rounded-full
+             [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-indigo-500"
+                        />
+
+                        <div className="grid grid-cols-3 gap-2 mt-2 text-[11px] text-neutral-200">
                             <div>Exact: {Math.round(result.score.exact)}%</div>
                             <div>Related: {Math.round(result.score.related)}%</div>
                             <div>Gap: {Math.round(result.score.gaps)}%</div>
@@ -269,11 +281,16 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                         {!!result.matched?.length && (
                             <div>
-                                <div className="text-xs font-medium mb-1">Direct Hits</div>
+                                <div className="text-xs font-semibold mb-1 text-cyan-200">Direct Hits</div>
                                 <div className="flex flex-wrap gap-1.5">
                                     {result.matched.map((k) => (
-                                        <Badge key={k} variant="outline"
-                                               className="text-[11px] font-normal bg-white/5 text-white border-white/15">
+                                        <Badge
+                                            key={k}
+                                            variant="outline"
+                                            className="text-[11px] font-medium
+                   bg-white/5 text-neutral-50 border-white/20
+                   hover:bg-white/10 transition-colors"
+                                        >
                                             {k}
                                         </Badge>
                                     ))}
@@ -283,7 +300,9 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                         {!!result.related?.length && (
                             <div>
-                                <div className="text-xs font-medium mb-1">Related / Transferable</div>
+                                <div className="text-xs font-semibold mb-1 text-neutral-100">
+                                    Related / Transferable
+                                </div>
                                 <ul className="list-disc list-inside text-[12px] space-y-1 text-neutral-200">
                                     {result.related.map((r, i) => (
                                         <li key={i}>
@@ -296,43 +315,31 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                         {!!result.gaps?.length && (
                             <div>
-                                <div className="text-xs font-medium mb-1">Gaps (Upskilling Plan)</div>
+                                <div className="text-xs font-semibold mb-1 text-rose-200">
+                                    Gaps (Upskilling Plan)
+                                </div>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {result.gaps.map((k) => (
-                                        <Badge key={k} variant="secondary"
-                                               className="text-[11px] font-normal bg-white/8 text-white border-white/10">
-                                            {k}
-                                        </Badge>
-                                    ))}
+                                {result.gaps.map((k) => (
+                                    <Badge
+                                        key={k}
+                                        variant="secondary"
+                                        className="text-[11px] font-medium
+             bg-rose-500/15 text-rose-100 border-rose-400/30
+             hover:bg-rose-500/25 transition-colors"
+                                    >
+                                        {k}
+                                    </Badge>
+                                ))}
                                 </div>
                             </div>
                         )}
 
                         <div>
-                            <div className="text-xs font-medium mb-1">Summary</div>
-                            <div className="text-sm whitespace-pre-wrap text-neutral-100">{result.summary}</div>
-                        </div>
-
-                        {!!result.replyTemplate && (
-                            <div>
-                                <div className="text-xs font-medium mb-1">Suggested Reply</div>
-                                <Textarea
-                                    readOnly
-                                    className="h-24 text-xs whitespace-pre-wrap bg-black/40 text-white border-white/10"
-                                    value={result.replyTemplate}
-                                />
-                                <div className="mt-2 flex gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={copyReply}
-                                        className="bg-transparent text-white border-white/15 hover:bg-white/5"
-                                    >
-                                        Copy Reply
-                                    </Button>
-                                </div>
+                            <div className="text-xs font-semibold mb-1 text-neutral-100">Summary</div>
+                            <div className="text-[13px] leading-relaxed whitespace-pre-wrap text-neutral-50">
+                                {result.summary}
                             </div>
-                        )}
+                        </div>
                     </div>
                 )}
             </div>

@@ -670,3 +670,27 @@ section {
     @apply bg-background text-foreground;
     }
 }
+
+.thin-scrollbar {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(148, 163, 184, 0.7) transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.7); /* slate-400 */
+    border-radius: 9999px;
+    border: 1px solid rgba(15, 23, 42, 0.8);    /* 深色边，适配深色背景 */
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(226, 232, 240, 0.9); /* hover 稍微亮一点 */
+}
+
