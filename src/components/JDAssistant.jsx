@@ -338,12 +338,6 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                                 {formatEligibilityLine('Experience', result.eligibility?.experience)}
                                 {formatEligibilityLine('Location', result.eligibility?.location)}
                             </div>
-
-                            {result.fitVerdict && (
-                                <p className="mt-2 text-[11px] text-neutral-400">
-                                    {result.fitVerdict}
-                                </p>
-                            )}
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -365,12 +359,6 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                             className="h-1.5 mt-2 bg-white/10 rounded-full
              [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-indigo-500"
                         />
-
-                        <div className="grid grid-cols-3 gap-2 mt-2 text-[11px] text-neutral-200">
-                            <div>Exact: {Math.round(result.score.exact)}%</div>
-                            <div>Related: {Math.round(result.score.related)}%</div>
-                            <div>Gap: {Math.round(result.score.gaps)}%</div>
-                        </div>
 
                         {(result.matched?.length || result.related?.length) && (
                             <div>
