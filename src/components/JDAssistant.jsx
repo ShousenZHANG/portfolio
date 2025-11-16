@@ -35,6 +35,58 @@ function useIsMobile(query = '(max-width: 640px)') {
     return isMobile;
 }
 
+function normalizeResult(data) {
+    const score = data?.score || {};
+    const overall =
+        typeof score.overall === 'number'
+            ? score.overall
+            : typeof data.overallScore === 'number'
+                ? data.overallScore
+                : 0;
+
+    const exact =
+        typeof score.exact === 'number'
+            ? score.exact
+            : typeof data.exactMatchScore === 'number'
+                ? data.exactMatchScore
+                : 0;
+
+    const related =
+        typeof score.related === 'number'
+            ? score.related
+            : typeof data.relatedMatchScore === 'number'
+                ? data.relatedMatchScore
+                : 0;
+
+    const gaps =
+        typeof score.gaps === 'number'
+            ? score.gaps
+            : typeof data.gapScore === 'number'
+                ? data.gapScore
+                : 0;
+
+    return {
+        // 组件里一直用 result.score.xxx，这里统一转成该结构
+        score: { overall, exact, related, gaps },
+
+        // 命中 / 缺失关键词
+        matched: data.matched ?? data.matchedKeywords ?? [],
+        // related：如果后端直接给 related 就用它，否则用 strengths 填充成 {name, reason} 结构
+        related:
+            data.related ??
+            (Array.isArray(data.strengths)
+                ? data.strengths.map((s) =>
+                    typeof s === 'string' ? { name: s, reason: '' } : s
+                )
+                : []),
+
+        gaps: data.gaps ?? data.missingKeywords ?? [],
+        summary: data.summary ?? '',
+        replyTemplate: data.replyTemplate ?? '',
+    };
+}
+
+
 export default function JDChatWidget() {
     const [open, setOpen] = useState(false);
     const [jd, setJd] = useState('');
@@ -42,6 +94,7 @@ export default function JDChatWidget() {
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const [showTeaser, setShowTeaser] = useState(true);
+    const [cvText, setCvText] = useState('');
 
     const isMobile = useIsMobile();
 
@@ -51,26 +104,66 @@ export default function JDChatWidget() {
         return () => window.removeEventListener('keydown', onKey);
     }, []);
 
+    useEffect(() => {
+        const onKey = (e) => e.key === 'Escape' && setOpen(false);
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadCv = async () => {
+            try {
+                const res = await fetch('/cv/main.txt');
+                if (!res.ok) return;
+                const text = (await res.text()).trim();
+                if (!cancelled && text) {
+                    setCvText(text);
+                }
+            } catch (err) {
+                console.error('Failed to load CV text:', err);
+            }
+        };
+
+        loadCv();
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
     const submit = async () => {
         setError(null);
         setResult(null);
+
         if (!jd.trim() || loading) {
             setError('Please paste the job description first.');
             return;
         }
+        if (!cvText.trim()) {
+            setError('CV text is empty. Please check /public/cv/main.txt.');
+            return;
+        }
+
         setLoading(true);
         try {
             const res = await fetch('/api/agents/jd', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ jd })
+                body: JSON.stringify({
+                    jd: jd.trim(),
+                    cvText: cvText.trim(),
+                }),
             });
+
             if (!res.ok) {
                 const t = await res.text();
                 throw new Error(t || `Request failed: ${res.status}`);
             }
             const data = await res.json();
-            setResult(data);
+
+            const normalized = normalizeResult(data);
+            setResult(normalized);
         } catch (e) {
             setError(e?.message || 'Analysis failed. Please try again later.');
         } finally {
