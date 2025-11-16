@@ -169,6 +169,33 @@ function deriveFitLabel(data, atsScore) {
     return "Not a fit";
 }
 
+function patchFitTexts(data, atsScore) {
+    const elig = data.eligibility || {};
+    const visaStatus = (elig.visa?.status || "").toLowerCase();
+    const expStatus = (elig.experience?.status || "").toLowerCase();
+
+    let fitHeadline = data.fitHeadline || "";
+    let fitVerdict = data.fitVerdict || "";
+
+    if (visaStatus === "issue" || expStatus === "issue") {
+        if (visaStatus === "issue" && expStatus === "issue") {
+            fitHeadline = "Not a fit – visa and experience requirements not met.";
+        } else if (visaStatus === "issue") {
+            fitHeadline = "Not a fit – visa / work rights do not meet the JD.";
+        } else {
+            fitHeadline = "Not a fit – experience level below JD requirements.";
+        }
+        fitVerdict = "";
+    } else if (!fitHeadline) {
+        if (atsScore >= 82) fitHeadline = "Strong match for this role.";
+        else if (atsScore >= 68) fitHeadline = "Good match for this role.";
+        else if (atsScore >= 50) fitHeadline = "Possible match if requirements are flexible.";
+        else fitHeadline = "Not a fit for this role right now.";
+    }
+
+    return { fitHeadline, fitVerdict };
+}
+
 async function readBody(req) {
     return new Promise((resolve, reject) => {
         let data = "";
@@ -281,6 +308,9 @@ export default async function handler(req, res) {
 
         safe.overallScore = deriveAtsScore(safe);
         safe.fitLabel = deriveFitLabel(safe, safe.overallScore);
+        const patched = patchFitTexts(safe, safe.overallScore);
+        safe.fitHeadline = patched.fitHeadline;
+        safe.fitVerdict = patched.fitVerdict;
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify(safe));
