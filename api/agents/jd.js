@@ -20,7 +20,10 @@ Your task:
 - Evaluate how well this CV matches the JD.
 - Be realistic but encouraging.
 
-You MUST respond with **valid JSON only**, no extra text, in EXACTLY this structure:
+You MUST respond with valid JSON ONLY.
+NO markdown, NO backticks, NO explanation, NO code fences.
+The output must START with "{" and END with "}".
+Use EXACTLY this structure:
 
 {
   "overallScore": 0-100,
@@ -35,8 +38,6 @@ You MUST respond with **valid JSON only**, no extra text, in EXACTLY this struct
   "suggestions": ["..."],
   "replyTemplate": "Short, polite email / cover letter style reply the candidate could send for this JD."
 }
-
-JSON only, so that it can be parsed by JSON.parse in JavaScript.
 
 JD:
 ---
@@ -55,7 +56,6 @@ async function readBody(req) {
         req.on("data", (chunk) => {
             data += chunk;
             if (data.length > MAX_BODY_SIZE) {
-                // 防止超大请求
                 if (req.destroy) req.destroy();
                 reject(new Error("Payload too large"));
             }
@@ -74,14 +74,14 @@ async function readBody(req) {
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         res.statusCode = 405;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify({ error: "Only POST is allowed" }));
         return;
     }
 
     if (!process.env.GEMINI_API_KEY) {
         res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify({ error: "GEMINI_API_KEY is not set on the server" }));
         return;
     }
@@ -92,7 +92,7 @@ export default async function handler(req, res) {
     } catch (err) {
         console.error("Error parsing body:", err);
         res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify({ error: "Invalid JSON body" }));
         return;
     }
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
     const { jd, cvText } = body || {};
     if (!jd || !cvText) {
         res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify({ error: "jd and cvText are required" }));
         return;
     }
@@ -111,19 +111,37 @@ export default async function handler(req, res) {
 
         const prompt = buildPrompt(jd, cvText);
         const result = await model.generateContent(prompt);
-        const text = result.response.text() || "{}";
+
+        let text = (result.response.text() || "{}").trim();
+
+        // 如果模型用了 ```json 代码块，先把外壳剥掉
+        if (text.startsWith("```")) {
+            const firstNewline = text.indexOf("\n");
+            const lastFence = text.lastIndexOf("```");
+            if (firstNewline !== -1 && lastFence !== -1 && lastFence > firstNewline) {
+                text = text.slice(firstNewline + 1, lastFence).trim();
+            }
+        }
 
         let parsed;
         try {
             parsed = JSON.parse(text);
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
-            console.error("JSON parse error:", err);
-            const idx = text.indexOf("{");
-            const candidate = idx >= 0 ? text.slice(idx) : "{}";
+            console.error("JSON parse error, raw model output:", text);
+
+            const first = text.indexOf("{");
+            const last = text.lastIndexOf("}");
+            let candidate = "{}";
+            if (first !== -1 && last !== -1 && last > first) {
+                candidate = text.slice(first, last + 1);
+            }
+
             try {
                 parsed = JSON.parse(candidate);
-            } catch {
-                parsed = { raw: text };
+            } catch (err2) {
+                console.error("Second JSON parse failed:", err2);
+                parsed = {};
             }
         }
 
@@ -143,12 +161,12 @@ export default async function handler(req, res) {
         };
 
         res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify(safe));
     } catch (err) {
         console.error("JD assistant error:", err);
         res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify({ error: "JD analysis failed" }));
     }
 }
