@@ -37,27 +37,26 @@ The output must START with "{" and END with "}" and use EXACTLY this structure:
   "fitVerdict": "MAX 2 short sentences (total < 220 characters) with a quick explanation.",
 
   "eligibility": {
-    "visa": { "status": "OK | Issue | Unknown", "note": "Max 90 chars." },
-    "experience": { "status": "OK | Issue | Unknown", "note": "Max 90 chars." },
-    "location": { "status": "OK | Issue | Unknown", "note": "Max 90 chars." }
+    "visa": {
+      "status": "OK | Issue | Unknown",
+      "note": "Max 90 characters. Example: 'OK – 485 Graduate Visa, full work rights to Sep 2027.'"
+    },
+    "experience": {
+      "status": "OK | Issue | Unknown",
+      "note": "Max 90 characters. Example: 'Issue – JD wants 5+ yrs, CV shows 3 yrs full-time.'"
+    },
+    "location": {
+      "status": "OK | Issue | Unknown",
+      "note": "Max 90 characters. Example: 'OK – JD is Sydney-based, candidate already in Sydney.'"
+    }
   },
 
-  "matchedKeywords": ["exact skills or phrases that appear clearly in BOTH JD and CV"],
-
-  "related": [
-    {
-      "name": "JD: RabbitMQ ↔ CV: Kafka",
-      "reason": "Short sentence on why experience transfers and how fast the candidate can ramp up."
-    }
-    // More items for frameworks, tools, domains that are not exact but are close enough
-  ],
-
-  "missingKeywords": ["skills that are clearly required in JD and NOT covered in CV at all"],
-
-  "summary": "2-4 short sentences in simple English about overall fit.",
-  "strengths": ["bullet-style strengths"],
-  "gaps": ["bullet-style gaps or upskilling suggestions"],
-  "suggestions": ["concrete, actionable tips to close the gaps"]
+  "matchedKeywords": ["..."],
+  "missingKeywords": ["..."],
+  "summary": "2-4 short sentences in simple English (can be slightly longer).",
+  "strengths": ["..."],
+  "gaps": ["..."],
+  "suggestions": ["..."]
 }
 
 JD:

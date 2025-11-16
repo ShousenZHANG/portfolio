@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -280,9 +281,9 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                 {result && (
                     <div className="space-y-4">
-                        <div className="rounded-2xl border border-white/12 bg-gradient-to-br from-white/[0.06] to-black/40 px-4 py-4">
-                            <div className="flex items-start justify-between gap-3">
-                                <div className="space-y-1">
+                        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] px-3.5 py-3.5">
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="space-y-0.5">
                                     <p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">
                                         Verdict
                                     </p>
@@ -290,142 +291,148 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                                         {result.fitHeadline || 'Overall fit for this role'}
                                     </p>
                                 </div>
-
                                 <span
                                     className={`
-            inline-flex items-center gap-1.5 rounded-full px-3 py-1
-            text-[11px] font-semibold shadow-[0_0_0_1px_rgba(15,23,42,0.6)]
-            backdrop-blur-md border border-white/15
-            ${
+    inline-flex items-center gap-1.5 rounded-full px-3 py-1.5
+    text-[11px] font-semibold tracking-tight
+    shadow-[0_10px_30px_rgba(0,0,0,0.45)]
+    border border-white/15
+    bg-gradient-to-r from-slate-950/80 via-slate-900/60 to-slate-950/80
+    backdrop-blur-md
+    ${
                                         result.fitLabel?.startsWith('Strong')
-                                            ? 'bg-emerald-400/15 text-emerald-200'
+                                            ? 'text-emerald-200'
                                             : result.fitLabel?.startsWith('Good')
-                                                ? 'bg-cyan-400/15 text-cyan-200'
+                                                ? 'text-cyan-200'
                                                 : result.fitLabel?.startsWith('Possible')
-                                                    ? 'bg-amber-400/20 text-amber-200'
+                                                    ? 'text-amber-200'
                                                     : result.fitLabel?.startsWith('Not')
-                                                        ? 'bg-rose-500/25 text-rose-200'
-                                                        : 'bg-neutral-500/25 text-neutral-100'
+                                                        ? 'text-rose-200'
+                                                        : 'text-neutral-100'
                                     }
-          `}
+  `}
                                 >
-          <span
-              className={`
-              inline-block h-1.5 w-1.5 rounded-full
-              ${
-                  result.fitLabel?.startsWith('Strong')
-                      ? 'bg-emerald-300'
-                      : result.fitLabel?.startsWith('Good')
-                          ? 'bg-cyan-300'
-                          : result.fitLabel?.startsWith('Possible')
-                              ? 'bg-amber-300'
-                              : result.fitLabel?.startsWith('Not')
-                                  ? 'bg-rose-300'
-                                  : 'bg-neutral-300'
-              }
-            `}
-          />
-          <span>{result.fitLabel || 'Match level'}</span>
-        </span>
+  <span
+      className={`
+      inline-block h-1.5 w-1.5 rounded-full
+      ${
+          result.fitLabel?.startsWith('Strong')
+              ? 'bg-emerald-300'
+              : result.fitLabel?.startsWith('Good')
+                  ? 'bg-cyan-300'
+                  : result.fitLabel?.startsWith('Possible')
+                      ? 'bg-amber-300'
+                      : result.fitLabel?.startsWith('Not')
+                          ? 'bg-rose-300'
+                          : 'bg-neutral-300'
+      }
+    `}
+  />
+  <span>{result.fitLabel || 'Match level'}</span>
+</span>
+
                             </div>
 
-                            <div className="mt-3 space-y-1.5">
+                            <div className="mt-2 space-y-1.5">
                                 {formatEligibilityLine('Visa / Work rights', result.eligibility?.visa)}
                                 {formatEligibilityLine('Experience', result.eligibility?.experience)}
                                 {formatEligibilityLine('Location', result.eligibility?.location)}
                             </div>
 
-                            <div className="mt-3 grid gap-3 text-[11px]">
-                                {/* ✅ 直接命中 */}
-                                {!!result.matched?.length && (
-                                    <section>
-                                        <p className="mb-1 text-[11px] font-semibold text-emerald-200">
-                                            Direct match
-                                        </p>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {result.matched.map((k) => (
-                                                <span
-                                                    key={k}
-                                                    className="inline-flex items-center rounded-full border border-emerald-400/40
-                             bg-emerald-500/10 px-2.5 py-1 text-[11px] text-emerald-50"
-                                                >
-                  {k}
-                </span>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {!!result.related?.length && (
-                                    <section className={result.matched?.length ? 'pt-2 border-t border-white/8' : ''}>
-                                        <p className="mb-1 text-[11px] font-semibold text-amber-200">
-                                            Transferable / similar
-                                        </p>
-                                        <ul className="space-y-1.5">
-                                            {result.related.map((r, i) => (
-                                                <li key={i} className="flex gap-1.5 text-[11px] text-neutral-100">
-                                                    <span className="mt-[3px] text-amber-300">≈</span>
-                                                    <span>
-                    <span className="font-medium text-neutral-50">
-                      {r.name}
-                    </span>
-                                                        {r.reason && (
-                                                            <span className="text-neutral-300"> — {r.reason}</span>
-                                                        )}
-                  </span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </section>
-                                )}
-
-                                {!!result.gaps?.length && (
-                                    <section className={(result.matched?.length || result.related?.length) ? 'pt-2 border-t border-white/8' : ''}>
-                                        <p className="mb-1 text-[11px] font-semibold text-rose-200">
-                                            Clear gaps / upskilling
-                                        </p>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {result.gaps.map((k) => (
-                                                <span
-                                                    key={k}
-                                                    className="inline-flex items-center rounded-full border border-rose-400/50
-                             bg-rose-600/15 px-2.5 py-1 text-[11px] text-rose-50"
-                                                >
-                  {k}
-                </span>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-                            </div>
-
                             {result.fitVerdict && (
-                                <p className="mt-3 text-[11px] text-neutral-400">
+                                <p className="mt-2 text-[11px] text-neutral-400">
                                     {result.fitVerdict}
                                 </p>
                             )}
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <div className="text-[13px] font-medium text-neutral-50">Overall Match</div>
-                            <span className="text-[11px] text-neutral-200">
-        {Math.round(result.score.overall)}%
-      </span>
+                            <div className="text-[15px] font-semibold tracking-tight text-neutral-50">
+                                Overall Match
+                            </div>
+                            <Badge
+                                variant="secondary"
+                                className="text-[12px] px-2.5 py-1 rounded-full
+               bg-gradient-to-r from-cyan-400 to-indigo-500
+               text-black shadow-sm border-none"
+                            >
+                                {Math.round(result.score.overall)}%
+                            </Badge>
                         </div>
+
                         <Progress
                             value={result.score.overall}
-                            className="h-1.5 bg-white/10 rounded-full
-                 [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-indigo-500"
+                            className="h-1.5 mt-2 bg-white/10 rounded-full
+             [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-indigo-500"
                         />
 
-                        {result.summary && (
+                        <div className="grid grid-cols-3 gap-2 mt-2 text-[11px] text-neutral-200">
+                            <div>Exact: {Math.round(result.score.exact)}%</div>
+                            <div>Related: {Math.round(result.score.related)}%</div>
+                            <div>Gap: {Math.round(result.score.gaps)}%</div>
+                        </div>
+
+                        {!!result.matched?.length && (
                             <div>
-                                <div className="text-xs font-semibold mb-1 text-neutral-100">Summary</div>
-                                <div className="text-[13px] leading-relaxed whitespace-pre-wrap text-neutral-50">
-                                    {result.summary}
+                                <div className="text-xs font-semibold mb-1 text-cyan-200">Direct Hits</div>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {result.matched.map((k) => (
+                                        <Badge
+                                            key={k}
+                                            variant="outline"
+                                            className="text-[11px] font-medium
+                   bg-white/5 text-neutral-50 border-white/20
+                   hover:bg-white/10 transition-colors"
+                                        >
+                                            {k}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </div>
                         )}
+
+                        {!!result.related?.length && (
+                            <div>
+                                <div className="text-xs font-semibold mb-1 text-neutral-100">
+                                    Related / Transferable
+                                </div>
+                                <ul className="list-disc list-inside text-[12px] space-y-1 text-neutral-200">
+                                    {result.related.map((r, i) => (
+                                        <li key={i}>
+                                            <span className="font-medium text-white">{r.name}</span> — {r.reason}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {!!result.gaps?.length && (
+                            <div>
+                                <div className="text-xs font-semibold mb-1 text-rose-200">
+                                    Gaps (Upskilling Plan)
+                                </div>
+                                <div className="flex flex-wrap gap-1.5">
+                                {result.gaps.map((k) => (
+                                    <Badge
+                                        key={k}
+                                        variant="secondary"
+                                        className="text-[11px] font-medium
+             bg-rose-500/15 text-rose-100 border-rose-400/30
+             hover:bg-rose-500/25 transition-colors"
+                                    >
+                                        {k}
+                                    </Badge>
+                                ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <div>
+                            <div className="text-xs font-semibold mb-1 text-neutral-100">Summary</div>
+                            <div className="text-[13px] leading-relaxed whitespace-pre-wrap text-neutral-50">
+                                {result.summary}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
