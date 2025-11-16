@@ -83,6 +83,64 @@ ${cvText}
 `;
 }
 
+function clampScore(x) {
+    if (typeof x !== "number" || Number.isNaN(x)) return 0;
+    return Math.max(0, Math.min(100, x));
+}
+
+function deriveAtsScore(data) {
+    const elig = data.eligibility || {};
+    const visaStatus = (elig.visa?.status || "").toLowerCase();
+    const expStatus = (elig.experience?.status || "").toLowerCase();
+    const locStatus = (elig.location?.status || "").toLowerCase();
+
+    const matched = Array.isArray(data.matchedKeywords)
+        ? data.matchedKeywords.length
+        : 0;
+    const missing = Array.isArray(data.missingKeywords)
+        ? data.missingKeywords.length
+        : 0;
+
+    const totalKeywords = matched + missing || 1;
+    const keywordCoverage = (matched / totalKeywords) * 100;
+
+    const exactBase =
+        typeof data.exactMatchScore === "number"
+            ? data.exactMatchScore
+            : keywordCoverage;
+
+    const relatedBase =
+        typeof data.relatedMatchScore === "number"
+            ? data.relatedMatchScore
+            : 0;
+
+    const gapBase =
+        typeof data.gapScore === "number"
+            ? data.gapScore
+            : 0;
+
+    const exact = clampScore(exactBase);
+    const related = clampScore(relatedBase);
+    const gap = clampScore(gapBase);
+
+    let score = 0.65 * exact + 0.25 * related + 0.10 * keywordCoverage;
+
+    score -= gap * 0.20;
+
+    if (visaStatus === "issue") score -= 35;
+    if (expStatus === "issue") score -= 25;
+    if (locStatus === "issue") score -= 10;
+
+    if (visaStatus === "issue" || expStatus === "issue") {
+        score = Math.min(score, 35);
+    } else if (locStatus === "issue") {
+        score = Math.min(score, 75);
+    }
+
+    return Math.round(clampScore(score));
+}
+
+
 async function readBody(req) {
     return new Promise((resolve, reject) => {
         let data = "";
@@ -193,6 +251,7 @@ export default async function handler(req, res) {
             ...parsed,
         };
 
+        safe.overallScore = deriveAtsScore(safe);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.end(JSON.stringify(safe));

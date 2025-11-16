@@ -38,31 +38,31 @@ function useIsMobile(query = '(max-width: 640px)') {
 function normalizeResult(data) {
     const score = data?.score || {};
     const overall =
-        typeof score.overall === 'number'
-            ? score.overall
-            : typeof data.overallScore === 'number'
-                ? data.overallScore
+        typeof data.overallScore === 'number'
+            ? data.overallScore
+            : typeof score.overall === 'number'
+                ? score.overall
                 : 0;
 
     const exact =
-        typeof score.exact === 'number'
-            ? score.exact
-            : typeof data.exactMatchScore === 'number'
-                ? data.exactMatchScore
+        typeof data.exactMatchScore === 'number'
+            ? data.exactMatchScore
+            : typeof score.exact === 'number'
+                ? score.exact
                 : 0;
 
     const related =
-        typeof score.related === 'number'
-            ? score.related
-            : typeof data.relatedMatchScore === 'number'
-                ? data.relatedMatchScore
+        typeof data.relatedMatchScore === 'number'
+            ? data.relatedMatchScore
+            : typeof score.related === 'number'
+                ? score.related
                 : 0;
 
     const gaps =
-        typeof score.gaps === 'number'
-            ? score.gaps
-            : typeof data.gapScore === 'number'
-                ? data.gapScore
+        typeof data.gapScore === 'number'
+            ? data.gapScore
+            : typeof score.gaps === 'number'
+                ? score.gaps
                 : 0;
 
     const eligibility = data.eligibility || {};
@@ -436,13 +436,6 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                                 </div>
                             </div>
                         )}
-
-                        <div>
-                            <div className="text-xs font-semibold mb-1 text-neutral-100">Summary</div>
-                            <div className="text-[13px] leading-relaxed whitespace-pre-wrap text-neutral-50">
-                                {result.summary}
-                            </div>
-                        </div>
                     </div>
                 )}
             </div>
