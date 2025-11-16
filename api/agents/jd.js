@@ -51,12 +51,26 @@ The output must START with "{" and END with "}" and use EXACTLY this structure:
     }
   },
 
-  "matchedKeywords": ["..."],
-  "missingKeywords": ["..."],
+  "matchedKeywords": [
+    "skills or phrases that appear clearly in BOTH JD and CV (e.g. 'Spring Boot', 'REST APIs')"
+  ],
+
+  "related": [
+    {
+      "name": "JD: RabbitMQ ↔ CV: Kafka",
+      "reason": "Short sentence on why this experience is transferable and how quickly they could ramp up."
+    }
+    // More items for frameworks / tools / domains that are similar but not identical
+  ],
+
+  "missingKeywords": [
+    "skills that are clearly required in the JD and NOT covered in the CV at all"
+  ],
+
   "summary": "2-4 short sentences in simple English (can be slightly longer).",
-  "strengths": ["..."],
-  "gaps": ["..."],
-  "suggestions": ["..."]
+  "strengths": ["bullet-style strengths, written for recruiters (not too technical)."],
+  "gaps": ["bullet-style gaps or missing areas."],
+  "suggestions": ["concrete, actionable tips to close the gaps."]
 }
 
 JD:
@@ -133,7 +147,6 @@ export default async function handler(req, res) {
 
         let text = (result.response.text() || "{}").trim();
 
-        // 如果模型用了 ```json 代码块，先把外壳剥掉
         if (text.startsWith("```")) {
             const firstNewline = text.indexOf("\n");
             const lastFence = text.lastIndexOf("```");
@@ -176,6 +189,7 @@ export default async function handler(req, res) {
             gaps: [],
             suggestions: [],
             replyTemplate: "",
+            related: [],
             ...parsed,
         };
 

@@ -372,37 +372,47 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                             <div>Gap: {Math.round(result.score.gaps)}%</div>
                         </div>
 
-                        {!!result.matched?.length && (
-                            <div>
-                                <div className="text-xs font-semibold mb-1 text-cyan-200">Direct Hits</div>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {result.matched.map((k) => (
-                                        <Badge
-                                            key={k}
-                                            variant="outline"
-                                            className="text-[11px] font-medium
-                   bg-white/5 text-neutral-50 border-white/20
-                   hover:bg-white/10 transition-colors"
-                                        >
-                                            {k}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {!!result.related?.length && (
+                        {(result.matched?.length || result.related?.length) && (
                             <div>
                                 <div className="text-xs font-semibold mb-1 text-neutral-100">
-                                    Related / Transferable
+                                    Skills overlap
                                 </div>
-                                <ul className="list-disc list-inside text-[12px] space-y-1 text-neutral-200">
-                                    {result.related.map((r, i) => (
-                                        <li key={i}>
-                                            <span className="font-medium text-white">{r.name}</span> — {r.reason}
-                                        </li>
-                                    ))}
-                                </ul>
+
+                                {!!result.matched?.length && (
+                                    <>
+                                        <div className="text-[11px] text-emerald-200 mb-1">
+                                            Direct match
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5 mb-2">
+                                            {result.matched.map((k) => (
+                                                <span
+                                                    key={k}
+                                                    className="inline-flex items-center rounded-full
+                         border border-emerald-400/50 bg-emerald-500/15
+                         px-2.5 py-1 text-[11px] text-emerald-50"
+                                                >
+              {k}
+            </span>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+
+                                {!!result.related?.length && (
+                                    <>
+                                        <div className="text-[11px] text-amber-200 mb-1">
+                                            Similar / transferable
+                                        </div>
+                                        <ul className="list-disc list-inside text-[12px] space-y-1 text-neutral-200">
+                                            {result.related.map((r, i) => (
+                                                <li key={i}>
+                                                    <span className="font-medium text-white">{r.name}</span>
+                                                    {r.reason && <span> — {r.reason}</span>}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                )}
                             </div>
                         )}
 
