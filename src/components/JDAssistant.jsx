@@ -65,13 +65,12 @@ function normalizeResult(data) {
                 ? data.gapScore
                 : 0;
 
+    const eligibility = data.eligibility || {};
+
     return {
-        // 组件里一直用 result.score.xxx，这里统一转成该结构
         score: { overall, exact, related, gaps },
 
-        // 命中 / 缺失关键词
         matched: data.matched ?? data.matchedKeywords ?? [],
-        // related：如果后端直接给 related 就用它，否则用 strengths 填充成 {name, reason} 结构
         related:
             data.related ??
             (Array.isArray(data.strengths)
@@ -79,13 +78,19 @@ function normalizeResult(data) {
                     typeof s === 'string' ? { name: s, reason: '' } : s
                 )
                 : []),
-
         gaps: data.gaps ?? data.missingKeywords ?? [],
         summary: data.summary ?? '',
-        replyTemplate: data.replyTemplate ?? '',
+
+        fitLabel: data.fitLabel ?? '',
+        fitHeadline: data.fitHeadline ?? '',
+        fitVerdict: data.fitVerdict ?? '',
+        eligibility: {
+            visa: eligibility.visa || null,
+            experience: eligibility.experience || null,
+            location: eligibility.location || null,
+        },
     };
 }
-
 
 export default function JDChatWidget() {
     const [open, setOpen] = useState(false);
@@ -253,6 +258,63 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
 
                 {result && (
                     <div className="space-y-4">
+                        <div className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-3">
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="flex flex-col">
+          <span className="text-[11px] uppercase tracking-[0.13em] text-neutral-400">
+            Verdict
+          </span>
+                                    <span className="text-[14px] font-semibold text-neutral-50">
+            {result.fitHeadline || 'Overall fit assessment'}
+          </span>
+                                </div>
+                                <span
+                                    className={`
+            inline-flex items-center justify-center rounded-full px-2.5 py-1 text-[11px] font-semibold
+            ${
+                                        result.fitLabel?.startsWith('Strong')
+                                            ? 'bg-emerald-400 text-black'
+                                            : result.fitLabel?.startsWith('Good')
+                                                ? 'bg-cyan-400 text-black'
+                                                : result.fitLabel?.startsWith('Possible')
+                                                    ? 'bg-amber-400 text-black'
+                                                    : result.fitLabel?.startsWith('Not')
+                                                        ? 'bg-rose-500 text-white'
+                                                        : 'bg-neutral-500 text-white'
+                                    }
+          `}
+                                >
+          {result.fitLabel || 'Match level'}
+        </span>
+                            </div>
+
+                            <div className="mt-2 grid grid-cols-1 gap-1.5 text-[11px] text-neutral-200">
+                                {result.eligibility?.visa && (
+                                    <div>
+                                        <span className="font-semibold text-neutral-100">Visa / Work rights:&nbsp;</span>
+                                        <span>{result.eligibility.visa.note}</span>
+                                    </div>
+                                )}
+                                {result.eligibility?.experience && (
+                                    <div>
+                                        <span className="font-semibold text-neutral-100">Experience:&nbsp;</span>
+                                        <span>{result.eligibility.experience.note}</span>
+                                    </div>
+                                )}
+                                {result.eligibility?.location && (
+                                    <div>
+                                        <span className="font-semibold text-neutral-100">Location:&nbsp;</span>
+                                        <span>{result.eligibility.location.note}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {result.fitVerdict && (
+                                <div className="mt-2 text-[11px] text-neutral-300">
+                                    {result.fitVerdict}
+                                </div>
+                            )}
+                        </div>
                         <div className="flex items-center justify-between">
                             <div className="text-[15px] font-semibold tracking-tight text-neutral-50">
                                 Overall Match

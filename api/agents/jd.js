@@ -8,35 +8,55 @@ const MAX_BODY_SIZE = 1_000_000;
 
 function buildPrompt(jd, cvText) {
     return `
-You are a job-matching assistant for the Australian software engineering market.
+You are a job-matching assistant for the Australian software engineering job market.
 
 You will receive:
 1) A Job Description (JD)
 2) A candidate CV (plain text)
 
-Your task:
-- Compare the JD and the CV.
-- Focus on: required tech stack, domain experience, seniority, soft skills, location/visa if mentioned.
-- Evaluate how well this CV matches the JD.
-- Be realistic but encouraging.
+Your job:
+- First, decide if the candidate is ELIGIBLE based on hard requirements:
+  * visa / work rights
+  * years of experience
+  * location (Sydney / remote / other cities)
+- Then, estimate how strong the match is based on tech stack and responsibilities.
+- Be realistic but encouraging. Assume the candidate is the person in the CV text.
 
 You MUST respond with valid JSON ONLY.
 NO markdown, NO backticks, NO explanation, NO code fences.
-The output must START with "{" and END with "}".
-Use EXACTLY this structure:
+The output must START with "{" and END with "}" and use EXACTLY this structure:
 
 {
   "overallScore": 0-100,
   "exactMatchScore": 0-100,
   "relatedMatchScore": 0-100,
   "gapScore": 0-100,
+
+  "fitLabel": "Strong match | Good match | Possible match | Not a fit",
+  "fitHeadline": "Short 1-sentence verdict for a non-technical recruiter.",
+  "fitVerdict": "2-3 sentence explanation in simple English, focused on whether they should shortlist the candidate.",
+
+  "eligibility": {
+    "visa": {
+      "status": "OK | Issue | Unknown",
+      "note": "One short sentence. Example: 'JD requires PR, CV shows 485 Graduate Visa valid to 2027.'"
+    },
+    "experience": {
+      "status": "OK | Issue | Unknown",
+      "note": "Example: 'JD needs 5+ years, CV shows 3 years full-time backend experience.'"
+    },
+    "location": {
+      "status": "OK | Issue | Unknown",
+      "note": "Example: 'JD is Sydney-based, candidate is already in Sydney.'"
+    }
+  },
+
   "matchedKeywords": ["..."],
   "missingKeywords": ["..."],
-  "summary": "2-4 sentence summary, simple English.",
+  "summary": "2-4 sentence summary in simple English.",
   "strengths": ["..."],
   "gaps": ["..."],
-  "suggestions": ["..."],
-  "replyTemplate": "Short, polite email / cover letter style reply the candidate could send for this JD."
+  "suggestions": ["..."]
 }
 
 JD:
@@ -49,7 +69,6 @@ ${cvText}
 `;
 }
 
-// 读取 Node 原生 req body，限制最大体积
 async function readBody(req) {
     return new Promise((resolve, reject) => {
         let data = "";
