@@ -18,8 +18,8 @@ const Hero = () => {
                 {
                     y: 0,
                     opacity: 1,
-                    stagger: isMobile ? 0.12 : 0.18,
-                    duration: isMobile ? 0.8 : 1,
+                    stagger: isMobile ? 0.1 : 0.16,
+                    duration: isMobile ? 0.75 : 0.95,
                     ease: "power2.out",
                 }
             );
@@ -29,9 +29,9 @@ const Hero = () => {
                 {
                     y: 0,
                     opacity: 1,
-                    duration: isMobile ? 0.7 : 0.9,
+                    duration: isMobile ? 0.65 : 0.85,
                     ease: "power2.out",
-                    delay: isMobile ? 0.2 : 0.3,
+                    delay: isMobile ? 0.18 : 0.26,
                 }
             );
         });
@@ -47,7 +47,8 @@ const Hero = () => {
 
                 <div className="hero-layout">
                     {/* LEFT: Hero Content */}
-                    <header className="flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
+                    <header className="relative flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
+                        <div className="hero-glow" aria-hidden="true" />
                         <div className="flex flex-col gap-7">
                             <div className="hero-text">
                                 <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
