@@ -50,7 +50,7 @@ const AnimatedCounter = () => {
   bg-gradient-to-br from-zinc-900 via-slate-900 to-black
   rounded-2xl p-10 flex flex-col justify-center items-center
   shadow-[0_0_20px_rgba(0,0,0,0.4)] backdrop-blur-sm
-  transition-all duration-500 hover:scale-[1.05]
+  motion-rise hover:scale-[1.03]
   hover:shadow-[0_0_35px_rgba(56,189,248,0.25)]
   before:absolute before:inset-0 before:bg-gradient-to-tr before:from-cyan-500/10 before:to-transparent
   before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-700

@@ -39,29 +39,37 @@ const AppShowcase = () => {
   const projectRefs = useRef([]);
 
   useGSAP(() => {
-    gsap.fromTo(
-        sectionRef.current,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }
-    );
+    const ctx = gsap.context(() => {
+      const isMobile =
+          typeof window !== "undefined" &&
+          window.matchMedia("(max-width: 768px)").matches;
 
-    projectRefs.current.forEach((el, index) => {
       gsap.fromTo(
-          el,
-          { opacity: 0, y: 60 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: index * 0.3,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top bottom-=100",
-            },
-          }
+          sectionRef.current,
+          { opacity: 0, y: isMobile ? 24 : 40 },
+          { opacity: 1, y: 0, duration: isMobile ? 0.8 : 1, ease: "power2.out" }
       );
+
+      projectRefs.current.forEach((el, index) => {
+        gsap.fromTo(
+            el,
+            { opacity: 0, y: isMobile ? 28 : 48 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.7 : 0.9,
+              delay: index * (isMobile ? 0.16 : 0.22),
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 85%",
+              },
+            }
+        );
+      });
     });
+
+    return () => ctx.revert();
   }, []);
 
   return (

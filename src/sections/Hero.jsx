@@ -8,11 +8,34 @@ import AnimatedCounter from "../components/AnimatedCounter.jsx";
 
 const Hero = () => {
     useGSAP(() => {
-        gsap.fromTo(
-            ".hero-text h1",
-            {y: 50, opacity: 0},
-            {y: 0, opacity: 1, stagger: 0.2, duration: 1, ease: "power2.inOut"}
-        );
+        const isMobile =
+            typeof window !== "undefined" &&
+            window.matchMedia("(max-width: 768px)").matches;
+        const ctx = gsap.context(() => {
+            gsap.fromTo(
+                ".hero-text h1",
+                {y: isMobile ? 24 : 50, opacity: 0},
+                {
+                    y: 0,
+                    opacity: 1,
+                    stagger: isMobile ? 0.12 : 0.18,
+                    duration: isMobile ? 0.8 : 1,
+                    ease: "power2.out",
+                }
+            );
+            gsap.fromTo(
+                ".hero-desc, .hero-cta",
+                {y: isMobile ? 12 : 24, opacity: 0},
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: isMobile ? 0.7 : 0.9,
+                    ease: "power2.out",
+                    delay: isMobile ? 0.2 : 0.3,
+                }
+            );
+        });
+        return () => ctx.revert();
     });
     return (
         <>
@@ -54,7 +77,7 @@ const Hero = () => {
                             </div>
 
                             {/* Description */}
-                            <p className="text-white/80 md:text-xl max-w-2xl leading-relaxed mt-4">
+                            <p className="hero-desc text-white/80 md:text-xl max-w-2xl leading-relaxed mt-4">
                                 Hi, I’m{" "}
                                 <span
                                     className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400
@@ -77,7 +100,7 @@ const Hero = () => {
                             </p>
 
                             {/* Buttons */}
-                            <div className="flex flex-wrap gap-4 mt-6">
+                            <div className="hero-cta flex flex-wrap gap-4 mt-6">
                                 {/* View Work Button */}
                                 <Button
                                     text="See My Work"

@@ -6,21 +6,24 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TitleHeader = ({ title, sub }) => {
     useEffect(() => {
-        gsap.fromTo(
-            ".section-header",
-            { opacity: 0, y: 40, scale: 0.95 },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.9,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: ".section-header",
-                    start: "top 80%",
-                },
-            }
-        );
+        const headers = gsap.utils.toArray(".section-header");
+        headers.forEach((header) => {
+            gsap.fromTo(
+                header,
+                { opacity: 0, y: 28, scale: 0.98 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: header,
+                        start: "top 82%",
+                    },
+                }
+            );
+        });
     }, []);
 
     return (

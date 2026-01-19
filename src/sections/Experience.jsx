@@ -11,12 +11,13 @@ const Experience = () => {
     useGSAP(() => {
         const ctx = gsap.context(() => {
             const isMobile = window.innerWidth < 768;
+            const blocks = gsap.utils.toArray(".exp-block");
 
-            gsap.utils.toArray(".exp-block").forEach((block, i) => {
+            blocks.forEach((block, i) => {
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: block,
-                        start: "top 85%",
+                        start: "top 84%",
                         toggleActions: "play none none reverse",
                     },
                 });
@@ -24,29 +25,29 @@ const Experience = () => {
                 if (!isMobile) {
                     tl.from(block, {
                         opacity: 0,
-                        y: 80,
-                        scale: 0.96,
-                        duration: 1.2,
-                        ease: "expo.out",
-                        delay: i * 0.1,
+                        y: 56,
+                        scale: 0.98,
+                        duration: 0.9,
+                        ease: "power2.out",
+                        delay: i * 0.08,
                     }).from(
                         block.querySelector(".timeline-dot"),
                         {
                             opacity: 0,
-                            scale: 0.5,
-                            filter: "blur(6px)",
-                            duration: 0.8,
+                            scale: 0.7,
+                            filter: "blur(4px)",
+                            duration: 0.6,
                             ease: "power2.out",
                         },
-                        "-=0.6"
+                        "-=0.5"
                     );
                 } else {
                     gsap.from(block, {
                         opacity: 0,
-                        y: 40,
-                        duration: 0.8,
+                        y: 28,
+                        duration: 0.7,
                         ease: "power2.out",
-                        delay: i * 0.1,
+                        delay: i * 0.06,
                     });
                 }
             });

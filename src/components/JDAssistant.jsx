@@ -123,6 +123,7 @@ export default function JDChatWidget() {
     const [error, setError] = useState(null);
     const [showTeaser, setShowTeaser] = useState(true);
     const [cvText, setCvText] = useState('');
+    const [hasMounted, setHasMounted] = useState(false);
 
     const isMobile = useIsMobile();
 
@@ -130,6 +131,11 @@ export default function JDChatWidget() {
         const onKey = (e) => e.key === 'Escape' && setOpen(false);
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setHasMounted(true), 600);
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
@@ -440,9 +446,10 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 {/* Persistent teaser card (hideable) */}
                 {showTeaser && (
                     <div
-                        className="select-none max-w-[320px] rounded-2xl px-4 py-3 text-white
+                        className={`select-none max-w-[320px] rounded-2xl px-4 py-3 text-white
                        shadow-[0_6px_24px_rgba(0,0,0,.35)] border border-white/15
-                       bg-white/10 backdrop-blur-md transition-none hover:brightness-100"
+                       bg-white/10 backdrop-blur-md transition-all duration-500
+                       ${hasMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
                         style={{ marginRight: 2 }} // nudge closer to the edge
                     >
                         <div className="text-[13px] font-semibold tracking-tight">Recruiter shortcut</div>
@@ -482,9 +489,10 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                                 <PopoverTrigger asChild>
                                     <button
                                         aria-label="Open JD Quick Check"
-                                        className="inline-flex items-center justify-center rounded-full h-12 w-12
+                                        className={`inline-flex items-center justify-center rounded-full h-12 w-12
              bg-white text-black border border-neutral-200
-             shadow-[0_6px_24px_rgba(0,0,0,.25)] p-0 leading-none"
+             shadow-[0_6px_24px_rgba(0,0,0,.25)] p-0 leading-none
+             transition-all duration-300 ${open ? "scale-105" : "hover:scale-105"}`}
                                         style={{ marginRight: 0 }}
                                     >
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="block" aria-hidden="true">
@@ -514,9 +522,10 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                                 <SheetTrigger asChild>
                                     <button
                                         aria-label="Open JD Quick Check"
-                                        className="inline-flex items-center justify-center rounded-full h-12 w-12
+                                        className={`inline-flex items-center justify-center rounded-full h-12 w-12
              bg-white text-black border border-neutral-200
-             shadow-[0_6px_24px_rgba(0,0,0,.25)] p-0 leading-none"
+             shadow-[0_6px_24px_rgba(0,0,0,.25)] p-0 leading-none
+             transition-all duration-300 ${open ? "scale-105" : "hover:scale-105"}`}
                                     >
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="block" aria-hidden="true">
                                             <path d="M4 5h16v9a3 3 0 0 1-3 3H9l-5 4V5z" stroke="currentColor" strokeWidth="1.6" />

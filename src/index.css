@@ -38,6 +38,12 @@
     --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
     --sidebar-border: oklch(0.92 0.004 286.32);
     --sidebar-ring: oklch(0.705 0.015 286.067);
+    --motion-fast: 180ms;
+    --motion-medium: 360ms;
+    --motion-slow: 720ms;
+    --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 html,
@@ -71,6 +77,18 @@ section {
     }
     .flex-col-center {
         @apply flex flex-col justify-center items-center;
+    }
+    .motion-fade {
+        transition: opacity var(--motion-medium) var(--ease-soft);
+    }
+    .motion-rise {
+        transition: transform var(--motion-medium) var(--ease-standard),
+        opacity var(--motion-medium) var(--ease-standard);
+        will-change: transform, opacity;
+    }
+    .motion-scale {
+        transition: transform var(--motion-fast) var(--ease-emphasis);
+        will-change: transform;
     }
 }
 
