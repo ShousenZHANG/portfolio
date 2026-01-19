@@ -7,6 +7,7 @@ import TechStack from "./sections/TechStack.jsx";
 import Contact from "./sections/Contact.jsx";
 import Footer from "./sections/Footer.jsx";
 import JDAssistant from "./components/JDAssistant.jsx";
+import JDQuickCheck from "./sections/JDQuickCheck.jsx";
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
             <NavBar />
             <Hero />
             <ShowcaseSection />
+            <JDQuickCheck />
             <LogoSection />
             <Experience />
             <TechStack />
