@@ -133,12 +133,6 @@ export default function JDChatWidget() {
     }, []);
 
     useEffect(() => {
-        const onKey = (e) => e.key === 'Escape' && setOpen(false);
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, []);
-
-    useEffect(() => {
         let cancelled = false;
 
         const loadCv = async () => {
