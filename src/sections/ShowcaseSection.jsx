@@ -31,7 +31,7 @@ const fadeFix = `
 const projects = [
   {
     id: "jobflow-web",
-    title: "Jobflow - Job Search Command Center",
+    title: "Jobflow - End-to-End Job Hunt Workflow",
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
@@ -42,34 +42,36 @@ const projects = [
     ],
     description: (
       <>
-        Built a modern job-search command center for fast hiring workflows, combining a clean{" "}
-        <span className="text-cyan-300 font-semibold">Next.js dashboard</span> with a{" "}
-        <span className="text-emerald-300 font-semibold">resilient import pipeline</span> so users can fetch,
-        review, and track opportunities in one real-time workspace.
+        Built Jobflow as an <span className="text-cyan-300 font-semibold">end-to-end workflow</span> for modern job
+        hunts: discover roles, review fit quickly, and track every application stage in one place. The product
+        targets the core pain points called out in the README, including information overload, repetitive
+        screening, and fragmented progress tracking.
       </>
     ),
     details: (
       <>
-        Implemented dedupe, retries, tombstones, and safe upserts in the import flow, plus a two-pane
-        jobs workspace with markdown rendering and status tracking for{" "}
-        <span className="text-cyan-300 font-semibold">NEW / APPLIED / REJECTED</span>. Added
-        fetch progress visibility that persists across navigation for a smoother recruiter-style workflow.
+        Implemented the README fetch pipeline with parsing, exclusion rules, dedupe, upsert, stale-run handling,
+        and run summaries. On the product side, Jobflow ships a two-pane jobs workspace with markdown previews,
+        keyword highlighting, and lifecycle states like{" "}
+        <span className="text-cyan-300 font-semibold">NEW / APPLIED / REJECTED</span>, plus resume tailoring support.
       </>
     ),
     outcomes: [
-      "Reliable intake with robust filtering + dedupe and safe upserts",
-      "Two-pane review UX for fast scanning and deep detail reading",
-      "GitHub Actions + Python JobSpy integration for automated fetch runs",
+      "Jobs Workspace: split view + smooth review flow for high-volume role screening",
+      "Fetch Console: smart exclusions, flexible location/radius filters, and tracked fetch runs",
+      "Reliable import lifecycle with retries, stale-run guardrails, tombstones, and safe upserts",
+      "Auth + resume flow aligned with README (Google/GitHub sign-in and structured resume management)",
     ],
     tech: [
       "Next.js App Router",
-      "Prisma",
-      "PostgreSQL",
-      "NextAuth",
-      "Tailwind CSS",
-      "shadcn/ui",
+      "TypeScript",
+      "Prisma + PostgreSQL",
+      "NextAuth (Google/GitHub)",
+      "TanStack Query",
+      "Tailwind CSS + shadcn/ui",
+      "Python (JobSpy)",
+      "Vercel (Blob/Postgres)",
       "GitHub Actions",
-      "Python JobSpy",
     ],
     links: [
       { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
