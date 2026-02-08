@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -27,44 +27,181 @@ const fadeFix = `
   transition: opacity 0.8s ease-in-out, visibility 0s linear 0s !important;
 }
 `;
-if (typeof window !== "undefined" && !document.getElementById("swiper-fade-fix")) {
-  const style = document.createElement("style");
-  style.id = "swiper-fade-fix";
-  style.innerHTML = fadeFix;
-  document.head.appendChild(style);
-}
+
+const projects = [
+  {
+    id: "jobflow-web",
+    title: "Jobflow - Job Search Command Center",
+    desktopReverse: false,
+    autoplayDelay: 3800,
+    slides: [
+      { src: "/images/jobflow_landing.png", alt: "Jobflow landing page" },
+      { src: "/images/jobflow_fetch.png", alt: "Jobflow fetch workflow page" },
+      { src: "/images/jobflow_resume.png", alt: "Jobflow resume builder page" },
+      { src: "/images/jobflow_jobs.png", alt: "Jobflow jobs workspace page" },
+    ],
+    description: (
+      <>
+        Built a modern job-search command center for fast hiring workflows, combining a clean{" "}
+        <span className="text-cyan-300 font-semibold">Next.js dashboard</span> with a{" "}
+        <span className="text-emerald-300 font-semibold">resilient import pipeline</span> so users can fetch,
+        review, and track opportunities in one real-time workspace.
+      </>
+    ),
+    details: (
+      <>
+        Implemented dedupe, retries, tombstones, and safe upserts in the import flow, plus a two-pane
+        jobs workspace with markdown rendering and status tracking for{" "}
+        <span className="text-cyan-300 font-semibold">NEW / APPLIED / REJECTED</span>. Added
+        fetch progress visibility that persists across navigation for a smoother recruiter-style workflow.
+      </>
+    ),
+    outcomes: [
+      "Reliable intake with robust filtering + dedupe and safe upserts",
+      "Two-pane review UX for fast scanning and deep detail reading",
+      "GitHub Actions + Python JobSpy integration for automated fetch runs",
+    ],
+    tech: [
+      "Next.js App Router",
+      "Prisma",
+      "PostgreSQL",
+      "NextAuth",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "GitHub Actions",
+      "Python JobSpy",
+    ],
+    links: [
+      { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
+      { href: "https://jobflow-web.vercel.app", label: "Live Demo ->" },
+    ],
+  },
+  {
+    id: "contest-platform",
+    title: "Scalable Competition Platform",
+    desktopReverse: false,
+    autoplayDelay: 4000,
+    slides: [
+      { src: "/images/award_certificate.jpg", alt: "Coding Fest 2025 Runner-up Certificate" },
+      { src: "/images/award_team_photo.jpg", alt: "Coding Fest 2025 Award Ceremony Team Photo" },
+      { src: "/images/Competition_System_Architecture.png", alt: "System Architecture" },
+      { src: "/images/Pipeline.png", alt: "CI/CD Pipeline" },
+    ],
+    description: (
+      <>
+        Built a cloud-native competition system with{" "}
+        <span className="text-cyan-300 font-semibold">7+ Spring Cloud microservices</span>, enabling JWT SSO,
+        role-based access control, and async messaging via RabbitMQ. Deployed with Docker Compose for{" "}
+        <span className="text-emerald-300 font-semibold">95%+ CI/CD consistency</span> and 80% faster setup,
+        contributing over <span className="text-sky-300 font-semibold">40,000 lines of production code</span>.
+      </>
+    ),
+    highlight: {
+      title: "Runner-up - Best Project in AI for Education",
+      description:
+        "Recognized at Coding Fest 2025 (University of Sydney, School of Computer Science) for innovation and community impact.",
+      sponsor: "Sponsored by Atlassian and Flow Traders.",
+      cta: {
+        href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
+        label: "View Award Certificate ->",
+      },
+    },
+    links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub ->" }],
+  },
+  {
+    id: "enterprise-banking",
+    title: "Enterprise Banking Platform Framework",
+    desktopReverse: true,
+    autoplayDelay: 4200,
+    slides: [
+      { src: "/images/Insurance_SocketTool.png", alt: "Enterprise Insurance Socket Tool" },
+      { src: "/images/Insurance_Cloud.png", alt: "Insurance Cloud" },
+    ],
+    description: (
+      <>
+        Developed at <span className="text-cyan-300 font-semibold">Shanghai Newtouch Software Co., Ltd.</span>,
+        maintaining and extending a <span className="text-emerald-300 font-semibold">modular enterprise framework</span>{" "}
+        for insurance systems. Reduced development time by{" "}
+        <span className="text-cyan-300 font-semibold">30%</span> and improved reliability by{" "}
+        <span className="text-emerald-300 font-semibold">35%</span>.
+      </>
+    ),
+    details: (
+      <>
+        Built a <span className="text-cyan-300 font-semibold">socket-based batch processing tool</span> for
+        large-scale file transfer, reducing processing time by{" "}
+        <span className="text-emerald-300 font-semibold">35%</span> and blocking{" "}
+        <span className="text-cyan-300 font-semibold">99% unauthorized access</span> through header-based authentication.
+        Led migration from on-premise to cloud-native infrastructure with MinIO and Docker on Linux.
+      </>
+    ),
+    links: [],
+  },
+  {
+    id: "portfolio",
+    title: "Personal Developer Portfolio",
+    desktopReverse: false,
+    autoplayDelay: 4000,
+    slides: [{ src: "/images/portfolio_main.png", alt: "Portfolio Home Page" }],
+    description: (
+      <>
+        Designed and developed a <span className="text-cyan-300 font-semibold">modern responsive website</span> using{" "}
+        <span className="text-emerald-300 font-semibold">React</span>,{" "}
+        <span className="text-sky-300 font-semibold">Tailwind CSS</span>, and{" "}
+        <span className="text-cyan-300 font-semibold">JavaScript (ES6+)</span>. Implemented smooth animations,
+        dynamic routing, and reusable components following best front-end engineering practices.
+      </>
+    ),
+    details: (
+      <>
+        Integrated project showcases and contact automation for recruiters, deployed via{" "}
+        <span className="text-cyan-300 font-semibold">Vercel</span>. Highlights include responsive layouts,
+        modular component design, and CI/CD workflows for continuous updates.
+      </>
+    ),
+    links: [{ href: "https://github.com/ShousenZHANG/portfolio.git", label: "View on GitHub ->" }],
+  },
+];
 
 const AppShowcase = () => {
   const sectionRef = useRef(null);
   const projectRefs = useRef([]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || document.getElementById("swiper-fade-fix")) return;
+    const style = document.createElement("style");
+    style.id = "swiper-fade-fix";
+    style.innerHTML = fadeFix;
+    document.head.appendChild(style);
+  }, []);
+
   useGSAP(() => {
     const ctx = gsap.context(() => {
       const isMobile =
-          typeof window !== "undefined" &&
-          window.matchMedia("(max-width: 768px)").matches;
+        typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
 
       gsap.fromTo(
-          sectionRef.current,
-          { opacity: 0, y: isMobile ? 24 : 40 },
-          { opacity: 1, y: 0, duration: isMobile ? 0.8 : 1, ease: "power2.out" }
+        sectionRef.current,
+        { opacity: 0, y: isMobile ? 24 : 40 },
+        { opacity: 1, y: 0, duration: isMobile ? 0.8 : 1, ease: "power2.out" }
       );
 
       projectRefs.current.forEach((el, index) => {
+        if (!el) return;
         gsap.fromTo(
-            el,
-            { opacity: 0, y: isMobile ? 28 : 48 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: isMobile ? 0.7 : 0.9,
-              delay: index * (isMobile ? 0.16 : 0.22),
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: el,
-                start: "top 85%",
-              },
-            }
+          el,
+          { opacity: 0, y: isMobile ? 28 : 48 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: isMobile ? 0.7 : 0.9,
+            delay: index * (isMobile ? 0.16 : 0.22),
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+            },
+          }
         );
       });
     });
@@ -73,300 +210,115 @@ const AppShowcase = () => {
   }, []);
 
   return (
-      <section
-          id="projects"
-          ref={sectionRef}
-          className="relative py-24 px-5 md:px-20 bg-transparent"
-      >
-        {/* Section Title */}
-        <h1 className="text-center text-4xl md:text-5xl font-extrabold mb-16 bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-          Featured Projects
-        </h1>
+    <section id="projects" ref={sectionRef} className="relative py-24 px-5 md:px-20 bg-transparent">
+      <h1 className="text-center text-4xl md:text-5xl font-extrabold mb-16 bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+        Featured Projects
+      </h1>
 
-        <div className="flex flex-col gap-24">
-          {/* 🧠 Project 1 */}
+      <div className="flex flex-col gap-24">
+        {projects.map((project, index) => (
           <div
-              ref={(el) => (projectRefs.current[0] = el)}
-              className="flex flex-col lg:flex-row items-center gap-10"
+            key={project.id}
+            ref={(el) => (projectRefs.current[index] = el)}
+            className={`flex flex-col ${project.desktopReverse ? "lg:flex-row-reverse" : "lg:flex-row"} items-center gap-10`}
           >
-            {/* 🎞️ Left: Swiper with Award Certificate */}
             <div className="lg:w-1/2 w-full relative group">
               <div className="relative overflow-hidden rounded-2xl border border-cyan-400/10 shadow-[0_0_30px_rgba(56,189,248,0.2)] h-[400px] md:h-[480px]">
-                <Swiper
+                {project.slides.length > 0 ? (
+                  <Swiper
                     modules={[Autoplay, Pagination, EffectFade]}
-                    autoplay={{ delay: 4000, disableOnInteraction: false }}
+                    autoplay={{ delay: project.autoplayDelay || 4000, disableOnInteraction: false }}
                     pagination={{ clickable: true }}
                     effect="fade"
                     fadeEffect={{ crossFade: true }}
                     loop={true}
                     className="!bg-transparent h-full w-full"
-                >
-                  {[
-                    {
-                      src: "/images/award_certificate.jpg",
-                      alt: "Coding Fest 2025 Runner-up Certificate",
-                    },
-                    {
-                      src: "/images/award_team_photo.jpg",
-                      alt: "Coding Fest 2025 Award Ceremony – Team Photo",
-                    },
-                    {
-                      src: "/images/Competition_System_Architecture.png",
-                      alt: "System Architecture",
-                    },
-                    {
-                      src: "/images/Pipeline.png",
-                      alt: "CI/CD Pipeline",
-                    },
-                  ].map((img, i) => (
-                      <SwiperSlide key={i}>
+                  >
+                    {project.slides.map((img) => (
+                      <SwiperSlide key={`${project.id}-${img.src}`}>
                         <div className="flex items-center justify-center w-full h-full bg-black/10">
-                          <img
-                              src={img.src}
-                              alt={img.alt}
-                              className="max-w-full max-h-full object-contain"
-                          />
+                          <img src={img.src} alt={img.alt} className="max-w-full max-h-full object-contain" />
                         </div>
                       </SwiperSlide>
-                  ))}
-                </Swiper>
+                    ))}
+                  </Swiper>
+                ) : (
+                  <div className="h-full w-full bg-gradient-to-br from-[#0d1320] via-[#0a111d] to-[#07131a] p-6 md:p-8 flex flex-col justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">Latest Project</p>
+                      <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white">{project.title}</h3>
+                      <p className="mt-4 text-white/75 text-sm md:text-base leading-relaxed">
+                        Real-time hiring workflow with robust data intake and recruiter-ready job tracking.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tech.map((item) => (
+                        <span
+                          key={`${project.id}-tech-${item}`}
+                          className="px-3 py-1 rounded-full text-xs md:text-sm bg-cyan-400/10 border border-cyan-300/20 text-cyan-100"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* 📜 Right: Description + Award Info */}
-              <div className="lg:w-1/2 w-full text-center lg:text-left">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                      Scalable Competition Platform
-                  </h2>
-                  <p className="text-white/80 md:text-lg leading-relaxed mb-6">
-                      Built a cloud-native competition system with{" "}
-                      <span className="text-cyan-300 font-semibold">
-    7+ Spring Cloud microservices
-  </span>
-                      , enabling JWT SSO, role-based access control, and async messaging via RabbitMQ.
-                      Deployed with Docker Compose for{" "}
-                      <span className="text-emerald-300 font-semibold">
-    95%+ CI/CD consistency
-  </span>{" "}
-                      and 80% faster setup, contributing over{" "}
-                      <span className="text-sky-300 font-semibold">
-    40,000 lines of production-level code
-  </span>{" "}
-                      across backend and integration modules.
-                  </p>
-                  {/* 🏆 Award Section */}
-                  <div
-                      className="bg-gradient-to-r from-cyan-400/10 via-sky-400/10 to-emerald-400/10 border border-cyan-400/20 rounded-xl p-5 shadow-[0_0_25px_rgba(56,189,248,0.25)] mb-6 transition-all duration-500 hover:shadow-[0_0_40px_rgba(56,189,248,0.45)]">
-                      <div className="flex items-center gap-3 mb-2">
-                          <span className="text-2xl">🏆</span>
-                          <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
-                              Runner-up – Best Project in AI for Education
-                          </h3>
-                      </div>
-                      <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                          Recognized at{" "}
-                          <span className="text-cyan-300 font-semibold">Coding Fest 2025</span>{" "}
-                          (University of Sydney, School of Computer Science) for excellence in{" "}
-                          <span className="text-emerald-300 font-semibold">
-      innovation and community impact.
-    </span>
-                      </p>
-                      <p className="text-white/70 text-sm md:text-base mt-2">
-                          Sponsored by{" "}
-                          <span className="text-[#2684FF] font-semibold">Atlassian</span>{" "}
-                          and{" "}
-                          <span className="text-[#E32B23] font-semibold">Flow Traders</span>.
-                      </p>
+            <div className="lg:w-1/2 w-full text-center lg:text-left">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{project.title}</h2>
+              <p className="text-white/80 md:text-lg leading-relaxed mb-6">{project.description}</p>
+              {project.details && <p className="text-white/80 md:text-lg leading-relaxed mb-6">{project.details}</p>}
 
-                      {/* 🔗 View Certificate Button */}
-                      <a
-                          href="https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
-                      >
-                          View Award Certificate →
-                      </a>
-                  </div>
+              {project.outcomes?.length > 0 && (
+                <div className="mb-6 space-y-3">
+                  {project.outcomes.map((outcome) => (
+                    <p key={`${project.id}-outcome-${outcome}`} className="project-outcome text-white/80 text-sm md:text-base">
+                      {outcome}
+                    </p>
+                  ))}
+                </div>
+              )}
 
-                  {/* 🔗 GitHub Button */}
+              {project.highlight && (
+                <div className="bg-gradient-to-r from-cyan-400/10 via-sky-400/10 to-emerald-400/10 border border-cyan-400/20 rounded-xl p-5 shadow-[0_0_25px_rgba(56,189,248,0.25)] mb-6 transition-all duration-500 hover:shadow-[0_0_40px_rgba(56,189,248,0.45)]">
+                  <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
+                    {project.highlight.title}
+                  </h3>
+                  <p className="text-white/80 text-sm md:text-base leading-relaxed mt-2">{project.highlight.description}</p>
+                  <p className="text-white/70 text-sm md:text-base mt-2">{project.highlight.sponsor}</p>
                   <a
-                      href="https://github.com/ShousenZHANG/project-contest-platform.git"
+                    href={project.highlight.cta.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
+                  >
+                    {project.highlight.cta.label}
+                  </a>
+                </div>
+              )}
+
+              {project.links.length > 0 && (
+                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                  {project.links.map((link) => (
+                    <a
+                      key={`${project.id}-${link.href}`}
+                      href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block mt-2 px-6 py-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
-                  >
-                      View on GitHub →
-                  </a>
-              </div>
-          </div>
-
-            {/* ⚙️ Project 2 */}
-            <div
-                ref={(el) => (projectRefs.current[1] = el)}
-                className="flex flex-col-reverse lg:flex-row items-center gap-10"
-            >
-                <div className="lg:w-1/2 w-full text-center lg:text-left">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                        Enterprise Banking Platform Framework
-                    </h2>
-
-                    <p className="text-white/80 md:text-lg leading-relaxed mb-6">
-                        Developed at{" "}
-                        <span className="text-cyan-300 font-semibold">
-        Shanghai Newtouch Software Co., Ltd.
-      </span>
-                        , maintaining and extending a{" "}
-                        <span className="text-emerald-300 font-semibold">
-        modular enterprise framework
-      </span>{" "}
-                        for insurance systems to enhance scalability and flexibility.
-                        Reduced development time by{" "}
-                        <span className="text-cyan-300 font-semibold">30%</span> and improved
-                        reliability by{" "}
-                        <span className="text-emerald-300 font-semibold">35%</span>.
-                    </p>
-
-                    <p className="text-white/80 md:text-lg leading-relaxed">
-                        Built a{" "}
-                        <span className="text-cyan-300 font-semibold">
-        socket-based batch processing tool
-      </span>{" "}
-                        for large-scale file transfer, reducing processing time by{" "}
-                        <span className="text-emerald-300 font-semibold">35%</span> and blocking{" "}
-                        <span className="text-cyan-300 font-semibold">
-        99% unauthorized access
-      </span>{" "}
-                        through header-based authentication.
-                        Led the{" "}
-                        <span className="text-emerald-300 font-semibold">
-        migration from on-premise to cloud-native infrastructure
-      </span>
-                        , integrating{" "}
-                        <span className="text-cyan-300 font-semibold">MinIO object storage</span>{" "}
-                        to offload database load and deploying{" "}
-                        <span className="text-emerald-300 font-semibold">
-        Docker containers on Linux
-      </span>{" "}
-                        to automate and optimize system operations.
-                    </p>
-                </div>
-
-                <div className="lg:w-1/2 w-full relative group">
-                    <div className="relative overflow-hidden rounded-2xl border border-cyan-400/10 shadow-[0_0_30px_rgba(56,189,248,0.2)] h-[400px] md:h-[480px]">
-                        <Swiper
-                            modules={[Autoplay, Pagination, EffectFade]}
-                            autoplay={{ delay: 4200, disableOnInteraction: false }}
-                            pagination={{ clickable: true }}
-                            effect="fade"
-                            fadeEffect={{ crossFade: true }}
-                            loop={true}
-                            className="!bg-transparent h-full w-full"
-                        >
-                            {[
-                                {
-                                    src: "/images/Insurance_SocketTool.png",
-                                    alt: "Enterprise Insurance SocketTool",
-                                },
-                                {
-                                    src: "/images/Insurance_Cloud.png",
-                                    alt: "Insurance Cloud",
-                                },
-                            ].map((img, i) => (
-                                <SwiperSlide key={i}>
-                                    <div className="flex items-center justify-center w-full h-full bg-black/10">
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className="max-w-full max-h-full object-contain"
-                                        />
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
-                    </div>
-                </div>
-            </div>
-
-            {/* 💼 Project 3 */}
-            <div
-                ref={(el) => (projectRefs.current[2] = el)}
-                className="flex flex-col lg:flex-row items-center gap-10"
-            >
-                {/* Image Slider */}
-                <div className="lg:w-1/2 w-full relative group">
-                    <div className="relative overflow-hidden rounded-2xl border border-cyan-400/10 shadow-[0_0_30px_rgba(56,189,248,0.2)] h-[400px] md:h-[480px]">
-                        <Swiper
-                            modules={[Autoplay, Pagination, EffectFade]}
-                            autoplay={{ delay: 4000, disableOnInteraction: false }}
-                            pagination={{ clickable: true }}
-                            effect="fade"
-                            fadeEffect={{ crossFade: true }}
-                            loop={true}
-                            className="!bg-transparent h-full w-full"
-                        >
-                            {[
-                                {
-                                    src: "/images/portfolio_main.png",
-                                    alt: "Portfolio Home Page",
-                                },
-                            ].map((img, i) => (
-                                <SwiperSlide key={i}>
-                                    <div className="flex items-center justify-center w-full h-full bg-black/10">
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className="max-w-full max-h-full object-contain"
-                                        />
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
-                    </div>
-                </div>
-
-                {/* Text Section */}
-                <div className="lg:w-1/2 w-full text-center lg:text-left">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                        Personal Developer Portfolio
-                    </h2>
-
-                    <p className="text-white/80 md:text-lg leading-relaxed mb-6">
-                        Designed and developed a{" "}
-                        <span className="text-cyan-300 font-semibold">modern responsive website</span>{" "}
-                        using{" "}
-                        <span className="text-emerald-300 font-semibold">React</span>,{" "}
-                        <span className="text-sky-300 font-semibold">Tailwind CSS</span>, and{" "}
-                        <span className="text-cyan-300 font-semibold">JavaScript (ES6+)</span>.
-                        Implemented smooth animations, dynamic routing, and reusable components
-                        following{" "}
-                        <span className="text-emerald-300 font-semibold">best front-end engineering practices</span>.
-                        Integrated project showcases and contact automation for recruiters, deployed via{" "}
-                        <span className="text-cyan-300 font-semibold">Vercel</span>.
-                    </p>
-
-                    <p className="text-white/70 md:text-base leading-relaxed mb-4">
-                        Highlights include responsive layouts, modular component design, state
-                        management, and integration with{" "}
-                        <span className="text-emerald-300 font-semibold">GitHub Pages</span> and{" "}
-                        <span className="text-cyan-300 font-semibold">CI/CD workflows</span> for
-                        continuous updates.
-                    </p>
-
-                    <a
-                        href="https://github.com/ShousenZHANG/portfolio.git"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block mt-2 px-6 py-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
                     >
-                        View on GitHub →
+                      {link.label}
                     </a>
+                  ))}
                 </div>
+              )}
             </div>
-
-
-        </div>
-      </section>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 
