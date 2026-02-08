@@ -69,6 +69,16 @@ function normalizeResult(data) {
 
     return {
         score: { overall, exact, related, gaps },
+        confidenceScore:
+            typeof data.confidenceScore === 'number'
+                ? data.confidenceScore
+                : typeof score.confidence === 'number'
+                    ? score.confidence
+                    : 0,
+        dimensionScores: data.dimensionScores || null,
+        evidencePairs: Array.isArray(data.evidencePairs) ? data.evidencePairs : [],
+        riskFlags: Array.isArray(data.riskFlags) ? data.riskFlags : [],
+        suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
 
         matched: data.matched ?? data.matchedKeywords ?? [],
         related:
@@ -360,6 +370,19 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
              [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-indigo-500"
                         />
 
+                        <div className="text-[11px] text-neutral-300">
+                            Exact {Math.round(result.score.exact)}% · Related {Math.round(result.score.related)}% · Gap {Math.round(result.score.gaps)}% · Confidence {Math.round(result.confidenceScore)}%
+                        </div>
+
+                        {result.dimensionScores && (
+                            <div className="grid grid-cols-2 gap-1 text-[10.5px] text-neutral-300">
+                                <span>Tech: {Math.round(result.dimensionScores.techStack)}%</span>
+                                <span>Resp: {Math.round(result.dimensionScores.responsibilities)}%</span>
+                                <span>Domain: {Math.round(result.dimensionScores.domainContext)}%</span>
+                                <span>Seniority: {Math.round(result.dimensionScores.seniority)}%</span>
+                            </div>
+                        )}
+
                         {(result.matched?.length || result.related?.length) && (
                             <div>
                                 <div className="text-xs font-semibold mb-1 text-neutral-100">
@@ -422,6 +445,17 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                                     </Badge>
                                 ))}
                                 </div>
+                            </div>
+                        )}
+
+                        {!!result.riskFlags?.length && (
+                            <div className="rounded-lg border border-amber-300/30 bg-amber-400/10 px-3 py-2">
+                                <div className="text-[11px] font-semibold text-amber-200 mb-1">Risk flags</div>
+                                <ul className="list-disc list-inside text-[11px] text-amber-100 space-y-1">
+                                    {result.riskFlags.slice(0, 3).map((flag, i) => (
+                                        <li key={`${flag}-${i}`}>{flag}</li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
                     </div>

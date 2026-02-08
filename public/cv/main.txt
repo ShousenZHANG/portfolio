@@ -1,5 +1,5 @@
-Eddy ZHANG
-Full-Stack / Backend Software Engineer – Sydney, NSW, Australia
+﻿Eddy ZHANG
+Full-Stack / Backend Software Engineer - Sydney, NSW, Australia
 485 Graduate Work Visa (full work rights, valid until 4 Sep 2027)
 
 CONTACT
@@ -13,45 +13,60 @@ SUMMARY
 Skilled Software Engineer with 3+ years of full-time industry experience (5+ years total development).
 Strong focus on backend and full-stack development with Java, Spring Boot, REST APIs, SQL/NoSQL, and
 modern frontend (React + Tailwind). Experienced in building scalable systems, improving performance,
-and shipping production features in Agile teams. Looking for Backend or Full-Stack Developer roles
-where I can design, build, and optimise reliable services and platforms.
+and shipping production features in Agile teams. Also experienced in serverless computing, cloud architecture,
+and CI/CD automation to improve release reliability and delivery speed. Looking for Backend or Full-Stack
+Developer roles where I can design, build, and optimise reliable services and platforms.
 
 PROFESSIONAL EXPERIENCE
 
-Shanghai Newtouch Software Co., Ltd. – Backend Developer
-Shanghai, China | Aug 2022 – Aug 2023
+Shanghai Newtouch Software Co., Ltd. - Backend Developer (Full-Stack Scope)
+Shanghai, China | Aug 2022 - Aug 2023
 
 - Built and maintained Java / Spring Boot REST APIs in a 20-person Agile team for an insurance technology platform.
+- Implemented unit testing with JUnit to improve code reliability and reduce production regressions.
 - Shipped 15+ production REST endpoints with clear input validation, duplicate-request guards, and clearer
   error messages, cutting customer-facing errors by ~20% and saving about 2 hours of engineer time per week.
 - Designed and implemented a socket-based Java NIO file-transfer tool for loading/unloading bulk data, with
   header-based identity checks and role/department permissions. Used by 7+ squads (40+ engineers), saving
-  6–8 hours per month per squad.
-- Improved p95 query latency from ~900 ms to ~550 ms (35–40% faster) by creating appropriate indexes,
+  6-8 hours per month per squad.
+- Improved p95 query latency from ~900 ms to ~550 ms (35-40% faster) by creating appropriate indexes,
   splitting large tables, and automating weekly Oracle stored-procedure-based sharding once data volumes
   exceeded 10M+ rows.
 - Migrated the file-transfer workflow to MinIO object storage with chunked, checksum-verified uploads and
-  Docker-based deployment on Linux, delivering ~90% fewer re-sends, 25–30% faster transfers, and ~70% quicker
+  Docker-based deployment on Linux, delivering ~90% fewer re-sends, 25-30% faster transfers, and ~70% quicker
   rollouts for new environments.
+- Delivered repeatable releases by containerizing services with Docker and supporting CI/CD pipelines on Linux.
 
-ZHONGGE Network Co., Ltd. – Software Engineer
-Suzhou, China | Jun 2020 – Jul 2022
+ZHONGGE Network Co., Ltd. - Software Engineer
+Suzhou, China | Jun 2020 - Jul 2022
 
 - Delivered 35+ Java / Spring Boot REST endpoints (CRUD and business APIs) with front-end integrations for
   web platforms.
+- Built and maintained technical API documentation with Swagger and Postman to support onboarding and cross-team integration.
 - Collaborated with QA and product to turn requirements into clear acceptance criteria, test checklists, and
   example payloads. Added more robust input checks and better Swagger examples, cutting integration issues
   by ~15%.
-- Reduced average bug-fix time by ~25% (e.g. 2 days → 1.5 days) and improved first-pass acceptance rate by
-  10–12 percentage points by improving API clarity, logs, and test coverage.
+- Reduced average bug-fix time by ~25% (e.g. 2 days -> 1.5 days) and improved first-pass acceptance rate by
+  10-12 percentage points by improving API clarity, logs, and test coverage.
 - Kept MySQL-based APIs stable at peak by adding pagination, simple filters, and indexes on hot fields.
-  Heavy queries and timeouts dropped, and the system handled 10–15% more peak traffic with better stability.
+  Heavy queries and timeouts dropped, and the system handled 10-15% more peak traffic with better stability.
 - Worked across the stack on smaller tasks: debugging production issues, adjusting queries, and improving
   monitoring and logging.
 
 PROJECTS
 
-Capstone – Scalable Competition Platform (UNSW) | Source code on GitHub
+Jobflow - Job Search Automation Platform
+Next.js, TypeScript, Prisma, PostgreSQL, Azure | GitHub | Live Demo
+Sydney, Australia | Jul 2025 - Present
+
+- Built and shipped a production-grade job-tracking platform with Next.js, TypeScript, Prisma, and PostgreSQL,
+  delivering end-to-end features from data modeling to deployment.
+- Packaged reusable AI workflow assets using Cursor and Codex into a downloadable Skill Pack (rules + prompt
+  templates + schemas), improving prompt consistency and reducing manual tailoring effort.
+- Implemented production-grade CI/CD workflows with GitHub Actions and Vercel, including automated checks,
+  build validation, and release-safe deployment practices.
+
+Capstone - Scalable Competition Platform (UNSW) | Source code on GitHub
 Apr 2025
 
 - Designed and implemented a scalable competition platform using 7+ Spring Cloud microservices (User,
@@ -61,9 +76,10 @@ Apr 2025
   access (organiser / participant / judge), improving security and simplifying login flows.
 - Integrated MinIO for object storage of submissions, avatars, and media files, and RabbitMQ for background
   jobs and asynchronous notifications (email events, submission events, registration events).
+- Delivered a responsive React web UI using HTML5/CSS3 and JavaScript to support end-to-end user flows.
 - Built CI/CD with Jenkins + Docker Compose to produce immutable images and one-command environments,
   reducing environment setup time by ~80% and achieving 95%+ environment consistency across the team.
-- Result: project selected as runner-up at Coding Fest 2025 in the “Best Project in AI for Education” category.
+- Result: project selected as runner-up at Coding Fest 2025 in the "Best Project in AI for Education" category.
 
 Personal Portfolio Website
 Oct 2025
@@ -77,14 +93,14 @@ Oct 2025
 
 EDUCATION
 
-University of New South Wales (UNSW) – Master of Information Technology
-Sydney, Australia | Sep 2023 – Jun 2025
+University of New South Wales (UNSW) - Master of Information Technology
+Sydney, Australia | Sep 2023 - Jun 2025
 - WAM 82.4 / 100, Excellence Honours.
 - Coursework and projects in distributed systems, data services engineering, software architecture, cloud,
   and AI-related topics.
 
-Jiangsu University of Science and Technology – Bachelor of Engineering
-Jiangsu, China | Sep 2016 – Jun 2020
+Jiangsu University of Science and Technology - Bachelor of Engineering
+Jiangsu, China | Sep 2016 - Jun 2020
 
 SKILLS
 
@@ -109,6 +125,11 @@ Databases / Cache / ORM:
 Collaboration / Tools:
 - Jira, Confluence, Postman, Swagger / OpenAPI, Agile / Scrum, code reviews,
   documentation and knowledge sharing
+
+Additional skills from latest resume:
+- Serverless computing (practical exposure), cloud architecture
+- Kafka (streaming concepts)
+- Kubernetes, Terraform (exposure)
 
 ROLE INTERESTS
 - Graduate / Junior / Mid-Level Software Engineer
