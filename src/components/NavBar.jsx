@@ -1,58 +1,111 @@
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useRef } from "react";
 import { navLinks } from "../constants";
 
 const NavBar = () => {
-  // track if the user has scrolled down the page
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoverIdx, setHoverIdx] = useState(-1);
+  const pillRef = useRef(null);
+  const linkRefs = useRef([]);
 
   useEffect(() => {
-    // create an event listener for when the user scrolls
-    const handleScroll = () => {
-      // check if the user has scrolled down at least 10px
-      // if so, set the state to true
-      const isScrolled = window.scrollY > 10;
-      setScrolled(isScrolled);
-    };
-
-    // add the event listener to the window
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // cleanup the event listener when the component is unmounted
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /* ── sliding pill indicator ── */
+  useEffect(() => {
+    const pill = pillRef.current;
+    if (!pill) return;
+    if (hoverIdx < 0 || !linkRefs.current[hoverIdx]) {
+      pill.style.opacity = "0";
+      return;
+    }
+    const el = linkRefs.current[hoverIdx];
+    const parent = el.parentElement;
+    const left = el.offsetLeft - parent.offsetLeft;
+    const width = el.offsetWidth;
+    pill.style.opacity = "1";
+    pill.style.transform = `translateX(${left}px)`;
+    pill.style.width = `${width}px`;
+  }, [hoverIdx]);
+
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
-      <div className="inner">
+    <header
+      className={`nav-float ${scrolled ? "nav-float--scrolled" : ""}`}
+    >
+      {/* ── pill container ── */}
+      <div className="nav-pill">
+        {/* Logo */}
         <a
-            href="#hero"
-            className="logo text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 text-2xl font-extrabold tracking-tight hover:opacity-90 transition"
+          href="#hero"
+          className="nav-logo"
         >
           Eddy Zhang
         </a>
 
-        <nav className="desktop">
-          <ul>
-            {navLinks.map(({link, name}) => (
-                <li key={name} className="group">
-                  <a href={link}>
-                    <span>{name}</span>
-                    <span className="underline"/>
-                  </a>
-                </li>
-            ))}
-          </ul>
+        {/* Desktop links */}
+        <nav
+          className="nav-links"
+          onMouseLeave={() => setHoverIdx(-1)}
+        >
+          {/* sliding pill highlight */}
+          <span ref={pillRef} className="nav-indicator" />
+
+          {navLinks.map(({ link, name }, i) => (
+            <a
+              key={name}
+              href={link}
+              ref={(el) => (linkRefs.current[i] = el)}
+              onMouseEnter={() => setHoverIdx(i)}
+              className="nav-link"
+            >
+              {name}
+            </a>
+          ))}
         </nav>
 
-        <a href="#contact" className="contact-btn group">
-          <div className="inner">
-            <span>Contact me</span>
-          </div>
+        {/* CTA */}
+        <a href="#contact" className="nav-cta">
+          <span className="nav-cta-glow" />
+          <span className="relative z-10">Contact me</span>
+        </a>
+
+        {/* Mobile hamburger */}
+        <button
+          className="nav-burger"
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label="Toggle menu"
+        >
+          <span className={`nav-burger-line ${mobileOpen ? "rotate-45 translate-y-[5px]" : ""}`} />
+          <span className={`nav-burger-line ${mobileOpen ? "opacity-0 scale-x-0" : ""}`} />
+          <span className={`nav-burger-line ${mobileOpen ? "-rotate-45 -translate-y-[5px]" : ""}`} />
+        </button>
+      </div>
+
+      {/* ── Mobile menu ── */}
+      <div className={`nav-mobile ${mobileOpen ? "nav-mobile--open" : ""}`}>
+        {navLinks.map(({ link, name }) => (
+          <a
+            key={name}
+            href={link}
+            className="nav-mobile-link"
+            onClick={() => setMobileOpen(false)}
+          >
+            {name}
+          </a>
+        ))}
+        <a
+          href="#contact"
+          className="nav-mobile-cta"
+          onClick={() => setMobileOpen(false)}
+        >
+          Contact me
         </a>
       </div>
     </header>
   );
-}
+};
 
 export default NavBar;
