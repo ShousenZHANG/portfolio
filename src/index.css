@@ -203,72 +203,59 @@ section {
         }
     }
 
-    /* ═══════════════ Floating Pill NavBar ═══════════════ */
-    .nav-float {
-        @apply fixed top-0 left-0 right-0 z-[100] flex justify-center;
-        padding: 14px 16px 0;
-        pointer-events: none;
-        transition: padding 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    /* ═══════════════ Full-Width Glass NavBar ═══════════════ */
+    .nav-bar {
+        @apply fixed top-0 left-0 right-0 z-[100];
+        background: transparent;
+        border-bottom: 1px solid transparent;
+        transition: background 0.35s ease,
+                    border-color 0.35s ease,
+                    box-shadow 0.35s ease;
     }
-    .nav-float--scrolled {
-        padding-top: 10px;
+    .nav-bar--scrolled {
+        background: rgba(3, 7, 18, 0.75);
+        border-bottom-color: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(20px) saturate(1.5);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
-    /* ── The pill itself ── */
-    .nav-pill {
-        @apply flex items-center gap-1 px-3 py-2 md:px-5 md:py-2.5;
-        pointer-events: auto;
-        border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(10, 10, 14, 0.65);
-        backdrop-filter: blur(24px) saturate(1.6);
-        -webkit-backdrop-filter: blur(24px) saturate(1.6);
-        box-shadow:
-            0 2px 20px rgba(0, 0, 0, 0.45),
-            inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
-        transition: border-color 0.3s ease,
-                    box-shadow 0.3s ease,
-                    background 0.3s ease;
+    .nav-inner {
+        @apply mx-auto flex items-center justify-between;
+        max-width: 1280px;
+        padding: 16px 24px;
     }
-    .nav-float--scrolled .nav-pill {
-        border-color: rgba(255, 255, 255, 0.12);
-        background: rgba(10, 10, 14, 0.82);
-        box-shadow:
-            0 4px 30px rgba(0, 0, 0, 0.55),
-            0 0 40px rgba(56, 189, 248, 0.04),
-            inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+    @media (min-width: 768px) {
+        .nav-inner { padding: 18px 48px; }
     }
 
     /* ── Logo ── */
     .nav-logo {
-        @apply text-base md:text-lg font-bold tracking-tight px-3 py-1 shrink-0;
+        @apply text-xl md:text-2xl font-extrabold tracking-tight shrink-0;
         background: linear-gradient(135deg, #38bdf8, #22d3ee, #34d399);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         transition: opacity 0.2s ease;
     }
-    .nav-logo:hover {
-        opacity: 0.85;
-    }
+    .nav-logo:hover { opacity: 0.8; }
 
     /* ── Desktop links ── */
     .nav-links {
-        @apply hidden lg:flex items-center relative mx-2;
-        gap: 2px;
+        @apply hidden lg:flex items-center relative;
+        gap: 4px;
     }
     .nav-link {
-        @apply relative text-sm font-medium text-white/70 px-4 py-1.5 rounded-full z-10;
+        @apply relative text-[15px] font-medium text-white/65 px-5 py-2 rounded-lg z-10;
         transition: color 0.25s ease;
     }
     .nav-link:hover {
         color: rgba(255, 255, 255, 0.95);
     }
-    /* sliding pill indicator */
     .nav-indicator {
-        @apply absolute top-0 h-full rounded-full pointer-events-none;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        @apply absolute top-0 h-full rounded-lg pointer-events-none;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         opacity: 0;
         transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
                     width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
@@ -277,19 +264,19 @@ section {
 
     /* ── CTA button ── */
     .nav-cta {
-        @apply hidden lg:flex relative items-center px-4 py-1.5 ml-1 rounded-full
-               text-sm font-semibold overflow-hidden cursor-pointer shrink-0;
+        @apply hidden lg:flex relative items-center px-5 py-2 rounded-lg
+               text-[15px] font-semibold overflow-hidden cursor-pointer shrink-0;
         background: linear-gradient(135deg, #38bdf8, #22d3ee, #34d399);
         background-size: 200% 200%;
         animation: hero-btn-gradient 4s ease infinite;
         color: #000;
         transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
                     box-shadow 0.25s ease;
-        box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
     }
     .nav-cta:hover {
-        transform: scale(1.04);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+        transform: translateY(-1px);
+        box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
     }
     .nav-cta-glow {
         @apply absolute inset-0;
@@ -300,47 +287,54 @@ section {
 
     /* ── Mobile burger ── */
     .nav-burger {
-        @apply flex flex-col justify-center items-center gap-[5px] lg:hidden w-9 h-9 cursor-pointer;
+        @apply flex flex-col justify-center items-center gap-[6px] lg:hidden w-10 h-10 rounded-lg cursor-pointer;
+        transition: background 0.2s ease;
+    }
+    .nav-burger:hover {
+        background: rgba(255, 255, 255, 0.06);
     }
     .nav-burger-line {
-        @apply block w-5 h-[1.5px] bg-white/80 rounded-full;
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        @apply block w-[22px] h-[2px] bg-white/80 rounded-full;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.25s ease;
     }
 
-    /* ── Mobile dropdown ── */
-    .nav-mobile {
-        @apply lg:hidden flex flex-col items-center gap-2 px-4 overflow-hidden;
-        pointer-events: auto;
-        max-height: 0;
+    /* ── Mobile overlay ── */
+    .nav-overlay {
+        @apply fixed inset-0 z-[99] lg:hidden;
+        background: rgba(0, 0, 0, 0.5);
         opacity: 0;
-        margin-top: 8px;
-        border-radius: 20px;
-        border: 1px solid transparent;
-        background: rgba(10, 10, 14, 0.85);
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .nav-overlay--open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* ── Mobile slide-down sheet ── */
+    .nav-sheet {
+        @apply fixed top-0 left-0 right-0 z-[101] lg:hidden flex flex-col px-6 pt-24 pb-8 gap-2;
+        background: rgba(3, 7, 18, 0.96);
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
-        transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                    opacity 0.3s ease,
-                    padding 0.3s ease,
-                    border-color 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .nav-mobile--open {
-        max-height: 320px;
-        opacity: 1;
-        padding: 16px;
-        border-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    .nav-sheet--open {
+        transform: translateY(0);
     }
-    .nav-mobile-link {
-        @apply w-full text-center text-sm font-medium text-white/70 py-2.5 rounded-xl;
+    .nav-sheet-link {
+        @apply text-lg font-medium text-white/75 py-3.5 px-4 rounded-xl text-center;
         transition: background 0.2s ease, color 0.2s ease;
     }
-    .nav-mobile-link:hover {
+    .nav-sheet-link:hover, .nav-sheet-link:active {
         background: rgba(255, 255, 255, 0.06);
         color: #fff;
     }
-    .nav-mobile-cta {
-        @apply w-full text-center text-sm font-semibold py-2.5 rounded-xl mt-1;
+    .nav-sheet-cta {
+        @apply text-lg font-semibold py-3.5 px-4 rounded-xl text-center mt-2;
         background: linear-gradient(135deg, #38bdf8, #22d3ee, #34d399);
         color: #000;
     }

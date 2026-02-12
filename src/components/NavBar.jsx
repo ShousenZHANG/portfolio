@@ -14,7 +14,16 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* ── sliding pill indicator ── */
+  /* close mobile menu on resize to desktop */
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false);
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* sliding pill indicator */
   useEffect(() => {
     const pill = pillRef.current;
     if (!pill) return;
@@ -31,28 +40,26 @@ const NavBar = () => {
     pill.style.width = `${width}px`;
   }, [hoverIdx]);
 
+  /* lock body scroll when mobile menu open */
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   return (
-    <header
-      className={`nav-float ${scrolled ? "nav-float--scrolled" : ""}`}
-    >
-      {/* ── pill container ── */}
-      <div className="nav-pill">
+    <header className={`nav-bar ${scrolled ? "nav-bar--scrolled" : ""}`}>
+      <div className="nav-inner">
         {/* Logo */}
-        <a
-          href="#hero"
-          className="nav-logo"
-        >
+        <a href="#hero" className="nav-logo">
           Eddy Zhang
         </a>
 
-        {/* Desktop links */}
+        {/* Desktop nav */}
         <nav
           className="nav-links"
           onMouseLeave={() => setHoverIdx(-1)}
         >
-          {/* sliding pill highlight */}
           <span ref={pillRef} className="nav-indicator" />
-
           {navLinks.map(({ link, name }, i) => (
             <a
               key={name}
@@ -66,7 +73,7 @@ const NavBar = () => {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* Desktop CTA */}
         <a href="#contact" className="nav-cta">
           <span className="nav-cta-glow" />
           <span className="relative z-10">Contact me</span>
@@ -78,19 +85,23 @@ const NavBar = () => {
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Toggle menu"
         >
-          <span className={`nav-burger-line ${mobileOpen ? "rotate-45 translate-y-[5px]" : ""}`} />
+          <span className={`nav-burger-line ${mobileOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
           <span className={`nav-burger-line ${mobileOpen ? "opacity-0 scale-x-0" : ""}`} />
-          <span className={`nav-burger-line ${mobileOpen ? "-rotate-45 -translate-y-[5px]" : ""}`} />
+          <span className={`nav-burger-line ${mobileOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
         </button>
       </div>
 
-      {/* ── Mobile menu ── */}
-      <div className={`nav-mobile ${mobileOpen ? "nav-mobile--open" : ""}`}>
+      {/* Mobile overlay + sheet */}
+      <div
+        className={`nav-overlay ${mobileOpen ? "nav-overlay--open" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      />
+      <nav className={`nav-sheet ${mobileOpen ? "nav-sheet--open" : ""}`}>
         {navLinks.map(({ link, name }) => (
           <a
             key={name}
             href={link}
-            className="nav-mobile-link"
+            className="nav-sheet-link"
             onClick={() => setMobileOpen(false)}
           >
             {name}
@@ -98,12 +109,12 @@ const NavBar = () => {
         ))}
         <a
           href="#contact"
-          className="nav-mobile-cta"
+          className="nav-sheet-cta"
           onClick={() => setMobileOpen(false)}
         >
           Contact me
         </a>
-      </div>
+      </nav>
     </header>
   );
 };
