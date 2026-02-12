@@ -1,11 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
-import { Send, Mail, User, MessageSquare, Phone } from "lucide-react";
+import Send from "lucide-react/dist/esm/icons/send";
+import Mail from "lucide-react/dist/esm/icons/mail";
+import User from "lucide-react/dist/esm/icons/user";
+import MessageSquare from "lucide-react/dist/esm/icons/message-square";
+import Phone from "lucide-react/dist/esm/icons/phone";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TitleHeader from "../components/TitleHeader";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
   const formRef = useRef(null);

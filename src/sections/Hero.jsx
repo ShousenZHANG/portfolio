@@ -3,8 +3,12 @@ import {words} from "../constants/index.js";
 import Button from "../components/Button.jsx";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
-import {Download} from "lucide-react";
+import Download from "lucide-react/dist/esm/icons/download";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
+
+const videoShadowStyle = {
+    filter: "drop-shadow(0 0 35px rgba(56,189,248,0.5))",
+};
 
 const Hero = () => {
     useGSAP(() => {
@@ -130,9 +134,7 @@ const Hero = () => {
                     <figure className="video-layout flex justify-center items-center">
                         <div
                             className="relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center"
-                            style={{
-                                filter: "drop-shadow(0 0 35px rgba(56,189,248,0.5))",
-                            }}
+                            style={videoShadowStyle}
                         >
                             <div
                                 className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border border-white/10 bg-black/30">

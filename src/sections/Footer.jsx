@@ -1,4 +1,6 @@
-import { Mail, Phone, Linkedin } from "lucide-react";
+import Mail from "lucide-react/dist/esm/icons/mail";
+import Phone from "lucide-react/dist/esm/icons/phone";
+import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 
 const Footer = () => {
   return (

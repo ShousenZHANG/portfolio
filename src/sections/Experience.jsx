@@ -1,11 +1,8 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { expCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
-import { CalendarDays } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
+import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
 
 const Experience = () => {
     useGSAP(() => {

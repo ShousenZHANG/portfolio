@@ -16,7 +16,7 @@ const NavBar = () => {
     };
 
     // add the event listener to the window
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     // cleanup the event listener when the component is unmounted
     return () => window.removeEventListener("scroll", handleScroll);
