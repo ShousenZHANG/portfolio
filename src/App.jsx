@@ -14,6 +14,7 @@ const JDAssistant = lazy(() => import("./components/JDAssistant.jsx"));
 const App = () => {
     return (
         <>
+            <div className="bg-mesh" aria-hidden="true" />
             <NavBar />
             <Hero />
             <Suspense fallback={null}>

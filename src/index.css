@@ -50,7 +50,7 @@ html,
 body {
     width: 100dvw;
     overflow-x: hidden;
-    background-color: black;
+    background-color: #030712;
     color: white;
     scroll-behavior: smooth;
     font-family: "Mona Sans", sans-serif;
@@ -89,6 +89,19 @@ section {
     .motion-scale {
         transition: transform var(--motion-fast) var(--ease-emphasis);
         will-change: transform;
+    }
+    .bg-mesh {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse 80% 60% at 10% 15%, rgba(56, 189, 248, 0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 50% at 85% 10%, rgba(34, 211, 238, 0.04) 0%, transparent 65%),
+            radial-gradient(ellipse 70% 55% at 15% 85%, rgba(52, 211, 153, 0.04) 0%, transparent 65%),
+            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 60%),
+            radial-gradient(ellipse 90% 80% at 60% 60%, rgba(56, 189, 248, 0.02) 0%, transparent 55%),
+            #030712;
     }
 }
 
