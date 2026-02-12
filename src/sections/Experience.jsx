@@ -73,10 +73,10 @@ const Experience = () => {
                                 index % 2 === 0 ? "md:flex-row-reverse" : ""
                             } md:justify-between gap-10 mb-24 md:mb-28`}
                         >
-                            <div className="timeline-dot absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-sky-400 rounded-full shadow-[0_0_12px_rgba(56,189,248,0.4)] z-10 max-md:hidden"></div>
+                            <div className="timeline-dot absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-sky-400 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.9)] z-10 max-md:hidden"></div>
 
                             <div
-                                className={`group relative glass-card p-7 sm:p-8 md:p-10 hover:border-sky-400/20 hover:shadow-[var(--shadow-md)] hover:-translate-y-1 transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] md:w-[45%] w-full ${
+                                className={`group relative bg-[#0d0f15]/90 backdrop-blur-xl p-7 sm:p-8 md:p-10 rounded-xl border border-white/10 hover:border-sky-400/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:-translate-y-1 transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] md:w-[45%] w-full ${
                                     index % 2 === 0 ? "md:text-right" : "md:text-left"
                                 }`}
                             >

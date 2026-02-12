@@ -4,7 +4,7 @@ import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 
 const Footer = () => {
   return (
-      <footer className="relative mt-20 py-10 border-t border-white/5" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
+      <footer className="relative mt-20 py-10 border-t border-white/10 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/60">
           {/* Left Section – Copyright */}
           <div className="text-center md:text-left">

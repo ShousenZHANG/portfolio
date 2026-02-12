@@ -222,7 +222,7 @@ const AppShowcase = () => {
             className={`flex flex-col ${project.desktopReverse ? "lg:flex-row-reverse" : "lg:flex-row"} items-center gap-10`}
           >
             <div className="lg:w-1/2 w-full relative group">
-              <div className="relative overflow-hidden rounded-2xl glass-card h-[400px] md:h-[480px]">
+              <div className="relative overflow-hidden rounded-2xl border border-cyan-400/10 shadow-[0_0_30px_rgba(56,189,248,0.2)] h-[400px] md:h-[480px]">
                 {project.slides.length > 0 ? (
                   <Swiper
                     modules={[Autoplay, Pagination, EffectFade]}
@@ -281,7 +281,7 @@ const AppShowcase = () => {
               )}
 
               {project.highlight && (
-                <div className="glass-card p-5 mb-6 transition-all duration-500 hover:border-sky-400/20 hover:shadow-[var(--shadow-md)]">
+                <div className="bg-gradient-to-r from-cyan-400/10 via-sky-400/10 to-emerald-400/10 border border-cyan-400/20 rounded-xl p-5 shadow-[0_0_25px_rgba(56,189,248,0.25)] mb-6 transition-all duration-500 hover:shadow-[0_0_40px_rgba(56,189,248,0.45)]">
                   <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-300 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
                     {project.highlight.title}
                   </h3>
@@ -291,7 +291,7 @@ const AppShowcase = () => {
                     href={project.highlight.cta.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-accent mt-4"
+                    className="inline-block mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
                   >
                     {project.highlight.cta.label}
                   </a>
@@ -306,7 +306,7 @@ const AppShowcase = () => {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-accent mt-2"
+                      className="inline-block mt-2 px-6 py-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black font-semibold shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-500"
                     >
                       {link.label}
                     </a>

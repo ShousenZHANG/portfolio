@@ -44,15 +44,6 @@
     --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --glass-bg: rgba(255, 255, 255, 0.04);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-blur: 20px;
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    --shadow-sm: 0 2px 12px rgba(56, 189, 248, 0.06);
-    --shadow-md: 0 8px 30px rgba(56, 189, 248, 0.1);
-    --shadow-lg: 0 16px 48px rgba(56, 189, 248, 0.15);
-    --radius-card: 1rem;
-    --radius-card-lg: 1.5rem;
 }
 
 html,
@@ -76,8 +67,6 @@ section {
     --color-black-50: #1c1c21;
     --color-black-100: #0e0e10;
     --color-black-200: #282732;
-    --color-black-300: #0d0f15;
-    --color-black-400: #0d1117;
     --color-blue-50: #839cb5;
     --color-blue-100: #2d2d38;
 }
@@ -100,24 +89,6 @@ section {
     .motion-scale {
         transition: transform var(--motion-fast) var(--ease-emphasis);
         will-change: transform;
-    }
-    .glass-card {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(var(--glass-blur));
-        -webkit-backdrop-filter: blur(var(--glass-blur));
-        box-shadow: var(--glass-shadow);
-        border-radius: var(--radius-card-lg);
-    }
-    .btn-accent {
-        @apply inline-flex items-center justify-center rounded-xl px-6 py-2.5
-        text-black font-semibold bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400
-        transition-all duration-300;
-        box-shadow: var(--shadow-sm);
-    }
-    .btn-accent:hover {
-        box-shadow: var(--shadow-md);
-        transform: translateY(-1px);
     }
 }
 
@@ -177,15 +148,15 @@ section {
         }
     }
     .hero-glow {
-        @apply pointer-events-none absolute -top-24 -left-10 h-56 w-56 md:h-80 md:w-80 rounded-full;
+        @apply pointer-events-none absolute -top-24 -left-10 h-64 w-64 md:h-96 md:w-96 rounded-full;
         background: radial-gradient(
             circle at center,
-            rgba(56, 189, 248, 0.18) 0%,
-            rgba(34, 211, 238, 0.10) 35%,
+            rgba(56, 189, 248, 0.28) 0%,
+            rgba(34, 211, 238, 0.18) 35%,
             rgba(0, 0, 0, 0) 70%
         );
-        filter: blur(14px);
-        opacity: 0.7;
+        filter: blur(10px);
+        opacity: 0.9;
     }
 
     .hero-badge {
@@ -223,10 +194,7 @@ section {
         @apply fixed w-full left-1/2 py-5 px-5 md:px-20 -translate-x-1/2 z-[100] transition-all duration-300 ease-in-out;
 
         &.scrolled {
-            @apply top-0 border-b border-white/5;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            @apply top-0 bg-black;
         }
 
         &.not-scrolled {
@@ -248,7 +216,7 @@ section {
                 @apply flex space-x-10;
 
                 li {
-                    @apply text-white/90 relative text-base md:text-lg font-medium;
+                    @apply text-white/90 relative text-lg md:text-xl font-medium; /* 字体加大 */
 
                     span {
                         @apply transition-colors duration-300 hover:text-white;
@@ -256,7 +224,7 @@ section {
 
                     .underline {
                         @apply absolute -bottom-1 left-0 w-0 h-[2px]
-                        bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400
+                        bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400
                         rounded-full transition-all duration-500 ease-out
                         group-hover:w-full group-hover:shadow-[0_0_10px_rgba(56,189,248,0.6)];
                     }
@@ -268,8 +236,8 @@ section {
             @apply flex items-center;
 
             .inner {
-                @apply flex items-center gap-2 px-5 py-2.5 rounded-lg text-base md:text-lg
-                bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400
+                @apply flex items-center gap-2 px-6 py-3 rounded-lg text-lg md:text-xl
+                bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400
                 text-black font-semibold shadow-[0_0_15px_rgba(56,189,248,0.3)]
                 hover:shadow-[0_0_25px_rgba(56,189,248,0.6)]
                 transform hover:scale-105 transition-all duration-500;
@@ -340,7 +308,7 @@ section {
 
     .tech-card-animated-bg {
         @apply absolute left-0 bottom-[-100%] w-full h-full rounded-2xl
-        bg-gradient-to-tr from-sky-500/10 via-black-200/80 to-indigo-500/10
+        bg-gradient-to-tr from-sky-500/10 via-[#1a1f2e]/80 to-indigo-500/10
         backdrop-blur-sm transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
         opacity-90 group-hover:bottom-0 group-hover:opacity-100;
 
@@ -407,6 +375,30 @@ section {
         }
     }
 
+    .footer {
+        @apply my-10 md:mt-20 mt-10 text-white-50 px-5 md:px-20 xl:px-20 flex items-center justify-center;
+
+        .footer-container {
+            @apply grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-0 w-full;
+        }
+
+        p {
+            @apply text-center md:text-start cursor-pointer;
+        }
+
+        .socials {
+            @apply flex items-center justify-center gap-5;
+
+            .icon {
+                @apply border border-black-50 bg-black-100 flex justify-center items-center rounded-xl size-10 md:size-12 cursor-pointer transition-all duration-500 hover:bg-black-50;
+            }
+
+            img {
+                @apply inline-block;
+            }
+        }
+    }
+
     .project-outcome {
         @apply relative pl-4;
     }
@@ -428,13 +420,8 @@ section {
     }
 
     .jd-card {
-        @apply mx-auto max-w-4xl;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(var(--glass-blur));
-        -webkit-backdrop-filter: blur(var(--glass-blur));
-        box-shadow: var(--glass-shadow);
-        border-radius: var(--radius-card-lg);
+        @apply mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl;
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
     }
 
     .jd-card-inner {
@@ -473,9 +460,7 @@ section {
     }
 
     .jd-result {
-        @apply rounded-2xl px-5 py-4 flex flex-col gap-4;
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid var(--glass-border);
+        @apply rounded-2xl border border-white/10 bg-black/30 px-5 py-4 flex flex-col gap-4;
     }
 
     .jd-result-head {
@@ -499,9 +484,7 @@ section {
     }
 
     .jd-result-item {
-        @apply rounded-xl px-4 py-3;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
+        @apply rounded-xl border border-white/10 bg-white/5 px-4 py-3;
     }
 
     .jd-result-title {

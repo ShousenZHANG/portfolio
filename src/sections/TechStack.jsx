@@ -38,7 +38,7 @@ const TechStack = () => {
           {techStackIcons.map((techStackIcon) => (
             <div
               key={techStackIcon.name}
-              className="glass-card tech-card overflow-hidden group rounded-2xl motion-rise"
+              className="card-border tech-card overflow-hidden group xl:rounded-full rounded-lg motion-rise"
             >
               {/* The tech-card-animated-bg div is used to create a background animation when the
                   component is hovered. */}
