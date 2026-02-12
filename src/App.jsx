@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import ParticlesBackground from "./components/ParticlesBackground.jsx";
 import Hero from "./sections/Hero.jsx";
 import NavBar from "./components/NavBar.jsx";
 import LogoSection from "./sections/LogoSection.jsx";
@@ -14,6 +15,7 @@ const JDAssistant = lazy(() => import("./components/JDAssistant.jsx"));
 const App = () => {
     return (
         <>
+            <ParticlesBackground />
             <NavBar />
             <Hero />
             <Suspense fallback={null}>
