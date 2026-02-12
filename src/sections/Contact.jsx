@@ -67,9 +67,7 @@ const Contact = () => {
           ref={sectionRef}
           className="relative flex-center section-padding overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-sky-900/5 to-transparent blur-3xl animate-pulse" />
-        <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-sky-500/10 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="w-full h-full md:px-20 px-5 relative z-10">
           <TitleHeader
@@ -77,7 +75,7 @@ const Contact = () => {
               sub="💬 Always open for a quick chat, collaboration, or good idea 🚀"
           />
 
-          <div className="max-w-3xl mx-auto mt-16 bg-[#0d1117]/80 border border-white/10 backdrop-blur-xl rounded-2xl shadow-[0_0_25px_rgba(56,189,248,0.1)] p-8 md:p-10 transition-all duration-500 hover:shadow-[0_0_45px_rgba(56,189,248,0.25)]">
+          <div className="max-w-3xl mx-auto mt-16 glass-card p-8 md:p-10 transition-all duration-500 hover:shadow-[var(--shadow-md)]">
             <form
                 ref={formRef}
                 onSubmit={handleSubmit}
@@ -100,7 +98,7 @@ const Contact = () => {
                     placeholder="Enter your name"
                     required
                     disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
+                    className="bg-black-400/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
                 />
               </div>
 
@@ -121,7 +119,7 @@ const Contact = () => {
                     placeholder="Enter your email"
                     required
                     disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
+                    className="bg-black-400/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
                 />
               </div>
 
@@ -142,7 +140,7 @@ const Contact = () => {
                     rows="5"
                     required
                     disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 resize-none disabled:opacity-60"
+                    className="bg-black-400/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 resize-none disabled:opacity-60"
                 />
               </div>
 
@@ -166,7 +164,7 @@ const Contact = () => {
               {/* Success Message */}
               {sent && (
                   <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-                    <div className="bg-[#0d1117] border border-sky-400/40 rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
+                    <div className="glass-card p-8 text-center">
                       <h3 className="text-2xl text-sky-300 font-semibold mb-3">
                         ✅ Message Sent!
                       </h3>

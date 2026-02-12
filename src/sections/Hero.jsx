@@ -53,7 +53,7 @@ const Hero = () => {
                     {/* LEFT: Hero Content */}
                     <header className="relative flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
                         <div className="hero-glow" aria-hidden="true" />
-                        <div className="flex flex-col gap-7">
+                        <div className="flex flex-col gap-5">
                             <div className="hero-text">
                                 <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
                                     Building
@@ -82,7 +82,7 @@ const Hero = () => {
                             </div>
 
                             {/* Description */}
-                            <p className="hero-desc text-white/80 md:text-xl max-w-2xl leading-relaxed mt-4">
+                            <p className="hero-desc text-white/80 md:text-xl max-w-2xl leading-relaxed mt-2">
                                 Hi, I’m{" "}
                                 <span
                                     className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400
@@ -105,7 +105,7 @@ const Hero = () => {
                             </p>
 
                             {/* Buttons */}
-                            <div className="hero-cta flex flex-wrap gap-4 mt-6">
+                            <div className="hero-cta flex flex-wrap gap-4 mt-4">
                                 {/* View Work Button */}
                                 <Button
                                     text="See My Work"
@@ -117,10 +117,9 @@ const Hero = () => {
                                 <a
                                     href="/files/Eddy_Zhang_CV.pdf"
                                     download="Eddy_Zhang_Resume.pdf"
-                                    className="md:w-80 md:h-16 w-60 h-12 flex items-center justify-center rounded-xl
-               border border-sky-400/40 bg-sky-600/20 text-white font-semibold
-               hover:bg-sky-500/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.3)]
-               transition-all duration-500 ease-out backdrop-blur-sm"
+                                    className="glass-card md:w-80 md:h-16 w-60 h-12 flex items-center justify-center
+               text-white font-semibold hover:border-sky-400/30
+               hover:shadow-[var(--shadow-md)] transition-all duration-500 ease-out"
                                 >
     <span className="flex items-center gap-2">
       <Download className="w-5 h-5 text-sky-300 group-hover:text-sky-100 transition-colors duration-300"/>
