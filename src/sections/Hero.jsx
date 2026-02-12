@@ -105,11 +105,11 @@ const Hero = () => {
                             </p>
 
                             {/* Buttons */}
-                            <div className="hero-cta flex flex-wrap gap-4 mt-6">
+                            <div className="hero-cta flex flex-wrap gap-5 mt-6">
                                 {/* View Work Button */}
                                 <Button
                                     text="See My Work"
-                                    className="md:w-80 md:h-16 w-60 h-12"
+                                    className="md:w-72 md:h-14 w-56 h-12"
                                     id="counter"
                                 />
 
@@ -117,15 +117,13 @@ const Hero = () => {
                                 <a
                                     href="/files/Eddy_Zhang_CV.pdf"
                                     download="Eddy_Zhang_Resume.pdf"
-                                    className="md:w-80 md:h-16 w-60 h-12 flex items-center justify-center rounded-xl
-               border border-sky-400/40 bg-sky-600/20 text-white font-semibold
-               hover:bg-sky-500/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.3)]
-               transition-all duration-500 ease-out backdrop-blur-sm"
+                                    className="hero-btn-secondary group md:w-72 md:h-14 w-56 h-12"
                                 >
-    <span className="flex items-center gap-2">
-      <Download className="w-5 h-5 text-sky-300 group-hover:text-sky-100 transition-colors duration-300"/>
-      Download CV
-    </span>
+                                    <span className="hero-btn-border" />
+                                    <span className="relative z-10 flex items-center gap-2.5 font-semibold tracking-wide">
+                                        <Download className="w-4.5 h-4.5 text-sky-300 transition-all duration-300 group-hover:text-sky-200 group-hover:-translate-y-0.5" />
+                                        Download CV
+                                    </span>
                                 </a>
                             </div>
                         </div>
