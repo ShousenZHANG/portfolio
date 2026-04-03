@@ -1,37 +1,19 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import Send from "lucide-react/dist/esm/icons/send";
 import Mail from "lucide-react/dist/esm/icons/mail";
 import User from "lucide-react/dist/esm/icons/user";
 import MessageSquare from "lucide-react/dist/esm/icons/message-square";
-import Phone from "lucide-react/dist/esm/icons/phone";
-import { gsap } from "gsap";
 import TitleHeader from "../components/TitleHeader";
+import { useScrollReveal } from "../hooks/useScrollReveal";
 
 const Contact = () => {
   const formRef = useRef(null);
-  const sectionRef = useRef(null);
+  const sectionRef = useScrollReveal({ y: 60, duration: 1.2, ease: "power3.out" });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-
-  useEffect(() => {
-    gsap.fromTo(
-        sectionRef.current,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-    );
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +24,7 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
     setSent(false);
+    setSendError("");
 
     try {
       await emailjs.sendForm(
@@ -54,8 +37,8 @@ const Contact = () => {
       setSent(true);
       setForm({ name: "", email: "", message: "" });
       setTimeout(() => setSent(false), 4000);
-    } catch (error) {
-      console.error("EmailJS Error:", error);
+    } catch {
+      setSendError("Failed to send message. Please try again or email me directly.");
     } finally {
       setLoading(false);
     }
@@ -163,15 +146,19 @@ const Contact = () => {
                 {loading ? "Sending..." : "Send Message 🚀"}
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 via-transparent to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </button>
-              {/* Success Message */}
+              {/* Error message */}
+              {sendError && (
+                  <p className="text-red-400 text-sm mt-2" aria-live="polite">{sendError}</p>
+              )}
+              {/* Success dialog */}
               {sent && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-labelledby="contact-success-title">
                     <div className="bg-[#0d1117] border border-sky-400/40 rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
-                      <h3 className="text-2xl text-sky-300 font-semibold mb-3">
-                        ✅ Message Sent!
+                      <h3 id="contact-success-title" className="text-2xl text-sky-300 font-semibold mb-3">
+                        Message Sent!
                       </h3>
                       <p className="text-white/80 mb-6">
-                        Thanks for reaching out — I’ll reply soon 🚀
+                        Thanks for reaching out — I’ll reply soon
                       </p>
                       <button
                           onClick={() => setSent(false)}

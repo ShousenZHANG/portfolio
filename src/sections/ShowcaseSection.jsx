@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,172 +7,27 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
-const fadeFix = `
-.swiper-slide {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s !important;
-}
-.swiper-slide-active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transition: opacity 0.8s ease-in-out, visibility 0s linear 0s !important;
-}
-`;
+import { projects } from "../constants/projects";
 
-const projects = [
-  {
-    id: "jobflow-web",
-    title: "Jobflow - End-to-End Job Hunt Workflow",
-    desktopReverse: false,
-    autoplayDelay: 3800,
-    slides: [
-      { src: "/images/jobflow_landing.png", alt: "Jobflow landing page" },
-      { src: "/images/jobflow_fetch.png", alt: "Jobflow fetch workflow page" },
-      { src: "/images/jobflow_resume.png", alt: "Jobflow resume builder page" },
-      { src: "/images/jobflow_jobs.png", alt: "Jobflow jobs workspace page" },
-    ],
-    description: (
-      <>
-        Built Jobflow as an <span className="text-cyan-300 font-semibold">end-to-end workflow</span> for modern job
-        hunts: discover roles, review fit quickly, and track every application stage in one place. The product
-        targets the core pain points called out in the README, including information overload, repetitive
-        screening, and fragmented progress tracking.
-      </>
-    ),
-    details: (
-      <>
-        Implemented the README fetch pipeline with parsing, exclusion rules, dedupe, upsert, stale-run handling,
-        and run summaries. On the product side, Jobflow ships a two-pane jobs workspace with markdown previews,
-        keyword highlighting, and lifecycle states like{" "}
-        <span className="text-cyan-300 font-semibold">NEW / APPLIED / REJECTED</span>, plus resume tailoring support.
-      </>
-    ),
-    outcomes: [
-      "Jobs Workspace: split view + smooth review flow for high-volume role screening",
-      "Fetch Console: smart exclusions, flexible location/radius filters, and tracked fetch runs",
-      "Reliable import lifecycle with retries, stale-run guardrails, tombstones, and safe upserts",
-      "Auth + resume flow aligned with README (Google/GitHub sign-in and structured resume management)",
-    ],
-    tech: [
-      "Next.js App Router",
-      "TypeScript",
-      "Prisma + PostgreSQL",
-      "NextAuth (Google/GitHub)",
-      "TanStack Query",
-      "Tailwind CSS + shadcn/ui",
-      "Python (JobSpy)",
-      "Vercel (Blob/Postgres)",
-      "GitHub Actions",
-    ],
-    links: [
-      { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
-      { href: "https://jobflow-web.vercel.app", label: "Live Demo ->" },
-    ],
-  },
-  {
-    id: "contest-platform",
-    title: "Scalable Competition Platform",
-    desktopReverse: false,
-    autoplayDelay: 4000,
-    slides: [
-      { src: "/images/award_certificate.jpg", alt: "Coding Fest 2025 Runner-up Certificate" },
-      { src: "/images/award_team_photo.jpg", alt: "Coding Fest 2025 Award Ceremony Team Photo" },
-      { src: "/images/Competition_System_Architecture.png", alt: "System Architecture" },
-      { src: "/images/Pipeline.png", alt: "CI/CD Pipeline" },
-    ],
-    description: (
-      <>
-        Built a cloud-native competition system with{" "}
-        <span className="text-cyan-300 font-semibold">7+ Spring Cloud microservices</span>, enabling JWT SSO,
-        role-based access control, and async messaging via RabbitMQ. Deployed with Docker Compose for{" "}
-        <span className="text-emerald-300 font-semibold">95%+ CI/CD consistency</span> and 80% faster setup,
-        contributing over <span className="text-sky-300 font-semibold">40,000 lines of production code</span>.
-      </>
-    ),
-    highlight: {
-      title: "Runner-up - Best Project in AI for Education",
-      description:
-        "Recognized at Coding Fest 2025 (University of Sydney, School of Computer Science) for innovation and community impact.",
-      sponsor: "Sponsored by Atlassian and Flow Traders.",
-      cta: {
-        href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
-        label: "View Award Certificate ->",
-      },
-    },
-    links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub ->" }],
-  },
-  {
-    id: "enterprise-banking",
-    title: "Enterprise Banking Platform Framework",
-    desktopReverse: true,
-    autoplayDelay: 4200,
-    slides: [
-      { src: "/images/Insurance_SocketTool.png", alt: "Enterprise Insurance Socket Tool" },
-      { src: "/images/Insurance_Cloud.png", alt: "Insurance Cloud" },
-    ],
-    description: (
-      <>
-        Developed at <span className="text-cyan-300 font-semibold">Shanghai Newtouch Software Co., Ltd.</span>,
-        maintaining and extending a <span className="text-emerald-300 font-semibold">modular enterprise framework</span>{" "}
-        for insurance systems. Reduced development time by{" "}
-        <span className="text-cyan-300 font-semibold">30%</span> and improved reliability by{" "}
-        <span className="text-emerald-300 font-semibold">35%</span>.
-      </>
-    ),
-    details: (
-      <>
-        Built a <span className="text-cyan-300 font-semibold">socket-based batch processing tool</span> for
-        large-scale file transfer, reducing processing time by{" "}
-        <span className="text-emerald-300 font-semibold">35%</span> and blocking{" "}
-        <span className="text-cyan-300 font-semibold">99% unauthorized access</span> through header-based authentication.
-        Led migration from on-premise to cloud-native infrastructure with MinIO and Docker on Linux.
-      </>
-    ),
-    links: [],
-  },
-  {
-    id: "portfolio",
-    title: "Personal Developer Portfolio",
-    desktopReverse: false,
-    autoplayDelay: 4000,
-    slides: [{ src: "/images/portfolio_main.png", alt: "Portfolio Home Page" }],
-    description: (
-      <>
-        Designed and developed a <span className="text-cyan-300 font-semibold">modern responsive website</span> using{" "}
-        <span className="text-emerald-300 font-semibold">React</span>,{" "}
-        <span className="text-sky-300 font-semibold">Tailwind CSS</span>, and{" "}
-        <span className="text-cyan-300 font-semibold">JavaScript (ES6+)</span>. Implemented smooth animations,
-        dynamic routing, and reusable components following best front-end engineering practices.
-      </>
-    ),
-    details: (
-      <>
-        Integrated project showcases and contact automation for recruiters, deployed via{" "}
-        <span className="text-cyan-300 font-semibold">Vercel</span>. Highlights include responsive layouts,
-        modular component design, and CI/CD workflows for continuous updates.
-      </>
-    ),
-    links: [{ href: "https://github.com/ShousenZHANG/portfolio.git", label: "View on GitHub ->" }],
-  },
-];
+/**
+ * Render a plain-text description, highlighting phrases wrapped in {curly braces}
+ * as cyan-colored spans. This replaces the old inline-JSX approach.
+ */
+function renderHighlighted(text) {
+  if (!text) return null;
+  const parts = text.split(/\{([^}]+)\}/g);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="text-cyan-300 font-semibold">{part}</span>
+    ) : (
+      part
+    )
+  );
+}
 
 const AppShowcase = () => {
   const sectionRef = useRef(null);
   const projectRefs = useRef([]);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || document.getElementById("swiper-fade-fix")) return;
-    const style = document.createElement("style");
-    style.id = "swiper-fade-fix";
-    style.innerHTML = fadeFix;
-    document.head.appendChild(style);
-  }, []);
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
@@ -251,7 +106,7 @@ const AppShowcase = () => {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {project.tech.map((item) => (
+                      {project.tech?.map((item) => (
                         <span
                           key={`${project.id}-tech-${item}`}
                           className="px-3 py-1 rounded-full text-xs md:text-sm bg-cyan-400/10 border border-cyan-300/20 text-cyan-100"
@@ -267,8 +122,8 @@ const AppShowcase = () => {
 
             <div className="lg:w-1/2 w-full text-center lg:text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{project.title}</h2>
-              <p className="text-white/80 md:text-lg leading-relaxed mb-6">{project.description}</p>
-              {project.details && <p className="text-white/80 md:text-lg leading-relaxed mb-6">{project.details}</p>}
+              <p className="text-white/80 md:text-lg leading-relaxed mb-6">{renderHighlighted(project.description)}</p>
+              {project.details && <p className="text-white/80 md:text-lg leading-relaxed mb-6">{renderHighlighted(project.details)}</p>}
 
               {project.outcomes?.length > 0 && (
                 <div className="mb-6 space-y-3">

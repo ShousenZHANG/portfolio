@@ -32,7 +32,7 @@ const NavBar = () => {
           Eddy Zhang
         </a>
 
-        <nav className="desktop">
+        <nav className="desktop" aria-label="Main navigation">
           <ul>
             {navLinks.map(({link, name}) => (
                 <li key={name} className="group">

@@ -20,11 +20,12 @@ const Footer = () => {
             {/* Email */}
             <a
                 href="mailto:eddy.zhang24@gmail.com"
+                aria-label="Email eddy.zhang24@gmail.com"
                 className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
             >
               <Mail className="w-4 h-4" />
               <span className="hidden sm:inline">eddy.zhang24@gmail.com</span>
-            </a>
+</a>
 
             {/* Divider */}
             <span className="text-white/30">•</span>
@@ -32,6 +33,7 @@ const Footer = () => {
             {/* Phone */}
             <a
                 href="tel:+610468761056"
+                aria-label="Phone +61 0468 761 056"
                 className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
             >
               <Phone className="w-4 h-4" />
@@ -46,6 +48,7 @@ const Footer = () => {
                 href="https://linkedin.com/in/eddy-shousen-zhang"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
                 className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
             >
               <Linkedin className="w-4 h-4" />

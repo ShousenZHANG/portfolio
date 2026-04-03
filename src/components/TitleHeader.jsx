@@ -1,30 +1,31 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const TitleHeader = ({ title, sub }) => {
-    useEffect(() => {
-        const headers = gsap.utils.toArray(".section-header");
-        headers.forEach((header) => {
-            gsap.fromTo(
-                header,
-                { opacity: 0, y: 28, scale: 0.98 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.8,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: header,
-                        start: "top 82%",
-                    },
-                }
-            );
-        });
-    }, []);
+    const ref = useRef(null);
+
+    useGSAP(() => {
+        if (!ref.current) return;
+        gsap.fromTo(
+            ref.current,
+            { opacity: 0, y: 28, scale: 0.98 },
+            {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ref.current,
+                    start: "top 82%",
+                },
+            }
+        );
+    }, { scope: ref });
 
     return (
-        <div className="section-header flex flex-col items-center justify-center text-center gap-3">
+        <div ref={ref} className="section-header flex flex-col items-center justify-center text-center gap-3">
             {sub && (
                 <p className="text-sm md:text-base font-medium tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
                     {sub}

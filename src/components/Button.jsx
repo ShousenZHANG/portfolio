@@ -1,12 +1,12 @@
 import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
 
-const Button = ({ text, className, id }) => {
+const Button = ({ text, className, scrollTo = "counter" }) => {
   return (
-    <a
-      onClick={(e) => {
-        e.preventDefault();
-        const target = document.getElementById("counter");
-        if (target && id) {
+    <button
+      type="button"
+      onClick={() => {
+        const target = document.getElementById(scrollTo);
+        if (target) {
           const offset = window.innerHeight * 0.15;
           const top =
             target.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -20,7 +20,7 @@ const Button = ({ text, className, id }) => {
         {text}
         <ArrowDown className="w-4.5 h-4.5 transition-transform duration-300 group-hover:translate-y-0.5" />
       </span>
-    </a>
+    </button>
   );
 };
 

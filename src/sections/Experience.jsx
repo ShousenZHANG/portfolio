@@ -7,7 +7,7 @@ import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
 const Experience = () => {
     useGSAP(() => {
         const ctx = gsap.context(() => {
-            const isMobile = window.innerWidth < 768;
+            const isMobile = window.matchMedia("(max-width: 768px)").matches;
             const blocks = gsap.utils.toArray(".exp-block");
 
             blocks.forEach((block, i) => {

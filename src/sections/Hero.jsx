@@ -110,7 +110,7 @@ const Hero = () => {
                                 <Button
                                     text="See My Work"
                                     className="md:w-72 md:h-14 w-56 h-12"
-                                    id="counter"
+                                    scrollTo="counter"
                                 />
 
                                 {/* Download Resume Button */}
