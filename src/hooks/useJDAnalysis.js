@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { postJSON } from "../lib/api-client";
 import { normalizeResult } from "../lib/jd-normalize";
 
+const MAX_JD_LENGTH = 10_000;
+
 /**
  * Shared hook for the JD matching feature.
  * Handles CV loading, API submission, and result normalization.
@@ -39,6 +41,10 @@ export function useJDAnalysis() {
 
     if (!jd.trim() || loading) {
       setError("Please paste the job description first.");
+      return;
+    }
+    if (jd.trim().length > MAX_JD_LENGTH) {
+      setError(`JD text is too long (max ${MAX_JD_LENGTH.toLocaleString()} characters).`);
       return;
     }
     if (!cvText.trim()) {

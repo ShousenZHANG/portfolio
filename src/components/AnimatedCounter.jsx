@@ -7,41 +7,31 @@ import CountUp from "react-countup";
 
 const AnimatedCounter = () => {
   const counterRef = useRef(null);
-  const countersRef = useRef([]);
 
   useGSAP(() => {
-    countersRef.current.forEach((counter, index) => {
-      const numberElement = counter.querySelector(".counter-number");
-      const item = counterItems[index];
-
-      // Set initial value to 0
-      gsap.set(numberElement, { innerText: "0" });
-
-      // Create the counting animation
-      gsap.to(numberElement, {
-        innerText: item.value,
-        duration: 2.5,
+    gsap.fromTo(
+      ".counter-card",
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.15,
         ease: "power2.out",
-        snap: { innerText: 1 }, // Ensures whole numbers
         scrollTrigger: {
           trigger: "#counter",
           start: "top center",
         },
-        // Add the suffix after counting is complete
-        onComplete: () => {
-          numberElement.textContent = `${item.value}${item.suffix}`;
-        },
-      });
-    }, counterRef);
+      }
+    );
   }, []);
 
   return (
     <div id="counter" ref={counterRef} className="padding-x-lg xl:mt-0 mt-32">
       <div className="mx-auto grid-4-cols">
-        {counterItems.map((item, index) => (
+        {counterItems.map((item) => (
           <div
-            key={index}
-            ref={(el) => el && (countersRef.current[index] = el)}
+            key={item.label}
             className="
   counter-card relative overflow-hidden
   bg-gradient-to-br from-zinc-900 via-slate-900 to-black
@@ -63,7 +53,7 @@ const AnimatedCounter = () => {
   transition-all duration-500 ease-out
   group-hover:text-white group-hover:scale-[1.03]
 ">
-              <CountUp suffix={item.suffix} end={item.value}/>
+              <CountUp suffix={item.suffix} end={item.value} enableScrollSpy scrollSpyOnce />
             </div>
             <div className="text-white/70 text-lg md:text-xl font-medium text-center
            transition-all duration-500 group-hover:text-cyan-300">{item.label}</div>

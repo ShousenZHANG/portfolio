@@ -108,9 +108,9 @@ const Experience = () => {
                                         index % 2 === 0 ? "md:border-r md:border-l-0 md:pr-6" : "pl-6"
                                     } flex flex-col gap-3 sm:gap-4`}
                                 >
-                                    {card.responsibilities.map((r, i) => (
+                                    {card.responsibilities.map((r) => (
                                         <li
-                                            key={i}
+                                            key={r.slice(0, 50)}
                                             className="text-[15px] sm:text-base md:text-lg text-slate-300/90 leading-relaxed font-light hover:text-sky-300 transition-all duration-300"
                                         >
                                             {r}

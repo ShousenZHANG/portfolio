@@ -164,8 +164,8 @@ export default function JDResultPanel({ jd, setJd, loading, result, error, submi
                                     <>
                                         <div className="text-[11px] text-amber-200 mb-1">Similar / transferable</div>
                                         <ul className="list-disc list-inside text-[12px] space-y-1 text-neutral-200">
-                                            {result.related.map((r, i) => (
-                                                <li key={i}>
+                                            {result.related.map((r) => (
+                                                <li key={r.name}>
                                                     <span className="font-medium text-white">{r.name}</span>
                                                     {r.reason && <span> — {r.reason}</span>}
                                                 </li>

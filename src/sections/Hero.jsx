@@ -1,4 +1,3 @@
-import React from 'react'
 import {words} from "../constants/index.js";
 import Button from "../components/Button.jsx";
 import {useGSAP} from "@gsap/react";
@@ -40,7 +39,7 @@ const Hero = () => {
             );
         });
         return () => ctx.revert();
-    });
+    }, []);
     return (
         <>
             <section id="hero" className="relative overflow-hidden">

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { gsap } from "gsap";
+import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
@@ -18,9 +18,9 @@ function renderHighlighted(text) {
   const parts = text.split(/\{([^}]+)\}/g);
   return parts.map((part, i) =>
     i % 2 === 1 ? (
-      <span key={i} className="text-cyan-300 font-semibold">{part}</span>
+      <span key={`hl-${i}`} className="text-cyan-300 font-semibold">{part}</span>
     ) : (
-      part
+      <span key={`t-${i}`}>{part}</span>
     )
   );
 }

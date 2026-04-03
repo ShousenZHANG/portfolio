@@ -6,7 +6,7 @@ import { useJDAnalysis } from '../hooks/useJDAnalysis';
 import { useIsMobile } from '../hooks/useIsMobile';
 import JDResultPanel from './jd/JDResultPanel';
 
-export default function JDChatWidget() {
+export default function JDAssistant() {
     const [open, setOpen] = useState(false);
     const [showTeaser, setShowTeaser] = useState(true);
     const [hasMounted, setHasMounted] = useState(false);

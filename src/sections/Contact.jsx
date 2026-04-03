@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import Send from "lucide-react/dist/esm/icons/send";
 import Mail from "lucide-react/dist/esm/icons/mail";
@@ -14,6 +14,12 @@ const Contact = () => {
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  useEffect(() => {
+    if (!sent) return;
+    const timer = setTimeout(() => setSent(false), 4000);
+    return () => clearTimeout(timer);
+  }, [sent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +42,6 @@ const Contact = () => {
 
       setSent(true);
       setForm({ name: "", email: "", message: "" });
-      setTimeout(() => setSent(false), 4000);
     } catch {
       setSendError("Failed to send message. Please try again or email me directly.");
     } finally {
@@ -152,7 +157,7 @@ const Contact = () => {
               )}
               {/* Success dialog */}
               {sent && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-labelledby="contact-success-title">
+                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-labelledby="contact-success-title" aria-modal="true">
                     <div className="bg-[#0d1117] border border-sky-400/40 rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
                       <h3 id="contact-success-title" className="text-2xl text-sky-300 font-semibold mb-3">
                         Message Sent!
@@ -162,6 +167,7 @@ const Contact = () => {
                       </p>
                       <button
                           onClick={() => setSent(false)}
+                          autoFocus
                           className="px-5 py-2 bg-sky-600/40 rounded-lg hover:bg-sky-500/50 transition-all"
                       >
                         Close

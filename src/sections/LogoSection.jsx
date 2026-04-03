@@ -1,5 +1,3 @@
-import React from "react";
-
 const logoIconsList = [
     // 💻 Backend & Frameworks
     { name: "Java", icon: "java/java-original.svg" },

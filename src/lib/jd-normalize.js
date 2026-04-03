@@ -7,8 +7,8 @@
  * Normalize the raw API response into a consistent shape.
  * All numeric scores are clamped to integers 0-100.
  */
-export function normalizeResult(data) {
-  data = data ?? {};
+export function normalizeResult(rawData) {
+  const data = rawData ?? {};
   const score = data.score ?? {};
 
   const overall =

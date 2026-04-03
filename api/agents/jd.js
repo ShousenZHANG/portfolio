@@ -267,11 +267,12 @@ async function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = "";
     req.on("data", (chunk) => {
-      data += chunk;
-      if (data.length > MAX_BODY_SIZE) {
-        if (req.destroy) req.destroy();
+      if (data.length + chunk.length > MAX_BODY_SIZE) {
+        req.destroy();
         reject(new Error("Payload too large"));
+        return;
       }
+      data += chunk;
     });
     req.on("end", () => {
       try {
@@ -353,7 +354,7 @@ export default async function handler(req, res) {
       parsed = JSON.parse(text);
       // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      console.error("JSON parse error, raw model output:", text);
+      console.error("JSON parse error, raw model output (first 200 chars):", text.slice(0, 200));
 
       const first = text.indexOf("{");
       const last = text.lastIndexOf("}");
