@@ -86,14 +86,6 @@ const expCards = [
       "Containerized and automated deployments with Docker Compose and MinIO, reducing release time by over 30%.",
     ],
   },
-  {
-    title: "Software Engineer — ZHONGGE Network Co., Ltd.",
-    date: "Jun 2020 – Jul 2022",
-    responsibilities: [
-      "Designed and implemented RESTful APIs and robust CRUD modules, improving service stability and code maintainability.",
-      "Collaborated across product, QA, and design teams to deliver iterative releases and resolve performance bottlenecks.",
-    ],
-  },
 ];
 
 export {
