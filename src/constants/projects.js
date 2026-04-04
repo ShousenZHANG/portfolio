@@ -65,19 +65,4 @@ export const projects = [
     },
     links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub ->" }],
   },
-  {
-    id: "enterprise-banking",
-    title: "Enterprise Banking Platform Framework",
-    desktopReverse: true,
-    autoplayDelay: 4200,
-    slides: [
-      { src: "/images/Insurance_SocketTool.png", alt: "Enterprise Insurance Socket Tool" },
-      { src: "/images/Insurance_Cloud.png", alt: "Insurance Cloud" },
-    ],
-    description:
-      "Developed at {Shanghai Newtouch Software Co., Ltd.}, maintaining and extending a {modular enterprise framework} for insurance systems. Reduced development time by {30%} and improved reliability by {35%}.",
-    details:
-      "Built a {socket-based batch processing tool} for large-scale file transfer, reducing processing time by {35%} and blocking {99% unauthorized access} through header-based authentication. Led migration from on-premise to cloud-native infrastructure with MinIO and Docker on Linux.",
-    links: [],
-  },
 ];
