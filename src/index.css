@@ -138,12 +138,14 @@ section {
 
     /* ── Hero Layout — CSS Grid, never overlaps ── */
     .hero-layout {
-        @apply relative z-10 mt-28 px-5 md:px-10 lg:px-16;
+        @apply relative z-10 px-5 md:px-10 lg:px-16;
         display: grid;
         grid-template-columns: 1fr;
         gap: 2.5rem;
         align-items: center;
-        min-height: 80vh;
+        min-height: 100dvh;
+        padding-top: 6rem;
+        padding-bottom: 2rem;
         max-width: 1600px;
         margin-left: auto;
         margin-right: auto;
@@ -153,8 +155,7 @@ section {
         .hero-layout {
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
-            min-height: 88vh;
-            margin-top: 8rem;
+            padding-top: 7rem;
         }
     }
 
