@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import Hero from "./sections/Hero.jsx";
 import NavBar from "./components/NavBar.jsx";
+import ParticlesBackground from "./components/ParticlesBackground.jsx";
 import LogoSection from "./sections/LogoSection.jsx";
 import Experience from "./sections/Experience.jsx";
 import Footer from "./sections/Footer.jsx";
@@ -20,6 +21,7 @@ const SectionLoader = () => (
 const App = () => {
     return (
         <>
+            <ParticlesBackground />
             <NavBar />
             <Hero />
             <Suspense fallback={<SectionLoader />}>
