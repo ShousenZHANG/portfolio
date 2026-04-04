@@ -32,31 +32,17 @@ const AnimatedCounter = () => {
         {counterItems.map((item) => (
           <div
             key={item.label}
-            className="
-  counter-card relative overflow-hidden
-  bg-gradient-to-br from-zinc-900 via-slate-900 to-black
-  rounded-2xl p-10 flex flex-col justify-center items-center
-  shadow-[0_0_20px_rgba(0,0,0,0.4)] backdrop-blur-sm
-  motion-rise hover:scale-[1.03]
-  hover:shadow-[0_0_35px_rgba(56,189,248,0.25)]
-  before:absolute before:inset-0 before:bg-gradient-to-tr before:from-cyan-500/10 before:to-transparent
-  before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-700
-  after:absolute after:inset-0 after:rounded-2xl
-  after:bg-gradient-to-br after:from-cyan-400/5 after:to-transparent
-  after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-700
-"
+            className="counter-card relative overflow-hidden bg-gradient-to-br from-zinc-900 via-slate-900 to-black rounded-2xl p-10 flex flex-col justify-center items-center shadow-[0_0_20px_rgba(0,0,0,0.4)] backdrop-blur-sm motion-rise hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(56,189,248,0.25)]"
           >
-            <div className="
-  counter-number text-white/90 text-4xl md:text-6xl font-semibold
-  tracking-tight leading-snug
-  drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]
-  transition-all duration-500 ease-out
-  group-hover:text-white group-hover:scale-[1.03]
-">
+            {/* Accent top border */}
+            <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-60`} />
+
+            <div className="counter-number text-white/90 text-4xl md:text-5xl xl:text-6xl font-semibold tracking-tight leading-snug drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out">
               <CountUp suffix={item.suffix} end={item.value} enableScrollSpy scrollSpyOnce />
             </div>
-            <div className="text-white/70 text-lg md:text-xl font-medium text-center
-           transition-all duration-500 group-hover:text-cyan-300">{item.label}</div>
+            <div className="text-white/75 text-lg md:text-xl font-medium text-center mt-2 transition-all duration-500 hover:text-sky-300">
+              {item.label}
+            </div>
           </div>
         ))}
       </div>

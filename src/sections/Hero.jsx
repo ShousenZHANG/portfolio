@@ -54,7 +54,7 @@ const Hero = () => {
                         <div className="hero-glow" aria-hidden="true" />
                         <div className="flex flex-col gap-7">
                             <div className="hero-text">
-                                <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
                                     Building
                                     <span className="slide">
                   <span className="wrapper">
@@ -74,9 +74,9 @@ const Hero = () => {
                   </span>
                 </span>
                                 </h1>
-                                <h1 className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent animate-gradient-x">into
+                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent animate-gradient-x">into
                                     Scalable Systems</h1>
-                                <h1 className="text-4xl md:text-6xl font-semibold leading-tight bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-500 bg-clip-text text-transparent">that
+                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-semibold leading-tight bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-500 bg-clip-text text-transparent">that
                                     Empower Innovation</h1>
                             </div>
 
@@ -135,13 +135,16 @@ const Hero = () => {
                         >
                             <div
                                 className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border border-white/10 bg-black/30">
+                                {/* Skeleton shown until video loads */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 animate-pulse" />
                                 <video
                                     src="/videos/eddy_intro.mp4"
                                     controls
                                     loop
                                     playsInline
                                     preload="metadata"
-                                    className="absolute top-0 left-0 w-full h-full object-cover"
+                                    className="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                                    onLoadedData={(e) => { e.currentTarget.classList.remove("opacity-0"); }}
                                 />
                             </div>
                         </div>

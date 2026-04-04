@@ -5,7 +5,7 @@ import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 const Footer = () => {
   return (
       <footer className="relative mt-20 py-10 border-t border-white/10 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/60">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/75">
           {/* Left Section – Copyright */}
           <div className="text-center md:text-left">
             <p>
@@ -57,7 +57,7 @@ const Footer = () => {
           </div>
 
           {/* Right Section – Tagline */}
-          <div className="text-center md:text-right text-white/50 italic">
+          <div className="text-center md:text-right text-white/65 italic">
             <p>Crafted with ☕ + 💻 in Sydney</p>
           </div>
         </div>

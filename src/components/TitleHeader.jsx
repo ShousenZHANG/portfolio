@@ -32,7 +32,7 @@ const TitleHeader = ({ title, sub }) => {
                 </p>
             )}
 
-            <h1 className="font-extrabold text-3xl md:text-5xl bg-gradient-to-r from-white via-sky-200 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+            <h1 className="font-extrabold text-3xl md:text-4xl xl:text-5xl bg-gradient-to-r from-white via-sky-200 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
                 {title}
             </h1>
 

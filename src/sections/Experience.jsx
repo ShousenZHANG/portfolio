@@ -64,16 +64,17 @@ const Experience = () => {
                     sub="💼 My Journey Through Code & Innovation"
                 />
 
-                {/* Timeline wrapper */}
-                <div className="relative mt-24 before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-1/2 before:w-[2px] before:bg-gradient-to-b before:from-sky-400/30 before:to-transparent max-md:before:hidden">
+                {/* Timeline wrapper — desktop: center line, mobile: left line */}
+                <div className="relative mt-24 before:content-[''] before:absolute before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-sky-400/30 before:to-transparent before:left-3 md:before:left-1/2">
                     {expCards.map((card, index) => (
                         <div
                             key={card.title}
-                            className={`exp-block relative flex flex-col md:flex-row items-center md:items-start ${
+                            className={`exp-block relative flex flex-col md:flex-row items-start ${
                                 index % 2 === 0 ? "md:flex-row-reverse" : ""
-                            } md:justify-between gap-10 mb-24 md:mb-28`}
+                            } md:justify-between gap-4 md:gap-10 mb-16 md:mb-28 pl-10 md:pl-0`}
                         >
-                            <div className="timeline-dot absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-sky-400 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.9)] z-10 max-md:hidden"></div>
+                            {/* Timeline dot — mobile: left side, desktop: center */}
+                            <div className={`timeline-dot absolute left-1 md:left-1/2 md:-translate-x-1/2 w-5 h-5 bg-sky-400 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.9)] z-10 top-2 md:top-auto ${index === 0 ? "animate-pulse" : ""}`} />
 
                             <div
                                 className={`group relative bg-[#0d0f15]/90 backdrop-blur-xl p-7 sm:p-8 md:p-10 rounded-xl border border-white/10 hover:border-sky-400/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:-translate-y-1 transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] md:w-[45%] w-full ${
@@ -111,7 +112,7 @@ const Experience = () => {
                                     {card.responsibilities.map((r) => (
                                         <li
                                             key={r.slice(0, 50)}
-                                            className="text-[15px] sm:text-base md:text-lg text-slate-300/90 leading-relaxed font-light hover:text-sky-300 transition-all duration-300"
+                                            className="text-[15px] sm:text-base md:text-lg text-slate-200 leading-relaxed font-light hover:text-sky-300 transition-all duration-300"
                                         >
                                             {r}
                                         </li>

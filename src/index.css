@@ -484,7 +484,7 @@ section {
     }
 
     .jd-note {
-        @apply text-sm text-white/60;
+        @apply text-sm text-white/75;
     }
 
     .jd-input-wrap {
@@ -523,7 +523,7 @@ section {
     }
 
     .jd-result-line {
-        @apply text-sm text-white/70;
+        @apply text-sm text-white/80;
     }
 
     .jd-result-list {
@@ -535,7 +535,7 @@ section {
     }
 
     .jd-result-title {
-        @apply block text-xs uppercase tracking-[0.18em] text-white/60;
+        @apply block text-xs uppercase tracking-[0.18em] text-white/75;
     }
 
     .jd-result-value {
@@ -731,6 +731,21 @@ section {
     opacity: 1;
 }
 
+/* --- Swiper Pagination Enhancement --- */
+.swiper-pagination-bullet {
+    width: 8px !important;
+    height: 8px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease !important;
+}
+.swiper-pagination-bullet-active {
+    background: #38bdf8 !important;
+    width: 24px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
 /* --- Swiper Fade Fix --- */
 .swiper-slide {
     position: absolute !important;
@@ -824,10 +839,34 @@ section {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+  }
+  :focus-visible {
+    outline: 2px solid rgba(56, 189, 248, 0.8);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile menu fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .thin-scrollbar {

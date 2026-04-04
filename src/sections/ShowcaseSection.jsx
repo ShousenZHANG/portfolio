@@ -120,7 +120,7 @@ const AppShowcase = () => {
               </div>
             </div>
 
-            <div className="lg:w-1/2 w-full text-center lg:text-left">
+            <div className="lg:w-1/2 w-full text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{project.title}</h2>
               <p className="text-white/80 md:text-lg leading-relaxed mb-6">{renderHighlighted(project.description)}</p>
               {project.details && <p className="text-white/80 md:text-lg leading-relaxed mb-6">{renderHighlighted(project.details)}</p>}
@@ -154,7 +154,7 @@ const AppShowcase = () => {
               )}
 
               {project.links.length > 0 && (
-                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <div className="flex flex-wrap gap-3 justify-start">
                   {project.links.map((link) => (
                     <a
                       key={`${project.id}-${link.href}`}
