@@ -41,3 +41,6 @@ ehthumbs.db
 Desktop.ini
 
 .vercel
+
+# Claude Code
+.claude/
