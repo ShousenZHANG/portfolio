@@ -65,7 +65,7 @@ const Hero = () => {
                     {/* LEFT: Hero Content */}
                     <div className="hero-content">
                         {/* Status badge */}
-                        <div className="hero-badge-anim mb-5 md:mb-6">
+                        <div className="hero-badge-anim mb-4 md:mb-6">
                             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm text-white/80">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -76,7 +76,7 @@ const Hero = () => {
                         </div>
 
                         {/* Main heading */}
-                        <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight">
+                        <h1 className="hero-heading text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight">
                             <span className="text-white">Building</span>{" "}
                             <span className="hero-word-slider">
                                 <span className="hero-word-track">
@@ -96,19 +96,19 @@ const Hero = () => {
                             </span>
                         </h1>
 
-                        <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-3">
+                        <p className="hero-sub text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-2 md:mt-3">
                             into Scalable Systems
                         </p>
 
                         {/* Description */}
-                        <p className="hero-desc text-white/75 text-base md:text-lg xl:text-xl max-w-xl leading-relaxed mt-6 md:mt-8">
+                        <p className="hero-desc text-white/75 text-sm md:text-lg xl:text-xl max-w-xl leading-relaxed mt-4 md:mt-8">
                             Full-stack developer with{" "}
                             <span className="text-white font-medium">3+ years professional experience</span>.
                             Specializing in Java Spring Boot microservices, React, and cloud architecture.
                         </p>
 
                         {/* CTAs */}
-                        <div className="hero-cta flex flex-wrap gap-4 mt-8 md:mt-10">
+                        <div className="hero-cta flex flex-wrap gap-3 md:gap-4 mt-5 md:mt-10">
                             <Button
                                 text="See My Work"
                                 className="md:w-56 md:h-13 w-44 h-12"
