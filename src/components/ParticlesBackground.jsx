@@ -74,11 +74,20 @@ const ParticlesBackground = () => {
   if (!ready) return null;
 
   return (
-    <Particles
-      id="tsparticles-bg"
-      options={options}
-      className="!fixed inset-0 -z-10 pointer-events-auto"
-    />
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    >
+      <Particles
+        id="tsparticles-bg"
+        options={options}
+        style={{ width: "100%", height: "100%" }}
+      />
+    </div>
   );
 };
 

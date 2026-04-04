@@ -59,6 +59,8 @@ body {
 section {
     width: 100dvw;
     scroll-margin-top: 100px;
+    position: relative;
+    z-index: 1;
 }
 
 @theme {
@@ -225,12 +227,10 @@ section {
             display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none;
         }
 
         .video-layout video {
             @apply w-full h-auto max-w-[95%] object-cover rounded-2xl;
-            pointer-events: auto;
         }
     }
 
