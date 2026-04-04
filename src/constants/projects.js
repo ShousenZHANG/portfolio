@@ -80,16 +80,4 @@ export const projects = [
       "Built a {socket-based batch processing tool} for large-scale file transfer, reducing processing time by {35%} and blocking {99% unauthorized access} through header-based authentication. Led migration from on-premise to cloud-native infrastructure with MinIO and Docker on Linux.",
     links: [],
   },
-  {
-    id: "portfolio",
-    title: "Personal Developer Portfolio",
-    desktopReverse: false,
-    autoplayDelay: 4000,
-    slides: [{ src: "/images/portfolio_main.png", alt: "Portfolio Home Page" }],
-    description:
-      "Designed and developed a {modern responsive website} using {React}, {Tailwind CSS}, and {JavaScript (ES6+)}. Implemented smooth animations, dynamic routing, and reusable components following best front-end engineering practices.",
-    details:
-      "Integrated project showcases and contact automation for recruiters, deployed via {Vercel}. Highlights include responsive layouts, modular component design, and CI/CD workflows for continuous updates.",
-    links: [{ href: "https://github.com/ShousenZHANG/portfolio.git", label: "View on GitHub ->" }],
-  },
 ];
