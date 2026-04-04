@@ -10,7 +10,6 @@ import JDQuickCheck from "./sections/JDQuickCheck.jsx";
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const TechStack = lazy(() => import("./sections/TechStack.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
-const JDAssistant = lazy(() => import("./components/JDAssistant.jsx"));
 
 const SectionLoader = () => (
     <div className="w-full min-h-[40vh] flex items-center justify-center">
@@ -37,9 +36,6 @@ const App = () => {
                 <Contact />
             </Suspense>
             <Footer />
-            <Suspense fallback={null}>
-                <JDAssistant />
-            </Suspense>
         </>
     );
 };
