@@ -76,7 +76,7 @@ const Hero = () => {
                         </div>
 
                         {/* Main heading */}
-                        <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.15] tracking-tight">
+                        <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight">
                             <span className="text-white">Building</span>{" "}
                             <span className="hero-word-slider">
                                 <span className="hero-word-track">
@@ -96,7 +96,7 @@ const Hero = () => {
                             </span>
                         </h1>
 
-                        <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.15] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-2">
+                        <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-3">
                             into Scalable Systems
                         </p>
 
