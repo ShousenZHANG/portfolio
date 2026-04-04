@@ -5,7 +5,7 @@
 export const projects = [
   {
     id: "jobflow-web",
-    title: "Jobflow - End-to-End Job Hunt Workflow",
+    title: "Jobflow",
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
@@ -15,25 +15,21 @@ export const projects = [
       { src: "/images/jobflow_jobs.png", alt: "Jobflow jobs workspace page" },
     ],
     description:
-      "Built Jobflow as an {end-to-end workflow} for modern job hunts: discover roles, review fit quickly, and track every application stage in one place. The product targets the core pain points called out in the README, including information overload, repetitive screening, and fragmented progress tracking.",
-    details:
-      "Implemented the README fetch pipeline with parsing, exclusion rules, dedupe, upsert, stale-run handling, and run summaries. On the product side, Jobflow ships a two-pane jobs workspace with markdown previews, keyword highlighting, and lifecycle states like {NEW / APPLIED / REJECTED}, plus resume tailoring support.",
+      "An {AI-powered job hunt platform} that automates the entire workflow — from discovering roles to tailoring resumes to auto-filling applications. Built to eliminate the repetitive grind of modern job searching.",
     outcomes: [
-      "Jobs Workspace: split view + smooth review flow for high-volume role screening",
-      "Fetch Console: smart exclusions, flexible location/radius filters, and tracked fetch runs",
-      "Reliable import lifecycle with retries, stale-run guardrails, tombstones, and safe upserts",
-      "Auth + resume flow aligned with README (Google/GitHub sign-in and structured resume management)",
+      "AI Agent Skill system: modular skill architecture that chains LLM reasoning with structured data extraction for JD analysis and resume matching",
+      "Smart Fetch Engine: automated job scraping with exclusion rules, deduplication, location/radius filtering, and stale-run guardrails",
+      "Dynamic Resume Builder: template-driven resume generation that adapts content and keywords based on target JD requirements",
+      "Chrome Extension: one-click autofill for ATS forms (Greenhouse, Lever, Workday) using structured profile data from the platform",
     ],
     tech: [
-      "Next.js App Router",
+      "Next.js",
       "TypeScript",
       "Prisma + PostgreSQL",
-      "NextAuth (Google/GitHub)",
-      "TanStack Query",
-      "Tailwind CSS + shadcn/ui",
       "Python (JobSpy)",
-      "Vercel (Blob/Postgres)",
-      "GitHub Actions",
+      "Chrome Extension",
+      "Tailwind + shadcn/ui",
+      "Vercel",
     ],
     links: [
       { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
@@ -52,11 +48,11 @@ export const projects = [
       { src: "/images/Pipeline.png", alt: "CI/CD Pipeline" },
     ],
     description:
-      "Built a cloud-native competition system with {7+ Spring Cloud microservices}, enabling JWT SSO, role-based access control, and async messaging via RabbitMQ. Deployed with Docker Compose for {95%+ CI/CD consistency} and 80% faster setup, contributing over {40,000 lines of production code}.",
+      "Cloud-native competition system with {7+ Spring Cloud microservices}, JWT SSO, role-based access control, and async messaging via RabbitMQ. {40,000+ lines of production code} with {95%+ CI/CD consistency}.",
     highlight: {
-      title: "Runner-up - Best Project in AI for Education",
+      title: "Runner-up — Best Project in AI for Education",
       description:
-        "Recognized at Coding Fest 2025 (University of Sydney, School of Computer Science) for innovation and community impact.",
+        "Recognized at Coding Fest 2025 (University of Sydney) for innovation and community impact.",
       sponsor: "Sponsored by Atlassian and Flow Traders.",
       cta: {
         href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
