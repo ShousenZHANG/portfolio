@@ -9,58 +9,48 @@ const TechStack = () => {
   useGSAP(() => {
     gsap.fromTo(
       ".tech-card",
+      { y: 30, opacity: 0 },
       {
-        y: 50, // Move the cards down by 50px
-        opacity: 0, // Set the opacity to 0
-      },
-      {
-        y: 0, // Move the cards back to the top
-        opacity: 1, // Set the opacity to 1
-        duration: 1, // Duration of the animation
-        ease: "power2.inOut", // Ease of the animation
-        stagger: 0.2, // Stagger the animation by 0.2 seconds
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.12,
         scrollTrigger: {
-          trigger: "#skills", // Trigger the animation when the user scrolls to the #skills wrapper
-          start: "top center", // Start the animation when the top of the wrapper is at the center of the screen
+          trigger: "#skills",
+          start: "top 80%",
         },
       }
     );
-  });
+  }, []);
 
   return (
-    <div id="skills" className="flex-center section-padding">
-      <div className="w-full h-full md:px-10 px-5">
+    <section id="skills" className="py-20 md:py-28 px-5 md:px-12 lg:px-20">
+      <div className="max-w-[1200px] mx-auto">
         <TitleHeader
-            title="Technical Expertise & Core Stack"
-            sub="💻 Building Scalable Systems with Modern Technologies"
+          title="Technical Expertise"
+          sub="Core Stack"
         />
-        <div className="tech-grid">
-          {techStackIcons.map((techStackIcon) => (
+
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mt-14">
+          {techStackIcons.map((icon) => (
             <div
-              key={techStackIcon.name}
-              className="card-border tech-card overflow-hidden group rounded-2xl motion-rise"
+              key={icon.name}
+              className="tech-card group relative bg-[#0d0f15] border border-white/8 rounded-2xl overflow-hidden hover:border-sky-400/25 transition-colors duration-500"
             >
-              {/* The tech-card-animated-bg div is used to create a background animation when the
-                  component is hovered. */}
-              <div className="tech-card-animated-bg" />
-              <div className="tech-card-content">
-                {/* The tech-icon-wrapper div contains the TechIconCardExperience component,
-                    which renders the 3D model of the tech stack icon. */}
-                <div className="tech-icon-wrapper">
-                  <TechIconCardExperience model={techStackIcon} />
+              <div className="flex flex-col items-center pt-4 pb-5 md:pt-6 md:pb-6">
+                <div className="w-32 h-32 md:w-40 md:h-40">
+                  <TechIconCardExperience model={icon} />
                 </div>
-                {/* The padding-x and w-full classes are used to add horizontal padding to the
-                    text and make it take up the full width of the component. */}
-                <div className="padding-x w-full">
-                  {/* The p tag contains the name of the tech stack icon. */}
-                  <p>{techStackIcon.name}</p>
-                </div>
+                <p className="text-sm md:text-base font-medium text-white/70 group-hover:text-sky-300 transition-colors duration-300 mt-2">
+                  {icon.name}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
