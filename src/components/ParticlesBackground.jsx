@@ -4,8 +4,7 @@ import { loadSlim } from "@tsparticles/slim";
 
 /**
  * Full-page animated particle network background.
- * Uses tsParticles slim bundle for optimal performance.
- * Renders fixed behind all content — cyan/emerald theme matching the portfolio palette.
+ * Balanced for visual impact + smooth scrolling.
  */
 const ParticlesBackground = () => {
   const [ready, setReady] = useState(false);
@@ -23,37 +22,43 @@ const ParticlesBackground = () => {
       background: { color: { value: "transparent" } },
       particles: {
         number: {
-          value: 30,
-          density: { enable: true, width: 1400, height: 900 },
+          value: 55,
+          density: { enable: true, width: 1200, height: 800 },
         },
         color: {
-          value: ["#38bdf8", "#22d3ee", "#34d399"],
+          value: ["#38bdf8", "#22d3ee", "#34d399", "#818cf8"],
         },
         shape: { type: "circle" },
         opacity: {
-          value: { min: 0.1, max: 0.3 },
+          value: { min: 0.2, max: 0.5 },
         },
         size: {
-          value: { min: 1, max: 2 },
+          value: { min: 1, max: 3 },
         },
         move: {
           enable: true,
-          speed: 0.4,
+          speed: { min: 0.2, max: 0.6 },
           direction: "none",
           outModes: { default: "out" },
         },
         links: {
           enable: true,
-          distance: 140,
+          distance: 150,
           color: "#38bdf8",
-          opacity: 0.06,
+          opacity: 0.12,
           width: 1,
         },
       },
       interactivity: {
         events: {
-          onHover: { enable: false },
+          onHover: { enable: true, mode: "grab" },
           resize: { enable: true },
+        },
+        modes: {
+          grab: {
+            distance: 160,
+            links: { opacity: 0.25, color: "#22d3ee" },
+          },
         },
       },
       detectRetina: true,
@@ -75,7 +80,7 @@ const ParticlesBackground = () => {
       <Particles
         id="tsparticles-bg"
         options={options}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
       />
     </div>
   );
