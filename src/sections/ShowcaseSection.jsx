@@ -73,7 +73,7 @@ const AppShowcase = () => {
             >
               {/* Image / Carousel */}
               <div className="lg:w-1/2 w-full">
-                <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-black/30 min-h-[320px] md:min-h-[400px] h-full">
+                <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-black/30 h-[280px] sm:h-[340px] md:h-[400px]">
                   {project.slides.length > 0 ? (
                     <Swiper
                       modules={[Autoplay, Pagination, EffectFade]}
@@ -86,7 +86,7 @@ const AppShowcase = () => {
                     >
                       {project.slides.map((img) => (
                         <SwiperSlide key={`${project.id}-${img.src}`}>
-                          <div className="flex items-center justify-center w-full h-full min-h-[320px] md:min-h-[400px] bg-black/10 p-4">
+                          <div className="flex items-center justify-center w-full h-full bg-black/10 p-3 sm:p-4">
                             <img src={img.src} alt={img.alt} className="max-w-full max-h-full object-contain rounded-lg" loading="lazy" />
                           </div>
                         </SwiperSlide>
