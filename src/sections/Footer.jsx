@@ -1,70 +1,70 @@
 import Mail from "lucide-react/dist/esm/icons/mail";
 import Phone from "lucide-react/dist/esm/icons/phone";
 import Linkedin from "lucide-react/dist/esm/icons/linkedin";
+import Github from "lucide-react/dist/esm/icons/github";
 
 const Footer = () => {
   return (
-      <footer className="relative mt-20 py-10 border-t border-white/10 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/75">
-          {/* Left Section – Copyright */}
-          <div className="text-center md:text-left">
-            <p>
-              © {new Date().getFullYear()}{" "}
-              <span className="text-sky-400 font-semibold">Eddy Zhang</span>. All
-              rights reserved.
-            </p>
-          </div>
-
-          {/* Middle Section – Contact Info */}
-          <div className="flex flex-wrap justify-center items-center gap-6 text-sky-400">
-            {/* Email */}
+    <footer className="border-t border-white/8 mt-16">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-12 lg:px-16 py-10 md:py-12">
+        {/* Top row: Links + Social */}
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 mb-8">
+          {/* Contact links */}
+          <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-6 gap-y-3">
             <a
-                href="mailto:eddy.zhang24@gmail.com"
-                aria-label="Email eddy.zhang24@gmail.com"
-                className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
+              href="mailto:eddy.zhang24@gmail.com"
+              aria-label="Email eddy.zhang24@gmail.com"
+              className="flex items-center gap-2 text-white/50 hover:text-white/80 text-sm transition-colors duration-300"
             >
               <Mail className="w-4 h-4" />
-              <span className="hidden sm:inline">eddy.zhang24@gmail.com</span>
-</a>
-
-            {/* Divider */}
-            <span className="text-white/30">•</span>
-
-            {/* Phone */}
-            <a
-                href="tel:+610468761056"
-                aria-label="Phone +61 0468 761 056"
-                className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
-            >
-              <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">+61&nbsp;0468&nbsp;761&nbsp;056</span>
+              <span>eddy.zhang24@gmail.com</span>
             </a>
 
-            {/* Divider */}
-            <span className="text-white/30">•</span>
-
-            {/* LinkedIn */}
             <a
-                href="https://linkedin.com/in/eddy-shousen-zhang"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn profile"
-                className="flex items-center gap-2 hover:text-sky-300 transition-all duration-300 hover:scale-105"
+              href="tel:+610468761056"
+              aria-label="Phone +61 0468 761 056"
+              className="flex items-center gap-2 text-white/50 hover:text-white/80 text-sm transition-colors duration-300"
             >
-              <Linkedin className="w-4 h-4" />
-              <span className="hidden sm:inline">LinkedIn</span>
+              <Phone className="w-4 h-4" />
+              <span>+61 0468 761 056</span>
             </a>
           </div>
 
-          {/* Right Section – Tagline */}
-          <div className="text-center md:text-right text-white/65 italic">
-            <p>Crafted with ☕ + 💻 in Sydney</p>
+          {/* Social icons */}
+          <div className="flex items-center gap-4">
+            <a
+              href="https://linkedin.com/in/eddy-shousen-zhang"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn profile"
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/8 text-white/40 hover:text-white/80 hover:border-white/20 transition-all duration-300"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a
+              href="https://github.com/ShousenZHANG"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profile"
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/8 text-white/40 hover:text-white/80 hover:border-white/20 transition-all duration-300"
+            >
+              <Github className="w-4 h-4" />
+            </a>
           </div>
         </div>
 
-        {/* Subtle top glow */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-sky-400/40 to-transparent blur-sm" />
-      </footer>
+        {/* Divider */}
+        <div className="h-px bg-white/6 mb-6" />
+
+        {/* Bottom row: Copyright + Location */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
+          <p>
+            &copy; {new Date().getFullYear()} Eddy Zhang. All rights reserved.
+          </p>
+          <p>Sydney, Australia</p>
+        </div>
+      </div>
+    </footer>
   );
 };
 
