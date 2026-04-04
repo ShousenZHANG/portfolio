@@ -1,150 +1,151 @@
-import {words} from "../constants/index.js";
+import { useState } from "react";
+import { words } from "../constants/index.js";
 import Button from "../components/Button.jsx";
-import {useGSAP} from "@gsap/react";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
 
-const videoShadowStyle = {
-    filter: "drop-shadow(0 0 35px rgba(56,189,248,0.5))",
-};
-
 const Hero = () => {
+    const [videoLoaded, setVideoLoaded] = useState(false);
+
     useGSAP(() => {
         const isMobile =
             typeof window !== "undefined" &&
             window.matchMedia("(max-width: 768px)").matches;
-        const ctx = gsap.context(() => {
-            gsap.fromTo(
-                ".hero-text h1",
-                {y: isMobile ? 24 : 50, opacity: 0},
-                {
-                    y: 0,
-                    opacity: 1,
-                    stagger: isMobile ? 0.1 : 0.16,
-                    duration: isMobile ? 0.75 : 0.95,
-                    ease: "power2.out",
-                }
-            );
-            gsap.fromTo(
-                ".hero-desc, .hero-cta",
-                {y: isMobile ? 12 : 24, opacity: 0},
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: isMobile ? 0.65 : 0.85,
-                    ease: "power2.out",
-                    delay: isMobile ? 0.18 : 0.26,
-                }
-            );
-        });
-        return () => ctx.revert();
+
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+        // Staggered reveal: badge → heading → subheading → description → CTAs
+        tl.fromTo(
+            ".hero-badge-anim",
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.6 }
+        )
+        .fromTo(
+            ".hero-heading",
+            { y: isMobile ? 30 : 50, opacity: 0 },
+            { y: 0, opacity: 1, duration: isMobile ? 0.6 : 0.8 },
+            "-=0.3"
+        )
+        .fromTo(
+            ".hero-sub",
+            { y: isMobile ? 20 : 35, opacity: 0 },
+            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.7 },
+            "-=0.4"
+        )
+        .fromTo(
+            ".hero-desc",
+            { y: isMobile ? 16 : 24, opacity: 0 },
+            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.65 },
+            "-=0.3"
+        )
+        .fromTo(
+            ".hero-cta",
+            { y: isMobile ? 16 : 24, opacity: 0 },
+            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.65 },
+            "-=0.2"
+        )
+        .fromTo(
+            ".hero-video-wrap",
+            { y: isMobile ? 20 : 40, opacity: 0, scale: 0.98 },
+            { y: 0, opacity: 1, scale: 1, duration: isMobile ? 0.6 : 0.9 },
+            "-=0.4"
+        );
     }, []);
+
     return (
         <>
             <section id="hero" className="relative overflow-hidden">
-                {/* Background Image */}
-                <div className="absolute top-0 left-0 z-10">
-                    <img src="/images/bg.png" alt=""/>
-                </div>
+                {/* Background layers */}
+                <div className="hero-bg-layer" aria-hidden="true" />
+                <div className="hero-glow" aria-hidden="true" />
+                <div className="hero-glow-secondary" aria-hidden="true" />
 
                 <div className="hero-layout">
                     {/* LEFT: Hero Content */}
-                    <header className="relative flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
-                        <div className="hero-glow" aria-hidden="true" />
-                        <div className="flex flex-col gap-7">
-                            <div className="hero-text">
-                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-                                    Building
-                                    <span className="slide">
-                  <span className="wrapper">
-                    {words.map((word, index) => (
-                        <span
-                            key={index}
-                            className="flex items-center md:gap-3 gap-1 pb-2"
-                        >
-                        <img
-                            src={word.imgPath}
-                            alt="person"
-                            className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white-50"
-                        />
-                        <span>{word.text}</span>
-                      </span>
-                    ))}
-                  </span>
-                </span>
-                                </h1>
-                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent animate-gradient-x">into
-                                    Scalable Systems</h1>
-                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-semibold leading-tight bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-500 bg-clip-text text-transparent">that
-                                    Empower Innovation</h1>
-                            </div>
+                    <header className="relative z-10 flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
+                        {/* Status badge */}
+                        <div className="hero-badge-anim mb-6 md:mb-8">
+                            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm text-white/80">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                                </span>
+                                Available for opportunities in Sydney
+                            </span>
+                        </div>
 
-                            {/* Description */}
-                            <p className="hero-desc text-white/80 md:text-xl max-w-2xl leading-relaxed mt-4">
-                                Hi, I’m{" "}
-                                <span
-                                    className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400
-               bg-clip-text text-transparent animate-gradient-x
-               drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]">
-    Eddy Zhang
-  </span>
-                                — a{" "}
-                                <span className="text-cyan-300 font-semibold drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">
-    full-stack developer
-  </span>{" "}
-                                with{" "}
-                                <span className="text-emerald-300 font-semibold">
-    3 years of full-time experience
-  </span>{" "}
-                                and{" "}
-                                <span className="text-emerald-300 font-semibold">
-    5 years in total software development
-  </span>.
-                            </p>
-
-                            {/* Buttons */}
-                            <div className="hero-cta flex flex-wrap gap-5 mt-6">
-                                {/* View Work Button */}
-                                <Button
-                                    text="See My Work"
-                                    className="md:w-72 md:h-14 w-56 h-12"
-                                    scrollTo="counter"
-                                />
-
-                                {/* Download Resume Button */}
-                                <a
-                                    href="/files/Eddy_Zhang_CV.pdf"
-                                    download="Eddy_Zhang_Resume.pdf"
-                                    className="hero-btn-secondary group md:w-72 md:h-14 w-56 h-12"
-                                >
-                                    <span className="hero-btn-border" />
-                                    <span className="relative z-10 flex items-center gap-2.5 font-semibold tracking-wide">
-                                        <Download className="w-4.5 h-4.5 text-sky-300 transition-all duration-300 group-hover:text-sky-200 group-hover:-translate-y-0.5" />
-                                        Download CV
+                        {/* Main heading */}
+                        <div className="flex flex-col gap-3 md:gap-4">
+                            <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                                <span className="text-white">Building</span>
+                                <span className="hero-word-slider">
+                                    <span className="hero-word-track">
+                                        {words.map((word, index) => (
+                                            <span key={index} className="hero-word-item">
+                                                <img
+                                                    src={word.imgPath}
+                                                    alt=""
+                                                    className="xl:size-11 md:size-9 size-7 p-1 rounded-full bg-white/10"
+                                                />
+                                                <span className="bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                                                    {word.text}
+                                                </span>
+                                            </span>
+                                        ))}
                                     </span>
-                                </a>
-                            </div>
+                                </span>
+                            </h1>
+                            <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent">
+                                into Scalable Systems
+                            </p>
+                        </div>
+
+                        {/* Description — simplified, fewer highlights */}
+                        <p className="hero-desc text-white/75 text-base md:text-lg xl:text-xl max-w-xl leading-relaxed mt-6 md:mt-8">
+                            Full-stack developer with{" "}
+                            <span className="text-white font-medium">3+ years professional experience</span>.
+                            Specializing in Java Spring Boot microservices, React, and cloud architecture.
+                        </p>
+
+                        {/* CTAs */}
+                        <div className="hero-cta flex flex-wrap gap-4 mt-8 md:mt-10">
+                            <Button
+                                text="See My Work"
+                                className="md:w-60 md:h-13 w-48 h-12"
+                                scrollTo="counter"
+                            />
+                            <a
+                                href="/files/Eddy_Zhang_CV.pdf"
+                                download="Eddy_Zhang_Resume.pdf"
+                                className="hero-btn-secondary group md:w-60 md:h-13 w-48 h-12"
+                            >
+                                <span className="hero-btn-border" />
+                                <span className="relative z-10 flex items-center gap-2.5 font-semibold tracking-wide">
+                                    <Download className="w-4 h-4 text-sky-300 transition-all duration-300 group-hover:text-sky-200 group-hover:-translate-y-0.5" />
+                                    Download CV
+                                </span>
+                            </a>
                         </div>
                     </header>
+
                     {/* RIGHT: Video */}
                     <figure className="video-layout flex justify-center items-center">
-                        <div
-                            className="relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center"
-                            style={videoShadowStyle}
-                        >
-                            <div
-                                className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border border-white/10 bg-black/30">
-                                {/* Skeleton shown until video loads */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 animate-pulse" />
+                        <div className="hero-video-wrap relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center">
+                            <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-black/40 hero-video-container">
+                                {/* Skeleton pulse */}
+                                {!videoLoaded && (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-slate-800/60 to-slate-900/60 animate-pulse" />
+                                )}
                                 <video
                                     src="/videos/eddy_intro.mp4"
                                     controls
                                     loop
                                     playsInline
                                     preload="metadata"
-                                    className="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
-                                    onLoadedData={(e) => { e.currentTarget.classList.remove("opacity-0"); }}
+                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
+                                    onLoadedData={() => setVideoLoaded(true)}
                                 />
                             </div>
                         </div>
@@ -152,9 +153,10 @@ const Hero = () => {
                 </div>
             </section>
             <section id="counter-section">
-                <AnimatedCounter/>
+                <AnimatedCounter />
             </section>
         </>
-    )
-}
-export default Hero
+    );
+};
+
+export default Hero;
