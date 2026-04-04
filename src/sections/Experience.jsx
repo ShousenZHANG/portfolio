@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { expCards } from "../constants";
@@ -5,122 +6,94 @@ import TitleHeader from "../components/TitleHeader";
 import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
 
 const Experience = () => {
-    useGSAP(() => {
-        const ctx = gsap.context(() => {
-            const isMobile = window.matchMedia("(max-width: 768px)").matches;
-            const blocks = gsap.utils.toArray(".exp-block");
+    const containerRef = useRef(null);
 
-            blocks.forEach((block, i) => {
-                const tl = gsap.timeline({
+    useGSAP(() => {
+        const blocks = gsap.utils.toArray(".exp-card");
+        blocks.forEach((block) => {
+            gsap.fromTo(
+                block,
+                { opacity: 0, x: -30 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.7,
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: block,
-                        start: "top 84%",
+                        start: "top 86%",
                         toggleActions: "play none none reverse",
                     },
-                });
-
-                if (!isMobile) {
-                    tl.from(block, {
-                        opacity: 0,
-                        y: 56,
-                        scale: 0.98,
-                        duration: 0.9,
-                        ease: "power2.out",
-                        delay: i * 0.08,
-                    }).from(
-                        block.querySelector(".timeline-dot"),
-                        {
-                            opacity: 0,
-                            scale: 0.7,
-                            filter: "blur(4px)",
-                            duration: 0.6,
-                            ease: "power2.out",
-                        },
-                        "-=0.5"
-                    );
-                } else {
-                    gsap.from(block, {
-                        opacity: 0,
-                        y: 28,
-                        duration: 0.7,
-                        ease: "power2.out",
-                        delay: i * 0.06,
-                    });
                 }
-            });
+            );
         });
-
-        return () => ctx.revert();
     }, []);
 
     return (
-        <section
-            id="experience"
-            className="flex-center md:mt-20 mt-20 section-padding xl:px-0"
-        >
-            <div className="w-full h-full md:px-20 px-5">
+        <section id="experience" className="py-20 md:py-28 px-5 md:px-12 lg:px-20">
+            <div className="max-w-[1100px] mx-auto" ref={containerRef}>
                 <TitleHeader
-                    title="Professional Work Experience"
-                    sub="💼 My Journey Through Code & Innovation"
+                    title="Professional Experience"
+                    sub="My Journey"
                 />
 
-                {/* Timeline wrapper — desktop: center line, mobile: left line */}
-                <div className="relative mt-24 before:content-[''] before:absolute before:top-0 before:bottom-0 before:w-[2px] before:bg-gradient-to-b before:from-sky-400/30 before:to-transparent before:left-3 md:before:left-1/2">
-                    {expCards.map((card, index) => (
-                        <div
-                            key={card.title}
-                            className={`exp-block relative flex flex-col md:flex-row items-start ${
-                                index % 2 === 0 ? "md:flex-row-reverse" : ""
-                            } md:justify-between gap-4 md:gap-10 mb-16 md:mb-28 pl-10 md:pl-0`}
-                        >
-                            {/* Timeline dot — mobile: left side, desktop: center */}
-                            <div className={`timeline-dot absolute left-1 md:left-1/2 md:-translate-x-1/2 w-5 h-5 bg-sky-400 rounded-full shadow-[0_0_15px_rgba(56,189,248,0.9)] z-10 top-2 md:top-auto ${index === 0 ? "animate-pulse" : ""}`} />
+                <div className="relative mt-16">
+                    {/* Vertical connecting line */}
+                    <div
+                        className="absolute left-[1.4rem] md:left-[2.1rem] top-0 bottom-0 w-px"
+                        style={{
+                            background: "linear-gradient(to bottom, rgba(56,189,248,0.4), rgba(56,189,248,0.15), transparent)",
+                        }}
+                        aria-hidden="true"
+                    />
 
-                            <div
-                                className={`group relative bg-[#0d0f15]/90 backdrop-blur-xl p-7 sm:p-8 md:p-10 rounded-xl border border-white/10 hover:border-sky-400/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:-translate-y-1 transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] md:w-[45%] w-full ${
-                                    index % 2 === 0 ? "md:text-right" : "md:text-left"
-                                }`}
-                            >
-                                <h1
-                                    className={`font-semibold text-2xl sm:text-3xl md:text-4xl bg-gradient-to-r from-white via-sky-200 to-indigo-400 bg-clip-text text-transparent tracking-tight ${
-                                        index % 2 === 0 ? "md:text-right" : "md:text-left"
-                                    }`}
-                                >
-                                    {card.title}
-                                </h1>
-
-                                <div
-                                    className={`flex items-center gap-2 mb-5 mt-3 ${
-                                        index % 2 === 0 ? "md:justify-end" : "md:justify-start"
-                                    }`}
-                                >
-                                    <CalendarDays className="w-5 h-5 text-sky-400 shrink-0" />
-                                    <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-slate-300 via-sky-200 to-slate-400 tracking-wide drop-shadow-[0_0_6px_rgba(56,189,248,0.25)] text-sm sm:text-base">
-                    {card.date}
-                  </span>
+                    <div className="flex flex-col gap-10 md:gap-14">
+                        {expCards.map((card, index) => (
+                            <div key={card.title} className="exp-card relative flex gap-5 md:gap-8">
+                                {/* Step number */}
+                                <div className="flex-shrink-0 flex flex-col items-center">
+                                    <div className="w-11 h-11 md:w-[4.2rem] md:h-[4.2rem] rounded-xl bg-[#0e1018] border border-sky-400/25 flex items-center justify-center relative">
+                                        <span className="text-sm md:text-lg font-bold text-sky-400 tracking-tight">
+                                            {String(index + 1).padStart(2, "0")}
+                                        </span>
+                                        {/* Glow ring on first item */}
+                                        {index === 0 && (
+                                            <div className="absolute inset-0 rounded-xl border border-sky-400/40 animate-pulse" />
+                                        )}
+                                    </div>
                                 </div>
 
-                                <p className="text-sky-300 italic font-medium text-base sm:text-lg mb-4 tracking-wide">
-                                    Responsibilities
-                                </p>
+                                {/* Card content */}
+                                <div className="flex-1 bg-[#0d0f15] rounded-xl border border-white/8 p-6 md:p-8 hover:border-white/15 transition-colors duration-500">
+                                    {/* Header row */}
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-5">
+                                        <h2 className="text-xl md:text-2xl font-semibold text-white leading-tight">
+                                            {card.title}
+                                        </h2>
+                                        <div className="flex items-center gap-2 text-white/50 text-sm flex-shrink-0">
+                                            <CalendarDays className="w-4 h-4" />
+                                            <span>{card.date}</span>
+                                        </div>
+                                    </div>
 
-                                <ul
-                                    className={`relative border-l border-sky-900/60 ${
-                                        index % 2 === 0 ? "md:border-r md:border-l-0 md:pr-6" : "pl-6"
-                                    } flex flex-col gap-3 sm:gap-4`}
-                                >
-                                    {card.responsibilities.map((r) => (
-                                        <li
-                                            key={r.slice(0, 50)}
-                                            className="text-[15px] sm:text-base md:text-lg text-slate-200 leading-relaxed font-light hover:text-sky-300 transition-all duration-300"
-                                        >
-                                            {r}
-                                        </li>
-                                    ))}
-                                </ul>
+                                    {/* Responsibility list */}
+                                    <ul className="space-y-3">
+                                        {card.responsibilities.map((r) => (
+                                            <li
+                                                key={r.slice(0, 50)}
+                                                className="flex gap-3 text-sm md:text-base text-white/70 leading-relaxed"
+                                            >
+                                                <span className="text-sky-400/60 mt-1.5 flex-shrink-0">
+                                                    <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor"><circle cx="3" cy="3" r="3"/></svg>
+                                                </span>
+                                                <span>{r}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
