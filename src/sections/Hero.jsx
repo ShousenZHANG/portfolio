@@ -16,7 +16,6 @@ const Hero = () => {
 
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-        // Staggered reveal: badge → heading → subheading → description → CTAs
         tl.fromTo(
             ".hero-badge-anim",
             { y: 20, opacity: 0 },
@@ -64,9 +63,9 @@ const Hero = () => {
 
                 <div className="hero-layout">
                     {/* LEFT: Hero Content */}
-                    <header className="relative z-10 flex flex-col justify-center xl:w-[45%] md:w-full w-screen md:px-20 px-5">
+                    <div className="hero-content">
                         {/* Status badge */}
-                        <div className="hero-badge-anim mb-6 md:mb-8">
+                        <div className="hero-badge-anim mb-5 md:mb-6">
                             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm text-white/80">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -77,32 +76,31 @@ const Hero = () => {
                         </div>
 
                         {/* Main heading */}
-                        <div className="flex flex-col gap-3 md:gap-4">
-                            <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
-                                <span className="text-white">Building</span>
-                                <span className="hero-word-slider">
-                                    <span className="hero-word-track">
-                                        {words.map((word, index) => (
-                                            <span key={index} className="hero-word-item">
-                                                <img
-                                                    src={word.imgPath}
-                                                    alt=""
-                                                    className="xl:size-11 md:size-9 size-7 p-1 rounded-full bg-white/10"
-                                                />
-                                                <span className="bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                                                    {word.text}
-                                                </span>
+                        <h1 className="hero-heading text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.15] tracking-tight">
+                            <span className="text-white">Building</span>{" "}
+                            <span className="hero-word-slider">
+                                <span className="hero-word-track">
+                                    {words.map((word, index) => (
+                                        <span key={index} className="hero-word-item">
+                                            <img
+                                                src={word.imgPath}
+                                                alt=""
+                                                className="xl:size-11 md:size-9 size-7 p-1 rounded-full bg-white/10"
+                                            />
+                                            <span className="bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                                                {word.text}
                                             </span>
-                                        ))}
-                                    </span>
+                                        </span>
+                                    ))}
                                 </span>
-                            </h1>
-                            <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent">
-                                into Scalable Systems
-                            </p>
-                        </div>
+                            </span>
+                        </h1>
 
-                        {/* Description — simplified, fewer highlights */}
+                        <p className="hero-sub text-4xl md:text-5xl xl:text-6xl font-extrabold leading-[1.15] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-2">
+                            into Scalable Systems
+                        </p>
+
+                        {/* Description */}
                         <p className="hero-desc text-white/75 text-base md:text-lg xl:text-xl max-w-xl leading-relaxed mt-6 md:mt-8">
                             Full-stack developer with{" "}
                             <span className="text-white font-medium">3+ years professional experience</span>.
@@ -113,13 +111,13 @@ const Hero = () => {
                         <div className="hero-cta flex flex-wrap gap-4 mt-8 md:mt-10">
                             <Button
                                 text="See My Work"
-                                className="md:w-60 md:h-13 w-48 h-12"
+                                className="md:w-56 md:h-13 w-44 h-12"
                                 scrollTo="counter"
                             />
                             <a
                                 href="/files/Eddy_Zhang_CV.pdf"
                                 download="Eddy_Zhang_Resume.pdf"
-                                className="hero-btn-secondary group md:w-60 md:h-13 w-48 h-12"
+                                className="hero-btn-secondary group md:w-56 md:h-13 w-44 h-12"
                             >
                                 <span className="hero-btn-border" />
                                 <span className="relative z-10 flex items-center gap-2.5 font-semibold tracking-wide">
@@ -128,13 +126,12 @@ const Hero = () => {
                                 </span>
                             </a>
                         </div>
-                    </header>
+                    </div>
 
                     {/* RIGHT: Video */}
-                    <figure className="video-layout flex justify-center items-center z-20">
-                        <div className="hero-video-wrap relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center">
+                    <div className="hero-video">
+                        <div className="hero-video-wrap w-full aspect-[16/9]">
                             <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-black/40 hero-video-container">
-                                {/* Skeleton pulse */}
                                 {!videoLoaded && (
                                     <div className="absolute inset-0 bg-gradient-to-br from-slate-800/60 to-slate-900/60 animate-pulse" />
                                 )}
@@ -149,7 +146,7 @@ const Hero = () => {
                                 />
                             </div>
                         </div>
-                    </figure>
+                    </div>
                 </div>
             </section>
             <section id="counter-section">
