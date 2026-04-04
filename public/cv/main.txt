@@ -55,7 +55,7 @@ Suzhou, China | Jun 2020 - Jul 2022
 
 PROJECTS
 
-Jobflow - Job Search Automation Platform
+Joblit - Job Search Automation Platform
 Next.js, TypeScript, Prisma, PostgreSQL, Azure | GitHub | Live Demo
 Sydney, Australia | Jul 2025 - Present
 

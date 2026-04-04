@@ -4,15 +4,15 @@
  */
 export const projects = [
   {
-    id: "jobflow-web",
-    title: "Jobflow",
+    id: "joblit",
+    title: "Joblit",
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
-      { src: "/images/jobflow_landing.png", alt: "Jobflow landing page" },
-      { src: "/images/jobflow_fetch.png", alt: "Jobflow fetch workflow page" },
-      { src: "/images/jobflow_resume.png", alt: "Jobflow resume builder page" },
-      { src: "/images/jobflow_jobs.png", alt: "Jobflow jobs workspace page" },
+      { src: "/images/joblit_landing.png", alt: "Joblit landing page" },
+      { src: "/images/joblit_fetch.png", alt: "Joblit fetch workflow page" },
+      { src: "/images/joblit_resume.png", alt: "Joblit resume builder page" },
+      { src: "/images/joblit_jobs.png", alt: "Joblit jobs workspace page" },
     ],
     description:
       "An {AI-powered job hunt platform} that automates the entire workflow — from discovering roles to tailoring resumes to auto-filling applications. Built to eliminate the repetitive grind of modern job searching.",
@@ -33,7 +33,7 @@ export const projects = [
     ],
     links: [
       { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
-      { href: "https://jobflow-web.vercel.app", label: "Live Demo ->" },
+      { href: "https://www.joblit.tech/", label: "Live Demo ->" },
     ],
   },
   {
