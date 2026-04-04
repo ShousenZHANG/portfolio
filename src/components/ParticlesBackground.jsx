@@ -18,52 +18,42 @@ const ParticlesBackground = () => {
 
   const options = useMemo(
     () => ({
-      fpsLimit: 60,
+      fpsLimit: 30,
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
       particles: {
         number: {
-          value: 50,
-          density: { enable: true, width: 1200, height: 800 },
+          value: 30,
+          density: { enable: true, width: 1400, height: 900 },
         },
         color: {
-          value: ["#38bdf8", "#22d3ee", "#34d399", "#818cf8"],
+          value: ["#38bdf8", "#22d3ee", "#34d399"],
         },
         shape: { type: "circle" },
         opacity: {
-          value: { min: 0.15, max: 0.4 },
-          animation: { enable: true, speed: 0.8, sync: false },
+          value: { min: 0.1, max: 0.3 },
         },
         size: {
-          value: { min: 1, max: 2.5 },
+          value: { min: 1, max: 2 },
         },
         move: {
           enable: true,
-          speed: { min: 0.3, max: 0.8 },
+          speed: 0.4,
           direction: "none",
           outModes: { default: "out" },
         },
         links: {
           enable: true,
-          distance: 160,
+          distance: 140,
           color: "#38bdf8",
-          opacity: 0.08,
+          opacity: 0.06,
           width: 1,
         },
       },
       interactivity: {
         events: {
-          onHover: {
-            enable: true,
-            mode: "grab",
-          },
+          onHover: { enable: false },
           resize: { enable: true },
-        },
-        modes: {
-          grab: {
-            distance: 180,
-            links: { opacity: 0.2, color: "#22d3ee" },
-          },
         },
       },
       detectRetina: true,

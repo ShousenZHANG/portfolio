@@ -182,24 +182,26 @@ section {
     }
 
     .hero-glow {
-        @apply pointer-events-none absolute -top-32 -left-16 h-72 w-72 md:h-[28rem] md:w-[28rem] rounded-full;
+        @apply pointer-events-none absolute -top-32 -left-16 rounded-full;
+        width: 32rem;
+        height: 32rem;
         background: radial-gradient(
             circle at center,
-            rgba(56, 189, 248, 0.2) 0%,
-            rgba(34, 211, 238, 0.12) 35%,
+            rgba(56, 189, 248, 0.12) 0%,
+            rgba(34, 211, 238, 0.06) 40%,
             transparent 70%
         );
-        filter: blur(40px);
     }
 
     .hero-glow-secondary {
-        @apply pointer-events-none absolute -bottom-20 right-[10%] h-64 w-64 md:h-80 md:w-80 rounded-full;
+        @apply pointer-events-none absolute -bottom-20 right-[10%] rounded-full;
+        width: 24rem;
+        height: 24rem;
         background: radial-gradient(
             circle at center,
-            rgba(52, 211, 153, 0.1) 0%,
+            rgba(52, 211, 153, 0.06) 0%,
             transparent 60%
         );
-        filter: blur(50px);
     }
 
     /* ── Hero Word Slider ── */
@@ -261,15 +263,14 @@ section {
         max-width: 1200px;
         padding: 0.625rem 1.5rem;
         border-radius: 9999px;
-        transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: background-color, border-color;
+        transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
     .navbar.scrolled .navbar-inner {
-        background: rgba(10, 10, 14, 0.75);
-        backdrop-filter: blur(20px) saturate(1.5);
-        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        background: rgba(10, 10, 14, 0.88);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
     .navbar.not-scrolled .navbar-inner {
@@ -366,9 +367,7 @@ section {
     /* ── Hero Secondary CTA (glass outline + animated border) ── */
     .hero-btn-secondary {
         @apply relative z-20 flex items-center justify-center rounded-2xl cursor-pointer overflow-hidden;
-        background: rgba(255, 255, 255, 0.04);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.06);
         color: #fff;
         transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
                     background 0.3s ease,
@@ -408,7 +407,7 @@ section {
     .tech-card-animated-bg {
         @apply absolute left-0 bottom-[-100%] w-full h-full rounded-2xl
         bg-gradient-to-tr from-sky-500/10 via-[#1a1f2e]/80 to-indigo-500/10
-        backdrop-blur-sm transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
+        transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
         opacity-90 group-hover:bottom-0 group-hover:opacity-100;
 
         background-size: 200% 200%;
@@ -476,7 +475,7 @@ section {
     }
 
     .jd-card {
-        @apply mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl;
+        @apply mx-auto max-w-4xl rounded-3xl border border-white/10 bg-[#0e0e12];
         box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
     }
 
