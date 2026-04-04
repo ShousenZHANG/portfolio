@@ -64,7 +64,7 @@ const Hero = () => {
 
                 <div className="hero-layout">
                     {/* LEFT: Hero Content */}
-                    <header className="relative z-10 flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
+                    <header className="relative z-10 flex flex-col justify-center xl:w-[45%] md:w-full w-screen md:px-20 px-5">
                         {/* Status badge */}
                         <div className="hero-badge-anim mb-6 md:mb-8">
                             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm text-white/80">
@@ -131,7 +131,7 @@ const Hero = () => {
                     </header>
 
                     {/* RIGHT: Video */}
-                    <figure className="video-layout flex justify-center items-center">
+                    <figure className="video-layout flex justify-center items-center z-20">
                         <div className="hero-video-wrap relative w-full max-w-[850px] aspect-[16/9] flex justify-center items-center">
                             <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-black/40 hero-video-container">
                                 {/* Skeleton pulse */}
