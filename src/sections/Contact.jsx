@@ -9,7 +9,7 @@ import { useScrollReveal } from "../hooks/useScrollReveal";
 
 const Contact = () => {
   const formRef = useRef(null);
-  const sectionRef = useScrollReveal({ y: 60, duration: 1.2, ease: "power3.out" });
+  const sectionRef = useScrollReveal({ y: 40, duration: 0.8 });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState("");
@@ -34,10 +34,10 @@ const Contact = () => {
 
     try {
       await emailjs.sendForm(
-          import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-          import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
-          formRef.current,
-          import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       );
 
       setSent(true);
@@ -50,135 +50,126 @@ const Contact = () => {
   };
 
   return (
-      <section
-          id="contact"
-          ref={sectionRef}
-          className="relative flex-center section-padding overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-sky-900/5 to-transparent blur-3xl animate-pulse" />
-        <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-sky-500/10 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[120px]" />
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="py-20 md:py-28 px-5 md:px-12 lg:px-20"
+    >
+      <div className="max-w-[700px] mx-auto">
+        <TitleHeader
+          title="Get in Touch"
+          sub="Let's Connect"
+        />
 
-        <div className="w-full h-full md:px-20 px-5 relative z-10">
-          <TitleHeader
-              title="Ping Me Anytime — I Respond Faster Than CI/CD"
-              sub="💬 Always open for a quick chat, collaboration, or good idea 🚀"
-          />
-
-          <div className="max-w-3xl mx-auto mt-16 bg-[#0d1117]/80 border border-white/10 backdrop-blur-xl rounded-2xl shadow-[0_0_25px_rgba(56,189,248,0.1)] p-8 md:p-10 transition-all duration-500 hover:shadow-[0_0_45px_rgba(56,189,248,0.25)]">
-            <form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-6"
-            >
-              {/* Name */}
-              <div className="flex flex-col gap-2">
+        <div className="mt-12 bg-[#0d0f15] border border-white/8 rounded-2xl p-6 md:p-8">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-5"
+          >
+            {/* Name + Email row on desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-1.5">
                 <label
-                    htmlFor="name"
-                    className="flex items-center gap-2 text-sky-300 text-sm font-medium"
+                  htmlFor="name"
+                  className="flex items-center gap-2 text-white/50 text-sm"
                 >
-                  <User className="w-4 h-4" /> Your Name
+                  <User className="w-3.5 h-3.5" /> Name
                 </label>
                 <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                    required
-                    disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="flex flex-col gap-2">
-                <label
-                    htmlFor="email"
-                    className="flex items-center gap-2 text-sky-300 text-sm font-medium"
-                >
-                  <Mail className="w-4 h-4" /> Your Email
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="Enter your email"
-                    required
-                    disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 disabled:opacity-60"
-                />
-              </div>
-
-              {/* Message */}
-              <div className="flex flex-col gap-2">
-                <label
-                    htmlFor="message"
-                    className="flex items-center gap-2 text-sky-300 text-sm font-medium"
-                >
-                  <MessageSquare className="w-4 h-4" /> Your Message
-                </label>
-                <textarea
-                    id="message"
-                    name="message"
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="Write your message here..."
-                    rows="5"
-                    required
-                    disabled={loading}
-                    className="bg-[#11141a]/90 border border-white/10 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-all duration-300 resize-none disabled:opacity-60"
-                />
-              </div>
-
-              {/* Button */}
-              <button
-                  type="submit"
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Your name"
+                  required
                   disabled={loading}
-                  className="group relative mt-4 flex items-center justify-center gap-2 px-6 py-3 rounded-xl
-                         bg-sky-600/30 border border-sky-400/40 text-white font-semibold
-                         hover:bg-sky-500/40 hover:shadow-[0_0_30px_rgba(56,189,248,0.4)]
-                         transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send
-                    className={`w-5 h-5 ${
-                        loading ? "animate-pulse" : "group-hover:translate-x-1 transition-transform"
-                    }`}
+                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
                 />
-                {loading ? "Sending..." : "Send Message 🚀"}
-                <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 via-transparent to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </button>
-              {/* Error message */}
-              {sendError && (
-                  <p className="text-red-400 text-sm mt-2" aria-live="polite">{sendError}</p>
-              )}
-              {/* Success dialog */}
-              {sent && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-labelledby="contact-success-title" aria-modal="true">
-                    <div className="bg-[#0d1117] border border-sky-400/40 rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
-                      <h3 id="contact-success-title" className="text-2xl text-sky-300 font-semibold mb-3">
-                        Message Sent!
-                      </h3>
-                      <p className="text-white/80 mb-6">
-                        Thanks for reaching out — I’ll reply soon
-                      </p>
-                      <button
-                          onClick={() => setSent(false)}
-                          autoFocus
-                          className="px-5 py-2 bg-sky-600/40 rounded-lg hover:bg-sky-500/50 transition-all"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-              )}
-            </form>
-          </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="email"
+                  className="flex items-center gap-2 text-white/50 text-sm"
+                >
+                  <Mail className="w-3.5 h-3.5" /> Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="your@email.com"
+                  required
+                  disabled={loading}
+                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
+                />
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="message"
+                className="flex items-center gap-2 text-white/50 text-sm"
+              >
+                <MessageSquare className="w-3.5 h-3.5" /> Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                placeholder="What would you like to discuss?"
+                rows="4"
+                required
+                disabled={loading}
+                className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 resize-none disabled:opacity-50 placeholder:text-white/30"
+              />
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              <Send className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
+              {loading ? "Sending..." : "Send Message"}
+            </button>
+
+            {/* Error */}
+            {sendError && (
+              <p className="text-red-400 text-sm" aria-live="polite">{sendError}</p>
+            )}
+
+            {/* Success dialog */}
+            {sent && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50" role="dialog" aria-labelledby="contact-success-title" aria-modal="true">
+                <div className="bg-[#0d0f15] border border-white/10 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4 animate-fade-in">
+                  <h3 id="contact-success-title" className="text-xl text-white font-semibold mb-2">
+                    Message Sent
+                  </h3>
+                  <p className="text-white/60 text-sm mb-6">
+                    Thanks for reaching out. I'll get back to you soon.
+                  </p>
+                  <button
+                    onClick={() => setSent(false)}
+                    autoFocus
+                    className="px-5 py-2 bg-white/10 border border-white/15 text-white text-sm rounded-lg hover:bg-white/15 transition-all"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </form>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 
