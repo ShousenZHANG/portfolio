@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://eddy-zhang-portfolio.vercel.app/"><strong>Live Site</strong></a> &nbsp;&middot;&nbsp;
+  <a href="[https://eddy-zhang-portfolio.vercel.app/](https://eddyzhang.me/)"><strong>Live Site</strong></a> &nbsp;&middot;&nbsp;
   <a href="https://linkedin.com/in/eddy-shousen-zhang">LinkedIn</a> &nbsp;&middot;&nbsp;
   <a href="https://github.com/ShousenZHANG">GitHub</a>
 </p>
