@@ -14,13 +14,13 @@ const navLinks = [
 ];
 
 const words = [
-  { text: "AI Agents", imgPath: "https://cdn.simpleicons.org/openai/white" },
+  { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
+  { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
   { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
-  { text: "LLM Apps", imgPath: "https://cdn.simpleicons.org/openai/white" },
-  { text: "RAG", imgPath: "https://cdn.simpleicons.org/langchain/white" },
-  { text: "Prompts", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
-  { text: "AI Skills", imgPath: "https://cdn.simpleicons.org/openai/white" },
-  { text: "AI Agents", imgPath: "https://cdn.simpleicons.org/openai/white" },
+  { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
+  { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
   { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
 ];
 

@@ -102,9 +102,9 @@ const Hero = () => {
 
                         {/* Description */}
                         <p className="hero-desc text-white/75 text-sm md:text-lg xl:text-xl max-w-xl leading-relaxed mt-4 md:mt-8">
-                            AI Engineer & Agent Developer with{" "}
+                            Full-stack AI developer with{" "}
                             <span className="text-white font-medium">3+ years professional experience</span>.
-                            Specializing in LLM agents, RAG pipelines, prompt engineering, and AI skill development.
+                            Building intelligent systems with LLM agents, cloud microservices, and modern web technologies.
                         </p>
 
                         {/* CTAs */}
