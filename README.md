@@ -1,61 +1,70 @@
-# Eddy Zhang — Full-Stack AI Developer Portfolio
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Three.js-r180-000000?style=flat-square&logo=threedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/GSAP-3.13-88CE02?style=flat-square&logo=greensock&logoColor=white" />
+  <img src="https://img.shields.io/badge/Gemini_API-AI-4285F4?style=flat-square&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white" />
+</p>
 
-> Building intelligent systems with LLM agents, cloud microservices, and modern web technologies.
+<h1 align="center">Eddy Zhang — Portfolio</h1>
 
-**[Live Site](https://eddy-zhang-portfolio.vercel.app/)** | **[LinkedIn](https://linkedin.com/in/eddy-shousen-zhang)** | **[GitHub](https://github.com/ShousenZHANG)**
+<p align="center">
+  Full-stack AI developer portfolio featuring 3D visuals, scroll animations, particle network background, and an AI-powered JD matching engine.
+</p>
 
----
-
-## About
-
-Personal portfolio built with React 19, Vite 7, and Tailwind CSS v4. Features interactive 3D tech stack visualization, animated particle network background, AI-powered JD matching, and a fully responsive design optimized for all devices.
-
----
-
-## Featured Projects
-
-### Joblit — AI-Powered Job Hunt Platform
-
-An end-to-end job search automation tool with AI Agent skills, smart fetching, dynamic resume generation, and a Chrome Extension for ATS autofill.
-
-- **AI Agent Skill System** — Modular skill architecture chaining LLM reasoning with structured data extraction
-- **Smart Fetch Engine** — Automated job scraping with deduplication, exclusion rules, and stale-run guardrails
-- **Dynamic Resume Builder** — Template-driven generation adapting content based on target JD
-- **Chrome Extension** — One-click autofill for Greenhouse, Lever, and Workday ATS forms
-
-Tech: Next.js, TypeScript, Prisma + PostgreSQL, Python, Chrome Extension, Vercel
-
-[Live Demo](https://www.joblit.tech/) | [GitHub](https://github.com/ShousenZHANG/jobflow-web)
-
-### Scalable Competition Platform
-
-Cloud-native system with 7+ Spring Cloud microservices, JWT SSO, and RabbitMQ async messaging. 40,000+ lines of production code with 95%+ CI/CD consistency.
-
-**Runner-up — Best Project in AI for Education** at Coding Fest 2025 (University of Sydney), sponsored by Atlassian and Flow Traders.
-
-[GitHub](https://github.com/ShousenZHANG/project-contest-platform.git)
+<p align="center">
+  <a href="https://eddy-zhang-portfolio.vercel.app/"><strong>Live Site</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://linkedin.com/in/eddy-shousen-zhang">LinkedIn</a> &nbsp;&middot;&nbsp;
+  <a href="https://github.com/ShousenZHANG">GitHub</a>
+</p>
 
 ---
 
 ## Tech Stack
 
-| Layer | Technologies |
-|-------|-------------|
-| **AI & LLM** | Claude API, Gemini API, RAG pipelines, prompt engineering, AI agent skills |
-| **Frontend** | React 19, Vite 7, Tailwind CSS v4, GSAP, Three.js, React Three Fiber |
-| **Backend** | Node.js, Java Spring Boot, Python, Vercel Serverless |
-| **Data** | PostgreSQL, Prisma ORM, Oracle |
-| **DevOps** | Docker, GitHub Actions, Vercel, CI/CD |
+```
+Frontend        React 19  ·  Vite 7  ·  Tailwind CSS v4  ·  JavaScript (JSX)
+3D & Animation  Three.js  ·  React Three Fiber  ·  Drei  ·  GSAP + ScrollTrigger
+AI Integration  Google Gemini API  ·  Vercel Serverless  ·  Deterministic scoring
+Background      tsParticles (particle network with mouse-grab interactivity)
+Contact         EmailJS (client-side, auto-reply)
+Testing         Node.js built-in test runner (node:test) — 45 tests
+Deployment      Vercel (frontend + serverless API)
+```
 
 ---
 
-## Portfolio Features
+## Key Features
 
-- **Particle Network Background** — tsParticles animated network with mouse-grab interactivity
-- **3D Tech Stack** — Interactive GLB models rendered with React Three Fiber + Drei
-- **JD Quick Check** — AI-powered job description matching using Gemini API with deterministic scoring
-- **Responsive Design** — CSS Grid layout, mobile hamburger menu, adaptive at all breakpoints
-- **Performance Optimized** — Lazy loading, 30fps particle cap, reduced-motion support, no backdrop-blur
+**Interactive 3D Tech Stack** — GLB models rendered with React Three Fiber, each card with independent Canvas, Float animation, and OrbitControls.
+
+**Particle Network Background** — tsParticles with 55 cyan/emerald particles, connecting lines, and mouse-grab interactivity at 30fps.
+
+**AI-Powered JD Matching** — Paste a job description, get an instant fit score. Backend calls Gemini API, then recomputes scores deterministically (exact match 42%, related 18%, keyword coverage 15%, dimension average 25%, minus gap penalty).
+
+**Scroll Animations** — GSAP + ScrollTrigger for staggered entrance animations across all sections. Hero uses orchestrated timeline sequence.
+
+**Responsive Design** — CSS Grid hero layout, mobile hamburger dropdown, adaptive at 320px–4K. Reduced-motion and focus-visible support built in.
+
+---
+
+## Architecture
+
+```
+src/
+  sections/        Page sections (Hero, ShowcaseSection, Experience, TechStack, Contact, etc.)
+  components/      Reusable components (NavBar, Button, AnimatedCounter, TitleHeader)
+  hooks/           Custom hooks (useJDAnalysis, useIsMobile, useScrollReveal)
+  constants/       Static data (navLinks, projects, expCards, techStackIcons)
+  lib/             Utilities (jd-normalize, api-client)
+api/
+  agents/jd.js     Vercel serverless — Gemini API integration + scoring
+test/
+  api/             Backend scoring function tests (29 tests)
+  lib/             Frontend normalize + API client tests (16 tests)
+```
 
 ---
 
@@ -65,40 +74,20 @@ Cloud-native system with 7+ Spring Cloud microservices, JWT SSO, and RabbitMQ as
 git clone https://github.com/ShousenZHANG/portfolio.git
 cd portfolio
 npm install
-npm run dev
+npm run dev       # http://localhost:5173
 ```
-
-Open [http://localhost:5173](http://localhost:5173)
 
 ```bash
-npm run build    # Production build
-npm run lint     # ESLint check
-npm test         # Run test suite (45 tests)
+npm run build     # Production build
+npm run lint      # ESLint
+npm test          # 45 tests
 ```
 
----
-
-## Experience
-
-**Master of IT — UNSW Sydney** (Sep 2023 - Jun 2025)
-- Excellence Honour (WAM 82.4, Distinction), completed one term early
-- Led Coding Fest 2025 award-winning Spring Cloud microservices project
-
-**Backend Developer — Shanghai Newtouch Software** (Aug 2022 - Aug 2023)
-- Java Spring Boot microservices for large-scale banking systems
-- 40% query performance improvement via Oracle table sharding
-
----
-
-## Contact
-
-- [eddy.zhang24@gmail.com](mailto:eddy.zhang24@gmail.com)
-- [+61 0468 761 056](tel:+610468761056)
-- [LinkedIn](https://linkedin.com/in/eddy-shousen-zhang)
-- [GitHub](https://github.com/ShousenZHANG)
+> Requires `GEMINI_API_KEY` environment variable for the JD matching feature.
 
 ---
 
 ## License
 
 MIT
+
