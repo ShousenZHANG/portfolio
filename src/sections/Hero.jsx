@@ -97,14 +97,14 @@ const Hero = () => {
                         </h1>
 
                         <p className="hero-sub text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-2 md:mt-3">
-                            into Scalable Systems
+                            into Intelligent Systems
                         </p>
 
                         {/* Description */}
                         <p className="hero-desc text-white/75 text-sm md:text-lg xl:text-xl max-w-xl leading-relaxed mt-4 md:mt-8">
-                            Full-stack developer with{" "}
+                            AI Engineer & Agent Developer with{" "}
                             <span className="text-white font-medium">3+ years professional experience</span>.
-                            Specializing in Java Spring Boot microservices, React, and cloud architecture.
+                            Specializing in LLM agents, RAG pipelines, prompt engineering, and AI skill development.
                         </p>
 
                         {/* CTAs */}
