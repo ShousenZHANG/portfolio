@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Menu from "lucide-react/dist/esm/icons/menu";
 import X from "lucide-react/dist/esm/icons/x";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
@@ -9,6 +9,7 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const menuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -32,6 +33,7 @@ const NavBar = () => {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
+  // Close on Escape
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
@@ -39,15 +41,26 @@ const NavBar = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  // Close on outside click
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!menuOpen) return;
+    const onClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("touchstart", onClick);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("touchstart", onClick);
+    };
   }, [menuOpen]);
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
+    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`} ref={menuRef}>
       <div className="navbar-inner">
         <a href="#hero" onClick={closeMenu} className="navbar-logo">
           <span className="navbar-logo-mark">E</span>
@@ -82,57 +95,47 @@ const NavBar = () => {
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
+          aria-controls="mobile-dropdown"
         >
           {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile menu — slide down from top */}
+      {/* Mobile dropdown — compact card below navbar */}
       <div
-        id="mobile-nav"
-        className={`lg:hidden fixed inset-x-0 top-0 z-[99] bg-[#0a0a0e]/98 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen ? "translate-y-0" : "-translate-y-full"}`}
-        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+        id="mobile-dropdown"
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}
       >
-        <nav aria-label="Mobile navigation" className="flex flex-col px-6 pt-20 pb-10 min-h-[50vh]">
-          <div className="flex flex-col gap-1">
-            {navLinks.map(({ link, name }) => {
-              const sectionId = link.replace("#", "");
-              const isActive = activeSection === sectionId;
-              return (
-                <a
-                  key={name}
-                  href={link}
-                  onClick={closeMenu}
-                  className={`py-3 px-4 rounded-lg text-lg font-medium transition-colors duration-200 ${isActive ? "text-white bg-white/8" : "text-white/60 hover:text-white hover:bg-white/5"}`}
-                >
-                  {name}
-                </a>
-              );
-            })}
-          </div>
+        <nav
+          aria-label="Mobile navigation"
+          className="mx-4 mb-4 p-3 rounded-xl bg-[#111318] border border-white/8"
+        >
+          {navLinks.map(({ link, name }) => {
+            const sectionId = link.replace("#", "");
+            const isActive = activeSection === sectionId;
+            return (
+              <a
+                key={name}
+                href={link}
+                onClick={closeMenu}
+                className={`block py-2.5 px-3 rounded-lg text-[15px] font-medium transition-colors duration-150 ${isActive ? "text-white bg-white/8" : "text-white/55 active:bg-white/5"}`}
+              >
+                {name}
+              </a>
+            );
+          })}
 
-          <div className="mt-6 pt-6 border-t border-white/8">
+          <div className="mt-2 pt-2 border-t border-white/6">
             <a
               href="#contact"
               onClick={closeMenu}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold"
             >
               Contact me
-              <ArrowRight className="w-4 h-4" />
             </a>
           </div>
         </nav>
       </div>
-
-      {/* Backdrop */}
-      {menuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-[98] bg-black/50"
-          onClick={closeMenu}
-          aria-hidden="true"
-        />
-      )}
     </header>
   );
 };
