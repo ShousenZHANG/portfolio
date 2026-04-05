@@ -1,150 +1,104 @@
-# 🌌 Eddy Zhang — Full-Stack Developer Portfolio
+# Eddy Zhang — Full-Stack AI Developer Portfolio
 
-> ⚡ *Building scalable systems that merge creativity with engineering.*  
-> Designed & developed by **Eddy Zhang**, passionate about backend architecture, cloud microservices, and interactive front-end experiences.
+> Building intelligent systems with LLM agents, cloud microservices, and modern web technologies.
 
----
-
-## 🧭 About This Website
-
-This is my **personal developer portfolio**, built from scratch to showcase my professional journey, technical skills, and creative engineering work.  
-It combines **3D motion design**, **enterprise-level backend knowledge**, and **modern UI performance optimization** — all in one place.
+**[Live Site](https://eddy-zhang-portfolio.vercel.app/)** | **[LinkedIn](https://linkedin.com/in/eddy-shousen-zhang)** | **[GitHub](https://github.com/ShousenZHANG)**
 
 ---
 
-## 🧩 Core Highlights
+## About
 
-- 🎨 **3D Hero Section** with React Three Fiber + GSAP scroll animations
-- 💼 **Animated Experience Timeline** for academic & career milestones
-- ⚙️ **Tech Stack Showcase** with floating interactive GLB models
-- 💌 **Smart Contact Form** using EmailJS (auto-reply & validation ready)
-- 🧠 **Fully Responsive & Mobile-Optimized** layout
-- 🐳 **Dockerized Deployment** + CI/CD-ready configuration
-- 🌈 Clean gradient visuals, glassmorphism, and subtle motion effects
+Personal portfolio built with React 19, Vite 7, and Tailwind CSS v4. Features interactive 3D tech stack visualization, animated particle network background, AI-powered JD matching, and a fully responsive design optimized for all devices.
 
 ---
 
-## 🛠️ Tech Stack
+## Featured Projects
 
-| Category                | Technologies                                                 |
-| ----------------------- | ------------------------------------------------------------ |
-| **Frontend**            | React 18 · Vite · TailwindCSS · GSAP · Three.js · Framer Motion |
-| **3D & Animation**      | React Three Fiber · Drei · ScrollTrigger · Motion Variants   |
-| **Backend Integration** | EmailJS API · RESTful endpoints                              |
-| **Deployment / DevOps** | Docker · Nginx · Vercel                       |
+### Joblit — AI-Powered Job Hunt Platform
 
----
+An end-to-end job search automation tool with AI Agent skills, smart fetching, dynamic resume generation, and a Chrome Extension for ATS autofill.
 
-## 💡 Design Principles
+- **AI Agent Skill System** — Modular skill architecture chaining LLM reasoning with structured data extraction
+- **Smart Fetch Engine** — Automated job scraping with deduplication, exclusion rules, and stale-run guardrails
+- **Dynamic Resume Builder** — Template-driven generation adapting content based on target JD
+- **Chrome Extension** — One-click autofill for Greenhouse, Lever, and Workday ATS forms
 
-> “Simple, dynamic, and personal — a portfolio should feel alive.”
+Tech: Next.js, TypeScript, Prisma + PostgreSQL, Python, Chrome Extension, Vercel
 
-This portfolio reflects my technical mindset and creative identity:
+[Live Demo](https://www.joblit.tech/) | [GitHub](https://github.com/ShousenZHANG/jobflow-web)
 
-- Minimal words, **maximum impact**
-- Smooth transitions that tell a story
-- Responsive down to **320px** width
-- Light performance footprint (optimized Three.js rendering)
+### Scalable Competition Platform
 
----
+Cloud-native system with 7+ Spring Cloud microservices, JWT SSO, and RabbitMQ async messaging. 40,000+ lines of production code with 95%+ CI/CD consistency.
 
-## 💬 Key Sections
+**Runner-up — Best Project in AI for Education** at Coding Fest 2025 (University of Sydney), sponsored by Atlassian and Flow Traders.
 
-### 🪄 Hero Section
-
-Dynamic intro with animated text and floating visuals, introducing me as a full-stack developer.  
-Includes two CTAs:  
-🔹 `See My Work` — view featured projects  
-🔹 `Download CV` — instantly access my resume
-
-### 💼 Experience
-
-Animated professional timeline featuring:
-
-- 🎓 *Master of IT @ UNSW (82.4 WAM, Excellence Graduate)*
-- 💼 *Backend Developer @ Newtouch Software (Java + Oracle)*
-- 💡 *Software Engineer @ Zhongge Network (API & Systems Design)*
-
-### ⚙️ Tech Stack
-
-Interactive 3D models (React, Java, Docker, Git, Node, Python) floating across the screen.  
-Each reacts to hover motion for a subtle futuristic effect.
-
-### 💌 Contact
-
-Responsive glass-style form with EmailJS integration and auto-reply template.  
-Includes direct quick links:
-
-- 📧 [eddy.zhang24@gmail.com](mailto:eddy.zhang24@gmail.com)
-- 📞 [+61 0468 761 056](tel:+610468761056)
-- 🔗 [LinkedIn — Eddy Shousen Zhang](https://linkedin.com/in/eddy-shousen-zhang)
-
-### 🧾 Footer
-
-Glowing top line + professional tagline:
-
-> “Crafted with ☕, 💻, and a bit of Sydney sunshine.”
+[GitHub](https://github.com/ShousenZHANG/project-contest-platform.git)
 
 ---
 
-## 🌐 Live Demo
+## Tech Stack
 
-👉 **[eddy-zhang-portfolio.vercel.app](https://portfolio-theta-woad-v9k65kquy2.vercel.app/)**  
+| Layer | Technologies |
+|-------|-------------|
+| **AI & LLM** | Claude API, Gemini API, RAG pipelines, prompt engineering, AI agent skills |
+| **Frontend** | React 19, Vite 7, Tailwind CSS v4, GSAP, Three.js, React Three Fiber |
+| **Backend** | Node.js, Java Spring Boot, Python, Vercel Serverless |
+| **Data** | PostgreSQL, Prisma ORM, Oracle |
+| **DevOps** | Docker, GitHub Actions, Vercel, CI/CD |
 
 ---
 
-## ⚙️ Setup & Run
+## Portfolio Features
+
+- **Particle Network Background** — tsParticles animated network with mouse-grab interactivity
+- **3D Tech Stack** — Interactive GLB models rendered with React Three Fiber + Drei
+- **JD Quick Check** — AI-powered job description matching using Gemini API with deterministic scoring
+- **Responsive Design** — CSS Grid layout, mobile hamburger menu, adaptive at all breakpoints
+- **Performance Optimized** — Lazy loading, 30fps particle cap, reduced-motion support, no backdrop-blur
+
+---
+
+## Quick Start
 
 ```bash
-# 1️⃣ Clone the repository
 git clone https://github.com/ShousenZHANG/portfolio.git
 cd portfolio
-
-# 2️⃣ Install dependencies
 npm install
-
-# 3️⃣ Run development server
 npm run dev
-
-# 4️⃣ Build for production
-npm run build
 ```
 
-Access locally via 👉 **http://localhost:5173**
+Open [http://localhost:5173](http://localhost:5173)
+
+```bash
+npm run build    # Production build
+npm run lint     # ESLint check
+npm test         # Run test suite (45 tests)
+```
 
 ---
 
-## 💬 Q&A
+## Experience
 
-> **Q: Is it mobile-ready?**  
-> Absolutely — every section is responsive and optimized for performance (lazy loading + adaptive animations).
+**Master of IT — UNSW Sydney** (Sep 2023 - Jun 2025)
+- Excellence Honour (WAM 82.4, Distinction), completed one term early
+- Led Coding Fest 2025 award-winning Spring Cloud microservices project
 
-> **Q: How is it deployed?**  
-> The app is containerized using Docker and deployed through Vercel for seamless CI/CD.
-
----
-
-## 👨‍💻 About Me
-
-Hi, I’m **Eddy Zhang**, a **Full-Stack Developer** based in Sydney, Australia 🇦🇺.  
-I design and build scalable software systems powered by clean architecture and smart automation.
-
-🎓 **Master of IT @ UNSW (82.4 WAM, Excellence Graduate)**  
-💼 3 years full-time backend experience, 5 years total development  
-🧠 Interests: Cloud Architecture · Spring Microservices · React · AI & LLMs  
-📍 Sydney, NSW  
-📧 [eddy.zhang24@gmail.com](mailto:eddy.zhang24@gmail.com)  
-📞 [+61 0468 761 056](tel:+610468761056)  
-🔗 [LinkedIn](https://linkedin.com/in/eddy-shousen-zhang)
+**Backend Developer — Shanghai Newtouch Software** (Aug 2022 - Aug 2023)
+- Java Spring Boot microservices for large-scale banking systems
+- 40% query performance improvement via Oracle table sharding
 
 ---
 
-## 📈 What I Learned
+## Contact
 
-- Advanced animation control with GSAP + Three.js
-- Building 3D-driven UIs without compromising performance
-- Using EmailJS for frictionless communication flows
-- Deploying Dockerized React apps with CI/CD pipelines
-- Crafting motion design that tells a developer’s story
+- [eddy.zhang24@gmail.com](mailto:eddy.zhang24@gmail.com)
+- [+61 0468 761 056](tel:+610468761056)
+- [LinkedIn](https://linkedin.com/in/eddy-shousen-zhang)
+- [GitHub](https://github.com/ShousenZHANG)
 
-> *“Engineering is creativity with purpose.”*
+---
+
+## License
+
+MIT
