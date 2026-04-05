@@ -29,8 +29,8 @@ const words = [
 const counterItems = [
   { value: 5, suffix: "+", label: "Years in Software Development", accent: "from-sky-400 to-sky-500" },
   { value: 3, suffix: "+", label: "Years of Professional Experience", accent: "from-cyan-400 to-cyan-500" },
-  { value: 7, suffix: "+", label: "Cloud Microservices Built & Deployed", accent: "from-emerald-400 to-emerald-500" },
-  { value: 100, suffix: "%", label: "Automation Coverage in CI/CD Pipelines", accent: "from-indigo-400 to-indigo-500" },
+  { value: 10, suffix: "+", label: "AI Agent Skills Built & Deployed", accent: "from-emerald-400 to-emerald-500" },
+  { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped", accent: "from-indigo-400 to-indigo-500" },
 ];
 
 const techStackIcons = [
