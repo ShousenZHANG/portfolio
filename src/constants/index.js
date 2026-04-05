@@ -17,10 +17,12 @@ const words = [
   { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
   { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
   { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
+  { text: "Docker", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
   { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
   { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
   { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
   { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
+  { text: "Docker", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
   { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
 ];
 

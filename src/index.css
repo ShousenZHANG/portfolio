@@ -221,7 +221,7 @@ section {
 
     .hero-word-track {
         @apply flex flex-col;
-        animation: heroWordCycle 12s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+        animation: heroWordCycle 15s cubic-bezier(0.7, 0, 0.3, 1) infinite;
     }
 
     .hero-word-item {
@@ -231,14 +231,16 @@ section {
     }
 
     @keyframes heroWordCycle {
-        0%, 10%     { transform: translateY(0); }
-        15%, 22.5%  { transform: translateY(-12.5%); }
-        27.5%, 35%  { transform: translateY(-25%); }
-        40%, 47.5%  { transform: translateY(-37.5%); }
-        52.5%, 60%  { transform: translateY(-50%); }
-        65%, 72.5%  { transform: translateY(-62.5%); }
-        77.5%, 85%  { transform: translateY(-75%); }
-        90%, 100%   { transform: translateY(-87.5%); }
+        0%, 8%      { transform: translateY(0); }
+        12%, 18%    { transform: translateY(-10%); }
+        22%, 28%    { transform: translateY(-20%); }
+        32%, 38%    { transform: translateY(-30%); }
+        42%, 48%    { transform: translateY(-40%); }
+        52%, 58%    { transform: translateY(-50%); }
+        62%, 68%    { transform: translateY(-60%); }
+        72%, 78%    { transform: translateY(-70%); }
+        82%, 88%    { transform: translateY(-80%); }
+        92%, 100%   { transform: translateY(-90%); }
     }
 
     /* ── Hero Video ── */
