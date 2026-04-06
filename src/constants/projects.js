@@ -9,10 +9,11 @@ export const projects = [
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
-      { src: "/images/joblit_landing.png", alt: "Joblit landing page" },
-      { src: "/images/joblit_fetch.png", alt: "Joblit fetch workflow page" },
-      { src: "/images/joblit_resume.png", alt: "Joblit resume builder page" },
-      { src: "/images/joblit_jobs.png", alt: "Joblit jobs workspace page" },
+      { src: "/images/joblit_landing.png", alt: "Joblit AI-powered landing page with live demo" },
+      { src: "/images/joblit_jobs.png", alt: "Joblit jobs workspace with AI keyword highlighting" },
+      { src: "/images/joblit_autofill.png", alt: "Joblit Chrome Extension auto-filling ATS application form" },
+      { src: "/images/joblit_resume.png", alt: "Joblit resume builder with PDF preview" },
+      { src: "/images/joblit_extension.png", alt: "Joblit AutoFill Chrome Extension installation page" },
     ],
     description:
       "An {AI-powered job search platform} with {Claude Code} integration, multi-provider LLM orchestration, and structured prompt engineering. Automates the entire workflow from discovering roles to auto-filling applications.",
