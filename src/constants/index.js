@@ -68,22 +68,30 @@ const techStackIcons = [
 
 const expCards = [
   {
-    title: "Master of Information Technology — UNSW Sydney",
-    date: "Sep 2023 – Jun 2025",
+    title: "Junior Integration & Automation Analyst — Corrs Chambers Westgarth",
+    date: "Mar 2026 – Present",
     responsibilities: [
-      "Graduated with Excellence Honour (WAM 82.4, Distinction), completing the two-year program one term early.",
-      "Built strong foundations in software architecture, algorithms, databases, and computer networks.",
-      "Explored AI disciplines including machine learning, neural networks, NLP, and large language models (LLMs).",
-      "Led the Coding Fest 2025 award-winning project — a scalable Spring Cloud microservices competition platform.",
+      "Developed integration workflows on Boomi to automate cross-system data processing and business operations.",
+      "Built a RAG-powered AI agent using ServiceNow Knowledge Management to accelerate internal support.",
+      "Engineered task-specific AI agents with structured skills and harness design to improve response accuracy.",
     ],
   },
   {
-    title: "Backend Developer — Shanghai Newtouch Software Co., Ltd.",
-    date: "Aug 2022 – Aug 2023",
+    title: "Master of Information Technology — UNSW Sydney",
+    date: "Sep 2023 – Jun 2025",
     responsibilities: [
-      "Developed and optimized Java Spring Boot microservices for large-scale banking systems under Agile delivery cycles.",
-      "Improved query performance by 40% via Oracle table sharding and SQL optimization for datasets exceeding 10 million rows.",
-      "Containerized and automated deployments with Docker Compose and MinIO, reducing release time by over 30%.",
+      "Graduated with Excellence Honours (WAM 82.4/100), completing the program one term early.",
+      "Led the Coding Fest 2025 runner-up project — a scalable Spring Cloud microservices competition platform.",
+      "Explored AI disciplines including machine learning, NLP, and large language models (LLMs).",
+    ],
+  },
+  {
+    title: "Software Engineer — Newtouch Software Co., Ltd.",
+    date: "Aug 2022 – Apr 2023",
+    responsibilities: [
+      "Developed and maintained high-scale microservices and RESTful APIs using Java and Spring Boot.",
+      "Implemented unit testing using JUnit to improve code reliability and reduce production regressions.",
+      "Delivered repeatable releases by containerising services with Docker and running CI/CD pipelines on Linux.",
     ],
   },
 ];

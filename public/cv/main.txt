@@ -1,137 +1,68 @@
-﻿Eddy ZHANG
-Full-Stack / Backend Software Engineer - Sydney, NSW, Australia
+Eddy Zhang
+AI Full Stack Engineer
+Sydney, NSW, Australia
 485 Graduate Work Visa (full work rights, valid until 4 Sep 2027)
 
 CONTACT
 Email: eddy.zhang24@gmail.com
-Phone: +61 468 761 056
+Phone: (+61) 468 761 056
 LinkedIn: https://linkedin.com/in/eddy-shousen-zhang
-GitHub:  https://github.com/ShousenZHANG
-Portfolio: https://eddyzhang.vercel.app
+GitHub: https://github.com/ShousenZHANG
+Portfolio: https://eddyzhang.me
 
 SUMMARY
-Skilled Software Engineer with 3+ years of full-time industry experience (5+ years total development).
-Strong focus on backend and full-stack development with Java, Spring Boot, REST APIs, SQL/NoSQL, and
-modern frontend (React + Tailwind). Experienced in building scalable systems, improving performance,
-and shipping production features in Agile teams. Also experienced in serverless computing, cloud architecture,
-and CI/CD automation to improve release reliability and delivery speed. Looking for Backend or Full-Stack
-Developer roles where I can design, build, and optimise reliable services and platforms.
+Software Engineer with 3+ years of experience building applications from backend to UI.
+Proficient in Java, Spring Boot, Microservices, and React. Skilled in AI agent development,
+RAG integration, and LLM orchestration. Brings strong experience in cloud architecture,
+CI/CD automation, and Agile delivery.
 
 PROFESSIONAL EXPERIENCE
 
-Shanghai Newtouch Software Co., Ltd. - Backend Developer (Full-Stack Scope)
-Shanghai, China | Aug 2022 - Aug 2023
+Junior Integration & Automation Analyst
+Corrs Chambers Westgarth
+Sydney, Australia | Mar 2026 - Present
+- Developed integration workflows on Boomi to automate cross-system data processing and business operations.
+- Built a RAG-powered AI agent using ServiceNow Knowledge Management to accelerate internal support.
+- Engineered task-specific AI agents with structured skills and harness design to improve response accuracy.
 
-- Built and maintained Java / Spring Boot REST APIs in a 20-person Agile team for an insurance technology platform.
-- Implemented unit testing with JUnit to improve code reliability and reduce production regressions.
-- Shipped 15+ production REST endpoints with clear input validation, duplicate-request guards, and clearer
-  error messages, cutting customer-facing errors by ~20% and saving about 2 hours of engineer time per week.
-- Designed and implemented a socket-based Java NIO file-transfer tool for loading/unloading bulk data, with
-  header-based identity checks and role/department permissions. Used by 7+ squads (40+ engineers), saving
-  6-8 hours per month per squad.
-- Improved p95 query latency from ~900 ms to ~550 ms (35-40% faster) by creating appropriate indexes,
-  splitting large tables, and automating weekly Oracle stored-procedure-based sharding once data volumes
-  exceeded 10M+ rows.
-- Migrated the file-transfer workflow to MinIO object storage with chunked, checksum-verified uploads and
-  Docker-based deployment on Linux, delivering ~90% fewer re-sends, 25-30% faster transfers, and ~70% quicker
-  rollouts for new environments.
-- Delivered repeatable releases by containerizing services with Docker and supporting CI/CD pipelines on Linux.
-
-ZHONGGE Network Co., Ltd. - Software Engineer
-Suzhou, China | Jun 2020 - Jul 2022
-
-- Delivered 35+ Java / Spring Boot REST endpoints (CRUD and business APIs) with front-end integrations for
-  web platforms.
-- Built and maintained technical API documentation with Swagger and Postman to support onboarding and cross-team integration.
-- Collaborated with QA and product to turn requirements into clear acceptance criteria, test checklists, and
-  example payloads. Added more robust input checks and better Swagger examples, cutting integration issues
-  by ~15%.
-- Reduced average bug-fix time by ~25% (e.g. 2 days -> 1.5 days) and improved first-pass acceptance rate by
-  10-12 percentage points by improving API clarity, logs, and test coverage.
-- Kept MySQL-based APIs stable at peak by adding pagination, simple filters, and indexes on hot fields.
-  Heavy queries and timeouts dropped, and the system handled 10-15% more peak traffic with better stability.
-- Worked across the stack on smaller tasks: debugging production issues, adjusting queries, and improving
-  monitoring and logging.
+Software Engineer
+Newtouch Software Co., Ltd.
+Shanghai, China | Aug 2022 - Apr 2023
+- Developed and maintained high-scale microservices and RESTful APIs using Java and Spring Boot.
+- Implemented unit testing using JUnit to improve code reliability and reduce production regressions.
+- Delivered repeatable releases by containerising services with Docker and running CI/CD pipelines on Linux.
 
 PROJECTS
 
-Joblit - Job Search Automation Platform
-Next.js, TypeScript, Prisma, PostgreSQL, Azure | GitHub | Live Demo
+Joblit - AI Job Search Platform
+Next.js, TypeScript, Prisma, PostgreSQL, Claude | GitHub | Live App
 Sydney, Australia | Jul 2025 - Present
+- Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering.
+- Designed a portable AI Skill Pack with structured rules and quality gates for consistent LLM output across platforms.
+- Developed a Chrome Extension (Manifest V3) with cross-site form detection and platform-specific ATS adapters.
+- Established CI/CD pipelines, automated testing, and containerized deployment using GitHub Actions and Vercel.
 
-- Built and shipped a production-grade job-tracking platform with Next.js, TypeScript, Prisma, and PostgreSQL,
-  delivering end-to-end features from data modeling to deployment.
-- Packaged reusable AI workflow assets using Cursor and Codex into a downloadable Skill Pack (rules + prompt
-  templates + schemas), improving prompt consistency and reducing manual tailoring effort.
-- Implemented production-grade CI/CD workflows with GitHub Actions and Vercel, including automated checks,
-  build validation, and release-safe deployment practices.
-
-Capstone - Scalable Competition Platform (UNSW) | Source code on GitHub
-Apr 2025
-
-- Designed and implemented a scalable competition platform using 7+ Spring Cloud microservices (User,
-  Competition, Registration, Submission, File, Interaction, Gateway).
-- Used OpenFeign and Nacos for service-to-service communication and service discovery.
-- Implemented OAuth + JWT SSO at the API gateway to support GitHub/Google login and fine-grained role-based
-  access (organiser / participant / judge), improving security and simplifying login flows.
-- Integrated MinIO for object storage of submissions, avatars, and media files, and RabbitMQ for background
-  jobs and asynchronous notifications (email events, submission events, registration events).
-- Delivered a responsive React web UI using HTML5/CSS3 and JavaScript to support end-to-end user flows.
-- Built CI/CD with Jenkins + Docker Compose to produce immutable images and one-command environments,
-  reducing environment setup time by ~80% and achieving 95%+ environment consistency across the team.
-- Result: project selected as runner-up at Coding Fest 2025 in the "Best Project in AI for Education" category.
-
-Personal Portfolio Website
-Oct 2025
-
-- Built a personal portfolio site with Next.js and React, styled with Tailwind CSS and animated with GSAP
-  and Framer Motion for smooth, responsive UI interactions.
-- Implemented sections for projects, experience, tech stack, and a JD-assistant widget concept, focusing on
-  developer experience and recruiter friendliness.
-- Deployed on Vercel with CI/CD and preview deployments on pull requests, enabling fast iteration and
-  reliable production releases.
+Project Contest Platform
+Java, MySQL, RabbitMQ, Docker, AWS | GitHub | Runner-up, Coding Fest 2025
+Sydney, Australia | Feb 2025 - Jun 2025
+- Built backend microservices using Spring Cloud and implemented secure authentication with OAuth2/JWT.
+- Enabled event-driven messaging with RabbitMQ for real-time notifications and cross-service coordination.
+- Delivered end-to-end testing with JUnit, and automated deployment via a CI/CD pipeline on Docker.
 
 EDUCATION
 
-University of New South Wales (UNSW) - Master of Information Technology
+University of New South Wales - Master of Information Technology
+WAM 82.4/100, Excellence Honours
 Sydney, Australia | Sep 2023 - Jun 2025
-- WAM 82.4 / 100, Excellence Honours.
-- Coursework and projects in distributed systems, data services engineering, software architecture, cloud,
-  and AI-related topics.
 
 Jiangsu University of Science and Technology - Bachelor of Engineering
 Jiangsu, China | Sep 2016 - Jun 2020
 
 SKILLS
 
-Languages:
-- Java (advanced), JavaScript, TypeScript, Python, C# (.NET), SQL, Bash
-
-Back-end:
-- Spring Boot, Spring Cloud, RESTful APIs, JUnit, OAuth2 / JWT, RabbitMQ, MinIO,
-  microservices architecture, API design, pagination and filtering, performance tuning
-
-Front-end:
-- React, Next.js, Redux, Tailwind CSS, GSAP, Framer Motion, Vite, HTML5, CSS3,
-  responsive design, component-based UI
-
-DevOps / Cloud:
-- Docker, Jenkins (CI/CD pipelines), Maven, Git, GitHub / GitLab workflows, Vercel, basic AWS usage,
-  Linux server deployment and shell scripting
-
-Databases / Cache / ORM:
-- MySQL, PostgreSQL, Oracle, Redis, Prisma, basic query optimisation and indexing
-
-Collaboration / Tools:
-- Jira, Confluence, Postman, Swagger / OpenAPI, Agile / Scrum, code reviews,
-  documentation and knowledge sharing
-
-Additional skills from latest resume:
-- Serverless computing (practical exposure), cloud architecture
-- Kafka (streaming concepts)
-- Kubernetes, Terraform (exposure)
-
-ROLE INTERESTS
-- Graduate / Junior / Mid-Level Software Engineer
-- Backend Engineer, Full-Stack Engineer
-- Java / Spring Boot, microservices, cloud-native platforms, and modern React-based front-ends
+Frontend: React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3
+Backend & Scripting: Java, Spring Boot, Python, Bash
+Data & Integration: SQL (RDBMS), REST APIs, Kafka, RabbitMQ
+Cloud & Platforms: AWS, Azure, Boomi, ServiceNow
+DevOps & CI/CD: Docker, GitHub Actions, Vercel
+AI Engineering: RAG, AI Agents, LLM Integration, Skill Development, Harness Engineering
