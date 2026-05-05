@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 /**
  * Unified scroll-triggered entrance animation.
@@ -30,6 +31,10 @@ export function useScrollReveal(options = {}) {
 
   useGSAP(() => {
     if (!ref.current) return;
+    if (prefersReducedMotion()) {
+      gsap.set(ref.current, { opacity: 1, y: 0 });
+      return;
+    }
     const isMobile =
       typeof window !== "undefined" &&
       window.matchMedia("(max-width: 768px)").matches;

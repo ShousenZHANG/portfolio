@@ -4,9 +4,14 @@ import gsap from "gsap";
 import TitleHeader from "../components/TitleHeader";
 import TechIconCardExperience from "../components/models/tech_logos/TechIconCardExperience";
 import { techStackIcons } from "../constants";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 const TechStack = () => {
   useGSAP(() => {
+    if (prefersReducedMotion()) {
+      gsap.set(".tech-card", { opacity: 1, y: 0 });
+      return;
+    }
     gsap.fromTo(
       ".tech-card",
       { y: 30, opacity: 0 },
@@ -30,6 +35,7 @@ const TechStack = () => {
         <TitleHeader
           title="Technical Expertise"
           sub="Core Stack"
+          anchor="skills"
         />
 
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mt-14">

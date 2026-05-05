@@ -30,7 +30,7 @@ Frontend        React 19  ·  Vite 7  ·  Tailwind CSS v4  ·  JavaScript (JSX)
 AI Integration  Google Gemini API  ·  Vercel Serverless  ·  Deterministic scoring
 Background      tsParticles (particle network with mouse-grab interactivity)
 Contact         EmailJS (client-side, auto-reply)
-Testing         Node.js built-in test runner (node:test) — 45 tests
+Testing         Node.js built-in test runner (node:test) — 44 tests
 Deployment      Vercel (frontend + serverless API)
 ```
 
@@ -56,14 +56,14 @@ Deployment      Vercel (frontend + serverless API)
 src/
   sections/        Page sections (Hero, ShowcaseSection, Experience, TechStack, Contact, etc.)
   components/      Reusable components (NavBar, Button, AnimatedCounter, TitleHeader)
-  hooks/           Custom hooks (useJDAnalysis, useIsMobile, useScrollReveal)
+  hooks/           Custom hooks (useJDAnalysis, useScrollReveal)
   constants/       Static data (navLinks, projects, expCards, techStackIcons)
-  lib/             Utilities (jd-normalize, api-client)
+  lib/             Utilities (cn, motion helpers)
 api/
-  agents/jd.js     Vercel serverless — Gemini API integration + scoring
+  agents/jd.js     Thin HTTP handler — delegates to _jd/evaluator
+  agents/_jd/      LLM adapter, pure scoring, orchestrator (Vercel-routed names start with _)
 test/
-  api/             Backend scoring function tests (29 tests)
-  lib/             Frontend normalize + API client tests (16 tests)
+  api/jd/          LLM adapter + scoring tests (44 tests)
 ```
 
 ---
@@ -80,7 +80,7 @@ npm run dev       # http://localhost:5173
 ```bash
 npm run build     # Production build
 npm run lint      # ESLint
-npm test          # 45 tests
+npm test          # 44 tests
 ```
 
 > Requires `GEMINI_API_KEY` environment variable for the JD matching feature.

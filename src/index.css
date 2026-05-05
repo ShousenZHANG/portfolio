@@ -616,6 +616,42 @@ section {
   }
 }
 
+/* Skip-to-content — visible only on keyboard focus */
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 100;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  padding: 12px 18px;
+  background: #0e0e10;
+  color: #fff;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+}
+
+/* Improve focus contrast on dark navbar links */
+.navbar-link:focus-visible,
+.navbar-cta:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+  background: rgba(56, 189, 248, 0.12);
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

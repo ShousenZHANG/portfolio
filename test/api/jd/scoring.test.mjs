@@ -2,30 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  buildPrompt,
   clampScore,
   normalizeDimensionScores,
   deriveAtsScore,
   deriveConfidenceScore,
   deriveFitLabel,
   patchFitTexts,
-} from '../../api/agents/jd.js';
-
-// ── buildPrompt ──────────────────────────────────────────────
-
-test('buildPrompt requests detailed scoring fields', () => {
-  const prompt = buildPrompt('JD text', 'CV text');
-  assert.ok(prompt.includes('"dimensionScores"'));
-  assert.ok(prompt.includes('"confidenceScore"'));
-  assert.ok(prompt.includes('"evidencePairs"'));
-  assert.ok(prompt.includes('"riskFlags"'));
-});
-
-test('buildPrompt includes JD and CV text', () => {
-  const prompt = buildPrompt('Senior React Developer', 'Eddy Zhang CV');
-  assert.ok(prompt.includes('Senior React Developer'));
-  assert.ok(prompt.includes('Eddy Zhang CV'));
-});
+  scoreJD,
+} from '../../../api/agents/_jd/scoring.js';
 
 // ── clampScore ───────────────────────────────────────────────
 
@@ -62,9 +46,9 @@ test('normalizeDimensionScores uses fallbacks when dimensions missing', () => {
     exactMatchScore: 70,
     relatedMatchScore: 50,
   });
-  assert.equal(result.techStack, 70); // fallback to exact
-  assert.equal(result.domainContext, 50); // fallback to related
-  assert.equal(result.responsibilities, 60); // (70+50)/2
+  assert.equal(result.techStack, 70);
+  assert.equal(result.domainContext, 50);
+  assert.equal(result.responsibilities, 60);
 });
 
 test('normalizeDimensionScores handles empty data', () => {
@@ -91,7 +75,7 @@ test('deriveAtsScore computes weighted formula correctly', () => {
   assert.ok(score >= 50 && score <= 100, `expected 50-100, got ${score}`);
 });
 
-test('deriveAtsScore applies visa issue penalty (-35, cap 35)', () => {
+test('deriveAtsScore caps at 35 on visa Issue', () => {
   const score = deriveAtsScore({
     exactMatchScore: 90,
     relatedMatchScore: 80,
@@ -104,7 +88,7 @@ test('deriveAtsScore applies visa issue penalty (-35, cap 35)', () => {
   assert.ok(score <= 35, `visa issue should cap at 35, got ${score}`);
 });
 
-test('deriveAtsScore applies experience issue penalty (-25, cap 35)', () => {
+test('deriveAtsScore caps at 35 on experience Issue', () => {
   const score = deriveAtsScore({
     exactMatchScore: 85,
     relatedMatchScore: 70,
@@ -117,7 +101,7 @@ test('deriveAtsScore applies experience issue penalty (-25, cap 35)', () => {
   assert.ok(score <= 35, `exp issue should cap at 35, got ${score}`);
 });
 
-test('deriveAtsScore applies location issue penalty (-10, cap 75)', () => {
+test('deriveAtsScore caps at 75 on location Issue', () => {
   const score = deriveAtsScore({
     exactMatchScore: 90,
     relatedMatchScore: 80,
@@ -130,7 +114,7 @@ test('deriveAtsScore applies location issue penalty (-10, cap 75)', () => {
   assert.ok(score <= 75, `location issue should cap at 75, got ${score}`);
 });
 
-test('deriveAtsScore handles combined visa + experience issues', () => {
+test('deriveAtsScore handles combined visa + experience Issues', () => {
   const score = deriveAtsScore({
     exactMatchScore: 90,
     relatedMatchScore: 80,
@@ -146,7 +130,7 @@ test('deriveAtsScore handles all-zero data', () => {
   assert.equal(score, 0);
 });
 
-test('deriveAtsScore handles all-100 data with no issues', () => {
+test('deriveAtsScore approaches 100 on perfect match without issues', () => {
   const score = deriveAtsScore({
     exactMatchScore: 100,
     relatedMatchScore: 100,
@@ -161,7 +145,7 @@ test('deriveAtsScore handles all-100 data with no issues', () => {
 
 // ── deriveConfidenceScore ────────────────────────────────────
 
-test('deriveConfidenceScore penalizes hard eligibility issues', () => {
+test('deriveConfidenceScore caps confidence at 40 on visa Issue', () => {
   const score = deriveConfidenceScore({
     eligibility: {
       visa: { status: 'Issue' },
@@ -189,18 +173,18 @@ test('deriveConfidenceScore rewards good coverage and evidence', () => {
   assert.ok(score >= 70, `good coverage should give >=70, got ${score}`);
 });
 
-test('deriveConfidenceScore penalizes unknown statuses', () => {
-  const highScore = deriveConfidenceScore({
+test('deriveConfidenceScore penalizes Unknown statuses', () => {
+  const high = deriveConfidenceScore({
     eligibility: { visa: { status: 'OK' }, experience: { status: 'OK' }, location: { status: 'OK' } },
     matchedKeywords: ['java'],
     missingKeywords: ['aws'],
   });
-  const lowScore = deriveConfidenceScore({
+  const low = deriveConfidenceScore({
     eligibility: { visa: { status: 'Unknown' }, experience: { status: 'Unknown' }, location: { status: 'Unknown' } },
     matchedKeywords: ['java'],
     missingKeywords: ['aws'],
   });
-  assert.ok(lowScore < highScore, 'unknown statuses should reduce confidence');
+  assert.ok(low < high, 'unknown statuses should reduce confidence');
 });
 
 // ── deriveFitLabel ───────────────────────────────────────────
@@ -225,27 +209,27 @@ test('deriveFitLabel returns Not a fit for score < 50', () => {
   assert.equal(deriveFitLabel({ eligibility: {} }, 0), 'Not a fit');
 });
 
-test('deriveFitLabel forces Not a fit on visa issue regardless of score', () => {
+test('deriveFitLabel forces Not a fit on visa Issue regardless of score', () => {
   assert.equal(deriveFitLabel({ eligibility: { visa: { status: 'Issue' } } }, 95), 'Not a fit');
 });
 
-test('deriveFitLabel forces Not a fit on experience issue regardless of score', () => {
+test('deriveFitLabel forces Not a fit on experience Issue regardless of score', () => {
   assert.equal(deriveFitLabel({ eligibility: { experience: { status: 'Issue' } } }, 90), 'Not a fit');
 });
 
 // ── patchFitTexts ────────────────────────────────────────────
 
-test('patchFitTexts overrides headline on visa issue', () => {
+test('patchFitTexts overrides headline on visa Issue', () => {
   const { fitHeadline } = patchFitTexts({ eligibility: { visa: { status: 'Issue' } } }, 20);
   assert.ok(fitHeadline.includes('visa'), `should mention visa, got: ${fitHeadline}`);
 });
 
-test('patchFitTexts overrides headline on experience issue', () => {
+test('patchFitTexts overrides headline on experience Issue', () => {
   const { fitHeadline } = patchFitTexts({ eligibility: { experience: { status: 'Issue' } } }, 20);
   assert.ok(fitHeadline.includes('experience'), `should mention experience, got: ${fitHeadline}`);
 });
 
-test('patchFitTexts overrides headline on combined visa + experience issue', () => {
+test('patchFitTexts overrides headline on combined visa + experience Issue', () => {
   const { fitHeadline } = patchFitTexts({
     eligibility: { visa: { status: 'Issue' }, experience: { status: 'Issue' } },
   }, 20);
@@ -257,7 +241,7 @@ test('patchFitTexts provides default headline when none exists', () => {
   assert.ok(fitHeadline.includes('Strong'), `score 85 should get Strong headline, got: ${fitHeadline}`);
 });
 
-test('patchFitTexts preserves existing headline when no issues', () => {
+test('patchFitTexts preserves existing headline when no Issues', () => {
   const { fitHeadline } = patchFitTexts({ fitHeadline: 'Custom headline', eligibility: {} }, 85);
   assert.equal(fitHeadline, 'Custom headline');
 });
@@ -265,4 +249,106 @@ test('patchFitTexts preserves existing headline when no issues', () => {
 test('patchFitTexts provides default verdict when none exists', () => {
   const { fitVerdict } = patchFitTexts({ eligibility: {} }, 70);
   assert.ok(fitVerdict.length > 0, 'should provide a default verdict');
+});
+
+// ── scoreJD (integration of pure scoring pipeline) ───────────
+
+test('scoreJD produces a flat JDScore with no nested score field', () => {
+  const result = scoreJD({
+    exactMatchScore: 80,
+    relatedMatchScore: 60,
+    gapScore: 10,
+    matchedKeywords: ['react', 'node'],
+    missingKeywords: ['aws'],
+    dimensionScores: { techStack: 80, responsibilities: 70, domainContext: 60, seniority: 70, tooling: 60 },
+    eligibility: { visa: { status: 'OK' }, experience: { status: 'OK' }, location: { status: 'OK' } },
+  });
+
+  assert.equal(typeof result.overallScore, 'number');
+  assert.equal(typeof result.exactMatchScore, 'number');
+  assert.equal(typeof result.relatedMatchScore, 'number');
+  assert.equal(typeof result.gapScore, 'number');
+  assert.equal(typeof result.confidenceScore, 'number');
+  assert.equal(result.score, undefined, 'flat shape — no nested score object');
+  assert.equal(typeof result.fitLabel, 'string');
+  assert.equal(typeof result.fitHeadline, 'string');
+  assert.equal(typeof result.fitVerdict, 'string');
+});
+
+test('scoreJD recomputes overallScore — ignores LLM-supplied value', () => {
+  const result = scoreJD({
+    overallScore: 99,
+    exactMatchScore: 0,
+    relatedMatchScore: 0,
+    gapScore: 0,
+    matchedKeywords: [],
+    missingKeywords: [],
+    eligibility: { visa: { status: 'Unknown' }, experience: { status: 'Unknown' }, location: { status: 'Unknown' } },
+  });
+  assert.ok(result.overallScore < 50, `overallScore should be recomputed low, got ${result.overallScore}`);
+});
+
+test('scoreJD honors LLM-supplied confidenceScore when present', () => {
+  const result = scoreJD({
+    confidenceScore: 77,
+    eligibility: { visa: { status: 'OK' }, experience: { status: 'OK' }, location: { status: 'OK' } },
+  });
+  assert.equal(result.confidenceScore, 77);
+});
+
+test('scoreJD enforces array limits', () => {
+  const result = scoreJD({
+    matchedKeywords: Array(50).fill('x'),
+    missingKeywords: Array(50).fill('y'),
+    riskFlags: Array(20).fill('r'),
+    suggestions: Array(20).fill('s'),
+  });
+  assert.equal(result.matchedKeywords.length, 20);
+  assert.equal(result.missingKeywords.length, 20);
+  assert.equal(result.riskFlags.length, 10);
+  assert.equal(result.suggestions.length, 10);
+});
+
+test('scoreJD truncates evidencePair text fields', () => {
+  const longText = 'x'.repeat(500);
+  const result = scoreJD({
+    evidencePairs: [{ type: 'exact', jdText: longText, cvText: longText, note: longText }],
+  });
+  assert.equal(result.evidencePairs.length, 1);
+  assert.ok(result.evidencePairs[0].jdText.length <= 180);
+  assert.ok(result.evidencePairs[0].cvText.length <= 180);
+  assert.ok(result.evidencePairs[0].note.length <= 220);
+});
+
+test('scoreJD handles empty / null input', () => {
+  const fromEmpty = scoreJD({});
+  assert.equal(fromEmpty.overallScore, 0);
+  assert.deepEqual(fromEmpty.matchedKeywords, []);
+
+  const fromNull = scoreJD(null);
+  assert.equal(fromNull.overallScore, 0);
+
+  const fromUndef = scoreJD(undefined);
+  assert.equal(fromUndef.overallScore, 0);
+});
+
+test('scoreJD provides default Unknown eligibility when missing', () => {
+  const result = scoreJD({});
+  assert.equal(result.eligibility.visa.status, 'Unknown');
+  assert.equal(result.eligibility.experience.status, 'Unknown');
+  assert.equal(result.eligibility.location.status, 'Unknown');
+});
+
+test('scoreJD enforces visa Issue cap end-to-end', () => {
+  const result = scoreJD({
+    exactMatchScore: 100,
+    relatedMatchScore: 100,
+    matchedKeywords: ['a', 'b', 'c'],
+    missingKeywords: [],
+    dimensionScores: { techStack: 100, responsibilities: 100, domainContext: 100, seniority: 100, tooling: 100 },
+    eligibility: { visa: { status: 'Issue' }, experience: { status: 'OK' }, location: { status: 'OK' } },
+  });
+  assert.ok(result.overallScore <= 35);
+  assert.equal(result.fitLabel, 'Not a fit');
+  assert.ok(result.fitHeadline.includes('visa'));
 });

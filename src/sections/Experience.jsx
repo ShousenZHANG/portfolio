@@ -4,12 +4,17 @@ import { useGSAP } from "@gsap/react";
 import { expCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
 import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 const Experience = () => {
     const containerRef = useRef(null);
 
     useGSAP(() => {
         const blocks = gsap.utils.toArray(".exp-card");
+        if (prefersReducedMotion()) {
+            gsap.set(blocks, { opacity: 1, x: 0 });
+            return;
+        }
         blocks.forEach((block) => {
             gsap.fromTo(
                 block,
@@ -35,6 +40,7 @@ const Experience = () => {
                 <TitleHeader
                     title="Professional Experience"
                     sub="My Journey"
+                    anchor="experience"
                 />
 
                 <div className="relative mt-16">

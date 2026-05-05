@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { postJSON } from "../lib/api-client";
-import { normalizeResult } from "../lib/jd-normalize";
 
 const MAX_JD_LENGTH = 10_000;
+const CV_URL = "/cv/main.txt";
+const ENDPOINT = "/api/agents/jd";
 
 /**
- * Shared hook for the JD matching feature.
- * Handles CV loading, API submission, and result normalization.
- * Used by both JDQuickCheck (inline section) and JDAssistant (floating overlay).
+ * Stateful hook for the JD matching feature.
+ * Loads the CV once, validates input, posts to /api/agents/jd, exposes the flat JDScore.
  */
 export function useJDAnalysis() {
   const [jd, setJd] = useState("");
@@ -16,22 +15,15 @@ export function useJDAnalysis() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  // Load CV text once on mount
   useEffect(() => {
     let cancelled = false;
-
-    async function loadCv() {
-      try {
-        const res = await fetch("/cv/main.txt");
-        if (!res.ok) return;
-        const text = (await res.text()).trim();
-        if (!cancelled && text) setCvText(text);
-      } catch {
-        // CV load failure is non-fatal — submit will validate
-      }
-    }
-
-    loadCv();
+    fetch(CV_URL)
+      .then((res) => (res.ok ? res.text() : ""))
+      .then((text) => {
+        const trimmed = text.trim();
+        if (!cancelled && trimmed) setCvText(trimmed);
+      })
+      .catch(() => { /* CV load failure is non-fatal — submit will validate */ });
     return () => { cancelled = true; };
   }, []);
 
@@ -54,11 +46,23 @@ export function useJDAnalysis() {
 
     setLoading(true);
     try {
-      const data = await postJSON("/api/agents/jd", {
-        jd: jd.trim(),
-        cvText: cvText.trim(),
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jd: jd.trim(), cvText: cvText.trim() }),
       });
-      setResult(normalizeResult(data));
+      if (!res.ok) {
+        const raw = await res.text();
+        let message = raw;
+        try {
+          const parsed = JSON.parse(raw);
+          message = parsed?.error || raw;
+        } catch {
+          // body wasn't JSON — keep raw text
+        }
+        throw new Error(message || `Request failed: ${res.status}`);
+      }
+      setResult(await res.json());
     } catch (err) {
       setError(err?.message || "Analysis failed. Please try again later.");
     } finally {

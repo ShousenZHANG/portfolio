@@ -18,7 +18,14 @@ const Contact = () => {
   useEffect(() => {
     if (!sent) return;
     const timer = setTimeout(() => setSent(false), 4000);
-    return () => clearTimeout(timer);
+    const onKey = (e) => {
+      if (e.key === "Escape") setSent(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", onKey);
+    };
   }, [sent]);
 
   const handleChange = (e) => {
@@ -59,6 +66,7 @@ const Contact = () => {
         <TitleHeader
           title="Get in Touch"
           sub="Let's Connect"
+          anchor="contact"
         />
 
         <div className="mt-12 bg-[#0d0f15] border border-white/8 rounded-2xl p-6 md:p-8">
@@ -72,7 +80,7 @@ const Contact = () => {
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="name"
-                  className="flex items-center gap-2 text-white/50 text-sm"
+                  className="flex items-center gap-2 text-white/75 text-sm"
                 >
                   <User className="w-3.5 h-3.5" /> Name
                 </label>
@@ -92,7 +100,7 @@ const Contact = () => {
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="email"
-                  className="flex items-center gap-2 text-white/50 text-sm"
+                  className="flex items-center gap-2 text-white/75 text-sm"
                 >
                   <Mail className="w-3.5 h-3.5" /> Email
                 </label>
@@ -114,7 +122,7 @@ const Contact = () => {
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="message"
-                className="flex items-center gap-2 text-white/50 text-sm"
+                className="flex items-center gap-2 text-white/75 text-sm"
               >
                 <MessageSquare className="w-3.5 h-3.5" /> Message
               </label>
@@ -148,15 +156,25 @@ const Contact = () => {
 
             {/* Success dialog */}
             {sent && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50" role="dialog" aria-labelledby="contact-success-title" aria-modal="true">
-                <div className="bg-[#0d0f15] border border-white/10 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4 animate-fade-in">
+              <div
+                className="fixed inset-0 flex items-center justify-center bg-black/60 z-50"
+                role="dialog"
+                aria-labelledby="contact-success-title"
+                aria-modal="true"
+                onClick={() => setSent(false)}
+              >
+                <div
+                  className="bg-[#0d0f15] border border-white/10 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4 animate-fade-in"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <h3 id="contact-success-title" className="text-xl text-white font-semibold mb-2">
                     Message Sent
                   </h3>
-                  <p className="text-white/60 text-sm mb-6">
+                  <p className="text-white/75 text-sm mb-6">
                     Thanks for reaching out. I'll get back to you soon.
                   </p>
                   <button
+                    type="button"
                     onClick={() => setSent(false)}
                     autoFocus
                     className="px-5 py-2 bg-white/10 border border-white/15 text-white text-sm rounded-lg hover:bg-white/15 transition-all"

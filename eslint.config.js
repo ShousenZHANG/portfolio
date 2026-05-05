@@ -39,6 +39,7 @@ export default defineConfig([
       globals: globals.node,
       parserOptions: {
         ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
         sourceType: 'module',
       },
     },

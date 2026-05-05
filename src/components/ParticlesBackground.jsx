@@ -1,15 +1,28 @@
 import { useEffect, useState, useMemo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 /**
  * Full-page animated particle network background.
- * Balanced for visual impact + smooth scrolling.
+ * Hidden entirely when the user prefers reduced motion — particles are decorative.
+ * Otherwise targets 60fps; the engine self-throttles on weaker devices.
  */
 const ParticlesBackground = () => {
   const [ready, setReady] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(mql.matches);
+    update();
+    mql.addEventListener?.("change", update);
+    return () => mql.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
     }).then(() => setReady(true));
@@ -17,7 +30,7 @@ const ParticlesBackground = () => {
 
   const options = useMemo(
     () => ({
-      fpsLimit: 30,
+      fpsLimit: 60,
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
       particles: {
@@ -66,10 +79,11 @@ const ParticlesBackground = () => {
     []
   );
 
-  if (!ready) return null;
+  if (reducedMotion || !ready) return null;
 
   return (
     <div
+      aria-hidden="true"
       style={{
         position: "fixed",
         inset: 0,

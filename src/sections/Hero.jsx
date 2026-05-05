@@ -5,11 +5,26 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
+import { prefersReducedMotion } from "../lib/motion.js";
+
+const HERO_ANIM_TARGETS = [
+    ".hero-badge-anim",
+    ".hero-heading",
+    ".hero-sub",
+    ".hero-desc",
+    ".hero-cta",
+    ".hero-video-wrap",
+];
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
 
     useGSAP(() => {
+        if (prefersReducedMotion()) {
+            gsap.set(HERO_ANIM_TARGETS, { opacity: 1, y: 0, scale: 1 });
+            return;
+        }
+
         const isMobile =
             typeof window !== "undefined" &&
             window.matchMedia("(max-width: 768px)").matches;
@@ -116,7 +131,7 @@ const Hero = () => {
                             />
                             <a
                                 href="/files/Eddy_Zhang_CV.pdf"
-                                download="Eddy_Zhang_Resume.pdf"
+                                download="Eddy_Zhang_CV.pdf"
                                 className="hero-btn-secondary group md:w-56 md:h-13 w-44 h-12"
                             >
                                 <span className="hero-btn-border" />
@@ -141,6 +156,7 @@ const Hero = () => {
                                     loop
                                     playsInline
                                     preload="metadata"
+                                    aria-label="Personal introduction video by Eddy Zhang"
                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                                     onLoadedData={() => setVideoLoaded(true)}
                                 />

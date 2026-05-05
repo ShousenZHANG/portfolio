@@ -9,6 +9,7 @@ import "swiper/css/effect-fade";
 
 import { projects } from "../constants/projects";
 import TitleHeader from "../components/TitleHeader";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 /**
  * Render plain-text description, highlighting {curly brace} phrases.
@@ -31,6 +32,11 @@ const AppShowcase = () => {
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) {
+        gsap.set(projectRefs.current.filter(Boolean), { opacity: 1, y: 0 });
+        return;
+      }
+
       const isMobile =
         typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
 
@@ -62,6 +68,7 @@ const AppShowcase = () => {
         <TitleHeader
           title="Featured Projects"
           sub="What I've Built"
+          anchor="projects"
         />
 
         <div className="flex flex-col gap-16 mt-16">
