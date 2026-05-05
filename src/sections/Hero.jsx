@@ -100,6 +100,7 @@ const Hero = () => {
                                             <img
                                                 src={word.imgPath}
                                                 alt=""
+                                                decoding="async"
                                                 className="xl:size-11 md:size-9 size-7 p-1 rounded-full bg-white/10"
                                             />
                                             <span className="bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">

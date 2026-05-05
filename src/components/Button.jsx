@@ -1,4 +1,5 @@
 import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
+import { prefersReducedMotion } from "../lib/motion.js";
 
 const Button = ({ text, className, scrollTo = "counter" }) => {
   return (
@@ -10,7 +11,7 @@ const Button = ({ text, className, scrollTo = "counter" }) => {
           const offset = window.innerHeight * 0.15;
           const top =
             target.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top, behavior: "smooth" });
+          window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
         }
       }}
       className={`${className ?? ""} hero-btn-primary group`}

@@ -91,10 +91,16 @@ const AppShowcase = () => {
                       loop={true}
                       className="!bg-transparent h-full w-full"
                     >
-                      {project.slides.map((img) => (
+                      {project.slides.map((img, slideIndex) => (
                         <SwiperSlide key={`${project.id}-${img.src}`}>
                           <div className="flex items-center justify-center w-full h-full bg-black/10 p-3 sm:p-4">
-                            <img src={img.src} alt={img.alt} className="max-w-full max-h-full object-contain rounded-lg" loading="lazy" />
+                            <img
+                              src={img.src}
+                              alt={img.alt}
+                              className="max-w-full max-h-full object-contain rounded-lg"
+                              loading={slideIndex === 0 ? "eager" : "lazy"}
+                              decoding="async"
+                            />
                           </div>
                         </SwiperSlide>
                       ))}

@@ -27,6 +27,7 @@ const LogoIcon = ({ name, icon }) => (
             title={name}
             className="object-contain w-12 h-12 sm:w-16 sm:h-16 opacity-70 hover:opacity-100 hover:scale-110 transition-all duration-300"
             loading="lazy"
+            decoding="async"
         />
     </div>
 );

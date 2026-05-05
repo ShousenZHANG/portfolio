@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -48,8 +47,9 @@
 
 html,
 body {
-    width: 100dvw;
-    overflow-x: hidden;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: clip;
     background-color: black;
     color: white;
     scroll-behavior: smooth;
@@ -57,7 +57,7 @@ body {
 }
 
 section {
-    width: 100dvw;
+    width: 100%;
     scroll-margin-top: 100px;
     position: relative;
     z-index: 1;
