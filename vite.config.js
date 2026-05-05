@@ -5,7 +5,12 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    chunkSizeWarningLimit: 900,
+    // three-vendor (three + R3F + drei) sits at ~1.2MB raw / ~338KB gzipped
+    // and is lazy-loaded only when the user scrolls to the TechStack
+    // section, so it never blocks first paint. Splitting it further
+    // reintroduces a TDZ initialisation cycle (see manualChunks below),
+    // so we accept the size and lift the warning threshold accordingly.
+    chunkSizeWarningLimit: 1300,
     rollupOptions: {
       output: {
         manualChunks(id) {
