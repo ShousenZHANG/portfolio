@@ -1,7 +1,13 @@
 // Dynamic Open Graph image endpoint.
 // Renders a 1200×630 PNG branded card for social shares.
 // Edge runtime is required by @vercel/og.
+//
+// React must be imported because Vercel's edge bundler (esbuild) uses
+// classic JSX transform by default — JSX expands to React.createElement(...)
+// and the file fails at runtime without React in scope.
 
+// eslint-disable-next-line no-unused-vars
+import React from "react";
 import { ImageResponse } from "@vercel/og";
 
 export const config = { runtime: "edge" };
