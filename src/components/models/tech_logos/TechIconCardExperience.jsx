@@ -4,6 +4,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { prefersReducedMotion } from "../../../lib/motion.js";
 
+// React 19 + @react-three/drei race: OrbitControls' onCreated runs before
+// gl.domElement is attached, so the default-domElement path throws
+// "Cannot read properties of null (reading 'addEventListener')".
+// Resolve the canvas DOM node inside the Canvas tree, then mount.
 const StableOrbitControls = () => {
   const gl = useThree((state) => state.gl);
   const [domElement, setDomElement] = useState(null);
@@ -13,16 +17,7 @@ const StableOrbitControls = () => {
   }, [gl]);
 
   if (!domElement) return null;
-  return (
-    <OrbitControls
-      domElement={domElement}
-      enableZoom={false}
-      enablePan={false}
-      enableDamping
-      dampingFactor={0.08}
-      rotateSpeed={0.75}
-    />
-  );
+  return <OrbitControls enableZoom={false} domElement={domElement} />;
 };
 
 const TechIconCardExperience = ({ model }) => {
