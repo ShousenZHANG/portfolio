@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { prefersReducedMotion } from "../../../lib/motion.js";
 
-const StableOrbitControls = () => {
+const StableOrbitControls = ({ autoRotate, autoRotateSpeed }) => {
   const gl = useThree((state) => state.gl);
   const [domElement, setDomElement] = useState(null);
 
@@ -13,34 +13,27 @@ const StableOrbitControls = () => {
   }, [gl]);
 
   if (!domElement) return null;
-  return <OrbitControls enableZoom={false} domElement={domElement} />;
+  return (
+    <OrbitControls
+      enableZoom={false}
+      enablePan={false}
+      domElement={domElement}
+      autoRotate={autoRotate}
+      autoRotateSpeed={autoRotateSpeed}
+      makeDefault
+    />
+  );
 };
 
 const TechIconCardExperience = ({ model }) => {
   const eventSourceRef = useRef(null);
   const [eventSource, setEventSource] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const scene = useGLTF(model.modelPath);
   const reducedMotion = prefersReducedMotion();
 
   useLayoutEffect(() => {
     setEventSource(eventSourceRef.current);
-  }, []);
-
-  // Only run the GPU loop while the card is in viewport — saves battery on
-  // pages with multiple Canvas instances, especially on laptops/phones.
-  useEffect(() => {
-    const node = eventSourceRef.current;
-    if (!node || typeof IntersectionObserver === "undefined") {
-      setIsVisible(true);
-      return undefined;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.05 }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -54,32 +47,47 @@ const TechIconCardExperience = ({ model }) => {
     return () => material.dispose();
   }, [scene, model.name]);
 
-  // Pick frameloop dynamically: pause when off-screen, freeze when user
-  // prefers reduced motion (Float keeps running otherwise).
-  const frameloop = reducedMotion ? "demand" : isVisible ? "always" : "never";
+  const frameloop = reducedMotion ? "demand" : "always";
+  const floatSpeed = reducedMotion ? 0 : hovered ? 5 : 2.5;
+  const rotationIntensity = reducedMotion ? 0 : hovered ? 0.6 : 0.3;
+  const floatIntensity = reducedMotion ? 0 : hovered ? 0.9 : 0.5;
+  const autoRotate = !reducedMotion;
+  const autoRotateSpeed = hovered ? 2.4 : 0.8;
 
   return (
-    <div ref={eventSourceRef} className="w-full h-full">
+    <div
+      ref={eventSourceRef}
+      className="w-full h-full"
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
       {eventSource && (
         <Canvas
           dpr={[1, 1.5]}
           performance={{ min: 0.5 }}
           eventSource={eventSource}
           frameloop={frameloop}
+          camera={{ position: [0, 0, 4], fov: 38 }}
         >
-          <ambientLight intensity={0.3} />
-          <directionalLight position={[5, 5, 5]} intensity={1} />
+          {/* Cinematic 3-light rig: key + fill + cool rim for depth */}
+          <ambientLight intensity={0.35} />
+          <directionalLight position={[5, 5, 5]} intensity={1.1} color="#ffffff" />
+          <directionalLight position={[-4, 2, -3]} intensity={0.45} color="#7dd3fc" />
+          <pointLight position={[0, -4, 2]} intensity={0.4} color="#34d399" />
           <Environment preset="city" />
           <Float
-            speed={reducedMotion ? 0 : 3}
-            rotationIntensity={reducedMotion ? 0 : 0.3}
-            floatIntensity={reducedMotion ? 0 : 0.5}
+            speed={floatSpeed}
+            rotationIntensity={rotationIntensity}
+            floatIntensity={floatIntensity}
           >
             <group scale={model.scale} rotation={model.rotation}>
               <primitive object={scene.scene} />
             </group>
           </Float>
-          <StableOrbitControls />
+          <StableOrbitControls
+            autoRotate={autoRotate}
+            autoRotateSpeed={autoRotateSpeed}
+          />
         </Canvas>
       )}
     </div>
