@@ -44,3 +44,6 @@ Desktop.ini
 
 # Claude Code
 .claude/
+
+# Override potential global ignore rules (e.g. Python .gitignore template's "lib/")
+!src/lib/
