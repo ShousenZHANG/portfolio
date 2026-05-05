@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useJDAnalysis } from "../hooks/useJDAnalysis";
 import Send from "lucide-react/dist/esm/icons/send";
@@ -6,6 +7,13 @@ const MAX_MATCHED = 5;
 const MAX_GAPS = 4;
 const MAX_ACTIONS = 3;
 const MAX_RISKS = 3;
+
+function detectIsMac() {
+  if (typeof navigator === "undefined") return false;
+  // navigator.userAgentData is the modern API; fallback to platform/userAgent
+  const platform = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || "";
+  return /mac|iphone|ipad|ipod/i.test(platform);
+}
 
 function formatEligibility(item, label) {
   if (!item || !item.status || item.status === "Unknown") return `${label}: -`;
@@ -24,6 +32,11 @@ function MoreCount({ shown, total }) {
 
 const JDQuickCheck = () => {
   const { jd, setJd, loading, result, error, submit } = useJDAnalysis();
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(detectIsMac());
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -72,10 +85,15 @@ const JDQuickCheck = () => {
                 {loading ? "Analysing..." : "Check Fit"}
               </button>
               <p id="jd-shortcut-hint" className="text-xs text-white/55">
-                Press <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/75 font-mono text-[10px]">⌘</kbd>
-                <span className="mx-0.5">/</span>
-                <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/75 font-mono text-[10px]">Ctrl</kbd>
-                <span className="ml-1">+ Enter to submit</span>
+                Press{" "}
+                <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/85 font-mono text-[10px]">
+                  {isMac ? "⌘" : "Ctrl"}
+                </kbd>
+                <span className="mx-1">+</span>
+                <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/85 font-mono text-[10px]">
+                  Enter
+                </kbd>
+                <span className="ml-1">to submit</span>
               </p>
             </div>
           </div>

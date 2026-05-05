@@ -14,6 +14,8 @@ const Contact = () => {
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [honeypot, setHoneypot] = useState("");
+  const submittedAtRef = useRef(Date.now());
 
   useEffect(() => {
     if (!sent) return;
@@ -38,6 +40,17 @@ const Contact = () => {
     setLoading(true);
     setSent(false);
     setSendError("");
+
+    // Bot heuristics — silently "succeed" so bots don't retry/learn:
+    // 1) Honeypot field filled (humans never see it).
+    // 2) Form submitted within 1.5s of mount (humans take longer).
+    const elapsedMs = Date.now() - submittedAtRef.current;
+    if (honeypot || elapsedMs < 1500) {
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      setLoading(false);
+      return;
+    }
 
     try {
       await emailjs.sendForm(
@@ -75,6 +88,20 @@ const Contact = () => {
             onSubmit={handleSubmit}
             className="flex flex-col gap-5"
           >
+            {/* Honeypot — hidden from humans, visible to naive bots */}
+            <div aria-hidden="true" className="absolute left-[-10000px] top-auto w-px h-px overflow-hidden">
+              <label htmlFor="company-website">Website</label>
+              <input
+                type="text"
+                id="company-website"
+                name="company-website"
+                tabIndex="-1"
+                autoComplete="off"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+              />
+            </div>
+
             {/* Name + Email row on desktop */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col gap-1.5">

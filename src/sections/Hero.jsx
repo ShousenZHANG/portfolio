@@ -90,10 +90,13 @@ const Hero = () => {
                             </span>
                         </div>
 
-                        {/* Main heading */}
+                        {/* Main heading.
+                            Screen readers get a single static phrase via the sr-only span;
+                            the cycling visual track is hidden from assistive tech. */}
                         <h1 className="hero-heading text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight">
                             <span className="text-white">Building</span>{" "}
-                            <span className="hero-word-slider">
+                            <span className="sr-only">scalable software with modern stacks</span>
+                            <span className="hero-word-slider" aria-hidden="true">
                                 <span className="hero-word-track">
                                     {words.map((word, index) => (
                                         <span key={index} className="hero-word-item">

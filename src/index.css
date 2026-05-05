@@ -243,6 +243,14 @@ section {
         92%, 100%   { transform: translateY(-90%); }
     }
 
+    /* Honor prefers-reduced-motion: pin to the first word, no cycling. */
+    @media (prefers-reduced-motion: reduce) {
+        .hero-word-track {
+            animation: none !important;
+            transform: none !important;
+        }
+    }
+
     /* ── Hero Video ── */
     .hero-video-container {
         box-shadow:
