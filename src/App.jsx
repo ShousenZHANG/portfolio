@@ -5,7 +5,7 @@ import LogoSection from "./sections/LogoSection.jsx";
 import Experience from "./sections/Experience.jsx";
 import Footer from "./sections/Footer.jsx";
 import JDQuickCheck from "./sections/JDQuickCheck.jsx";
-import NeuralReflex from "./sections/NeuralReflex.jsx";
+import SkillsConstellation from "./sections/SkillsConstellation.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
@@ -68,7 +68,7 @@ const App = () => {
                 <JDQuickCheck />
                 <LogoSection />
                 <Experience />
-                <NeuralReflex />
+                <SkillsConstellation />
                 <LazySection><Contact /></LazySection>
             </main>
             <Footer />

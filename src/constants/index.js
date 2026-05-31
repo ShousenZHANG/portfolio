@@ -8,8 +8,8 @@ const navLinks = [
     link: "#experience",
   },
   {
-    name: "Playground",
-    link: "#playground",
+    name: "Skills",
+    link: "#skills",
   },
 ];
 

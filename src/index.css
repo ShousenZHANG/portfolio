@@ -954,70 +954,25 @@ section {
   margin-top: -13px;
 }
 
-/* ── Neural Reflex game ── */
-.nr-area {
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 50%, var(--sig-glow) 0%, transparent 70%),
-    linear-gradient(var(--hair) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hair) 1px, transparent 1px);
-  background-size: 100% 100%, 40px 40px, 40px 40px;
-  touch-action: manipulation;
-  user-select: none;
+/* ── Skill Constellation ── */
+.nr-skill-node:focus-visible { outline: none; }
+.nr-skill-node:focus-visible .nr-skill-core {
+  stroke: var(--tx-0);
+  stroke-width: 0.6;
 }
-.nr-node {
-  position: absolute;
-  width: 52px;
-  height: 52px;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  animation: nr-pop 0.18s var(--ease-emphasis) both;
+.nr-skill-core {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nr-skill-pulse 3s var(--ease-soft) infinite;
 }
-.nr-node-core {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 35% 30%, var(--sig-2), var(--sig));
-  box-shadow: 0 0 18px var(--sig-glow), 0 0 34px var(--sig-2-glow);
-  transition: transform 0.12s var(--ease-emphasis);
-}
-.nr-node-ring {
-  position: absolute;
-  inset: 4px;
-  border-radius: 9999px;
-  border: 1.5px solid var(--sig-line);
-  animation: nr-ring 1.25s linear forwards;
-}
-.nr-node:hover .nr-node-core { transform: scale(1.18); }
-.nr-node:active .nr-node-core { transform: scale(0.82); }
-@keyframes nr-pop {
-  from { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
-  to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-@keyframes nr-ring {
-  from { transform: scale(0.5); opacity: 0.9; }
-  to   { transform: scale(2.4); opacity: 0; }
-}
-.nr-burst {
-  position: absolute;
-  width: 52px;
-  height: 52px;
-  transform: translate(-50%, -50%);
-  border-radius: 9999px;
-  border: 2px solid var(--sig);
-  pointer-events: none;
-  animation: nr-burst 0.55s var(--ease-emphasis) forwards;
-}
-@keyframes nr-burst {
-  from { transform: translate(-50%, -50%) scale(0.4); opacity: 0.85; }
-  to   { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+.nr-skill-node:nth-child(odd) .nr-skill-core { animation-delay: -1.2s; }
+.nr-skill-node:nth-child(3n) .nr-skill-core { animation-delay: -2.1s; }
+@keyframes nr-skill-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; filter: drop-shadow(0 0 1.5px var(--sig-glow)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .nr-node, .nr-node-ring, .nr-burst { animation: none !important; }
+  .nr-skill-core { animation: none !important; }
 }
 
 /* Mobile menu fade-in */
