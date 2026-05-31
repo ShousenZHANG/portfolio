@@ -50,24 +50,28 @@
        owned. Premium minimalism over template gradients.
        ══════════════════════════════════════════════════════════ */
 
-    /* Signature accent — warm amber-copper, owned. Premium, not sporty. */
-    --sig: oklch(0.80 0.13 72);           /* warm amber-gold */
-    --sig-dim: oklch(0.68 0.12 60);       /* copper */
-    --sig-ink: oklch(0.20 0.04 60);       /* text on signature fills */
-    --sig-glow: oklch(0.80 0.13 72 / 0.18);
-    --sig-line: oklch(0.80 0.13 72 / 0.32);
+    /* Signature accent — electric indigo-violet, owned. Premium AI/intelligence
+       cue (Linear/Anthropic lineage), distinct from the generic dev blue. */
+    --sig: oklch(0.70 0.18 285);          /* electric indigo-violet */
+    --sig-dim: oklch(0.60 0.16 288);
+    --sig-ink: oklch(0.16 0.04 285);      /* text on signature fills */
+    --sig-glow: oklch(0.70 0.18 285 / 0.18);
+    --sig-line: oklch(0.70 0.18 285 / 0.32);
+    /* Secondary accent — cyan, for duotone depth (data/AI) */
+    --sig-2: oklch(0.80 0.13 210);        /* electric cyan */
+    --sig-2-glow: oklch(0.80 0.13 210 / 0.14);
 
-    /* Warm near-black surface ladder (espresso, not cold gray) */
-    --ink-0: oklch(0.155 0.008 60);       /* page floor — warm espresso */
-    --ink-1: oklch(0.188 0.009 58);       /* raised surface */
-    --ink-2: oklch(0.225 0.010 56);       /* surface hover */
-    --hair: oklch(0.92 0.02 70 / 0.09);   /* warm hairline border */
-    --hair-bright: oklch(0.92 0.02 70 / 0.16);
+    /* Cool violet-ink surface ladder (deep, premium, AI) */
+    --ink-0: oklch(0.16 0.018 280);       /* page floor — violet near-black */
+    --ink-1: oklch(0.195 0.020 282);      /* raised surface */
+    --ink-2: oklch(0.235 0.022 284);      /* surface hover */
+    --hair: oklch(0.85 0.04 285 / 0.10);  /* cool hairline border */
+    --hair-bright: oklch(0.85 0.05 285 / 0.18);
 
-    /* Warm linen text ladder (WCAG-AA on --ink-0) */
-    --tx-0: oklch(0.96 0.012 75);         /* primary — warm linen */
-    --tx-1: oklch(0.80 0.012 72);         /* secondary ~7:1 */
-    --tx-2: oklch(0.66 0.012 70);         /* tertiary ~4.6:1 */
+    /* Cool text ladder (WCAG-AA on --ink-0) */
+    --tx-0: oklch(0.97 0.006 280);        /* primary */
+    --tx-1: oklch(0.81 0.010 282);        /* secondary ~7:1 */
+    --tx-2: oklch(0.67 0.012 284);        /* tertiary ~4.6:1 */
 
     /* Radius scale */
     --r-xs: 8px; --r-sm: 12px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
@@ -543,13 +547,13 @@ section {
         pointer-events: none;
         background-color: var(--ink-0);
         background-image:
-            /* warm amber aurora glow, top-left */
-            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.80 0.13 72 / 0.13) 0%, transparent 58%),
-            /* deep copper counter-glow, right */
-            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.62 0.11 45 / 0.10) 0%, transparent 55%),
+            /* indigo aurora glow, top-left */
+            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.70 0.18 285 / 0.16) 0%, transparent 58%),
+            /* cyan counter-glow, right */
+            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.80 0.13 210 / 0.12) 0%, transparent 55%),
             /* faint hairline grid */
-            linear-gradient(oklch(0.92 0.02 70 / 0.035) 1px, transparent 1px),
-            linear-gradient(90deg, oklch(0.92 0.02 70 / 0.035) 1px, transparent 1px);
+            linear-gradient(oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px);
         background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
     }
     /* Signature grid accent near top, fading down */

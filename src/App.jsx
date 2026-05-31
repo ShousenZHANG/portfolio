@@ -7,6 +7,7 @@ import Footer from "./sections/Footer.jsx";
 import JDQuickCheck from "./sections/JDQuickCheck.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
+import InteractiveBackground from "./components/InteractiveBackground.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
@@ -58,6 +59,7 @@ const App = () => {
             <a href="#main-content" className="skip-link">Skip to main content</a>
             <CustomCursor />
             <div className="ed-grid-bg" aria-hidden="true" />
+            <InteractiveBackground />
             <NavBar />
             <main id="main-content">
                 <Hero />

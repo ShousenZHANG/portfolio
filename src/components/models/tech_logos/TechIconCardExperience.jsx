@@ -4,10 +4,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { prefersReducedMotion } from "../../../lib/motion.js";
 
-// React 19 + drei race: OrbitControls' onCreated fires before
-// gl.domElement is attached on the default path, throwing
-// "Cannot read properties of null (reading 'addEventListener')".
-// Resolve the canvas node inside the tree first, then mount controls.
+// Proven combo for React 19 + drei: resolve gl.domElement inside the
+// Canvas tree and pass it explicitly. Mounting OrbitControls with the
+// default (implicit) domElement races onCreated and throws
+// "Cannot read addEventListener". domElement=gl.domElement avoids it.
 const StableOrbitControls = () => {
   const gl = useThree((state) => state.gl);
   const [domElement, setDomElement] = useState(null);
@@ -19,8 +19,8 @@ const StableOrbitControls = () => {
       enableZoom={false}
       enablePan={false}
       enableDamping
-      dampingFactor={0.08}
-      rotateSpeed={0.7}
+      dampingFactor={0.1}
+      rotateSpeed={0.95}
     />
   );
 };
@@ -28,6 +28,7 @@ const StableOrbitControls = () => {
 const TechIconCardExperience = ({ model }) => {
   const eventSourceRef = useRef(null);
   const [eventSource, setEventSource] = useState(null);
+  const [hovered, setHovered] = useState(false);
   const scene = useGLTF(model.modelPath);
   const reducedMotion = prefersReducedMotion();
 
@@ -45,7 +46,12 @@ const TechIconCardExperience = ({ model }) => {
   }, [scene, model.name]);
 
   return (
-    <div ref={eventSourceRef} className="w-full h-full">
+    <div
+      ref={eventSourceRef}
+      className="w-full h-full"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       {eventSource && (
         <Canvas
           dpr={[1, 1.5]}
@@ -53,13 +59,13 @@ const TechIconCardExperience = ({ model }) => {
           eventSource={eventSource}
           frameloop={reducedMotion ? "demand" : "always"}
         >
-          <ambientLight intensity={0.3} />
-          <directionalLight position={[5, 5, 5]} intensity={1} />
+          <ambientLight intensity={0.35} />
+          <directionalLight position={[5, 5, 5]} intensity={1.1} />
           <Environment preset="city" />
           <Float
-            speed={reducedMotion ? 0 : 3}
-            rotationIntensity={reducedMotion ? 0 : 0.3}
-            floatIntensity={reducedMotion ? 0 : 0.5}
+            speed={reducedMotion ? 0 : hovered ? 5 : 3}
+            rotationIntensity={reducedMotion ? 0 : hovered ? 0.6 : 0.3}
+            floatIntensity={reducedMotion ? 0 : hovered ? 0.9 : 0.5}
           >
             <group scale={model.scale} rotation={model.rotation}>
               <primitive object={scene.scene} />

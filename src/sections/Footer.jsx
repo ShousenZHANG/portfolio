@@ -2,6 +2,7 @@ import Mail from "lucide-react/dist/esm/icons/mail";
 import Phone from "lucide-react/dist/esm/icons/phone";
 import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Github from "lucide-react/dist/esm/icons/github";
+import Magnetic from "../components/Magnetic.jsx";
 
 const Footer = () => {
   return (
@@ -34,26 +35,30 @@ const Footer = () => {
 
           {/* Social icons */}
           <div className="flex items-center gap-3">
-            <a
-              href="https://linkedin.com/in/eddy-shousen-zhang"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn profile"
-              className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-all duration-300 hover:!border-[var(--sig-line)]"
-              style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
-            >
-              <Linkedin className="w-[18px] h-[18px]" />
-            </a>
-            <a
-              href="https://github.com/ShousenZHANG"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub profile"
-              className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-all duration-300 hover:!border-[var(--sig-line)]"
-              style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
-            >
-              <Github className="w-[18px] h-[18px]" />
-            </a>
+            <Magnetic strength={0.5}>
+              <a
+                href="https://linkedin.com/in/eddy-shousen-zhang"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+              >
+                <Linkedin className="w-[18px] h-[18px]" />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.5}>
+              <a
+                href="https://github.com/ShousenZHANG"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+              >
+                <Github className="w-[18px] h-[18px]" />
+              </a>
+            </Magnetic>
           </div>
         </div>
 
