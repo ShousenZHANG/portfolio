@@ -984,11 +984,16 @@ section {
 }
 
 /* ── Skill Constellation ── */
-.nr-skill-node:focus-visible { outline: none; }
+/* Precise graph → native pointer (id-scoped to beat .has-custom-cursor *) */
+#skills svg, #skills .nr-skill-node, #skills .nr-skill-node * { cursor: pointer !important; }
+.nr-skill-node { outline: none; -webkit-tap-highlight-color: transparent; }
+.nr-skill-node:focus { outline: none; }
 .nr-skill-node:focus-visible .nr-skill-core {
   stroke: var(--tx-0);
   stroke-width: 0.6;
 }
+/* Hide the custom cursor while it's over the graph */
+.cursor-hidden .cursor-dot, .cursor-hidden .cursor-ring { opacity: 0 !important; }
 .nr-skill-core {
   transform-box: fill-box;
   transform-origin: center;
