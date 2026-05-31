@@ -5,6 +5,7 @@ import LogoSection from "./sections/LogoSection.jsx";
 import Experience from "./sections/Experience.jsx";
 import Footer from "./sections/Footer.jsx";
 import JDQuickCheck from "./sections/JDQuickCheck.jsx";
+import NeuralReflex from "./sections/NeuralReflex.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
@@ -13,7 +14,6 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
-const TechStack = lazy(() => import("./sections/TechStack.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
 
 // Warm the heavy chunks during idle time after first paint, so by the
@@ -22,13 +22,12 @@ const Contact = lazy(() => import("./sections/Contact.jsx"));
 // network races): runs at low priority, yields to user input.
 const prefetchLazyChunks = () => {
     import("./sections/ShowcaseSection.jsx");
-    import("./sections/TechStack.jsx");
     import("./sections/Contact.jsx");
 };
 
 const SectionLoader = ({ label = "Loading section" }) => (
     <div className="w-full min-h-[40vh] flex items-center justify-center" role="status" aria-label={label}>
-        <div className="w-8 h-8 border-2 border-sky-400/30 border-t-sky-400 rounded-full animate-spin" />
+        <div className="w-8 h-8 rounded-full animate-spin" style={{ border: "2px solid var(--hair)", borderTopColor: "var(--sig)" }} />
     </div>
 );
 
@@ -69,7 +68,7 @@ const App = () => {
                 <JDQuickCheck />
                 <LogoSection />
                 <Experience />
-                <LazySection><TechStack /></LazySection>
+                <NeuralReflex />
                 <LazySection><Contact /></LazySection>
             </main>
             <Footer />

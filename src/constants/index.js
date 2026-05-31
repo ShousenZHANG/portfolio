@@ -8,8 +8,8 @@ const navLinks = [
     link: "#experience",
   },
   {
-    name: "Skills",
-    link: "#skills",
+    name: "Playground",
+    link: "#playground",
   },
 ];
 
@@ -31,39 +31,6 @@ const counterItems = [
   { value: 3, suffix: "+", label: "Years of Professional Experience", accent: "from-cyan-400 to-cyan-500" },
   { value: 10, suffix: "+", label: "AI Agent Skills Built & Deployed", accent: "from-emerald-400 to-emerald-500" },
   { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped", accent: "from-indigo-400 to-indigo-500" },
-];
-
-const techStackIcons = [
-  {
-    name: "React",
-    modelPath: "/models/react_logo-transformed.glb",
-    scale: 1,
-    rotation: [0, 0, 0],
-  },
-  {
-    name: "Python",
-    modelPath: "/models/python-transformed.glb",
-    scale: 0.8,
-    rotation: [0, 0, 0],
-  },
-  {
-    name: "Node.js",
-    modelPath: "/models/node-transformed.glb",
-    scale: 5,
-    rotation: [0, -Math.PI / 2, 0],
-  },
-  {
-    name: "Three.js",
-    modelPath: "/models/three.js-transformed.glb",
-    scale: 0.05,
-    rotation: [0, 0, 0],
-  },
-  {
-    name: "Git",
-    modelPath: "/models/git-svg-transformed.glb",
-    scale: 0.05,
-    rotation: [0, -Math.PI / 4, 0],
-  },
 ];
 
 const expCards = [
@@ -100,6 +67,5 @@ export {
   words,
   counterItems,
   expCards,
-  techStackIcons,
   navLinks,
 };
