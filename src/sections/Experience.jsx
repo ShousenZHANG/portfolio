@@ -53,9 +53,12 @@ const Experience = () => {
                     />
 
                     <div className="flex flex-col gap-8 md:gap-12">
-                        {expCards.map((card, index) => (
+                        {expCards.map((card, index) => {
+                            const [role, company] = card.title.split(" — ");
+                            const isCurrent = /present/i.test(card.date);
+                            return (
                             <div key={card.title} className="exp-card relative flex gap-5 md:gap-8">
-                                {/* Step number */}
+                                {/* Timeline node */}
                                 <div className="flex-shrink-0 flex flex-col items-center">
                                     <div
                                         className="w-11 h-11 md:w-[4.2rem] md:h-[4.2rem] rounded-[var(--r-sm)] flex items-center justify-center relative font-mono"
@@ -64,20 +67,37 @@ const Experience = () => {
                                         <span className="text-sm md:text-lg font-bold tracking-tight" style={{ color: "var(--sig)" }}>
                                             {String(index + 1).padStart(2, "0")}
                                         </span>
-                                        {index === 0 && (
+                                        {isCurrent && (
                                             <div className="absolute inset-0 rounded-[var(--r-sm)] animate-pulse" style={{ border: "1px solid var(--sig-line)" }} />
                                         )}
                                     </div>
                                 </div>
 
                                 {/* Card content */}
-                                <div className="ed-tile flex-1 p-6 md:p-8">
-                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-5">
-                                        <h3 className="text-xl md:text-2xl font-semibold leading-tight" style={{ color: "var(--tx-0)" }}>
-                                            {card.title}
-                                        </h3>
-                                        <div className="flex items-center gap-2 text-sm flex-shrink-0 font-mono" style={{ color: "var(--tx-2)" }}>
-                                            <CalendarDays className="w-4 h-4" />
+                                <div className="exp-tile ed-tile flex-1 p-6 md:p-8 transition-colors duration-300">
+                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-5">
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2.5 flex-wrap">
+                                                <h3 className="text-xl md:text-2xl font-semibold leading-tight" style={{ color: "var(--tx-0)" }}>
+                                                    {role}
+                                                </h3>
+                                                {isCurrent && (
+                                                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono uppercase tracking-wider"
+                                                          style={{ background: "var(--sig-glow)", color: "var(--sig)", border: "1px solid var(--sig-line)" }}>
+                                                        <span className="ed-status-dot" style={{ width: 6, height: 6 }} aria-hidden="true" />
+                                                        Current
+                                                    </span>
+                                                )}
+                                            </div>
+                                            {company && (
+                                                <p className="text-sm md:text-base mt-1 font-medium" style={{ color: "var(--sig-2)" }}>
+                                                    {company}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs flex-shrink-0 font-mono px-2.5 py-1 rounded-full self-start"
+                                             style={{ color: "var(--tx-1)", background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
+                                            <CalendarDays className="w-3.5 h-3.5" />
                                             <span>{card.date}</span>
                                         </div>
                                     </div>
@@ -98,7 +118,8 @@ const Experience = () => {
                                     </ul>
                                 </div>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>
