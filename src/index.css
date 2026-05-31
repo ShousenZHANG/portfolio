@@ -903,10 +903,8 @@ section {
 
 /* ── Custom cursor (desktop, reduced-motion safe) ── */
 .has-custom-cursor,
-.has-custom-cursor a,
-.has-custom-cursor button,
-.has-custom-cursor [data-magnetic] {
-  cursor: none;
+.has-custom-cursor * {
+  cursor: none !important;
 }
 .cursor-dot,
 .cursor-ring {
@@ -927,31 +925,29 @@ section {
   transition: opacity 0.3s ease;
 }
 .cursor-ring {
-  width: 34px;
-  height: 34px;
-  margin-left: -17px;
-  margin-top: -17px;
-  border: 1.5px solid var(--sig-line);
-  transition: width 0.25s var(--ease-emphasis),
-              height 0.25s var(--ease-emphasis),
-              margin 0.25s var(--ease-emphasis),
-              border-color 0.25s ease,
-              background 0.25s ease,
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  border: 1px solid var(--sig-line);
+  transition: width 0.22s var(--ease-emphasis),
+              height 0.22s var(--ease-emphasis),
+              margin 0.22s var(--ease-emphasis),
+              border-color 0.22s ease,
               opacity 0.3s ease;
 }
 .cursor-ring--hover {
-  width: 56px;
-  height: 56px;
-  margin-left: -28px;
-  margin-top: -28px;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  margin-top: -22px;
   border-color: var(--sig);
-  background: var(--sig-glow);
 }
 .cursor-ring--down {
-  width: 26px;
-  height: 26px;
-  margin-left: -13px;
-  margin-top: -13px;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  margin-top: -11px;
 }
 
 /* ── Skill Constellation ── */
@@ -971,8 +967,33 @@ section {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 1; filter: drop-shadow(0 0 1.5px var(--sig-glow)); }
 }
+/* Select burst — one-shot ring that expands when a node is pinned */
+.skill-burst {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skill-burst 0.55s var(--ease-emphasis) forwards;
+}
+@keyframes skill-burst {
+  0%   { transform: scale(0.5); opacity: 0.9; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+/* Detail panel reveal + staggered lines */
+.skill-detail { animation: skill-detail-in 0.4s var(--ease-emphasis) both; }
+@keyframes skill-detail-in {
+  from { opacity: 0; transform: translateX(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+.skill-detail-line {
+  animation: skill-line-in 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 0.06s + 0.08s);
+}
+@keyframes skill-line-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .nr-skill-core { animation: none !important; }
+  .nr-skill-core, .skill-burst { animation: none !important; }
+  .skill-detail, .skill-detail-line { animation: none !important; }
 }
 
 /* Mobile menu fade-in */
