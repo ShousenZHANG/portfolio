@@ -138,25 +138,32 @@ const InteractiveBackground = () => {
             mouse.active = true;
         };
         const onLeave = () => { mouse.active = false; };
-        const onVisibility = () => {
-            running = !document.hidden;
-            if (running) raf = requestAnimationFrame(step);
-            else cancelAnimationFrame(raf);
+
+        // The field is decorative and mainly seen at the top. Pause its rAF
+        // when the tab is hidden OR the user has scrolled past the hero —
+        // frees the main thread so the rest of the page stays buttery.
+        const shouldRun = () => !document.hidden && window.scrollY < window.innerHeight * 1.2;
+        const sync = () => {
+            const next = shouldRun();
+            if (next && !running) { running = true; raf = requestAnimationFrame(step); }
+            else if (!next && running) { running = false; cancelAnimationFrame(raf); }
         };
 
         resize();
         raf = requestAnimationFrame(step);
         window.addEventListener("resize", resize, { passive: true });
         window.addEventListener("mousemove", onMove, { passive: true });
+        window.addEventListener("scroll", sync, { passive: true });
         document.addEventListener("mouseleave", onLeave);
-        document.addEventListener("visibilitychange", onVisibility);
+        document.addEventListener("visibilitychange", sync);
 
         return () => {
             cancelAnimationFrame(raf);
             window.removeEventListener("resize", resize);
             window.removeEventListener("mousemove", onMove);
+            window.removeEventListener("scroll", sync);
             document.removeEventListener("mouseleave", onLeave);
-            document.removeEventListener("visibilitychange", onVisibility);
+            document.removeEventListener("visibilitychange", sync);
         };
     }, []);
 

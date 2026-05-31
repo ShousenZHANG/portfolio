@@ -42,6 +42,10 @@ const CustomCursor = () => {
         };
 
         const onOver = (e) => {
+            // Over the precise skills graph, suppress the custom cursor and
+            // let the native pointer take over.
+            const inGraph = e.target.closest("#skills");
+            document.documentElement.classList.toggle("cursor-hidden", Boolean(inGraph));
             const interactive = e.target.closest(
                 'a, button, [role="button"], input, textarea, [data-magnetic]'
             );
