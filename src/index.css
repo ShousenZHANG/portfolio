@@ -43,6 +43,46 @@
     --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* ══════════════════════════════════════════════════════════
+       EDITORIAL DESIGN SYSTEM — single source of truth.
+       Signature: electric chartreuse on near-black. One accent,
+       owned. Premium minimalism over template gradients.
+       ══════════════════════════════════════════════════════════ */
+
+    /* Signature accent — one color, owned */
+    --sig: oklch(0.87 0.19 128);          /* electric chartreuse */
+    --sig-dim: oklch(0.74 0.15 128);
+    --sig-ink: oklch(0.22 0.06 128);      /* text on signature fills */
+    --sig-glow: oklch(0.87 0.19 128 / 0.16);
+    --sig-line: oklch(0.87 0.19 128 / 0.34);
+
+    /* Neutral surface ladder (near-black editorial) */
+    --ink-0: oklch(0.145 0.004 240);      /* page floor */
+    --ink-1: oklch(0.175 0.005 240);      /* raised surface */
+    --ink-2: oklch(0.205 0.006 240);      /* surface hover */
+    --hair: oklch(1 0 0 / 0.08);          /* hairline border */
+    --hair-bright: oklch(1 0 0 / 0.15);
+
+    /* Text ladder (WCAG-AA compliant on --ink-0) */
+    --tx-0: oklch(0.98 0 0);              /* primary */
+    --tx-1: oklch(0.80 0 0);              /* secondary ~7:1 */
+    --tx-2: oklch(0.66 0 0);              /* tertiary ~4.6:1 */
+
+    /* Radius scale */
+    --r-xs: 8px; --r-sm: 12px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
+
+    /* Type scale — fluid editorial (clamp, viewport-responsive) */
+    --fs-eyebrow: 0.78rem;
+    --fs-body: clamp(0.95rem, 0.9rem + 0.3vw, 1.0625rem);
+    --fs-lead: clamp(1.1rem, 1rem + 0.6vw, 1.375rem);
+    --fs-h3: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+    --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+    --fs-display: clamp(2.75rem, 1.2rem + 7vw, 7.5rem);   /* hero hero */
+
+    /* Spacing rhythm (4px base) */
+    --sp-section: clamp(5rem, 3rem + 8vw, 9rem);          /* between sections */
+    --sp-gutter: clamp(1.25rem, 0.5rem + 3vw, 5rem);      /* page side gutter */
 }
 
 html,
@@ -50,8 +90,8 @@ body {
     width: 100%;
     min-height: 100%;
     overflow-x: clip;
-    background-color: black;
-    color: white;
+    background-color: var(--ink-0);
+    color: var(--tx-0);
     scroll-behavior: smooth;
     font-family: "Mona Sans", sans-serif;
 }
@@ -438,6 +478,159 @@ section {
         @apply inline-flex items-center gap-2;
     }
 
+    /* ══════════════════════════════════════════════════════════
+       EDITORIAL PRIMITIVES
+       ══════════════════════════════════════════════════════════ */
+
+    /* Page side gutter + max measure */
+    .ed-shell {
+        width: 100%;
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: var(--sp-gutter);
+    }
+
+    /* Eyebrow — monospace index label (01 / Selected Work) */
+    .ed-eyebrow {
+        font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+        font-size: var(--fs-eyebrow);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--tx-2);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .ed-eyebrow::before {
+        content: "";
+        width: 1.75rem;
+        height: 1px;
+        background: var(--sig-line);
+    }
+
+    /* Oversized display headline */
+    .ed-display {
+        font-size: var(--fs-display);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        font-weight: 800;
+        color: var(--tx-0);
+        text-wrap: balance;
+    }
+    .ed-display .sig { color: var(--sig); }
+
+    .ed-h2 {
+        font-size: var(--fs-h2);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        color: var(--tx-0);
+    }
+
+    .ed-lead {
+        font-size: var(--fs-lead);
+        line-height: 1.5;
+        color: var(--tx-1);
+        max-width: 46ch;
+    }
+
+    /* Faint engineering grid backdrop (replaces particle soup) */
+    .ed-grid-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(var(--hair) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 78%);
+        opacity: 0.5;
+    }
+
+    /* Hairline section divider */
+    .ed-rule {
+        height: 1px;
+        border: 0;
+        background: var(--hair);
+        width: 100%;
+    }
+
+    /* Signature button — solid chartreuse, no gradient noise */
+    .ed-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.85rem 1.5rem;
+        border-radius: var(--r-pill);
+        font-weight: 600;
+        font-size: 0.95rem;
+        background: var(--sig);
+        color: var(--sig-ink);
+        transition: transform var(--t-fast, 200ms) var(--ease-emphasis),
+                    box-shadow var(--t-fast, 200ms) var(--ease-emphasis);
+        box-shadow: 0 0 0 0 var(--sig-glow);
+    }
+    .ed-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 40px -8px var(--sig-glow);
+    }
+    .ed-btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.85rem 1.5rem;
+        border-radius: var(--r-pill);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--tx-0);
+        border: 1px solid var(--hair-bright);
+        transition: border-color var(--t-fast, 200ms) var(--ease-emphasis),
+                    background var(--t-fast, 200ms) var(--ease-emphasis);
+    }
+    .ed-btn-ghost:hover {
+        border-color: var(--sig-line);
+        background: var(--sig-glow);
+    }
+
+    /* Surface card / bento tile (used selectively) */
+    .ed-tile {
+        background: var(--ink-1);
+        border: 1px solid var(--hair);
+        border-radius: var(--r-lg);
+        transition: border-color var(--motion-medium) var(--ease-standard),
+                    transform var(--motion-medium) var(--ease-standard),
+                    background var(--motion-medium) var(--ease-standard);
+    }
+    .ed-tile:hover {
+        border-color: var(--hair-bright);
+        background: var(--ink-2);
+        transform: translateY(-3px);
+    }
+
+    /* Live status dot */
+    .ed-status-dot {
+        position: relative;
+        display: inline-flex;
+        width: 8px; height: 8px;
+    }
+    .ed-status-dot::before {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: var(--r-pill);
+        background: var(--sig);
+        animation: ed-ping 2s var(--ease-soft) infinite;
+    }
+    .ed-status-dot::after {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: var(--r-pill);
+        background: var(--sig);
+    }
+    @keyframes ed-ping {
+        0% { transform: scale(1); opacity: 0.7; }
+        75%, 100% { transform: scale(2.4); opacity: 0; }
+    }
 }
 
 @keyframes gradient-x {

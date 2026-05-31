@@ -7,7 +7,6 @@ import Footer from "./sections/Footer.jsx";
 import JDQuickCheck from "./sections/JDQuickCheck.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
-const ParticlesBackground = lazy(() => import("./components/ParticlesBackground.jsx"));
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const TechStack = lazy(() => import("./sections/TechStack.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
@@ -20,7 +19,6 @@ const prefetchLazyChunks = () => {
     import("./sections/ShowcaseSection.jsx");
     import("./sections/TechStack.jsx");
     import("./sections/Contact.jsx");
-    import("./components/ParticlesBackground.jsx");
 };
 
 const SectionLoader = ({ label = "Loading section" }) => (
@@ -54,9 +52,7 @@ const App = () => {
     return (
         <>
             <a href="#main-content" className="skip-link">Skip to main content</a>
-            <Suspense fallback={null}>
-                <ParticlesBackground />
-            </Suspense>
+            <div className="ed-grid-bg" aria-hidden="true" />
             <NavBar />
             <main id="main-content">
                 <Hero />

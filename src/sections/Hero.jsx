@@ -1,158 +1,102 @@
 import { useState } from "react";
-import { words } from "../constants/index.js";
-import Button from "../components/Button.jsx";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
+import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 
 const HERO_ANIM_TARGETS = [
-    ".hero-badge-anim",
-    ".hero-heading",
-    ".hero-sub",
-    ".hero-desc",
+    ".hero-eyebrow",
+    ".hero-display",
+    ".hero-lead",
     ".hero-cta",
-    ".hero-video-wrap",
+    ".hero-meta",
+    ".hero-aside",
 ];
+
+const scrollToId = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const reduce = prefersReducedMotion();
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+};
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
 
     useGSAP(() => {
         if (prefersReducedMotion()) {
-            gsap.set(HERO_ANIM_TARGETS, { opacity: 1, y: 0, scale: 1 });
+            gsap.set(HERO_ANIM_TARGETS, { opacity: 1, y: 0 });
             return;
         }
-
-        const isMobile =
-            typeof window !== "undefined" &&
-            window.matchMedia("(max-width: 768px)").matches;
-
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-        tl.fromTo(
-            ".hero-badge-anim",
-            { y: 20, opacity: 0 },
-            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.6 }
-        )
-        .fromTo(
-            ".hero-heading",
-            { y: isMobile ? 30 : 50, opacity: 0 },
-            { y: 0, opacity: 1, duration: isMobile ? 0.6 : 0.8 },
-            "-=0.3"
-        )
-        .fromTo(
-            ".hero-sub",
-            { y: isMobile ? 20 : 35, opacity: 0 },
-            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.7 },
-            "-=0.4"
-        )
-        .fromTo(
-            ".hero-desc",
-            { y: isMobile ? 16 : 24, opacity: 0 },
-            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.65 },
-            "-=0.3"
-        )
-        .fromTo(
-            ".hero-cta",
-            { y: isMobile ? 16 : 24, opacity: 0 },
-            { y: 0, opacity: 1, duration: isMobile ? 0.5 : 0.65 },
-            "-=0.2"
-        )
-        .fromTo(
-            ".hero-video-wrap",
-            { y: isMobile ? 20 : 40, opacity: 0, scale: 0.98 },
-            { y: 0, opacity: 1, scale: 1, duration: isMobile ? 0.6 : 0.9 },
-            "-=0.4"
+        gsap.fromTo(
+            HERO_ANIM_TARGETS,
+            { y: 28, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                ease: "power3.out",
+                stagger: 0.09,
+            }
         );
     }, []);
 
     return (
         <>
             <section id="hero" className="relative overflow-hidden">
-                {/* Background layers */}
-                <div className="hero-bg-layer" aria-hidden="true" />
-                <div className="hero-glow" aria-hidden="true" />
-                <div className="hero-glow-secondary" aria-hidden="true" />
+                <div className="ed-shell grid items-center gap-10 lg:gap-16 lg:grid-cols-[1.05fr_0.95fr] pt-28 pb-20 md:pt-36 md:pb-28 min-h-[88vh]">
+                    {/* LEFT — editorial headline */}
+                    <div className="flex flex-col">
+                        <p className="hero-eyebrow ed-eyebrow mb-6">
+                            AI Full-Stack Engineer · Sydney
+                        </p>
 
-                <div className="hero-layout">
-                    {/* LEFT: Hero Content */}
-                    <div className="hero-content">
-                        {/* Status badge */}
-                        <div className="hero-badge-anim mb-4 md:mb-6">
-                            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm text-white/80">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                                </span>
-                                AI Engineer based in Sydney
-                            </span>
-                        </div>
-
-                        {/* Main heading.
-                            Screen readers get a single static phrase via the sr-only span;
-                            the cycling visual track is hidden from assistive tech. */}
-                        <h1 className="hero-heading text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight">
-                            <span className="text-white">Building</span>{" "}
-                            <span className="sr-only">scalable software with modern stacks</span>
-                            <span className="hero-word-slider" aria-hidden="true">
-                                <span className="hero-word-track">
-                                    {words.map((word, index) => (
-                                        <span key={index} className="hero-word-item">
-                                            <img
-                                                src={word.imgPath}
-                                                alt=""
-                                                decoding="async"
-                                                className="xl:size-11 md:size-9 size-7 p-1 rounded-full bg-white/10"
-                                            />
-                                            <span className="bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                                                {word.text}
-                                            </span>
-                                        </span>
-                                    ))}
-                                </span>
-                            </span>
+                        <h1 className="hero-display ed-display">
+                            I build<br />
+                            <span className="sig">intelligent</span> systems.
                         </h1>
 
-                        <p className="hero-sub text-3xl md:text-5xl xl:text-6xl font-extrabold leading-[1.2] tracking-tight bg-gradient-to-r from-white/90 via-sky-200 to-white/70 bg-clip-text text-transparent mt-2 md:mt-3">
-                            into Intelligent Systems
+                        <p className="hero-lead ed-lead mt-7">
+                            3+ years shipping LLM agents, cloud microservices, and
+                            production web apps. Below is a live one — paste any job
+                            description and watch my AI score the fit in real time.
                         </p>
 
-                        {/* Description */}
-                        <p className="hero-desc text-white/75 text-sm md:text-lg xl:text-xl max-w-xl leading-relaxed mt-4 md:mt-8">
-                            Full-stack AI developer with{" "}
-                            <span className="text-white font-medium">3+ years professional experience</span>.
-                            Building intelligent systems with LLM agents, cloud microservices, and modern web technologies.
-                        </p>
-
-                        {/* CTAs */}
-                        <div className="hero-cta flex flex-wrap gap-3 md:gap-4 mt-5 md:mt-10">
-                            <Button
-                                text="See My Work"
-                                className="md:w-56 md:h-13 w-44 h-12"
-                                scrollTo="counter"
-                            />
+                        <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => scrollToId("jd-check")}
+                                className="ed-btn"
+                            >
+                                Try the live AI matcher
+                                <ArrowDown className="w-4 h-4" />
+                            </button>
                             <a
                                 href="/files/Eddy_Zhang_CV.pdf"
                                 download="Eddy_Zhang_CV.pdf"
-                                className="hero-btn-secondary group md:w-56 md:h-13 w-44 h-12"
+                                className="ed-btn-ghost"
                             >
-                                <span className="hero-btn-border" />
-                                <span className="relative z-10 flex items-center gap-2.5 font-semibold tracking-wide">
-                                    <Download className="w-4 h-4 text-sky-300 transition-all duration-300 group-hover:text-sky-200 group-hover:-translate-y-0.5" />
-                                    Download CV
-                                </span>
+                                <Download className="w-4 h-4" />
+                                Download CV
                             </a>
+                        </div>
+
+                        <div className="hero-meta mt-10 flex items-center gap-3 text-sm" style={{ color: "var(--tx-2)" }}>
+                            <span className="ed-status-dot" aria-hidden="true" />
+                            <span>Available for work</span>
+                            <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
+                            <span className="font-mono text-xs tracking-wider">React · Node · Python · LLMs</span>
                         </div>
                     </div>
 
-                    {/* RIGHT: Video */}
-                    <div className="hero-video">
-                        <div className="hero-video-wrap w-full aspect-[16/9]">
-                            <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-black/40 hero-video-container">
+                    {/* RIGHT — editorial framed video */}
+                    <div className="hero-aside">
+                        <figure className="ed-tile p-2.5 rounded-[var(--r-lg)]">
+                            <div className="relative w-full aspect-[16/10] rounded-[var(--r-md)] overflow-hidden bg-black/50">
                                 {!videoLoaded && (
-                                    <div className="absolute inset-0 bg-gradient-to-br from-slate-800/60 to-slate-900/60 animate-pulse" />
+                                    <div className="absolute inset-0 animate-pulse" style={{ background: "var(--ink-2)" }} />
                                 )}
                                 <video
                                     src="/videos/eddy_intro.mp4"
@@ -165,7 +109,10 @@ const Hero = () => {
                                     onLoadedData={() => setVideoLoaded(true)}
                                 />
                             </div>
-                        </div>
+                            <figcaption className="ed-eyebrow mt-3 px-1 pb-1">
+                                30s intro · who I am
+                            </figcaption>
+                        </figure>
                     </div>
                 </div>
             </section>
