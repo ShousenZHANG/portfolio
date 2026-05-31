@@ -25,7 +25,10 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Uppercase-leading names are React components — ignore for declared
+      // vars AND destructured props passed as components (the flat config
+      // has no jsx-uses-vars to credit <Comp /> usage).
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^[A-Z_]' }],
     },
   },
 
