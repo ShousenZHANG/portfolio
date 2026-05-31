@@ -50,24 +50,24 @@
        owned. Premium minimalism over template gradients.
        ══════════════════════════════════════════════════════════ */
 
-    /* Signature accent — one color, owned */
-    --sig: oklch(0.87 0.19 128);          /* electric chartreuse */
-    --sig-dim: oklch(0.74 0.15 128);
-    --sig-ink: oklch(0.22 0.06 128);      /* text on signature fills */
-    --sig-glow: oklch(0.87 0.19 128 / 0.16);
-    --sig-line: oklch(0.87 0.19 128 / 0.34);
+    /* Signature accent — warm amber-copper, owned. Premium, not sporty. */
+    --sig: oklch(0.80 0.13 72);           /* warm amber-gold */
+    --sig-dim: oklch(0.68 0.12 60);       /* copper */
+    --sig-ink: oklch(0.20 0.04 60);       /* text on signature fills */
+    --sig-glow: oklch(0.80 0.13 72 / 0.18);
+    --sig-line: oklch(0.80 0.13 72 / 0.32);
 
-    /* Neutral surface ladder (near-black editorial) */
-    --ink-0: oklch(0.145 0.004 240);      /* page floor */
-    --ink-1: oklch(0.175 0.005 240);      /* raised surface */
-    --ink-2: oklch(0.205 0.006 240);      /* surface hover */
-    --hair: oklch(1 0 0 / 0.08);          /* hairline border */
-    --hair-bright: oklch(1 0 0 / 0.15);
+    /* Warm near-black surface ladder (espresso, not cold gray) */
+    --ink-0: oklch(0.155 0.008 60);       /* page floor — warm espresso */
+    --ink-1: oklch(0.188 0.009 58);       /* raised surface */
+    --ink-2: oklch(0.225 0.010 56);       /* surface hover */
+    --hair: oklch(0.92 0.02 70 / 0.09);   /* warm hairline border */
+    --hair-bright: oklch(0.92 0.02 70 / 0.16);
 
-    /* Text ladder (WCAG-AA compliant on --ink-0) */
-    --tx-0: oklch(0.98 0 0);              /* primary */
-    --tx-1: oklch(0.80 0 0);              /* secondary ~7:1 */
-    --tx-2: oklch(0.66 0 0);              /* tertiary ~4.6:1 */
+    /* Warm linen text ladder (WCAG-AA on --ink-0) */
+    --tx-0: oklch(0.96 0.012 75);         /* primary — warm linen */
+    --tx-1: oklch(0.80 0.012 72);         /* secondary ~7:1 */
+    --tx-2: oklch(0.66 0.012 70);         /* tertiary ~4.6:1 */
 
     /* Radius scale */
     --r-xs: 8px; --r-sm: 12px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
@@ -535,7 +535,7 @@ section {
         max-width: 46ch;
     }
 
-    /* Engineering grid backdrop + signature aurora (replaces particle soup) */
+    /* Warm mesh backdrop + signature aurora (premium depth, not flat) */
     .ed-grid-bg {
         position: fixed;
         inset: 0;
@@ -543,33 +543,43 @@ section {
         pointer-events: none;
         background-color: var(--ink-0);
         background-image:
-            /* signature aurora glow, top-left + right */
-            radial-gradient(ellipse 50% 45% at 12% 0%, oklch(0.87 0.19 128 / 0.10) 0%, transparent 60%),
-            radial-gradient(ellipse 45% 40% at 92% 8%, oklch(0.72 0.13 230 / 0.08) 0%, transparent 55%),
-            /* grid lines */
-            linear-gradient(oklch(1 0 0 / 0.045) 1px, transparent 1px),
-            linear-gradient(90deg, oklch(1 0 0 / 0.045) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+            /* warm amber aurora glow, top-left */
+            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.80 0.13 72 / 0.13) 0%, transparent 58%),
+            /* deep copper counter-glow, right */
+            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.62 0.11 45 / 0.10) 0%, transparent 55%),
+            /* faint hairline grid */
+            linear-gradient(oklch(0.92 0.02 70 / 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.92 0.02 70 / 0.035) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
     }
-    /* Brighter grid near top, fading down — keeps content legible */
-    .ed-grid-bg::after {
+    /* Signature grid accent near top, fading down */
+    .ed-grid-bg::before {
         content: "";
         position: absolute;
         inset: 0;
         background-image:
-            linear-gradient(oklch(0.87 0.19 128 / 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, oklch(0.87 0.19 128 / 0.05) 1px, transparent 1px);
-        background-size: 56px 56px;
-        mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 0%, transparent 70%);
+            linear-gradient(var(--sig-glow) 1px, transparent 1px),
+            linear-gradient(90deg, var(--sig-glow) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse 65% 45% at 50% 0%, #000 0%, transparent 68%);
+    }
+    /* Film grain — premium tactile texture (SVG noise, GPU-cheap) */
+    .ed-grid-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.5;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     }
     @media (prefers-reduced-motion: no-preference) {
         .ed-grid-bg {
-            animation: ed-aurora 18s var(--ease-soft) infinite alternate;
+            animation: ed-aurora 22s var(--ease-soft) infinite alternate;
         }
     }
     @keyframes ed-aurora {
         0%   { background-position: 0% 0%, 0% 0%, 0 0, 0 0; }
-        100% { background-position: 6% 4%, -4% 3%, 0 0, 0 0; }
+        100% { background-position: 5% 3%, -4% 2%, 0 0, 0 0; }
     }
 
     /* Hairline section divider */
@@ -885,6 +895,59 @@ section {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Custom cursor (desktop, reduced-motion safe) ── */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor [data-magnetic] {
+  cursor: none;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 9999px;
+  will-change: transform;
+  margin-left: -3px;
+  margin-top: -3px;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--sig);
+  transition: opacity 0.3s ease;
+}
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border: 1.5px solid var(--sig-line);
+  transition: width 0.25s var(--ease-emphasis),
+              height 0.25s var(--ease-emphasis),
+              margin 0.25s var(--ease-emphasis),
+              border-color 0.25s ease,
+              background 0.25s ease,
+              opacity 0.3s ease;
+}
+.cursor-ring--hover {
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  margin-top: -28px;
+  border-color: var(--sig);
+  background: var(--sig-glow);
+}
+.cursor-ring--down {
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
 }
 
 /* Mobile menu fade-in */

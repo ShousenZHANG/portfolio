@@ -5,6 +5,7 @@ import Download from "lucide-react/dist/esm/icons/download";
 import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { useMagnetic } from "../hooks/useMagnetic.js";
 
 const HERO_ANIM_TARGETS = [
     ".hero-eyebrow",
@@ -24,6 +25,7 @@ const scrollToId = (id) => {
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
+    const magneticCta = useMagnetic(0.45);
 
     useGSAP(() => {
         if (prefersReducedMotion()) {
@@ -66,7 +68,9 @@ const Hero = () => {
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
                             <button
+                                ref={magneticCta}
                                 type="button"
+                                data-magnetic
                                 onClick={() => scrollToId("jd-check")}
                                 className="ed-btn"
                             >

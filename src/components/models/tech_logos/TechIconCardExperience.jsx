@@ -13,7 +13,16 @@ const StableOrbitControls = () => {
   const [domElement, setDomElement] = useState(null);
   useLayoutEffect(() => { setDomElement(gl.domElement); }, [gl]);
   if (!domElement) return null;
-  return <OrbitControls enableZoom={false} enablePan={false} domElement={domElement} />;
+  return (
+    <OrbitControls
+      domElement={domElement}
+      enableZoom={false}
+      enablePan={false}
+      enableDamping
+      dampingFactor={0.08}
+      rotateSpeed={0.7}
+    />
+  );
 };
 
 const TechIconCardExperience = ({ model }) => {

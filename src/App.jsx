@@ -6,6 +6,8 @@ import Experience from "./sections/Experience.jsx";
 import Footer from "./sections/Footer.jsx";
 import JDQuickCheck from "./sections/JDQuickCheck.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import CustomCursor from "./components/CustomCursor.jsx";
+import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const TechStack = lazy(() => import("./sections/TechStack.jsx"));
@@ -34,6 +36,8 @@ const LazySection = ({ children }) => (
 );
 
 const App = () => {
+    useSmoothScroll();
+
     useEffect(() => {
         const schedule =
             typeof window !== "undefined" && "requestIdleCallback" in window
@@ -52,6 +56,7 @@ const App = () => {
     return (
         <>
             <a href="#main-content" className="skip-link">Skip to main content</a>
+            <CustomCursor />
             <div className="ed-grid-bg" aria-hidden="true" />
             <NavBar />
             <main id="main-content">
