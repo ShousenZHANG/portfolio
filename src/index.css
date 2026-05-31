@@ -342,8 +342,9 @@ section {
     }
 
     .navbar-logo-mark {
-        @apply w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold text-black;
-        background: linear-gradient(135deg, #38bdf8, #34d399);
+        @apply w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold;
+        background: var(--sig);
+        color: var(--sig-ink);
     }
 
     .navbar-logo-text {
@@ -470,8 +471,8 @@ section {
         bottom: 0.35rem;
         width: 2px;
         border-radius: 9999px;
-        background: linear-gradient(180deg, rgba(56, 189, 248, 0.9), rgba(16, 185, 129, 0.9));
-        opacity: 0.8;
+        background: var(--sig);
+        opacity: 0.7;
     }
 
     .project-cta {
@@ -534,18 +535,41 @@ section {
         max-width: 46ch;
     }
 
-    /* Faint engineering grid backdrop (replaces particle soup) */
+    /* Engineering grid backdrop + signature aurora (replaces particle soup) */
     .ed-grid-bg {
         position: fixed;
         inset: 0;
         z-index: 0;
         pointer-events: none;
+        background-color: var(--ink-0);
         background-image:
-            linear-gradient(var(--hair) 1px, transparent 1px),
-            linear-gradient(90deg, var(--hair) 1px, transparent 1px);
-        background-size: 64px 64px;
-        mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 78%);
-        opacity: 0.5;
+            /* signature aurora glow, top-left + right */
+            radial-gradient(ellipse 50% 45% at 12% 0%, oklch(0.87 0.19 128 / 0.10) 0%, transparent 60%),
+            radial-gradient(ellipse 45% 40% at 92% 8%, oklch(0.72 0.13 230 / 0.08) 0%, transparent 55%),
+            /* grid lines */
+            linear-gradient(oklch(1 0 0 / 0.045) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(1 0 0 / 0.045) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+    }
+    /* Brighter grid near top, fading down — keeps content legible */
+    .ed-grid-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(oklch(0.87 0.19 128 / 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.87 0.19 128 / 0.05) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 0%, transparent 70%);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        .ed-grid-bg {
+            animation: ed-aurora 18s var(--ease-soft) infinite alternate;
+        }
+    }
+    @keyframes ed-aurora {
+        0%   { background-position: 0% 0%, 0% 0%, 0 0, 0 0; }
+        100% { background-position: 6% 4%, -4% 3%, 0 0, 0 0; }
     }
 
     /* Hairline section divider */
@@ -707,10 +731,10 @@ section {
     transition: all 0.3s ease !important;
 }
 .swiper-pagination-bullet-active {
-    background: #38bdf8 !important;
+    background: var(--sig) !important;
     width: 24px !important;
     border-radius: 4px !important;
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 8px var(--sig-glow);
 }
 
 /* --- Swiper Fade Fix --- */
@@ -811,7 +835,7 @@ section {
     @apply bg-background text-foreground;
   }
   :focus-visible {
-    outline: 2px solid rgba(56, 189, 248, 0.8);
+    outline: 2px solid var(--sig);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -835,22 +859,22 @@ section {
   width: auto;
   height: auto;
   padding: 12px 18px;
-  background: #0e0e10;
-  color: #fff;
-  border: 2px solid #38bdf8;
+  background: var(--ink-1);
+  color: var(--tx-0);
+  border: 2px solid var(--sig);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 0 0 4px var(--sig-glow);
 }
 
 /* Improve focus contrast on dark navbar links */
 .navbar-link:focus-visible,
 .navbar-cta:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid var(--sig);
   outline-offset: 3px;
-  background: rgba(56, 189, 248, 0.12);
+  background: var(--sig-glow);
 }
 
 /* Reduced motion support */

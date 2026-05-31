@@ -73,16 +73,17 @@ const Contact = () => {
     <section
       id="contact"
       ref={sectionRef}
-      className="py-20 md:py-28 px-5 md:px-12 lg:px-20"
+      className="ed-shell py-[var(--sp-section)]"
     >
-      <div className="max-w-[700px] mx-auto">
+      <div className="max-w-[720px] mx-auto">
         <TitleHeader
           title="Get in Touch"
-          sub="Let's Connect"
+          sub="05 / Contact"
           anchor="contact"
+          align="left"
         />
 
-        <div className="mt-12 bg-[#0d0f15] border border-white/8 rounded-2xl p-6 md:p-8">
+        <div className="mt-10 ed-tile p-6 md:p-8">
           <form
             ref={formRef}
             onSubmit={handleSubmit}
@@ -120,7 +121,7 @@ const Contact = () => {
                   placeholder="Your name"
                   required
                   disabled={loading}
-                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
+                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--sig-line)] focus:ring-1 focus:ring-[var(--sig-line)] transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
                 />
               </div>
 
@@ -140,7 +141,7 @@ const Contact = () => {
                   placeholder="your@email.com"
                   required
                   disabled={loading}
-                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
+                  className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--sig-line)] focus:ring-1 focus:ring-[var(--sig-line)] transition-all duration-300 disabled:opacity-50 placeholder:text-white/30"
                 />
               </div>
             </div>
@@ -162,7 +163,7 @@ const Contact = () => {
                 rows="4"
                 required
                 disabled={loading}
-                className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 resize-none disabled:opacity-50 placeholder:text-white/30"
+                className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--sig-line)] focus:ring-1 focus:ring-[var(--sig-line)] transition-all duration-300 resize-none disabled:opacity-50 placeholder:text-white/30"
               />
             </div>
 
@@ -170,7 +171,7 @@ const Contact = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="ed-btn mt-2 self-start disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
               {loading ? "Sending..." : "Send Message"}

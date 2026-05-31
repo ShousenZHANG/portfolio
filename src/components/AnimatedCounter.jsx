@@ -27,20 +27,26 @@ const AnimatedCounter = () => {
   }, []);
 
   return (
-    <div id="counter" ref={counterRef} className="padding-x-lg xl:mt-0 mt-32">
-      <div className="mx-auto grid-4-cols">
+    <div id="counter" ref={counterRef} className="ed-shell xl:mt-0 mt-24">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {counterItems.map((item) => (
           <div
             key={item.label}
-            className="counter-card relative overflow-hidden bg-gradient-to-br from-zinc-900 via-slate-900 to-black rounded-2xl p-10 flex flex-col justify-center items-center shadow-[0_0_20px_rgba(0,0,0,0.4)] backdrop-blur-sm motion-rise hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(56,189,248,0.25)]"
+            className="counter-card ed-tile relative overflow-hidden p-6 md:p-8 flex flex-col"
           >
-            {/* Accent top border */}
-            <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-60`} />
-
-            <div className="counter-number text-white/90 text-4xl md:text-5xl xl:text-6xl font-semibold tracking-tight leading-snug drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out">
+            {/* Signature accent corner tick */}
+            <div
+              className="absolute top-0 left-6 right-6 h-px"
+              style={{ background: "var(--sig-line)" }}
+              aria-hidden="true"
+            />
+            <div
+              className="counter-number text-4xl md:text-5xl font-semibold tracking-tight"
+              style={{ color: "var(--tx-0)" }}
+            >
               <CountUp suffix={item.suffix} end={item.value} enableScrollSpy scrollSpyOnce />
             </div>
-            <div className="text-white/75 text-lg md:text-xl font-medium text-center mt-2 transition-all duration-500 hover:text-sky-300">
+            <div className="text-sm md:text-base mt-2 leading-snug" style={{ color: "var(--tx-2)" }}>
               {item.label}
             </div>
           </div>

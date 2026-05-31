@@ -30,25 +30,26 @@ const TechStack = () => {
   }, []);
 
   return (
-    <section id="skills" className="py-20 md:py-28 px-5 md:px-12 lg:px-20">
-      <div className="max-w-[1200px] mx-auto">
+    <section id="skills" className="ed-shell py-[var(--sp-section)]">
+      <div>
         <TitleHeader
           title="Technical Expertise"
-          sub="Core Stack"
+          sub="04 / Core Stack"
           anchor="skills"
+          align="left"
         />
 
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mt-14">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4 mt-14">
           {techStackIcons.map((icon) => (
             <div
               key={icon.name}
-              className="tech-card group relative bg-[#0d0f15] border border-white/8 rounded-2xl overflow-hidden hover:border-sky-400/25 transition-colors duration-500"
+              className="tech-card ed-tile group relative overflow-hidden"
             >
               <div className="flex flex-col items-center pt-4 pb-5 md:pt-6 md:pb-6">
                 <div className="w-32 h-32 md:w-40 md:h-40">
                   <TechIconCardExperience model={icon} />
                 </div>
-                <p className="text-sm md:text-base font-medium text-white/70 group-hover:text-sky-300 transition-colors duration-300 mt-2">
+                <p className="text-sm md:text-base font-medium mt-2 transition-colors duration-300 group-hover:!text-[var(--sig)]" style={{ color: "var(--tx-1)" }}>
                   {icon.name}
                 </p>
               </div>

@@ -46,26 +46,28 @@ const JDQuickCheck = () => {
   };
 
   return (
-    <section id="jd-check" className="py-20 md:py-28 px-5 md:px-12 lg:px-20">
-      <div className="max-w-[800px] mx-auto">
+    <section id="jd-check" className="ed-shell py-[var(--sp-section)]">
+      <div className="max-w-[820px] mx-auto">
         <TitleHeader
-          title="JD Quick Check"
-          sub="AI-Powered Fit Analysis"
+          title="Match a JD against my CV"
+          sub="01 / Live AI Demo"
           anchor="jd-check"
+          align="left"
         />
 
-        <div className="mt-12 bg-[#0d0f15] border border-white/8 rounded-2xl p-6 md:p-8">
+        <div className="mt-10 ed-tile p-6 md:p-8" style={{ background: "var(--ink-1)" }}>
           {/* Header */}
-          <div className="mb-5">
-            <p className="text-sm text-white/75">
-              Paste a job description to get an instant match analysis against my CV.
+          <div className="mb-5 flex items-center gap-2.5">
+            <span className="ed-status-dot" aria-hidden="true" />
+            <p className="text-sm" style={{ color: "var(--tx-1)" }}>
+              Paste any job description — my AI scores the fit in real time.
             </p>
           </div>
 
           {/* Input */}
           <div className="flex flex-col gap-4">
             <textarea
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all duration-300 resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-[var(--sig-line)] focus:ring-1 focus:ring-[var(--sig-line)] transition-all duration-300 resize-none"
               placeholder="Paste the JD here (stack, responsibilities, experience band, visa, location)..."
               rows="5"
               value={jd}
@@ -79,7 +81,7 @@ const JDQuickCheck = () => {
                 type="button"
                 onClick={submit}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ed-btn disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
                 {loading ? "Analysing..." : "Check Fit"}

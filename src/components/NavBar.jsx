@@ -92,7 +92,7 @@ const NavBar = () => {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="lg:hidden flex items-center justify-center w-10 h-10 text-white/80 hover:text-white transition-colors"
+          className="lg:hidden flex items-center justify-center w-11 h-11 text-white/80 hover:text-white transition-colors"
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
@@ -130,7 +130,8 @@ const NavBar = () => {
             <a
               href="#contact"
               onClick={closeMenu}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 text-black text-sm font-semibold"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-sm font-semibold"
+              style={{ background: "var(--sig)", color: "var(--sig-ink)" }}
             >
               Contact me
             </a>
