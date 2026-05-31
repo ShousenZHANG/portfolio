@@ -9,6 +9,8 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const TechStack = lazy(() => import("./sections/TechStack.jsx"));
@@ -71,6 +73,8 @@ const App = () => {
                 <LazySection><Contact /></LazySection>
             </main>
             <Footer />
+            <SpeedInsights />
+            <Analytics />
         </>
     );
 };

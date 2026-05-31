@@ -9,11 +9,11 @@ export const projects = [
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
-      { src: "/images/joblit_landing.png", alt: "Joblit AI-powered landing page with live demo" },
-      { src: "/images/joblit_jobs.png", alt: "Joblit jobs workspace with AI keyword highlighting" },
-      { src: "/images/joblit_autofill.png", alt: "Joblit Chrome Extension auto-filling ATS application form" },
-      { src: "/images/joblit_resume.png", alt: "Joblit resume builder with PDF preview" },
-      { src: "/images/joblit_extension.png", alt: "Joblit AutoFill Chrome Extension installation page" },
+      { src: "/images/joblit_landing.webp", alt: "Joblit AI-powered landing page with live demo" },
+      { src: "/images/joblit_jobs.webp", alt: "Joblit jobs workspace with AI keyword highlighting" },
+      { src: "/images/joblit_autofill.webp", alt: "Joblit Chrome Extension auto-filling ATS application form" },
+      { src: "/images/joblit_resume.webp", alt: "Joblit resume builder with PDF preview" },
+      { src: "/images/joblit_extension.webp", alt: "Joblit AutoFill Chrome Extension installation page" },
     ],
     description:
       "An {AI-powered job search platform} with {Claude Code} integration, multi-provider LLM orchestration, and structured prompt engineering. Automates the entire workflow from discovering roles to auto-filling applications.",
@@ -43,10 +43,10 @@ export const projects = [
     desktopReverse: false,
     autoplayDelay: 4000,
     slides: [
-      { src: "/images/award_certificate.jpg", alt: "Coding Fest 2025 Runner-up Certificate" },
-      { src: "/images/award_team_photo.jpg", alt: "Coding Fest 2025 Award Ceremony Team Photo" },
-      { src: "/images/Competition_System_Architecture.png", alt: "System Architecture" },
-      { src: "/images/Pipeline.png", alt: "CI/CD Pipeline" },
+      { src: "/images/award_certificate.webp", alt: "Coding Fest 2025 Runner-up Certificate" },
+      { src: "/images/award_team_photo.webp", alt: "Coding Fest 2025 Award Ceremony Team Photo" },
+      { src: "/images/Competition_System_Architecture.webp", alt: "System Architecture" },
+      { src: "/images/Pipeline.webp", alt: "CI/CD Pipeline" },
     ],
     description:
       "Cloud-native competition system with {7+ Spring Cloud microservices}, JWT SSO, role-based access control, and async messaging via RabbitMQ. {40,000+ lines of production code} with {95%+ CI/CD consistency}.",

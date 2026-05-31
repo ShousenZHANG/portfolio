@@ -190,6 +190,7 @@ const Contact = () => {
                 aria-labelledby="contact-success-title"
                 aria-modal="true"
                 onClick={() => setSent(false)}
+                onKeyDown={(e) => { if (e.key === "Tab") e.preventDefault(); }}
               >
                 <div
                   className="bg-[#0d0f15] border border-white/10 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4 animate-fade-in"

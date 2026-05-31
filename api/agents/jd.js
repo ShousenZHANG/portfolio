@@ -70,12 +70,22 @@ export default async function handler(req, res) {
   }
 
   const { jd, cvText } = body || {};
-  if (!jd || !cvText) {
+  if (typeof jd !== "string" || typeof cvText !== "string" || !jd.trim() || !cvText.trim()) {
     return send(res, 400, { error: "jd and cvText are required" });
+  }
+  // Bound input length — protects Gemini token quota from abuse and caps
+  // the prompt-injection surface. Hard limits, not silent truncation.
+  const MAX_JD = 12_000;
+  const MAX_CV = 24_000;
+  if (jd.length > MAX_JD) {
+    return send(res, 413, { error: `Job description is too long (max ${MAX_JD.toLocaleString()} characters).` });
+  }
+  if (cvText.length > MAX_CV) {
+    return send(res, 413, { error: "CV text is too long." });
   }
 
   try {
-    const score = await evaluateJD(jd, cvText);
+    const score = await evaluateJD(jd.trim(), cvText.trim());
     return send(res, 200, score, {
       "X-RateLimit-Limit": String(RATE_LIMIT_CONFIG.MAX_REQUESTS),
       "X-RateLimit-Remaining": String(limit.remaining),

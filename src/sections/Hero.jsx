@@ -111,7 +111,15 @@ const Hero = () => {
                                     aria-label="Personal introduction video by Eddy Zhang"
                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                                     onLoadedData={() => setVideoLoaded(true)}
-                                />
+                                >
+                                    <track
+                                        kind="captions"
+                                        src="/videos/eddy_intro.en.vtt"
+                                        srcLang="en"
+                                        label="English"
+                                        default
+                                    />
+                                </video>
                             </div>
                             <figcaption className="ed-eyebrow mt-3 px-1 pb-1">
                                 30s intro · who I am
