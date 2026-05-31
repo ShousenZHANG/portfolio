@@ -6,7 +6,7 @@ import Magnetic from "../components/Magnetic.jsx";
 
 const Footer = () => {
   return (
-    <footer className="mt-[var(--sp-section)]" style={{ borderTop: "1px solid var(--hair)" }}>
+    <footer style={{ borderTop: "1px solid var(--hair)" }}>
       <div className="ed-shell py-10 md:py-12">
         {/* Top row: Links + Social */}
         <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 mb-8">

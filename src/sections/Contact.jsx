@@ -69,7 +69,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" ref={sectionRef} className="ed-shell py-[var(--sp-section)]">
+    <section id="contact" ref={sectionRef} className="ed-shell pt-[var(--sp-section)] pb-16 md:pb-20">
       <TitleHeader title="Get in Touch" sub="05 / Contact" anchor="contact" align="left" />
 
       <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-12 mt-10 items-start">
