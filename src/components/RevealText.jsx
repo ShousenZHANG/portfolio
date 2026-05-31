@@ -49,7 +49,7 @@ const RevealText = ({ text, as = "span", className = "", onScroll = true, delay 
         words.map((word, i) => (
             <span
                 key={`${word}-${i}`}
-                style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}
+                style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top", paddingBottom: "0.12em", marginBottom: "-0.12em" }}
             >
                 <span className="reveal-word" style={{ display: "inline-block", willChange: "transform" }}>
                     {word}

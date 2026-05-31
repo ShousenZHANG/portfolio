@@ -86,7 +86,7 @@ const Hero = () => {
                                 <span key={`${w.t}-${i}`}>
                                     <span
                                         aria-hidden="true"
-                                        style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}
+                                        style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top", paddingBottom: "0.14em", marginBottom: "-0.14em" }}
                                     >
                                         <span
                                             className={`hero-word${w.sig ? " sig" : ""}`}
