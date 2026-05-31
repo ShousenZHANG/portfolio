@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import Link2 from "lucide-react/dist/esm/icons/link-2";
 import Check from "lucide-react/dist/esm/icons/check";
 import { prefersReducedMotion } from "../lib/motion.js";
+import RevealText from "./RevealText.jsx";
 
 /**
  * Editorial section header. Renders an h2 by default (the single h1
@@ -15,19 +16,21 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
 
     useGSAP(() => {
         if (!ref.current) return;
+        const fades = ref.current.querySelectorAll(".th-fade");
         if (prefersReducedMotion()) {
-            gsap.set(ref.current, { opacity: 1, y: 0 });
+            gsap.set(fades, { opacity: 1, y: 0 });
             return;
         }
         gsap.fromTo(
-            ref.current,
-            { opacity: 0, y: 24 },
+            fades,
+            { opacity: 0, y: 16 },
             {
                 opacity: 1,
                 y: 0,
                 duration: 0.7,
                 ease: "power3.out",
-                scrollTrigger: { trigger: ref.current, start: "top 85%" },
+                stagger: 0.1,
+                scrollTrigger: { trigger: ref.current, start: "top 86%" },
             }
         );
     }, { scope: ref });
@@ -48,10 +51,10 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
 
     return (
         <div ref={ref} className={`flex flex-col gap-4 ${alignClass}`}>
-            {sub && <p className="ed-eyebrow">{sub}</p>}
+            {sub && <p className="ed-eyebrow th-fade">{sub}</p>}
 
             <div className="group relative flex items-center gap-2">
-                <h2 className="ed-h2">{title}</h2>
+                <RevealText as="h2" className="ed-h2" text={title} />
                 {anchor && (
                     <button
                         type="button"

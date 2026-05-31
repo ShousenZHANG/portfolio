@@ -4,6 +4,7 @@ import X from "lucide-react/dist/esm/icons/x";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 
 import { navLinks } from "../constants";
+import Magnetic from "./Magnetic.jsx";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -84,10 +85,12 @@ const NavBar = () => {
           </ul>
         </nav>
 
-        <a href="#contact" className="navbar-cta group hidden lg:flex">
-          <span>Contact me</span>
-          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-        </a>
+        <Magnetic strength={0.4} className="hidden lg:inline-flex">
+          <a href="#contact" className="navbar-cta group">
+            <span>Contact me</span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </a>
+        </Magnetic>
 
         {/* Mobile hamburger */}
         <button

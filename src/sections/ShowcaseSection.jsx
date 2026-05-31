@@ -56,6 +56,20 @@ const AppShowcase = () => {
             },
           }
         );
+        // Image reveal — clip-path wipe from the leading edge
+        const media = el.querySelector(".project-media");
+        if (media) {
+          gsap.fromTo(
+            media,
+            { clipPath: "inset(0 100% 0 0)" },
+            {
+              clipPath: "inset(0 0% 0 0)",
+              duration: 1,
+              ease: "power3.inOut",
+              scrollTrigger: { trigger: el, start: "top 85%", once: true },
+            }
+          );
+        }
       });
     });
 
@@ -81,7 +95,7 @@ const AppShowcase = () => {
             >
               {/* Image / Carousel */}
               <div className="lg:w-1/2 w-full">
-                <div className="ed-tile relative overflow-hidden h-[280px] sm:h-[340px] md:h-[400px]">
+                <div className="project-media ed-tile relative overflow-hidden h-[280px] sm:h-[340px] md:h-[400px]">
                   {project.slides.length > 0 ? (
                     <Swiper
                       modules={[Autoplay, Pagination, EffectFade]}

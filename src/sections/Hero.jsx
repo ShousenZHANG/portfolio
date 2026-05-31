@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
@@ -9,11 +9,16 @@ import { useMagnetic } from "../hooks/useMagnetic.js";
 
 const HERO_ANIM_TARGETS = [
     ".hero-eyebrow",
-    ".hero-display",
     ".hero-lead",
     ".hero-cta",
     ".hero-meta",
-    ".hero-aside",
+];
+
+const HEADLINE = [
+    { t: "I", sig: false },
+    { t: "build", sig: false, br: true },
+    { t: "intelligent", sig: true },
+    { t: "systems.", sig: false },
 ];
 
 const scrollToId = (id) => {
@@ -27,27 +32,48 @@ const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
     const magneticCta = useMagnetic(0.45);
 
+    const rootRef = useRef(null);
+
     useGSAP(() => {
         if (prefersReducedMotion()) {
-            gsap.set(HERO_ANIM_TARGETS, { opacity: 1, y: 0 });
+            gsap.set([...HERO_ANIM_TARGETS, ".hero-word", ".hero-aside"], { opacity: 1, y: 0, yPercent: 0 });
             return;
         }
-        gsap.fromTo(
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.fromTo(
+            ".hero-word",
+            { yPercent: 118 },
+            { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.09 }
+        )
+        .fromTo(
             HERO_ANIM_TARGETS,
-            { y: 28, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                ease: "power3.out",
-                stagger: 0.09,
-            }
+            { y: 26, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 },
+            "-=0.5"
+        )
+        .fromTo(
+            ".hero-aside",
+            { y: 40, opacity: 0, scale: 0.97 },
+            { y: 0, opacity: 1, scale: 1, duration: 0.9 },
+            "-=0.7"
         );
-    }, []);
+
+        // Parallax: video drifts up slightly as you scroll past the hero
+        gsap.to(".hero-aside", {
+            yPercent: -12,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+            },
+        });
+    }, { scope: rootRef });
 
     return (
         <>
-            <section id="hero" className="relative overflow-hidden">
+            <section id="hero" ref={rootRef} className="relative overflow-hidden">
                 <div className="ed-shell grid items-center gap-10 lg:gap-16 lg:grid-cols-[1.05fr_0.95fr] pt-28 pb-20 md:pt-36 md:pb-28 min-h-[88vh]">
                     {/* LEFT — editorial headline */}
                     <div className="flex flex-col">
@@ -55,9 +81,23 @@ const Hero = () => {
                             AI Full-Stack Engineer · Sydney
                         </p>
 
-                        <h1 className="hero-display ed-display">
-                            I build<br />
-                            <span className="sig">intelligent</span> systems.
+                        <h1 className="hero-display ed-display" aria-label="I build intelligent systems.">
+                            {HEADLINE.map((w, i) => (
+                                <span key={`${w.t}-${i}`}>
+                                    <span
+                                        aria-hidden="true"
+                                        style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}
+                                    >
+                                        <span
+                                            className={`hero-word${w.sig ? " sig" : ""}`}
+                                            style={{ display: "inline-block", willChange: "transform" }}
+                                        >
+                                            {w.t}
+                                        </span>
+                                    </span>
+                                    {w.br ? <br /> : i < HEADLINE.length - 1 ? " " : ""}
+                                </span>
+                            ))}
                         </h1>
 
                         <p className="hero-lead ed-lead mt-7">
