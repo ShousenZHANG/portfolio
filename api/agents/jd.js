@@ -92,7 +92,7 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     logError("JD assistant error:", err);
-    if (err.message === "GEMINI_API_KEY is not set on the server") {
+    if (err.message === "OPENAI_API_KEY is not set on the server") {
       return send(res, 500, { error: err.message });
     }
     return send(res, 500, { error: "JD analysis failed" });

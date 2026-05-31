@@ -1,139 +1,242 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import CountUp from "react-countup";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useJDAnalysis } from "../hooks/useJDAnalysis";
 import Send from "lucide-react/dist/esm/icons/send";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
 
-const MAX_MATCHED = 5;
-const MAX_GAPS = 4;
+const MAX_MATCHED = 6;
+const MAX_GAPS = 5;
 const MAX_ACTIONS = 3;
 const MAX_RISKS = 3;
+const MAX_JD_CHARS = 12000;
+
+const SAMPLES = [
+  {
+    label: "Senior React Engineer",
+    jd: "Senior React Engineer — Sydney (hybrid). 5+ years with React and TypeScript, building component libraries and design systems. Strong with Node.js REST APIs and AWS. You will mentor junior engineers and own frontend architecture. Full working rights in Australia required.",
+  },
+  {
+    label: "ML / AI Engineer",
+    jd: "Machine Learning Engineer. Ship production AI features: LLM agents, RAG pipelines, prompt engineering, vector databases. Python and cloud-native services. Experience with OpenAI / Anthropic APIs. Remote within Australia.",
+  },
+  {
+    label: "Full-Stack (PR required)",
+    jd: "Full-Stack Developer — Next.js, PostgreSQL, Docker, CI/CD on Vercel. Own features end to end. Must be an Australian citizen or hold permanent residency.",
+  },
+];
+
+const LOADING_STEPS = ["Parsing the JD", "Matching against my CV", "Scoring the fit"];
 
 function detectIsMac() {
   if (typeof navigator === "undefined") return false;
-  // navigator.userAgentData is the modern API; fallback to platform/userAgent
-  const platform = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || "";
-  return /mac|iphone|ipad|ipod/i.test(platform);
+  const p = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || "";
+  return /mac|iphone|ipad|ipod/i.test(p);
 }
 
-function formatEligibility(item, label) {
-  if (!item || !item.status || item.status === "Unknown") return `${label}: -`;
-  const note = item.note ? ` (${item.note})` : "";
-  return `${label}: ${item.status}${note}`;
+const FIT_COLOR = (label = "") =>
+  label.startsWith("Strong") ? "oklch(0.78 0.16 150)" :
+  label.startsWith("Good") ? "var(--sig-2)" :
+  label.startsWith("Possible") ? "oklch(0.82 0.14 80)" :
+  "oklch(0.70 0.17 18)";
+
+const STATUS_COLOR = (s) =>
+  s === "OK" ? "oklch(0.78 0.16 150)" :
+  s === "Issue" ? "oklch(0.70 0.17 18)" :
+  "var(--tx-2)";
+
+// ── Animated circular score gauge ──
+function ScoreGauge({ score, label }) {
+  const R = 52;
+  const C = 2 * Math.PI * R;
+  const color = FIT_COLOR(label);
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: 140, height: 140 }}>
+      <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
+        <circle cx="70" cy="70" r={R} fill="none" stroke="var(--hair)" strokeWidth="9" />
+        <circle
+          cx="70" cy="70" r={R} fill="none" stroke={color} strokeWidth="9" strokeLinecap="round"
+          strokeDasharray={C}
+          strokeDashoffset={C * (1 - Math.max(0, Math.min(100, score)) / 100)}
+          style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(0.22,1,0.36,1)", filter: `drop-shadow(0 0 6px ${color})` }}
+        />
+      </svg>
+      <div className="absolute flex flex-col items-center">
+        <span className="text-3xl font-bold" style={{ color: "var(--tx-0)" }}>
+          <CountUp end={score} duration={1.1} />
+        </span>
+        <span className="text-[11px] font-mono" style={{ color: "var(--tx-2)" }}>/ 100</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Animated dimension bar ──
+function DimBar({ label, value }) {
+  const [w, setW] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setW(value), 60);
+    return () => clearTimeout(t);
+  }, [value]);
+  return (
+    <div>
+      <div className="flex justify-between text-xs mb-1.5">
+        <span style={{ color: "var(--tx-1)" }}>{label}</span>
+        <span className="font-mono" style={{ color: "var(--tx-2)" }}>{value}</span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--hair)" }}>
+        <div
+          className="h-full rounded-full"
+          style={{ width: `${w}%`, background: "linear-gradient(90deg, var(--sig), var(--sig-2))", transition: "width 1s cubic-bezier(0.22,1,0.36,1)" }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function Chip({ children, tone = "neutral" }) {
+  const styles = {
+    match: { background: "var(--sig-glow)", color: "var(--sig)", border: "1px solid var(--sig-line)" },
+    gap: { background: "oklch(0.70 0.17 18 / 0.1)", color: "oklch(0.80 0.12 20)", border: "1px solid oklch(0.70 0.17 18 / 0.25)" },
+    neutral: { background: "var(--ink-2)", color: "var(--tx-1)", border: "1px solid var(--hair)" },
+  }[tone];
+  return <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={styles}>{children}</span>;
 }
 
 function MoreCount({ shown, total }) {
   if (total <= shown) return null;
-  return (
-    <span className="text-xs text-white/55 ml-1 self-center">
-      +{total - shown} more
-    </span>
-  );
+  return <span className="text-xs self-center" style={{ color: "var(--tx-2)" }}>+{total - shown} more</span>;
 }
 
 const JDQuickCheck = () => {
   const { jd, setJd, loading, result, error, submit } = useJDAnalysis();
   const [isMac, setIsMac] = useState(false);
+  const [step, setStep] = useState(0);
+  const stepTimer = useRef(null);
 
+  useEffect(() => { setIsMac(detectIsMac()); }, []);
+
+  // Cycle the "thinking" steps while loading
   useEffect(() => {
-    setIsMac(detectIsMac());
-  }, []);
+    if (!loading) { setStep(0); clearInterval(stepTimer.current); return undefined; }
+    setStep(0);
+    stepTimer.current = setInterval(() => setStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1)), 900);
+    return () => clearInterval(stepTimer.current);
+  }, [loading]);
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      submit();
-    }
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); }
   };
+
+  const over = MAX_JD_CHARS - jd.length;
 
   return (
     <section id="jd-check" className="ed-shell py-[var(--sp-section)]">
-      <div className="max-w-[820px] mx-auto">
-        <TitleHeader
-          title="Match a JD against my CV"
-          sub="01 / Live AI Demo"
-          anchor="jd-check"
-          align="left"
-        />
+      <div className="max-w-[860px] mx-auto">
+        <TitleHeader title="Match a JD against my CV" sub="01 / Live AI Demo" anchor="jd-check" align="left" />
 
-        <div className="mt-10 ed-tile p-6 md:p-8" style={{ background: "var(--ink-1)" }}>
-          {/* Header */}
-          <div className="mb-5 flex items-center gap-2.5">
-            <span className="ed-status-dot" aria-hidden="true" />
-            <p className="text-sm" style={{ color: "var(--tx-1)" }}>
-              Paste any job description — my AI scores the fit in real time.
-            </p>
+        <p className="ed-lead mt-5 mb-8">
+          Paste any job description — my own AI engine scores how well I fit, in
+          real time. Same RAG + LLM stack I ship in production.
+        </p>
+
+        <div className="ed-tile p-5 md:p-7" style={{ background: "var(--ink-1)" }}>
+          {/* Sample chips */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>Try:</span>
+            {SAMPLES.map((s) => (
+              <button
+                key={s.label}
+                type="button"
+                onClick={() => setJd(s.jd)}
+                className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                style={{ background: "var(--ink-2)", border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+              >
+                {s.label}
+              </button>
+            ))}
           </div>
 
           {/* Input */}
-          <div className="flex flex-col gap-4">
-            <textarea
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-[var(--sig-line)] focus:ring-1 focus:ring-[var(--sig-line)] transition-all duration-300 resize-none"
-              placeholder="Paste the JD here (stack, responsibilities, experience band, visa, location)..."
-              rows="5"
-              value={jd}
-              onChange={(e) => setJd(e.target.value)}
-              onKeyDown={handleKeyDown}
-              aria-label="Job description input"
-              aria-describedby="jd-shortcut-hint"
-            />
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <button
-                type="button"
-                onClick={submit}
-                disabled={loading}
-                className="ed-btn disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
-                {loading ? "Analysing..." : "Check Fit"}
+          <textarea
+            className="w-full rounded-[var(--r-sm)] px-4 py-3 text-sm resize-none transition-all duration-300 focus:outline-none"
+            style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", minHeight: 130 }}
+            placeholder="Paste the JD here — stack, responsibilities, experience band, visa, location…"
+            rows="5"
+            maxLength={MAX_JD_CHARS}
+            value={jd}
+            onChange={(e) => setJd(e.target.value)}
+            onKeyDown={handleKeyDown}
+            aria-label="Job description input"
+            aria-describedby="jd-shortcut-hint"
+          />
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-3">
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={submit} disabled={loading} className="ed-btn disabled:opacity-50 disabled:cursor-not-allowed" data-magnetic>
+                {loading ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Send className="w-4 h-4" />}
+                {loading ? "Analysing…" : "Check Fit"}
               </button>
-              <p id="jd-shortcut-hint" className="text-xs text-white/55">
-                Press{" "}
-                <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/85 font-mono text-[10px]">
-                  {isMac ? "⌘" : "Ctrl"}
-                </kbd>
+              <p id="jd-shortcut-hint" className="text-xs hidden sm:block" style={{ color: "var(--tx-2)" }}>
+                <kbd className="px-1.5 py-0.5 rounded font-mono text-[10px]" style={{ border: "1px solid var(--hair-bright)", color: "var(--tx-1)" }}>{isMac ? "⌘" : "Ctrl"}</kbd>
                 <span className="mx-1">+</span>
-                <kbd className="px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-white/85 font-mono text-[10px]">
-                  Enter
-                </kbd>
-                <span className="ml-1">to submit</span>
+                <kbd className="px-1.5 py-0.5 rounded font-mono text-[10px]" style={{ border: "1px solid var(--hair-bright)", color: "var(--tx-1)" }}>Enter</kbd>
               </p>
             </div>
+            <span className="text-xs font-mono" style={{ color: over < 0 ? "oklch(0.70 0.17 18)" : "var(--tx-2)" }}>
+              {jd.length.toLocaleString()} / {MAX_JD_CHARS.toLocaleString()}
+            </span>
           </div>
 
-          {error && <p className="text-red-400 text-sm mt-3" role="alert">{error}</p>}
+          {error && (
+            <p className="text-sm mt-3" role="alert" style={{ color: "oklch(0.78 0.14 20)" }}>{error}</p>
+          )}
 
-          {/* Result */}
+          {/* ── States ── */}
           <div className="mt-6" aria-live="polite">
-            {!result && !loading && (
-              <p className="text-white/60 text-sm text-center py-6">
-                Results will appear here after analysis.
-              </p>
+            {loading && (
+              <div className="rounded-[var(--r-md)] p-6" style={{ border: "1px solid var(--hair)" }}>
+                <ul className="space-y-3">
+                  {LOADING_STEPS.map((s, i) => (
+                    <li key={s} className="flex items-center gap-3 text-sm transition-opacity duration-300"
+                        style={{ opacity: i <= step ? 1 : 0.35, color: i <= step ? "var(--tx-0)" : "var(--tx-2)" }}>
+                      <span className="w-4 h-4 flex items-center justify-center">
+                        {i < step
+                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--sig)" strokeWidth="2"><path d="M2 7.5l3.5 3.5L12 3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          : <span className="w-2 h-2 rounded-full" style={{ background: "var(--sig)", animation: i === step ? "ed-ping 1.2s var(--ease-soft) infinite" : "none" }} />}
+                      </span>
+                      {s}{i === step ? "…" : ""}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
-            {result && (
-              <div className="space-y-5">
-                {/* Overall score + fit label */}
-                <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/8">
-                  <div>
-                    <p className="text-xs text-white/70 uppercase tracking-wider">Overall Match</p>
-                    <p className="text-2xl font-bold text-white mt-1">{result.overallScore}%</p>
+            {!result && !loading && (
+              <div className="rounded-[var(--r-md)] p-8 text-center" style={{ border: "1px dashed var(--hair-bright)" }}>
+                <p className="text-sm" style={{ color: "var(--tx-2)" }}>
+                  Pick a sample above or paste a real JD, then hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span>.
+                  Results render here in a few seconds.
+                </p>
+              </div>
+            )}
+
+            {result && !loading && (
+              <div className="jd-result space-y-7">
+                {/* Hero: gauge + verdict */}
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <ScoreGauge score={result.overallScore} label={result.fitLabel} />
+                  <div className="flex-1 text-center sm:text-left">
+                    <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-2"
+                          style={{ background: `color-mix(in oklch, ${FIT_COLOR(result.fitLabel)} 18%, transparent)`, color: FIT_COLOR(result.fitLabel) }}>
+                      {result.fitLabel || "-"}
+                    </span>
+                    {result.fitHeadline && <p className="text-lg font-semibold leading-snug" style={{ color: "var(--tx-0)" }}>{result.fitHeadline}</p>}
+                    {result.fitVerdict && <p className="text-sm mt-1.5" style={{ color: "var(--tx-1)" }}>{result.fitVerdict}</p>}
                   </div>
-                  <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
-                    result.fitLabel?.startsWith("Strong") ? "bg-emerald-400/15 text-emerald-300" :
-                    result.fitLabel?.startsWith("Good") ? "bg-cyan-400/15 text-cyan-300" :
-                    result.fitLabel?.startsWith("Possible") ? "bg-amber-400/15 text-amber-300" :
-                    "bg-rose-400/15 text-rose-300"
-                  }`}>
-                    {result.fitLabel || "-"}
-                  </span>
                 </div>
 
-                {/* Headline */}
-                {result.fitHeadline && (
-                  <p className="text-sm text-white/80">{result.fitHeadline}</p>
-                )}
-
-                {/* Score breakdown */}
+                {/* Sub-scores */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
                     { label: "Exact", value: result.exactMatchScore },
@@ -141,71 +244,60 @@ const JDQuickCheck = () => {
                     { label: "Gap", value: result.gapScore },
                     { label: "Confidence", value: result.confidenceScore },
                   ].map(({ label, value }) => (
-                    <div key={label} className="p-3 bg-white/3 rounded-lg border border-white/6">
-                      <p className="text-[11px] text-white/65 uppercase tracking-wider">{label}</p>
-                      <p className="text-lg font-semibold text-white/90 mt-1">{value}%</p>
+                    <div key={label} className="rounded-[var(--r-sm)] p-3" style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
+                      <p className="text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>{label}</p>
+                      <p className="text-xl font-semibold mt-1" style={{ color: "var(--tx-0)" }}>{value}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Dimension scores */}
+                {/* Dimension bars */}
                 {result.dimensionScores && (
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                    {[
-                      { label: "Tech Stack", value: result.dimensionScores.techStack },
-                      { label: "Responsibilities", value: result.dimensionScores.responsibilities },
-                      { label: "Domain", value: result.dimensionScores.domainContext },
-                      { label: "Seniority", value: result.dimensionScores.seniority },
-                    ].map(({ label, value }) => (
-                      <div key={label} className="flex justify-between items-center py-1.5 text-sm">
-                        <span className="text-white/70">{label}</span>
-                        <span className="text-white/90 font-medium">{value}%</span>
-                      </div>
-                    ))}
+                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+                    <DimBar label="Tech Stack" value={result.dimensionScores.techStack} />
+                    <DimBar label="Responsibilities" value={result.dimensionScores.responsibilities} />
+                    <DimBar label="Domain" value={result.dimensionScores.domainContext} />
+                    <DimBar label="Seniority" value={result.dimensionScores.seniority} />
                   </div>
                 )}
 
-                {/* Eligibility */}
-                <div className="space-y-1.5 text-sm">
-                  <p className="text-white/75">{formatEligibility(result?.eligibility?.visa, "Visa")}</p>
-                  <p className="text-white/75">{formatEligibility(result?.eligibility?.experience, "Experience")}</p>
-                  <p className="text-white/75">{formatEligibility(result?.eligibility?.location, "Location")}</p>
+                {/* Eligibility chips */}
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { k: "Visa", v: result?.eligibility?.visa },
+                    { k: "Experience", v: result?.eligibility?.experience },
+                    { k: "Location", v: result?.eligibility?.location },
+                  ].map(({ k, v }) => (
+                    <span key={k} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[var(--r-sm)] text-xs"
+                          style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: STATUS_COLOR(v?.status) }} />
+                      <span style={{ color: "var(--tx-2)" }}>{k}</span>
+                      <span className="font-medium" style={{ color: "var(--tx-0)" }}>{v?.status || "Unknown"}</span>
+                    </span>
+                  ))}
                 </div>
 
-                {result.fitVerdict && (
-                  <p className="text-sm text-sky-300/90 italic">{result.fitVerdict}</p>
-                )}
-
                 {/* Keywords */}
-                <div className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-5">
                   {result.matchedKeywords?.length > 0 && (
                     <div>
-                      <p className="text-[11px] text-white/65 uppercase tracking-wider mb-2">Matched Skills</p>
+                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Matched</p>
                       <div className="flex flex-wrap gap-1.5">
                         {result.matchedKeywords.slice(0, MAX_MATCHED).map((k) => {
-                          const text = typeof k === "string" ? k : k?.name;
-                          return text ? (
-                            <span key={text} className="px-2 py-1 rounded text-xs bg-emerald-400/10 text-emerald-300/90 border border-emerald-400/20">
-                              {text}
-                            </span>
-                          ) : null;
+                          const t = typeof k === "string" ? k : k?.name;
+                          return t ? <Chip key={t} tone="match">{t}</Chip> : null;
                         })}
                         <MoreCount shown={MAX_MATCHED} total={result.matchedKeywords.length} />
                       </div>
                     </div>
                   )}
-
                   {result.missingKeywords?.length > 0 && (
                     <div>
-                      <p className="text-[11px] text-white/65 uppercase tracking-wider mb-2">Gaps</p>
+                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Gaps</p>
                       <div className="flex flex-wrap gap-1.5">
                         {result.missingKeywords.slice(0, MAX_GAPS).map((k) => {
-                          const text = typeof k === "string" ? k : k?.name;
-                          return text ? (
-                            <span key={text} className="px-2 py-1 rounded text-xs bg-rose-400/10 text-rose-300/90 border border-rose-400/20">
-                              {text}
-                            </span>
-                          ) : null;
+                          const t = typeof k === "string" ? k : k?.name;
+                          return t ? <Chip key={t} tone="gap">{t}</Chip> : null;
                         })}
                         <MoreCount shown={MAX_GAPS} total={result.missingKeywords.length} />
                       </div>
@@ -216,39 +308,26 @@ const JDQuickCheck = () => {
                 {/* Suggestions */}
                 {result.suggestions?.length > 0 && (
                   <div>
-                    <p className="text-[11px] text-white/65 uppercase tracking-wider mb-2">Suggested Actions</p>
-                    <ul className="space-y-1.5">
+                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Suggested actions</p>
+                    <ul className="space-y-2">
                       {result.suggestions.slice(0, MAX_ACTIONS).map((s, i) => (
-                        <li key={`s-${i}`} className="text-sm text-white/75 flex gap-2">
-                          <span className="text-sky-400/70 mt-0.5 flex-shrink-0">
-                            <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor"><circle cx="3" cy="3" r="3"/></svg>
-                          </span>
-                          {s}
+                        <li key={`s-${i}`} className="text-sm flex gap-2.5" style={{ color: "var(--tx-1)" }}>
+                          <span style={{ color: "var(--sig)" }}>▸</span>{s}
                         </li>
                       ))}
                     </ul>
-                    {result.suggestions.length > MAX_ACTIONS && (
-                      <p className="text-xs text-white/55 mt-2">
-                        +{result.suggestions.length - MAX_ACTIONS} more suggestions
-                      </p>
-                    )}
                   </div>
                 )}
 
                 {/* Risk flags */}
                 {result.riskFlags?.length > 0 && (
-                  <div className="p-3 rounded-lg border border-amber-400/15 bg-amber-400/5">
-                    <p className="text-[11px] text-amber-300/85 uppercase tracking-wider mb-2">Risk Flags</p>
+                  <div className="rounded-[var(--r-sm)] p-4" style={{ border: "1px solid oklch(0.82 0.14 80 / 0.25)", background: "oklch(0.82 0.14 80 / 0.06)" }}>
+                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2" style={{ color: "oklch(0.82 0.12 82)" }}>Risk flags</p>
                     <ul className="space-y-1">
                       {result.riskFlags.slice(0, MAX_RISKS).map((item, idx) => (
-                        <li key={`r-${idx}`} className="text-sm text-amber-200/85">{item}</li>
+                        <li key={`r-${idx}`} className="text-sm" style={{ color: "var(--tx-1)" }}>{item}</li>
                       ))}
                     </ul>
-                    {result.riskFlags.length > MAX_RISKS && (
-                      <p className="text-xs text-amber-200/65 mt-2">
-                        +{result.riskFlags.length - MAX_RISKS} more flags
-                      </p>
-                    )}
                   </div>
                 )}
               </div>

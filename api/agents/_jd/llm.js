@@ -1,9 +1,10 @@
-// LLM Adapter — calls Gemini, repairs malformed JSON, returns parsed RawJDLLMResult.
+// LLM Adapter — calls OpenAI, repairs malformed JSON, returns parsed RawJDLLMResult.
 /* eslint-env node */
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+// Cheapest reliable default; override with OPENAI_MODEL (e.g. gpt-4.1-nano).
+const MODEL_NAME = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
 const CANDIDATE_RULES = {
   visaStatement:
@@ -148,18 +149,29 @@ export function repairJson(text) {
   }
 }
 
-export async function callGeminiJD(jd, cvText) {
-  const apiKey = process.env.GEMINI_API_KEY;
+export async function callOpenAIJD(jd, cvText) {
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is not set on the server");
+    throw new Error("OPENAI_API_KEY is not set on the server");
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
+  const client = new OpenAI({ apiKey });
   const prompt = buildPrompt(jd, cvText);
-  const result = await model.generateContent(prompt);
-  const text = result.response.text() || "{}";
 
+  const completion = await client.chat.completions.create({
+    model: MODEL_NAME,
+    temperature: 0.2,
+    response_format: { type: "json_object" },
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a precise job-matching engine. Return only valid JSON that matches the requested schema.",
+      },
+      { role: "user", content: prompt },
+    ],
+  });
+
+  const text = completion.choices?.[0]?.message?.content || "{}";
   return repairJson(text);
 }

@@ -1001,6 +1001,16 @@ section {
   .skill-detail, .skill-detail-line { animation: none !important; }
 }
 
+/* JD result reveal */
+.jd-result { animation: jd-result-in 0.5s var(--ease-emphasis) both; }
+@keyframes jd-result-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jd-result { animation: none !important; }
+}
+
 /* Mobile menu fade-in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-8px); }

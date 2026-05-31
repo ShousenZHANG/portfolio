@@ -36,9 +36,9 @@ Heavy sections (`ShowcaseSection`, `TechStack`, `Contact`) are lazy-loaded with 
 **UI components** — shadcn/ui (new-york style, JSX not TSX) with Radix UI primitives in `src/components/ui/`. Configured via `components.json`. Path alias `@` → `src/`.
 
 **JD Matching feature** — Single frontend surface (`JDQuickCheck`) calls `POST /api/agents/jd`. The handler at `api/agents/jd.js` is a thin transport layer that delegates to a JD Evaluator module split across `api/agents/_jd/`:
-- `_jd/llm.js` — LLM Adapter. Builds the prompt, calls Gemini, repairs malformed JSON, returns a `RawJDLLMResult`. Owns `buildPrompt` + `repairJson` + `callGeminiJD`.
+- `_jd/llm.js` — LLM Adapter. Builds the prompt, calls OpenAI (Chat Completions, JSON mode), repairs malformed JSON, returns a `RawJDLLMResult`. Owns `buildPrompt` + `repairJson` + `callOpenAIJD`.
 - `_jd/scoring.js` — Pure-function Scoring. Takes a `RawJDLLMResult`, produces a flat `JDScore`. Owns weights, fit thresholds, eligibility caps, dimension fallback chain. Exports `scoreJD` (main entry) plus `clampScore`, `normalizeDimensionScores`, `deriveAtsScore`, `deriveConfidenceScore`, `deriveFitLabel`, `patchFitTexts` for granular tests.
-- `_jd/evaluator.js` — Orchestrator. `evaluateJD(jd, cvText) → JDScore` is `scoreJD(await callGeminiJD(jd, cvText))`.
+- `_jd/evaluator.js` — Orchestrator. `evaluateJD(jd, cvText) → JDScore` is `scoreJD(await callOpenAIJD(jd, cvText))`.
 
 The leading underscore in `_jd/` prevents Vercel from routing those files as endpoints.
 
@@ -61,8 +61,8 @@ The leading underscore in `_jd/` prevents Vercel from routing those files as end
 
 ## Environment Variables
 
-- `GEMINI_API_KEY` — Required for the JD matching API endpoint
-- `GEMINI_MODEL` — Optional, defaults to `gemini-2.5-flash-lite`
+- `OPENAI_API_KEY` — Required for the JD matching API endpoint
+- `OPENAI_MODEL` — Optional, defaults to `gpt-4o-mini` (cheapest reliable; set to `gpt-4.1-nano` for even lower cost)
 - EmailJS credentials are used client-side in the Contact section
 
 ## Conventions
