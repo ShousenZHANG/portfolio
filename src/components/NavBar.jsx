@@ -62,6 +62,7 @@ const NavBar = () => {
     return () => window.removeEventListener("resize", positionIndicator);
   }, [positionIndicator]);
 
+  // Close mobile menu on Escape
   useEffect(() => {
     if (!menuOpen) return undefined;
     const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
@@ -69,6 +70,7 @@ const NavBar = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  // Close mobile menu on outside click
   useEffect(() => {
     if (!menuOpen) return undefined;
     const onClick = (e) => {
@@ -101,7 +103,6 @@ const NavBar = () => {
 
         <nav className="navbar-nav" aria-label="Main navigation">
           <ul ref={ulRef} onMouseLeave={() => setHovered(null)}>
-            {/* sliding indicator */}
             <span
               className="navbar-indicator"
               aria-hidden="true"
@@ -169,9 +170,7 @@ const NavBar = () => {
                 onClick={closeMenu}
                 aria-current={isActive ? "true" : undefined}
                 className="block py-2.5 px-3 rounded-lg text-[15px] font-medium transition-colors duration-150"
-                style={isActive
-                  ? { color: "var(--tx-0)", background: "var(--ink-2)" }
-                  : { color: "var(--tx-2)" }}
+                style={isActive ? { color: "var(--tx-0)", background: "var(--ink-2)" } : { color: "var(--tx-2)" }}
               >
                 {name}
               </a>
