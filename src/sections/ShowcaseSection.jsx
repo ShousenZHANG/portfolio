@@ -10,6 +10,7 @@ import "swiper/css/effect-fade";
 import { projects } from "../constants/projects";
 import TitleHeader from "../components/TitleHeader";
 import { prefersReducedMotion } from "../lib/motion.js";
+import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 
 /**
  * Render plain-text description, highlighting {curly brace} phrases.
@@ -177,10 +178,11 @@ const AppShowcase = () => {
                       href={project.highlight.cta.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors hover:opacity-80"
+                      className="group/cta inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "var(--sig)" }}
                     >
                       {project.highlight.cta.label}
+                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
                     </a>
                   </div>
                 )}
@@ -194,9 +196,10 @@ const AppShowcase = () => {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={linkIndex === 0 ? "ed-btn" : "ed-btn-ghost"}
+                        className={`group/btn ${linkIndex === 0 ? "ed-btn" : "ed-btn-ghost"}`}
                       >
                         {link.label}
+                        <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                       </a>
                     ))}
                   </div>

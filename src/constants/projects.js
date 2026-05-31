@@ -16,25 +16,16 @@ export const projects = [
       { src: "/images/joblit_extension.webp", alt: "Joblit AutoFill Chrome Extension installation page" },
     ],
     description:
-      "An {AI-powered job search platform} with {Claude Code} integration, multi-provider LLM orchestration, and structured prompt engineering. Automates the entire workflow from discovering roles to auto-filling applications.",
+      "An {AI-powered job search platform} with {Claude Code} integration — orchestrates multi-provider LLMs to automate everything from discovering roles to auto-filling applications.",
     outcomes: [
-      "Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering",
-      "Designed a portable AI Skill Pack with structured rules and quality gates for consistent LLM output across platforms",
-      "Developed a Chrome Extension (Manifest V3) with cross-site form detection and platform-specific ATS adapters",
-      "Established CI/CD pipelines, automated testing, and containerized deployment using GitHub Actions and Vercel",
+      "Orchestrated multi-provider LLMs with a portable AI Skill Pack and quality gates for consistent output",
+      "Built a Manifest V3 Chrome Extension with cross-site form detection and ATS-specific adapters",
+      "Shipped on CI/CD with automated testing and containerized deploys (GitHub Actions + Vercel)",
     ],
-    tech: [
-      "Next.js",
-      "TypeScript",
-      "Prisma + PostgreSQL",
-      "Claude",
-      "Chrome Extension",
-      "Tailwind + shadcn/ui",
-      "Vercel",
-    ],
+    tech: ["Next.js", "TypeScript", "Prisma + PostgreSQL", "Claude", "Chrome Extension"],
     links: [
-      { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub ->" },
-      { href: "https://www.joblit.tech/", label: "Live Demo ->" },
+      { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub" },
+      { href: "https://www.joblit.tech/", label: "Live Demo" },
     ],
   },
   {
@@ -49,17 +40,17 @@ export const projects = [
       { src: "/images/Pipeline.webp", alt: "CI/CD Pipeline" },
     ],
     description:
-      "Cloud-native competition system with {7+ Spring Cloud microservices}, JWT SSO, role-based access control, and async messaging via RabbitMQ. {40,000+ lines of production code} with {95%+ CI/CD consistency}.",
+      "Cloud-native competition system — {7+ Spring Cloud microservices}, JWT SSO, RBAC, and async messaging via RabbitMQ. {40,000+ lines} of production code at {95%+ CI/CD consistency}.",
     highlight: {
       title: "Runner-up — Best Project in AI for Education",
       description:
-        "Recognized at Coding Fest 2025 (University of Sydney) for innovation and community impact.",
+        "Recognized at Coding Fest 2025 (University of Sydney) for innovation and impact.",
       sponsor: "Sponsored by Atlassian and Flow Traders.",
       cta: {
         href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
-        label: "View Award Certificate ->",
+        label: "View Award Certificate",
       },
     },
-    links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub ->" }],
+    links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub" }],
   },
 ];
