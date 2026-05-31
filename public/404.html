@@ -12,7 +12,7 @@
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html, body { height: 100%; }
       body {
-        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(56,189,248,0.06) 0%, transparent 60%), #0a0a0c;
+        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(124,92,255,0.08) 0%, transparent 60%), #0a0a0c;
         color: #fff;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
         display: flex;
@@ -22,18 +22,10 @@
       }
       .wrap { max-width: 520px; text-align: center; }
       .mark {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        display: block;
         width: 64px;
         height: 64px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #38bdf8, #22d3ee, #34d399);
-        color: #0e0e10;
-        font-weight: 900;
-        font-size: 32px;
-        letter-spacing: -1px;
-        margin-bottom: 28px;
+        margin: 0 auto 28px;
       }
       .code {
         font-size: 14px;
@@ -50,7 +42,7 @@
         margin-bottom: 16px;
       }
       h1 .accent {
-        background: linear-gradient(90deg, #38bdf8, #22d3ee, #34d399);
+        background: linear-gradient(90deg, #7C5CFF, #38C6E8);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
@@ -67,7 +59,7 @@
         gap: 10px;
         padding: 14px 24px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #38bdf8, #22d3ee, #34d399);
+        background: linear-gradient(135deg, #7C5CFF, #38C6E8);
         color: #0e0e10;
         text-decoration: none;
         font-weight: 700;
@@ -75,7 +67,7 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .home:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(56,189,248,0.4); }
-      .home:focus-visible { outline: 2px solid #38bdf8; outline-offset: 4px; }
+      .home:focus-visible { outline: 2px solid #7C5CFF; outline-offset: 4px; }
       .home svg { width: 16px; height: 16px; }
       @media (prefers-reduced-motion: reduce) {
         .home { transition: none; }
@@ -84,7 +76,21 @@
   </head>
   <body>
     <main class="wrap">
-      <div class="mark" aria-hidden="true">E</div>
+      <svg class="mark" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="g404" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#38C6E8"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="15" fill="url(#g404)"/>
+        <g fill="#14111E">
+          <rect x="18" y="17" width="6.5" height="30" rx="3.25"/>
+          <rect x="18" y="17" width="27" height="6.5" rx="3.25"/>
+          <rect x="18" y="28.75" width="18" height="6.5" rx="3.25"/>
+          <rect x="18" y="40.5" width="27" height="6.5" rx="3.25"/>
+        </g>
+        <circle cx="42.5" cy="32" r="3.6" fill="#14111E"/>
+      </svg>
       <p class="code">Error 404</p>
       <h1>This page <span class="accent">went missing</span></h1>
       <p>The link you followed may be broken, or the page may have been moved.</p>

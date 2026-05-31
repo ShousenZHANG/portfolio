@@ -346,9 +346,13 @@ section {
     }
 
     .navbar-logo-mark {
-        @apply w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold;
-        background: var(--sig);
-        color: var(--sig-ink);
+        @apply block;
+        border-radius: 9px;
+        transition: transform 0.3s var(--ease-emphasis), filter 0.3s ease;
+    }
+    .navbar-logo:hover .navbar-logo-mark {
+        transform: rotate(-4deg) scale(1.05);
+        filter: drop-shadow(0 4px 14px var(--sig-glow));
     }
 
     .navbar-logo-text {

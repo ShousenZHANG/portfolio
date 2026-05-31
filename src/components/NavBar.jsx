@@ -5,6 +5,7 @@ import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 
 import { navLinks } from "../constants";
 import Magnetic from "./Magnetic.jsx";
+import LogoMark from "./LogoMark.jsx";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -97,7 +98,7 @@ const NavBar = () => {
 
       <div className="navbar-inner">
         <a href="#hero" onClick={closeMenu} className="navbar-logo">
-          <span className="navbar-logo-mark">E</span>
+          <LogoMark className="navbar-logo-mark" size={34} />
           <span className="navbar-logo-text">Eddy Zhang</span>
         </a>
 
