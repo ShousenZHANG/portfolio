@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import Menu from "lucide-react/dist/esm/icons/menu";
 import X from "lucide-react/dist/esm/icons/x";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
@@ -10,24 +10,36 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const [hovered, setHovered] = useState(null);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, show: false });
+  const [progress, setProgress] = useState(0);
   const menuRef = useRef(null);
+  const ulRef = useRef(null);
+  const linkRefs = useRef({});
 
+  // Scroll: glass state + reading-progress bar
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10);
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Active section via IntersectionObserver
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.link.replace("#", ""));
+    const ids = navLinks.map((l) => l.link.replace("#", ""));
     const observers = [];
-    sectionIds.forEach((id) => {
+    ids.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { rootMargin: "-40% 0px -40% 0px" }
+        { rootMargin: "-45% 0px -45% 0px" }
       );
       obs.observe(el);
       observers.push(obs);
@@ -35,21 +47,32 @@ const NavBar = () => {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  // Close on Escape
+  // Position the sliding indicator behind the hovered (or active) link
+  const positionIndicator = useCallback(() => {
+    const target = hovered || activeSection;
+    const el = target ? linkRefs.current[target] : null;
+    const ul = ulRef.current;
+    if (!el || !ul) { setIndicator((s) => ({ ...s, show: false })); return; }
+    setIndicator({ left: el.offsetLeft, width: el.offsetWidth, show: true });
+  }, [hovered, activeSection]);
+
+  useLayoutEffect(() => { positionIndicator(); }, [positionIndicator]);
   useEffect(() => {
-    if (!menuOpen) return;
+    window.addEventListener("resize", positionIndicator);
+    return () => window.removeEventListener("resize", positionIndicator);
+  }, [positionIndicator]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
     const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  // Close on outside click
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) return undefined;
     const onClick = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
     };
     document.addEventListener("mousedown", onClick);
     document.addEventListener("touchstart", onClick);
@@ -63,6 +86,13 @@ const NavBar = () => {
 
   return (
     <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`} ref={menuRef}>
+      {/* reading-progress bar */}
+      <span
+        className="navbar-progress"
+        style={{ transform: `scaleX(${progress})` }}
+        aria-hidden="true"
+      />
+
       <div className="navbar-inner">
         <a href="#hero" onClick={closeMenu} className="navbar-logo">
           <span className="navbar-logo-mark">E</span>
@@ -70,13 +100,31 @@ const NavBar = () => {
         </a>
 
         <nav className="navbar-nav" aria-label="Main navigation">
-          <ul>
+          <ul ref={ulRef} onMouseLeave={() => setHovered(null)}>
+            {/* sliding indicator */}
+            <span
+              className="navbar-indicator"
+              aria-hidden="true"
+              style={{
+                transform: `translateX(${indicator.left}px)`,
+                width: `${indicator.width}px`,
+                opacity: indicator.show ? 1 : 0,
+              }}
+            />
             {navLinks.map(({ link, name }) => {
-              const sectionId = link.replace("#", "");
-              const isActive = activeSection === sectionId;
+              const id = link.replace("#", "");
+              const isActive = activeSection === id;
               return (
                 <li key={name}>
-                  <a href={link} className={`navbar-link ${isActive ? "active" : ""}`}>
+                  <a
+                    ref={(el) => { linkRefs.current[id] = el; }}
+                    href={link}
+                    className={`navbar-link ${isActive ? "active" : ""}`}
+                    aria-current={isActive ? "true" : undefined}
+                    onMouseEnter={() => setHovered(id)}
+                    onFocus={() => setHovered(id)}
+                    onBlur={() => setHovered(null)}
+                  >
                     {name}
                   </a>
                 </li>
@@ -105,31 +153,31 @@ const NavBar = () => {
         </button>
       </div>
 
-      {/* Mobile dropdown — compact card below navbar */}
+      {/* Mobile dropdown */}
       <div
         id="mobile-dropdown"
         className={`lg:hidden overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}
       >
-        <nav
-          aria-label="Mobile navigation"
-          className="mx-4 mb-4 p-3 rounded-xl bg-[#111318] border border-white/8"
-        >
+        <nav aria-label="Mobile navigation" className="mx-4 mb-4 p-3 rounded-xl" style={{ background: "var(--ink-1)", border: "1px solid var(--hair)" }}>
           {navLinks.map(({ link, name }) => {
-            const sectionId = link.replace("#", "");
-            const isActive = activeSection === sectionId;
+            const id = link.replace("#", "");
+            const isActive = activeSection === id;
             return (
               <a
                 key={name}
                 href={link}
                 onClick={closeMenu}
-                className={`block py-2.5 px-3 rounded-lg text-[15px] font-medium transition-colors duration-150 ${isActive ? "text-white bg-white/8" : "text-white/55 active:bg-white/5"}`}
+                aria-current={isActive ? "true" : undefined}
+                className="block py-2.5 px-3 rounded-lg text-[15px] font-medium transition-colors duration-150"
+                style={isActive
+                  ? { color: "var(--tx-0)", background: "var(--ink-2)" }
+                  : { color: "var(--tx-2)" }}
               >
                 {name}
               </a>
             );
           })}
-
-          <div className="mt-2 pt-2 border-t border-white/6">
+          <div className="mt-2 pt-2" style={{ borderTop: "1px solid var(--hair)" }}>
             <a
               href="#contact"
               onClick={closeMenu}

@@ -360,19 +360,47 @@ section {
         @apply hidden lg:flex items-center;
 
         ul {
-            @apply flex items-center gap-1;
+            @apply flex items-center gap-1 relative;
         }
     }
 
     .navbar-link {
-        @apply relative px-4 py-2 text-sm font-medium text-white/60 rounded-full
-        transition-all duration-300 hover:text-white/90;
+        @apply relative px-4 py-2 text-sm font-medium rounded-full
+        transition-colors duration-300;
+        z-index: 1;
+        color: var(--tx-2);
+    }
+    .navbar-link:hover { color: var(--tx-0); }
+    .navbar-link.active { color: var(--tx-0); }
+
+    /* Single sliding pill that glides between links */
+    .navbar-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+        border-radius: 9999px;
+        background: var(--hair-bright);
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.3s ease;
+        will-change: transform, width;
     }
 
-    .navbar-link.active {
-        @apply text-white;
-        background: rgba(255, 255, 255, 0.08);
+    /* Reading-progress bar — pinned to the very top of the viewport */
+    .navbar-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        transform-origin: left center;
+        background: linear-gradient(90deg, var(--sig), var(--sig-2));
+        z-index: 200;
+        opacity: 0.9;
     }
+    .navbar.not-scrolled .navbar-progress { opacity: 0; }
 
     /* ── CTA Button ── */
     .navbar-cta {
