@@ -47,3 +47,4 @@ Desktop.ini
 
 # Override potential global ignore rules (e.g. Python .gitignore template's "lib/")
 !src/lib/
+.playwright-mcp/
