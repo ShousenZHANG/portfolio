@@ -1,14 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="180" height="180" role="img" aria-label="Eddy Zhang logo">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#22d3ee"/>
-      <stop offset="100%" stop-color="#34d399"/>
+    <linearGradient id="eddyGradApple" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C5CFF"/>
+      <stop offset="1" stop-color="#38C6E8"/>
     </linearGradient>
   </defs>
-  <rect width="180" height="180" rx="40" fill="url(#g)"/>
-  <rect x="50" y="44" width="80" height="17" rx="8" fill="#0e0e10"/>
-  <rect x="50" y="81" width="62" height="17" rx="8" fill="#0e0e10"/>
-  <rect x="50" y="118" width="80" height="17" rx="8" fill="#0e0e10"/>
-  <rect x="50" y="44" width="17" height="91" rx="8" fill="#0e0e10"/>
+  <rect width="64" height="64" rx="15" fill="url(#eddyGradApple)"/>
+  <g fill="#14111E">
+    <rect x="18" y="17" width="6.5" height="30" rx="3.25"/>
+    <rect x="18" y="17" width="27" height="6.5" rx="3.25"/>
+    <rect x="18" y="28.75" width="18" height="6.5" rx="3.25"/>
+    <rect x="18" y="40.5" width="27" height="6.5" rx="3.25"/>
+  </g>
+  <circle cx="42.5" cy="32" r="3.6" fill="#14111E"/>
 </svg>
