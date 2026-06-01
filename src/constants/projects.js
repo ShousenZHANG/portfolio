@@ -51,6 +51,9 @@ export const projects = [
         label: "View Award Certificate",
       },
     },
-    links: [{ href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub" }],
+    links: [
+      { href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub" },
+      { href: "https://project-contest-platform.vercel.app/", label: "Live Demo" },
+    ],
   },
 ];

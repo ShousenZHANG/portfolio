@@ -39,8 +39,8 @@ const expCards = [
     date: "Mar 2026 – Present",
     responsibilities: [
       "Developed integration workflows on Boomi to automate cross-system data processing and business operations.",
-      "Built a RAG-powered AI agent using ServiceNow Knowledge Management to accelerate internal support.",
-      "Engineered task-specific AI agents with structured skills and harness design to improve response accuracy.",
+      "Automated previously manual processes by orchestrating enterprise workflows through AI agents — lifting team efficiency with built-in security and accuracy controls.",
+      "Built RAG-powered AI agents on Microsoft Copilot Studio with ServiceNow Knowledge Management, the M365 ecosystem, and MCP servers to accelerate internal support and cross-team automation.",
     ],
   },
   {

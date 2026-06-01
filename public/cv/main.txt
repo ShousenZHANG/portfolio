@@ -22,8 +22,8 @@ Junior Integration & Automation Analyst
 Corrs Chambers Westgarth
 Sydney, Australia | Mar 2026 - Present
 - Developed integration workflows on Boomi to automate cross-system data processing and business operations.
-- Built a RAG-powered AI agent using ServiceNow Knowledge Management to accelerate internal support.
-- Engineered task-specific AI agents with structured skills and harness design to improve response accuracy.
+- Automated previously manual processes by orchestrating enterprise workflows through AI agents, lifting team efficiency with built-in security and accuracy controls.
+- Built RAG-powered AI agents on Microsoft Copilot Studio with ServiceNow Knowledge Management, M365 ecosystem, and MCP servers to accelerate internal support and cross-team automation.
 
 Software Engineer
 Newtouch Software Co., Ltd.
@@ -43,7 +43,7 @@ Sydney, Australia | Jul 2025 - Present
 - Established CI/CD pipelines, automated testing, and containerized deployment using GitHub Actions and Vercel.
 
 Project Contest Platform
-Java, MySQL, RabbitMQ, Docker, AWS | GitHub | Runner-up, Coding Fest 2025
+Java, MySQL, RabbitMQ, Docker, AWS | GitHub | Live App: https://project-contest-platform.vercel.app/ | Runner-up, Coding Fest 2025
 Sydney, Australia | Feb 2025 - Jun 2025
 - Built backend microservices using Spring Cloud and implemented secure authentication with OAuth2/JWT.
 - Enabled event-driven messaging with RabbitMQ for real-time notifications and cross-service coordination.
