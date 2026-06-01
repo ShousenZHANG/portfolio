@@ -23,7 +23,7 @@ const InteractiveBackground = () => {
 
         let width = 0;
         let height = 0;
-        let dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+        let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
         let nodes = [];
         let raf = 0;
         let running = true;
@@ -33,8 +33,9 @@ const InteractiveBackground = () => {
         const MOUSE_RADIUS = 220;
 
         const nodeCount = () => {
-            const target = Math.round((width * height) / 22000);
-            return Math.max(36, Math.min(110, target));
+            // Lower cap — the link loop is O(n²); 110 nodes = ~6k checks/frame.
+            const target = Math.round((width * height) / 34000);
+            return Math.max(28, Math.min(58, target));
         };
 
         const seed = () => {
@@ -142,7 +143,7 @@ const InteractiveBackground = () => {
         // The field is decorative and mainly seen at the top. Pause its rAF
         // when the tab is hidden OR the user has scrolled past the hero —
         // frees the main thread so the rest of the page stays buttery.
-        const shouldRun = () => !document.hidden && window.scrollY < window.innerHeight * 1.2;
+        const shouldRun = () => !document.hidden && window.scrollY < window.innerHeight * 0.95;
         const sync = () => {
             const next = shouldRun();
             if (next && !running) { running = true; raf = requestAnimationFrame(step); }

@@ -605,23 +605,17 @@ section {
         mask-image: radial-gradient(ellipse 65% 45% at 50% 0%, #000 0%, transparent 68%);
     }
     /* Film grain — premium tactile texture (SVG noise, GPU-cheap) */
+    /* Static film grain — no mix-blend (full-screen blend repaints every
+       scroll frame). Low-opacity alpha composite is GPU-cacheable. */
     .ed-grid-bg::after {
         content: "";
         position: absolute;
         inset: 0;
-        opacity: 0.5;
-        mix-blend-mode: overlay;
+        opacity: 0.16;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     }
-    @media (prefers-reduced-motion: no-preference) {
-        .ed-grid-bg {
-            animation: ed-aurora 22s var(--ease-soft) infinite alternate;
-        }
-    }
-    @keyframes ed-aurora {
-        0%   { background-position: 0% 0%, 0% 0%, 0 0, 0 0; }
-        100% { background-position: 5% 3%, -4% 2%, 0 0, 0 0; }
-    }
+    /* Aurora is now static — the old background-position animation forced a
+       full-viewport repaint of this fixed layer on every frame. */
 
     /* Hairline section divider */
     .ed-rule {

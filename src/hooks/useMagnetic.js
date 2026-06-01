@@ -23,21 +23,25 @@ export function useMagnetic(strength = 0.4) {
         const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
         const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
 
-        const onMove = (e) => {
+        // Cache the rect on enter — avoids a layout read every mousemove.
+        let cx = 0;
+        let cy = 0;
+        const onEnter = () => {
             const r = el.getBoundingClientRect();
-            const relX = e.clientX - (r.left + r.width / 2);
-            const relY = e.clientY - (r.top + r.height / 2);
-            xTo(relX * strength);
-            yTo(relY * strength);
+            cx = r.left + r.width / 2;
+            cy = r.top + r.height / 2;
         };
-        const onLeave = () => {
-            xTo(0);
-            yTo(0);
+        const onMove = (e) => {
+            xTo((e.clientX - cx) * strength);
+            yTo((e.clientY - cy) * strength);
         };
+        const onLeave = () => { xTo(0); yTo(0); };
 
+        el.addEventListener("mouseenter", onEnter);
         el.addEventListener("mousemove", onMove);
         el.addEventListener("mouseleave", onLeave);
         return () => {
+            el.removeEventListener("mouseenter", onEnter);
             el.removeEventListener("mousemove", onMove);
             el.removeEventListener("mouseleave", onLeave);
             gsap.killTweensOf(el);

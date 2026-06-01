@@ -41,15 +41,22 @@ const CustomCursor = () => {
             raf = requestAnimationFrame(tick);
         };
 
+        let wasInGraph = false;
+        let wasInteractive = false;
         const onOver = (e) => {
-            // Over the precise skills graph, suppress the custom cursor and
-            // let the native pointer take over.
-            const inGraph = e.target.closest("#skills");
-            document.documentElement.classList.toggle("cursor-hidden", Boolean(inGraph));
-            const interactive = e.target.closest(
-                'a, button, [role="button"], input, textarea, [data-magnetic]'
+            // Over the precise skills graph, suppress the custom cursor.
+            const inGraph = Boolean(e.target.closest("#skills"));
+            if (inGraph !== wasInGraph) {
+                document.documentElement.classList.toggle("cursor-hidden", inGraph);
+                wasInGraph = inGraph;
+            }
+            const interactive = Boolean(
+                e.target.closest('a, button, [role="button"], input, textarea, [data-magnetic]')
             );
-            ring.classList.toggle("cursor-ring--hover", Boolean(interactive));
+            if (interactive !== wasInteractive) {
+                ring.classList.toggle("cursor-ring--hover", interactive);
+                wasInteractive = interactive;
+            }
         };
         const onDown = () => ring.classList.add("cursor-ring--down");
         const onUp = () => ring.classList.remove("cursor-ring--down");
