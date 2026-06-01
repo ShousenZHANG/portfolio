@@ -57,14 +57,14 @@ const Experience = () => {
                             const [role, company] = card.title.split(" — ");
                             const isCurrent = /present/i.test(card.date);
                             return (
-                            <div key={card.title} className="exp-card relative flex gap-5 md:gap-8">
+                            <div key={card.title} className="exp-card group/exp relative flex gap-5 md:gap-8">
                                 {/* Timeline node */}
                                 <div className="flex-shrink-0 flex flex-col items-center">
                                     <div
-                                        className="w-11 h-11 md:w-[4.2rem] md:h-[4.2rem] rounded-[var(--r-sm)] flex items-center justify-center relative font-mono"
+                                        className="exp-node w-11 h-11 md:w-[4.2rem] md:h-[4.2rem] rounded-[var(--r-sm)] flex items-center justify-center relative font-mono transition-all duration-300"
                                         style={{ background: "var(--ink-1)", border: "1px solid var(--sig-line)" }}
                                     >
-                                        <span className="text-sm md:text-lg font-bold tracking-tight" style={{ color: "var(--sig)" }}>
+                                        <span className="text-sm md:text-lg font-bold tracking-tight transition-colors duration-300" style={{ color: "var(--sig)" }}>
                                             {String(index + 1).padStart(2, "0")}
                                         </span>
                                         {isCurrent && (
@@ -74,7 +74,7 @@ const Experience = () => {
                                 </div>
 
                                 {/* Card content */}
-                                <div className="exp-tile ed-tile flex-1 p-6 md:p-8 transition-colors duration-300">
+                                <div className="exp-tile ed-tile flex-1 p-6 md:p-8 transition-all duration-300">
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-5">
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2.5 flex-wrap">

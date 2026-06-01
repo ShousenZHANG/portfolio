@@ -1032,6 +1032,21 @@ section {
   .skill-detail, .skill-detail-line { animation: none !important; }
 }
 
+/* ── Experience timeline hover ── */
+.exp-card .exp-tile:hover {
+  border-color: var(--sig-line);
+  transform: translateX(4px);
+}
+/* Light up the timeline node when its card is hovered */
+.group\/exp:hover .exp-node {
+  border-color: var(--sig);
+  background: var(--sig-glow);
+  box-shadow: 0 0 0 4px var(--sig-glow), 0 6px 20px -6px var(--sig-glow);
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-card .exp-tile:hover { transform: none; }
+}
+
 /* JD result reveal */
 .jd-result { animation: jd-result-in 0.5s var(--ease-emphasis) both; }
 @keyframes jd-result-in {

@@ -64,10 +64,10 @@ const App = () => {
             <NavBar />
             <main id="main-content">
                 <Hero />
-                <LazySection><ShowcaseSection /></LazySection>
                 <JDQuickCheck />
                 <LogoSection />
                 <Experience />
+                <LazySection><ShowcaseSection /></LazySection>
                 <SkillsConstellation />
                 <LazySection><Contact /></LazySection>
             </main>
