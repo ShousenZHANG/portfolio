@@ -149,29 +149,67 @@ export function repairJson(text) {
   }
 }
 
+// Typed error so the HTTP handler can map LLM failures to status codes
+// + user-facing messages instead of a blanket 500.
+export class LLMError extends Error {
+  constructor(message, { status = 502, code = "llm_error" } = {}) {
+    super(message);
+    this.name = "LLMError";
+    this.status = status;   // HTTP status the handler should return
+    this.code = code;       // machine-readable reason
+  }
+}
+
 export async function callOpenAIJD(jd, cvText) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is not set on the server");
+    throw new LLMError("OPENAI_API_KEY is not set on the server", {
+      status: 500,
+      code: "missing_api_key",
+    });
   }
 
-  const client = new OpenAI({ apiKey });
+  // SDK-level timeout (15s) + automatic exponential-backoff retries on
+  // 429/5xx/network errors. Caps cost bleed and stops hung requests.
+  const client = new OpenAI({ apiKey, timeout: 15_000, maxRetries: 2 });
   const prompt = buildPrompt(jd, cvText);
 
-  const completion = await client.chat.completions.create({
-    model: MODEL_NAME,
-    temperature: 0.2,
-    response_format: { type: "json_object" },
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a precise job-matching engine. Return only valid JSON that matches the requested schema.",
-      },
-      { role: "user", content: prompt },
-    ],
-  });
+  let completion;
+  try {
+    completion = await client.chat.completions.create({
+      model: MODEL_NAME,
+      temperature: 0.2,
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a precise job-matching engine. Return only valid JSON that matches the requested schema.",
+        },
+        { role: "user", content: prompt },
+      ],
+    });
+  } catch (err) {
+    const status = err?.status;
+    if (status === 429) {
+      throw new LLMError("The AI is busy right now — please retry in a moment.", { status: 429, code: "rate_limited" });
+    }
+    if (err?.name === "APIConnectionTimeoutError" || /timeout/i.test(err?.message || "")) {
+      throw new LLMError("The AI took too long to respond. Please try again.", { status: 504, code: "timeout" });
+    }
+    if (typeof status === "number" && status >= 500) {
+      throw new LLMError("The AI service is temporarily unavailable. Please try again shortly.", { status: 503, code: "upstream_unavailable" });
+    }
+    if (status === 401 || status === 403) {
+      throw new LLMError("AI service authentication failed.", { status: 500, code: "auth" });
+    }
+    throw new LLMError("Could not reach the AI service. Please try again.", { status: 502, code: "connection" });
+  }
 
   const text = completion.choices?.[0]?.message?.content || "{}";
-  return repairJson(text);
+  try {
+    return repairJson(text);
+  } catch {
+    throw new LLMError("The AI returned an unreadable response. Please try again.", { status: 502, code: "bad_json" });
+  }
 }

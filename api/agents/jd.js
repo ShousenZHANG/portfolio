@@ -92,9 +92,18 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     logError("JD assistant error:", err);
-    if (err.message === "OPENAI_API_KEY is not set on the server") {
-      return send(res, 500, { error: err.message });
+    // LLMError carries a safe status + user-facing message; everything
+    // else collapses to a generic 500 (never leak internals to the client).
+    if (err && err.name === "LLMError") {
+      const status = err.code === "missing_api_key" || err.code === "auth"
+        ? 500
+        : err.status || 502;
+      const clientMsg = err.code === "missing_api_key" || err.code === "auth"
+        ? "AI service is not configured. Please contact the site owner."
+        : err.message;
+      const headers = err.status === 429 ? { "Retry-After": "20" } : {};
+      return send(res, status, { error: clientMsg, code: err.code }, headers);
     }
-    return send(res, 500, { error: "JD analysis failed" });
+    return send(res, 500, { error: "JD analysis failed. Please try again." });
   }
 }

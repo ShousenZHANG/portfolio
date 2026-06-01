@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const MAX_JD_LENGTH = 10_000;
+const MAX_JD_LENGTH = 12_000; // matches the server cap (api/agents/jd.js)
 const CV_URL = "/cv/main.txt";
 const ENDPOINT = "/api/agents/jd";
 
 /**
  * Stateful hook for the JD matching feature.
  * Loads the CV once, validates input, posts to /api/agents/jd, exposes the flat JDScore.
+ * Aborts any in-flight request on unmount or rapid resubmit.
  */
 export function useJDAnalysis() {
   const [jd, setJd] = useState("");
@@ -14,6 +15,7 @@ export function useJDAnalysis() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const abortRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -24,7 +26,11 @@ export function useJDAnalysis() {
         if (!cancelled && trimmed) setCvText(trimmed);
       })
       .catch(() => { /* CV load failure is non-fatal — submit will validate */ });
-    return () => { cancelled = true; };
+    // Abort any pending analysis request when the component unmounts.
+    return () => {
+      cancelled = true;
+      abortRef.current?.abort();
+    };
   }, []);
 
   const submit = async () => {
@@ -44,12 +50,18 @@ export function useJDAnalysis() {
       return;
     }
 
+    // Cancel a prior in-flight request before starting a new one.
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jd: jd.trim(), cvText: cvText.trim() }),
+        signal: controller.signal,
       });
       if (!res.ok) {
         const raw = await res.text();
@@ -64,9 +76,13 @@ export function useJDAnalysis() {
       }
       setResult(await res.json());
     } catch (err) {
+      if (err?.name === "AbortError") return; // superseded/unmounted — ignore
       setError(err?.message || "Analysis failed. Please try again later.");
     } finally {
-      setLoading(false);
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setLoading(false);
+      }
     }
   };
 
