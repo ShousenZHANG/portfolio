@@ -766,6 +766,43 @@ section {
     animation-play-state: paused;
 }
 
+/* Edge fades — dissolve the track into the page floor (not pure black) */
+.logo-fade {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 12%;
+    min-width: 64px;
+    max-width: 200px;
+    z-index: 10;
+    pointer-events: none;
+}
+.logo-fade-left {
+    left: 0;
+    background: linear-gradient(90deg, var(--ink-0) 0%, transparent 100%);
+}
+.logo-fade-right {
+    right: 0;
+    background: linear-gradient(270deg, var(--ink-0) 0%, transparent 100%);
+}
+
+/* Monochrome by default → full colour + lift on hover (cohesive, premium) */
+.logo-img {
+    filter: grayscale(1) brightness(1.35) opacity(0.45);
+    transition: filter 0.35s var(--ease-standard), transform 0.35s var(--ease-emphasis);
+    will-change: filter, transform;
+}
+.logo-cell:hover .logo-img {
+    filter: grayscale(0) brightness(1) opacity(1);
+    transform: scale(1.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-box { animation: none !important; transform: none !important; }
+    .marquee { overflow-x: auto; }
+    .logo-img { transition: none; }
+}
+
 
 /* --- Swiper Pagination Enhancement --- */
 .swiper-pagination-bullet {
