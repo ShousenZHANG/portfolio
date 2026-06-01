@@ -340,6 +340,34 @@ section {
         border: 1px solid transparent;
     }
 
+    /* ── Mobile (<lg): tighter, always a glass pill, never edge-glued ── */
+    @media (max-width: 1023px) {
+        .navbar {
+            padding: 0 0.875rem;
+        }
+        .navbar.scrolled,
+        .navbar.not-scrolled {
+            top: 0.625rem;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .navbar-inner {
+            padding: 0.5rem 0.5rem 0.5rem 0.875rem;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        /* Glass at rest on mobile so the bar always reads as one unit */
+        .navbar.not-scrolled .navbar-inner {
+            background: rgba(20, 17, 30, 0.7);
+            border: 1px solid var(--hair);
+        }
+        .navbar.scrolled .navbar-inner {
+            background: rgba(20, 17, 30, 0.9);
+            border: 1px solid var(--hair-bright);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+        }
+    }
+
     /* ── Logo ── */
     .navbar-logo {
         @apply flex items-center gap-2 transition-opacity duration-300 hover:opacity-80;
@@ -356,7 +384,30 @@ section {
     }
 
     .navbar-logo-text {
-        @apply text-lg font-bold tracking-tight text-white;
+        @apply text-lg font-bold tracking-tight text-white whitespace-nowrap;
+    }
+
+    /* Mobile hamburger — glass pill, ≥44px touch target */
+    .navbar-burger {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        color: var(--tx-1);
+        background: var(--ink-2);
+        border: 1px solid var(--hair);
+        transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .navbar-burger:hover,
+    .navbar-burger[aria-expanded="true"] {
+        color: var(--sig);
+        background: var(--sig-glow);
+        border-color: var(--sig-line);
+    }
+
+    @media (max-width: 1023px) {
+        .navbar-logo-mark { width: 30px !important; height: 30px !important; }
+        .navbar-logo-text { font-size: 1.0625rem; }
+        .navbar-logo { gap: 0.5rem; }
     }
 
     /* ── Nav Links ── */
