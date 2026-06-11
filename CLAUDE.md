@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal developer portfolio for Eddy Zhang — a single-page React app with 3D visuals, scroll animations, and an AI-powered job description matching feature. Deployed on Vercel.
+Personal developer portfolio for Eddy Zhang — a single-page React app with an editorial design system, award-site motion layer, and an AI-powered job description matching feature. Deployed on Vercel.
 
 ## Commands
 
@@ -25,15 +25,15 @@ node --test test/api/jd/scoring.test.mjs
 **Frontend** — React 19 + Vite 7, plain JavaScript (JSX, no TypeScript). Tailwind CSS v4 via `@tailwindcss/vite` plugin.
 
 **Page structure** — Single-page app with no router. `App.jsx` composes sections top-to-bottom:
-`NavBar → Hero → ShowcaseSection → JDQuickCheck → LogoSection → Experience → TechStack → Contact → Footer`
+`NavBar → Hero (+AnimatedCounter) → JDQuickCheck → LogoSection → Experience → ShowcaseSection → SkillsConstellation → Contact → Footer`
 
-Heavy sections (`ShowcaseSection`, `TechStack`, `Contact`) are lazy-loaded with `React.lazy` + `Suspense`.
+Heavy sections (`ShowcaseSection`, `Contact`) are lazy-loaded with `React.lazy` + `Suspense` and prefetched during idle time.
 
-**Animations** — GSAP with `ScrollTrigger` (registered globally in `main.jsx`). Sections use `useGSAP` hook for scroll-triggered entrance animations. Mobile breakpoints adjust animation parameters.
+**Design system** — All visual tokens live in `src/index.css` `:root`: signature accents (`--sig` indigo-violet, `--sig-2` cyan), ink surface ladder (`--ink-0/1/2`), text ladder (`--tx-0/1/2`), hairlines, radius/type/spacing scales. Editorial primitives (`.ed-shell`, `.ed-eyebrow`, `.ed-display`, `.ed-tile`, `.ed-btn`) are the building blocks — no component library.
 
-**3D rendering** — React Three Fiber + Drei for the TechStack section. GLB models live in `public/models/` and are rendered via `TechIconCardExperience` component.
+**Motion layer** — Lenis smooth scroll synced to GSAP's ticker (`useSmoothScroll`); in-page `#` anchors are intercepted and routed through `lenis.scrollTo`. GSAP `ScrollTrigger` (registered in `main.jsx`) drives section entrances via `useGSAP`. Custom two-element cursor, magnetic hover (`useMagnetic`), 3D tilt (`useTilt`), kinetic word reveals (`RevealText`). Everything gates on `prefersReducedMotion` and `(pointer: fine)` where appropriate.
 
-**UI components** — shadcn/ui (new-york style, JSX not TSX) with Radix UI primitives in `src/components/ui/`. Configured via `components.json`. Path alias `@` → `src/`.
+**Background** — `InteractiveBackground` renders a quantum-field canvas (particles seeded from QHO probability densities); it pauses past the hero and under reduced motion.
 
 **JD Matching feature** — Single frontend surface (`JDQuickCheck`) calls `POST /api/agents/jd`. The handler at `api/agents/jd.js` is a thin transport layer that delegates to a JD Evaluator module split across `api/agents/_jd/`:
 - `_jd/llm.js` — LLM Adapter. Builds the prompt, calls OpenAI (Chat Completions, JSON mode), repairs malformed JSON, returns a `RawJDLLMResult`. Owns `buildPrompt` + `repairJson` + `callOpenAIJD`.
@@ -42,21 +42,19 @@ Heavy sections (`ShowcaseSection`, `TechStack`, `Contact`) are lazy-loaded with 
 
 The leading underscore in `_jd/` prevents Vercel from routing those files as endpoints.
 
-**Scoring logic** — The backend does NOT trust Gemini's raw scores. `scoreJD` recomputes `overallScore` from a weighted formula (exact match 42%, related 18%, keyword coverage 15%, dimension average 25%, minus gap penalty 20%). Hard eligibility failures (visa/experience Issue) cap `overallScore` at 35; location Issue caps at 75. See [CONTEXT.md](CONTEXT.md) for the domain glossary.
+**Scoring logic** — The backend does NOT trust the LLM's raw scores. `scoreJD` recomputes `overallScore` from a weighted formula (exact match 42%, related 18%, keyword coverage 15%, dimension average 25%, minus gap penalty 20%). Hard eligibility failures (visa/experience Issue) cap `overallScore` at 35; location Issue caps at 75. See [CONTEXT.md](CONTEXT.md) for the domain glossary.
 
 **Response shape** — Flat. Top-level fields: `overallScore`, `exactMatchScore`, `relatedMatchScore`, `gapScore`, `confidenceScore`, `dimensionScores`, `fitLabel`, `fitHeadline`, `fitVerdict`, `eligibility`, `evidencePairs`, `matchedKeywords`, `missingKeywords`, `related`, `riskFlags`, `summary`, `strengths`, `gaps`, `suggestions`. No nested `score` object — frontend reads fields directly.
 
 ## Key Directories
 
 - `src/sections/` — Full-page sections composing the portfolio
-- `src/components/` — Reusable components (NavBar, Button, AnimatedCounter, TitleHeader)
-- `src/components/ui/` — shadcn/ui primitives (badge, button, sheet, tooltip, etc.)
-- `src/components/models/` — Three.js model wrapper components
-- `src/constants/index.js` — All static content data (nav links, experience cards, tech stack icons, counter items)
+- `src/components/` — Reusable components (NavBar, AnimatedCounter, TitleHeader, RevealText, Magnetic, CustomCursor, InteractiveBackground, LogoMark)
+- `src/hooks/` — Motion + data hooks (useSmoothScroll, useMagnetic, useTilt, useScrollReveal, useJDAnalysis)
+- `src/constants/index.js` — Static content data (nav links, experience cards, counter items); `projects.js` for showcase entries
 - `api/agents/jd.js` — Thin HTTP handler for JD evaluation
 - `api/agents/_jd/` — JD Evaluator internals (llm, scoring, evaluator). Underscore prefix excludes from Vercel routing.
 - `public/cv/main.txt` — CV plain text fetched at runtime by `useJDAnalysis`
-- `public/models/` — GLB 3D model files
 - `test/api/jd/` — Tests for `_jd/` modules using `node:test` + `node:assert/strict`
 
 ## Environment Variables

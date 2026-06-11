@@ -1,11 +1,13 @@
+// Nav links follow page order (02 Experience → 03 Projects → 04 Skills)
+// so the active indicator glides left-to-right as the user scrolls.
 const navLinks = [
-  {
-    name: "Projects",
-    link: "#projects",
-  },
   {
     name: "Experience",
     link: "#experience",
+  },
+  {
+    name: "Projects",
+    link: "#projects",
   },
   {
     name: "Skills",
@@ -13,24 +15,11 @@ const navLinks = [
   },
 ];
 
-const words = [
-  { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
-  { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
-  { text: "Docker", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
-  { text: "Java", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
-  { text: "React", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { text: "Spring Boot", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
-  { text: "Docker", imgPath: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { text: "Claude", imgPath: "https://cdn.simpleicons.org/anthropic/white" },
-];
-
 const counterItems = [
-  { value: 5, suffix: "+", label: "Years in Software Development", accent: "from-sky-400 to-sky-500" },
-  { value: 3, suffix: "+", label: "Years of Professional Experience", accent: "from-cyan-400 to-cyan-500" },
-  { value: 10, suffix: "+", label: "AI Agent Skills Built & Deployed", accent: "from-emerald-400 to-emerald-500" },
-  { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped", accent: "from-indigo-400 to-indigo-500" },
+  { value: 5, suffix: "+", label: "Years in Software Development" },
+  { value: 3, suffix: "+", label: "Years of Professional Experience" },
+  { value: 10, suffix: "+", label: "AI Agent Skills Built & Deployed" },
+  { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped" },
 ];
 
 const expCards = [
@@ -64,7 +53,6 @@ const expCards = [
 ];
 
 export {
-  words,
   counterItems,
   expCards,
   navLinks,

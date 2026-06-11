@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { counterItems } from "../constants";
 import CountUp from "react-countup";
 import { useTilt } from "../hooks/useTilt.js";
+import { prefersReducedMotion } from "../lib/motion.js";
 import Code2 from "lucide-react/dist/esm/icons/code-2";
 import Briefcase from "lucide-react/dist/esm/icons/briefcase";
 import Bot from "lucide-react/dist/esm/icons/bot";
@@ -61,6 +62,10 @@ const AnimatedCounter = () => {
   const counterRef = useRef(null);
 
   useGSAP(() => {
+    if (prefersReducedMotion()) {
+      gsap.set(".counter-card", { opacity: 1, y: 0 });
+      return;
+    }
     gsap.fromTo(
       ".counter-card",
       { opacity: 0, y: 40 },

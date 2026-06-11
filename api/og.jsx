@@ -28,7 +28,7 @@ export default function handler() {
           justifyContent: "space-between",
           padding: "80px",
           background:
-            "linear-gradient(135deg, #0a0a0c 0%, #0e0e10 50%, #0a1820 100%)",
+            "linear-gradient(135deg, #131019 0%, #16121f 55%, #101a24 100%)",
           color: "white",
           fontFamily: "sans-serif",
         }}
@@ -51,10 +51,10 @@ export default function handler() {
               height: "96px",
               borderRadius: "22px",
               background:
-                "linear-gradient(135deg, #38bdf8 0%, #22d3ee 50%, #34d399 100%)",
+                "linear-gradient(135deg, #7C5CFF 0%, #38C6E8 100%)",
               fontSize: "60px",
               fontWeight: 900,
-              color: "#0e0e10",
+              color: "#16121f",
               letterSpacing: "-2px",
             }}
           >
@@ -98,7 +98,7 @@ export default function handler() {
               fontSize: "56px",
               fontWeight: 700,
               background:
-                "linear-gradient(90deg, #38bdf8 0%, #22d3ee 50%, #34d399 100%)",
+                "linear-gradient(90deg, #7C5CFF 0%, #38C6E8 100%)",
               backgroundClip: "text",
               color: "transparent",
               letterSpacing: "-1px",
@@ -122,7 +122,7 @@ export default function handler() {
               height: "3px",
               width: "100%",
               background:
-                "linear-gradient(90deg, transparent 0%, #38bdf8 30%, #34d399 70%, transparent 100%)",
+                "linear-gradient(90deg, transparent 0%, #7C5CFF 30%, #38C6E8 70%, transparent 100%)",
               opacity: 0.7,
             }}
           />

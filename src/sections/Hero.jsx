@@ -7,6 +7,9 @@ import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useMagnetic } from "../hooks/useMagnetic.js";
 
+// CTA is a plain anchor: the global Lenis click handler routes #-links
+// through lenis.scrollTo, so easing matches every other in-page jump.
+
 const HERO_ANIM_TARGETS = [
     ".hero-eyebrow",
     ".hero-lead",
@@ -20,13 +23,6 @@ const HEADLINE = [
     { t: "intelligent", sig: true },
     { t: "systems.", sig: false },
 ];
-
-const scrollToId = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const reduce = prefersReducedMotion();
-    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-};
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
@@ -58,12 +54,14 @@ const Hero = () => {
             "-=0.7"
         );
 
-        // Parallax: video drifts up slightly as you scroll past the hero
+        // Parallax: video drifts up slightly as you scroll past the hero.
+        // Pass the element, not "#hero" — selector strings inside a scoped
+        // useGSAP resolve within the scope, and the scope IS #hero.
         gsap.to(".hero-aside", {
             yPercent: -12,
             ease: "none",
             scrollTrigger: {
-                trigger: "#hero",
+                trigger: rootRef.current,
                 start: "top top",
                 end: "bottom top",
                 scrub: 0.5,
@@ -107,16 +105,15 @@ const Hero = () => {
                         </p>
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
-                            <button
+                            <a
                                 ref={magneticCta}
-                                type="button"
+                                href="#jd-check"
                                 data-magnetic
-                                onClick={() => scrollToId("jd-check")}
                                 className="ed-btn"
                             >
                                 Try the live AI matcher
                                 <ArrowDown className="w-4 h-4" />
-                            </button>
+                            </a>
                             <a
                                 href="/files/Eddy_Zhang_CV.pdf"
                                 download="Eddy_Zhang_CV.pdf"
@@ -127,7 +124,7 @@ const Hero = () => {
                             </a>
                         </div>
 
-                        <div className="hero-meta mt-10 flex items-center gap-3 text-sm" style={{ color: "var(--tx-2)" }}>
+                        <div className="hero-meta mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm" style={{ color: "var(--tx-2)" }}>
                             <span className="ed-status-dot" aria-hidden="true" />
                             <span>Available for work</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>

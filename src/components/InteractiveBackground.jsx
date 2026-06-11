@@ -210,7 +210,13 @@ const InteractiveBackground = () => {
         const sync = () => {
             const next = shouldRun();
             if (next && !running) { running = true; raf = requestAnimationFrame(step); }
-            else if (!next && running) { running = false; cancelAnimationFrame(raf); }
+            else if (!next && running) {
+                running = false;
+                cancelAnimationFrame(raf);
+                // Clear on pause — otherwise the last frame stays frozen on
+                // this fixed canvas, ghosting over every section below.
+                ctx.clearRect(0, 0, width, height);
+            }
         };
 
         resize();

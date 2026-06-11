@@ -2,6 +2,7 @@ import Mail from "lucide-react/dist/esm/icons/mail";
 import Phone from "lucide-react/dist/esm/icons/phone";
 import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Github from "lucide-react/dist/esm/icons/github";
+import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
 import Magnetic from "../components/Magnetic.jsx";
 
 const Footer = () => {
@@ -57,6 +58,20 @@ const Footer = () => {
                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
               >
                 <Github className="w-[18px] h-[18px]" />
+              </a>
+            </Magnetic>
+
+            <span className="w-px h-6 mx-1" style={{ background: "var(--hair)" }} aria-hidden="true" />
+
+            {/* Back to top — routed through Lenis via the global anchor handler */}
+            <Magnetic strength={0.5}>
+              <a
+                href="#hero"
+                aria-label="Back to top"
+                className="w-11 h-11 flex items-center justify-center rounded-full transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+              >
+                <ArrowUp className="w-[18px] h-[18px]" />
               </a>
             </Magnetic>
           </div>
