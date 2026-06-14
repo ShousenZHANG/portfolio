@@ -17,7 +17,7 @@ const NODES = [
     { id: "copilot", label: "Copilot Studio Agent", cat: "ai", x: 33, y: 24, r: 6, used: ["Corrs Chambers Westgarth"] },
     { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 24, y: 37, r: 5.5, used: ["Joblit", "JD matcher"] },
     { id: "rag", label: "RAG", cat: "ai", x: 9, y: 40, r: 5.5, used: ["Corrs ServiceNow agent"] },
-    { id: "gemini", label: "Gemini / Claude", cat: "ai", x: 19, y: 51, r: 6, used: ["This site's JD matcher", "Joblit"] },
+    { id: "llmapi", label: "OpenAI / Claude", cat: "ai", x: 19, y: 51, r: 6, used: ["This site's JD matcher", "Joblit"] },
 
     // Backend (lower-left)
     { id: "python", label: "Python", cat: "be", x: 30, y: 60, r: 6, used: ["AI / ML work"] },
@@ -38,12 +38,12 @@ const NODES = [
 ];
 
 const EDGES = [
-    ["llm", "rag"], ["llm", "prompt"], ["llm", "gemini"], ["prompt", "gemini"],
+    ["llm", "rag"], ["llm", "prompt"], ["llm", "llmapi"], ["prompt", "llmapi"],
     ["harness", "llm"], ["harness", "prompt"], ["copilot", "llm"], ["copilot", "harness"], ["copilot", "rag"],
     ["react", "ts"], ["react", "next"], ["ts", "next"], ["react", "tw"], ["next", "tw"],
     ["node", "python"], ["java", "node"], ["python", "llm"], ["node", "next"],
     ["docker", "cicd"], ["docker", "java"], ["pg", "node"], ["vercel", "next"], ["vercel", "cicd"],
-    ["llm", "python"], ["gemini", "node"], ["ts", "vercel"],
+    ["llm", "python"], ["llmapi", "node"], ["ts", "vercel"],
 ];
 
 const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));

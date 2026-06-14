@@ -73,7 +73,7 @@ export default async function handler(req, res) {
   if (typeof jd !== "string" || typeof cvText !== "string" || !jd.trim() || !cvText.trim()) {
     return send(res, 400, { error: "jd and cvText are required" });
   }
-  // Bound input length — protects Gemini token quota from abuse and caps
+  // Bound input length — protects the model's token quota from abuse and caps
   // the prompt-injection surface. Hard limits, not silent truncation.
   const MAX_JD = 12_000;
   const MAX_CV = 24_000;

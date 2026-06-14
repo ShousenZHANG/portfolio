@@ -27,7 +27,7 @@ The module that performs **JD Evaluation**. Orchestrates **LLM Adapter** + **Sco
 _Avoid_: matcher, analyzer, agent.
 
 **LLM Adapter**:
-The module that calls Gemini, repairs malformed JSON, and returns a parsed `RawJDLLMResult`. Owns prompt construction.
+The module that calls the OpenAI API, repairs malformed JSON, and returns a parsed `RawJDLLMResult`. Owns prompt construction.
 _Avoid_: AI client, LLM service.
 
 **Scoring**:
