@@ -160,7 +160,9 @@ export class LLMError extends Error {
   }
 }
 
-export async function callOpenAIJD(jd, cvText) {
+// `client` is injectable so the error-taxonomy can be unit-tested with a fake
+// OpenAI client; production passes nothing and a real SDK client is built.
+export async function callOpenAIJD(jd, cvText, client) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new LLMError("OPENAI_API_KEY is not set on the server", {
@@ -171,12 +173,12 @@ export async function callOpenAIJD(jd, cvText) {
 
   // SDK-level timeout (15s) + automatic exponential-backoff retries on
   // 429/5xx/network errors. Caps cost bleed and stops hung requests.
-  const client = new OpenAI({ apiKey, timeout: 15_000, maxRetries: 2 });
+  const oa = client || new OpenAI({ apiKey, timeout: 15_000, maxRetries: 2 });
   const prompt = buildPrompt(jd, cvText);
 
   let completion;
   try {
-    completion = await client.chat.completions.create({
+    completion = await oa.chat.completions.create({
       model: MODEL_NAME,
       temperature: 0.2,
       response_format: { type: "json_object" },

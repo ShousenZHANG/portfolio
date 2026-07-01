@@ -25,6 +25,12 @@
     --sig-2: oklch(0.80 0.13 210);        /* electric cyan */
     --sig-2-glow: oklch(0.80 0.13 210 / 0.14);
 
+    /* Semantic status colours — single source (were scattered inline oklch) */
+    --ok: oklch(0.78 0.16 150);           /* success / OK */
+    --warn: oklch(0.82 0.14 80);          /* caution / possible */
+    --danger: oklch(0.70 0.17 18);        /* fail / Issue */
+    --danger-tx: oklch(0.80 0.13 20);     /* danger text on ink (lighter) */
+
     /* Cool violet-ink surface ladder (deep, premium, AI) */
     --ink-0: oklch(0.16 0.018 280);       /* page floor — violet near-black */
     --ink-1: oklch(0.195 0.020 282);      /* raised surface */
@@ -126,9 +132,13 @@ section {
     }
 
     .navbar.scrolled .navbar-inner {
-        background: rgba(10, 10, 14, 0.88);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        /* Violet-ink glass, in the same palette as the page it floats over
+           (was neutral rgba(10,10,14) — cooler/greyer, off-palette). */
+        background: color-mix(in oklab, var(--ink-0) 88%, transparent);
+        border: 1px solid var(--hair);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     .navbar.not-scrolled .navbar-inner {
@@ -258,13 +268,13 @@ section {
     .navbar-cta {
         @apply flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-full
         text-white/90 transition-all duration-300;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: var(--ink-2);
+        border: 1px solid var(--hair);
     }
 
     .navbar-cta:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.18);
+        background: var(--sig-glow);
+        border-color: var(--sig-line);
         @apply text-white;
     }
 
@@ -690,7 +700,8 @@ section {
 .nr-skill-node:focus { outline: none; }
 .nr-skill-node:focus-visible .nr-skill-core {
   stroke: var(--tx-0);
-  stroke-width: 0.6;
+  stroke-width: 1;
+  filter: drop-shadow(0 0 2px var(--sig));
 }
 /* Hide the custom cursor while it's over the graph */
 .cursor-hidden .cursor-dot, .cursor-hidden .cursor-ring { opacity: 0 !important; }

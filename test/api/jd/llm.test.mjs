@@ -1,7 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildPrompt, repairJson } from '../../../api/agents/_jd/llm.js';
+import { buildPrompt, repairJson, callOpenAIJD, LLMError } from '../../../api/agents/_jd/llm.js';
+
+// Fake OpenAI client whose create() throws a given error (or returns content).
+const throwingClient = (err) => ({
+  chat: { completions: { create: async () => { throw err; } } },
+});
+const respondingClient = (content) => ({
+  chat: { completions: { create: async () => ({ choices: [{ message: { content } }] }) } },
+});
+const httpErr = (status) => Object.assign(new Error(`HTTP ${status}`), { status });
 
 // ── buildPrompt ──────────────────────────────────────────────
 
@@ -54,4 +63,76 @@ test('repairJson throws on completely invalid input', () => {
 test('repairJson handles empty input as empty object', () => {
   const obj = repairJson('');
   assert.deepEqual(obj, {});
+});
+
+// ── callOpenAIJD error taxonomy ──────────────────────────────
+// The security-relevant path: upstream failures must map to safe LLMError
+// status + code and never leak the raw upstream message to the client.
+
+test('callOpenAIJD throws missing_api_key when the key is unset', async () => {
+  const prev = process.env.OPENAI_API_KEY;
+  delete process.env.OPENAI_API_KEY;
+  try {
+    await assert.rejects(
+      () => callOpenAIJD('jd', 'cv', respondingClient('{}')),
+      (e) => e instanceof LLMError && e.code === 'missing_api_key' && e.status === 500
+    );
+  } finally {
+    if (prev !== undefined) process.env.OPENAI_API_KEY = prev;
+  }
+});
+
+test('callOpenAIJD maps 429 to rate_limited/429', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', throwingClient(httpErr(429))),
+    (e) => e instanceof LLMError && e.code === 'rate_limited' && e.status === 429
+  );
+});
+
+test('callOpenAIJD maps a timeout to timeout/504', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  const timeoutErr = Object.assign(new Error('request timeout'), { name: 'APIConnectionTimeoutError' });
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', throwingClient(timeoutErr)),
+    (e) => e instanceof LLMError && e.code === 'timeout' && e.status === 504
+  );
+});
+
+test('callOpenAIJD maps 5xx to upstream_unavailable/503', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', throwingClient(httpErr(500))),
+    (e) => e instanceof LLMError && e.code === 'upstream_unavailable' && e.status === 503
+  );
+});
+
+test('callOpenAIJD maps 401/403 to auth/500 (no upstream leak)', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', throwingClient(httpErr(401))),
+    (e) => e instanceof LLMError && e.code === 'auth' && e.status === 500 && !/HTTP 401/.test(e.message)
+  );
+});
+
+test('callOpenAIJD maps unknown errors to connection/502', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', throwingClient(new Error('ECONNRESET'))),
+    (e) => e instanceof LLMError && e.code === 'connection' && e.status === 502
+  );
+});
+
+test('callOpenAIJD throws bad_json/502 when the model returns non-JSON', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  await assert.rejects(
+    () => callOpenAIJD('jd', 'cv', respondingClient('totally not json')),
+    (e) => e instanceof LLMError && e.code === 'bad_json' && e.status === 502
+  );
+});
+
+test('callOpenAIJD returns a parsed object on a valid JSON response', async () => {
+  process.env.OPENAI_API_KEY = 'test-key';
+  const out = await callOpenAIJD('jd', 'cv', respondingClient('{"overallScore":88}'));
+  assert.equal(out.overallScore, 88);
 });

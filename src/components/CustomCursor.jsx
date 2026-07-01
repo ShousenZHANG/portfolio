@@ -69,12 +69,20 @@ const CustomCursor = () => {
             ring.style.opacity = "1";
         };
 
+        // Pause the ring-lerp loop while the tab is hidden — no point burning
+        // rAF on an off-screen cursor.
+        const onVisibility = () => {
+            cancelAnimationFrame(raf);
+            if (!document.hidden) raf = requestAnimationFrame(tick);
+        };
+
         window.addEventListener("mousemove", onMove, { passive: true });
         window.addEventListener("mouseover", onOver, { passive: true });
         window.addEventListener("mousedown", onDown);
         window.addEventListener("mouseup", onUp);
         document.addEventListener("mouseleave", onLeave);
         document.addEventListener("mouseenter", onEnter);
+        document.addEventListener("visibilitychange", onVisibility);
         document.documentElement.classList.add("has-custom-cursor");
         raf = requestAnimationFrame(tick);
 
@@ -85,6 +93,7 @@ const CustomCursor = () => {
             window.removeEventListener("mouseup", onUp);
             document.removeEventListener("mouseleave", onLeave);
             document.removeEventListener("mouseenter", onEnter);
+            document.removeEventListener("visibilitychange", onVisibility);
             document.documentElement.classList.remove("has-custom-cursor");
             cancelAnimationFrame(raf);
         };

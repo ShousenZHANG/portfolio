@@ -13,22 +13,36 @@ const NavBar = () => {
   const [activeSection, setActiveSection] = useState("");
   const [hovered, setHovered] = useState(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, show: false });
-  const [progress, setProgress] = useState(0);
   const menuRef = useRef(null);
   const ulRef = useRef(null);
   const linkRefs = useRef({});
+  const progressRef = useRef(null);
 
-  // Scroll: glass state + reading-progress bar
+  // Scroll: glass state + reading-progress bar.
+  // Under Lenis, native scroll fires ~every frame — so coalesce reads into a
+  // single rAF, drive the progress bar imperatively (no React render per
+  // frame), and only setScrolled when the boolean actually flips.
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 10);
+    let raf = 0;
+    let ticking = false;
+    const read = () => {
+      ticking = false;
+      const y = window.scrollY;
+      setScrolled((prev) => (y > 10 === prev ? prev : y > 10));
       const doc = document.documentElement;
       const max = doc.scrollHeight - doc.clientHeight;
-      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      const p = max > 0 ? Math.min(1, y / max) : 0;
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${p})`;
     };
-    onScroll();
+    const onScroll = () => {
+      if (!ticking) { ticking = true; raf = requestAnimationFrame(read); }
+    };
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Active section via IntersectionObserver
@@ -89,10 +103,11 @@ const NavBar = () => {
 
   return (
     <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`} ref={menuRef}>
-      {/* reading-progress bar */}
+      {/* reading-progress bar — transform driven imperatively via ref */}
       <span
+        ref={progressRef}
         className="navbar-progress"
-        style={{ transform: `scaleX(${progress})` }}
+        style={{ transform: "scaleX(0)" }}
         aria-hidden="true"
       />
 

@@ -172,7 +172,7 @@ const Contact = () => {
               {loading ? "Sending…" : "Send Message"}
             </button>
 
-            {sendError && <p className="text-sm" role="alert" style={{ color: "oklch(0.78 0.14 20)" }}>{sendError}</p>}
+            {sendError && <p className="text-sm" role="alert" style={{ color: "var(--danger-tx)" }}>{sendError}</p>}
 
             {/* Success dialog */}
             {sent && (

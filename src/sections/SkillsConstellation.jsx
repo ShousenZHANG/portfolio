@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
@@ -81,6 +81,30 @@ const SkillsConstellation = () => {
         ? EDGES.filter((e) => e.includes(pinned)).length
         : 0;
 
+    // Roving tabindex — one tab stop for the whole graph, arrows move between
+    // nodes, Enter/Space pins. Beats a flat 20-stop tab sequence with no way
+    // to explore the edges that are the feature's whole point.
+    const [rovingIndex, setRovingIndex] = useState(0);
+    const nodeRefs = useRef([]);
+
+    const onNodeKey = (e, i) => {
+        const n = NODES.length;
+        let next = null;
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % n;
+        else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (i - 1 + n) % n;
+        else if (e.key === "Home") next = 0;
+        else if (e.key === "End") next = n - 1;
+        else if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setPinned((p) => (p === NODES[i].id ? null : NODES[i].id));
+            return;
+        } else return;
+        e.preventDefault();
+        setRovingIndex(next);
+        setActive(NODES[next].id);
+        nodeRefs.current[next]?.focus();
+    };
+
     return (
         <section id="skills" className="ed-shell py-[var(--sp-section)]">
             <TitleHeader
@@ -132,26 +156,27 @@ const SkillsConstellation = () => {
                             );
                         })}
                         {/* nodes */}
-                        {NODES.map((n) => {
+                        {NODES.map((n, i) => {
                             const dim = isDim(n.id);
                             const isFocus = focus === n.id;
                             const isPinned = pinned === n.id;
                             return (
                                 <g
                                     key={n.id}
+                                    ref={(el) => { nodeRefs.current[i] = el; }}
                                     className="nr-skill-node"
                                     transform={`translate(${n.x} ${n.y})`}
                                     opacity={dim ? 0.28 : 1}
                                     style={{ transition: "opacity .25s" }}
                                     onMouseEnter={() => setActive(n.id)}
                                     onClick={() => setPinned(isPinned ? null : n.id)}
-                                    tabIndex={0}
+                                    tabIndex={i === rovingIndex ? 0 : -1}
                                     role="button"
                                     aria-pressed={isPinned}
                                     aria-label={`${n.label}, ${CATS[n.cat].label}`}
-                                    onFocus={() => setActive(n.id)}
+                                    onFocus={() => { setActive(n.id); setRovingIndex(i); }}
                                     onBlur={() => setActive(null)}
-                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPinned(isPinned ? null : n.id); } }}
+                                    onKeyDown={(e) => onNodeKey(e, i)}
                                 >
                                     {/* select burst — re-mounts per pin via key, plays once */}
                                     {isPinned && (

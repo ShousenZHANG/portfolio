@@ -15,11 +15,16 @@ const navLinks = [
   },
 ];
 
+// Every stat is defensible against the CV, and none contradict each other:
+// - "3+ years full-stack" matches the CV summary verbatim.
+// - "4 enterprise systems" = SharePoint / ServiceNow / Loop / NetDocuments (Corrs Copilot agent).
+// - "10+ Copilot & AI agent Skills" = Dataverse agent Skills + Joblit skill pack.
+// - "40K+ lines" = the Contest Platform's stated 40,000+ LOC.
 const counterItems = [
-  { value: 5, suffix: "+", label: "Years in Software Development" },
-  { value: 3, suffix: "+", label: "Years of Professional Experience" },
+  { value: 3, suffix: "+", label: "Years Building Production Software" },
+  { value: 4, suffix: "", label: "Enterprise Systems Unified by AI Agents" },
   { value: 10, suffix: "+", label: "Copilot & AI Agent Skills Shipped" },
-  { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped" },
+  { value: 40, suffix: "K+", label: "Lines of Production Code Shipped" },
 ];
 
 const expCards = [

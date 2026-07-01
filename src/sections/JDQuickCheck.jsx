@@ -35,14 +35,14 @@ function detectIsMac() {
 }
 
 const FIT_COLOR = (label = "") =>
-  label.startsWith("Strong") ? "oklch(0.78 0.16 150)" :
+  label.startsWith("Strong") ? "var(--ok)" :
   label.startsWith("Good") ? "var(--sig-2)" :
-  label.startsWith("Possible") ? "oklch(0.82 0.14 80)" :
-  "oklch(0.70 0.17 18)";
+  label.startsWith("Possible") ? "var(--warn)" :
+  "var(--danger)";
 
 const STATUS_COLOR = (s) =>
-  s === "OK" ? "oklch(0.78 0.16 150)" :
-  s === "Issue" ? "oklch(0.70 0.17 18)" :
+  s === "OK" ? "var(--ok)" :
+  s === "Issue" ? "var(--danger)" :
   "var(--tx-2)";
 
 // ── Animated circular score gauge ──
@@ -97,7 +97,7 @@ function DimBar({ label, value }) {
 function Chip({ children, tone = "neutral" }) {
   const styles = {
     match: { background: "var(--sig-glow)", color: "var(--sig)", border: "1px solid var(--sig-line)" },
-    gap: { background: "oklch(0.70 0.17 18 / 0.1)", color: "oklch(0.80 0.12 20)", border: "1px solid oklch(0.70 0.17 18 / 0.25)" },
+    gap: { background: "color-mix(in oklab, var(--danger) 12%, transparent)", color: "var(--danger-tx)", border: "1px solid color-mix(in oklab, var(--danger) 30%, transparent)" },
     neutral: { background: "var(--ink-2)", color: "var(--tx-1)", border: "1px solid var(--hair)" },
   }[tone];
   return <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={styles}>{children}</span>;
@@ -183,17 +183,24 @@ const JDQuickCheck = () => {
                 <kbd className="px-1.5 py-0.5 rounded font-mono text-[10px]" style={{ border: "1px solid var(--hair-bright)", color: "var(--tx-1)" }}>Enter</kbd>
               </p>
             </div>
-            <span className="text-xs font-mono" style={{ color: over < 0 ? "oklch(0.70 0.17 18)" : "var(--tx-2)" }}>
+            <span className="text-xs font-mono" style={{ color: over < 0 ? "var(--danger)" : "var(--tx-2)" }}>
               {jd.length.toLocaleString()} / {MAX_JD_CHARS.toLocaleString()}
             </span>
           </div>
 
           {error && (
-            <p className="text-sm mt-3" role="alert" style={{ color: "oklch(0.78 0.14 20)" }}>{error}</p>
+            <p className="text-sm mt-3" role="alert" style={{ color: "var(--danger-tx)" }}>{error}</p>
           )}
 
           {/* ── States ── */}
-          <div className="mt-6" aria-live="polite">
+          <div className="mt-6" aria-busy={loading}>
+            {/* Concise SR announcement — avoids dumping the whole result tree
+                into a live region. Detailed panels below are not live. */}
+            <p className="sr-only" role="status" aria-live="polite">
+              {result && !loading
+                ? `${result.fitLabel}. Score ${result.overallScore} out of 100.${result.fitHeadline ? " " + result.fitHeadline : ""}`
+                : ""}
+            </p>
             {loading && (
               <div className="rounded-[var(--r-md)] p-6" style={{ border: "1px solid var(--hair)" }}>
                 <ul className="space-y-3">
@@ -321,8 +328,8 @@ const JDQuickCheck = () => {
 
                 {/* Risk flags */}
                 {result.riskFlags?.length > 0 && (
-                  <div className="rounded-[var(--r-sm)] p-4" style={{ border: "1px solid oklch(0.82 0.14 80 / 0.25)", background: "oklch(0.82 0.14 80 / 0.06)" }}>
-                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2" style={{ color: "oklch(0.82 0.12 82)" }}>Risk flags</p>
+                  <div className="rounded-[var(--r-sm)] p-4" style={{ border: "1px solid color-mix(in oklab, var(--warn) 28%, transparent)", background: "color-mix(in oklab, var(--warn) 8%, transparent)" }}>
+                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2" style={{ color: "var(--warn)" }}>Risk flags</p>
                     <ul className="space-y-1">
                       {result.riskFlags.slice(0, MAX_RISKS).map((item, idx) => (
                         <li key={`r-${idx}`} className="text-sm" style={{ color: "var(--tx-1)" }}>{item}</li>

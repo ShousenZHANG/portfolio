@@ -26,9 +26,18 @@ const HEADLINE = [
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
+    const [videoStarted, setVideoStarted] = useState(false);
     const magneticCta = useMagnetic(0.45);
 
     const rootRef = useRef(null);
+    const videoRef = useRef(null);
+
+    const startVideo = () => {
+        const v = videoRef.current;
+        if (!v) return;
+        v.play();
+        setVideoStarted(true);
+    };
 
     useGSAP(() => {
         if (prefersReducedMotion()) {
@@ -99,10 +108,10 @@ const Hero = () => {
                         </h1>
 
                         <p className="hero-lead ed-lead mt-7">
-                            3+ years shipping production AI agents across the Microsoft
-                            365 ecosystem — Copilot Studio, Power Platform, and Dataverse.
-                            Below is a live one — paste any job description and watch my
-                            AI score the fit in real time.
+                            3+ years as a full-stack engineer, now building production AI
+                            agents across the Microsoft 365 ecosystem — Copilot Studio,
+                            Power Platform, and Dataverse. Below is a live one — paste any
+                            job description and watch my AI score the fit in real time.
                         </p>
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
@@ -141,15 +150,39 @@ const Hero = () => {
                                     <div className="absolute inset-0 animate-pulse" style={{ background: "var(--ink-2)" }} />
                                 )}
                                 <video
+                                    ref={videoRef}
                                     src="/videos/eddy_intro.mp4"
-                                    controls
+                                    controls={videoStarted}
                                     loop
                                     playsInline
                                     preload="metadata"
                                     aria-label="Personal introduction video by Eddy Zhang"
                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                                     onLoadedData={() => setVideoLoaded(true)}
+                                    onPlay={() => setVideoStarted(true)}
                                 />
+
+                                {/* At-rest cover — designed play affordance instead of raw
+                                    native controls, so the right column reads as crafted. */}
+                                {!videoStarted && (
+                                    <button
+                                        type="button"
+                                        onClick={startVideo}
+                                        aria-label="Play 30-second intro"
+                                        className="absolute inset-0 flex flex-col items-center justify-center gap-4 group/play"
+                                        style={{ background: "linear-gradient(180deg, oklch(0.16 0.018 280 / 0.15) 0%, oklch(0.16 0.018 280 / 0.65) 100%)" }}
+                                    >
+                                        <span
+                                            className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover/play:scale-110"
+                                            style={{ width: 64, height: 64, background: "var(--sig)", color: "var(--sig-ink)", boxShadow: "0 10px 40px -8px var(--sig-glow)" }}
+                                        >
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.29-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z" />
+                                            </svg>
+                                        </span>
+                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>Play intro · 30s</span>
+                                    </button>
+                                )}
                             </div>
                             <figcaption className="ed-eyebrow mt-3 px-1 pb-1">
                                 30s intro · who I am

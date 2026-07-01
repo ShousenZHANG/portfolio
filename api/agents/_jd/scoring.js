@@ -129,6 +129,19 @@ export function deriveAtsScore(data) {
   return Math.round(clampScore(score));
 }
 
+// Hard-eligibility caps on confidence. Applied to BOTH the derived value and
+// any LLM-supplied confidenceScore, so a hallucinated / prompt-injected "95"
+// on a visa-Issue JD can never survive — the "don't trust the LLM" invariant.
+export function applyConfidenceCaps(data, confidence) {
+  const elig = data.eligibility || {};
+  const visaStatus = toStatus(elig.visa?.status);
+  const expStatus = toStatus(elig.experience?.status);
+  let c = confidence;
+  if (visaStatus === "issue") c = Math.min(c, CONFIDENCE.visaIssueCap);
+  if (expStatus === "issue") c = Math.min(c, CONFIDENCE.expIssueCap);
+  return Math.round(clampScore(c));
+}
+
 export function deriveConfidenceScore(data) {
   const elig = data.eligibility || {};
   const visaStatus = toStatus(elig.visa?.status);
@@ -152,10 +165,7 @@ export function deriveConfidenceScore(data) {
   if (expStatus === "unknown") confidence -= CONFIDENCE.unknownExpPenalty;
   if (locStatus === "unknown") confidence -= CONFIDENCE.unknownLocPenalty;
 
-  if (visaStatus === "issue") confidence = Math.min(confidence, CONFIDENCE.visaIssueCap);
-  if (expStatus === "issue") confidence = Math.min(confidence, CONFIDENCE.expIssueCap);
-
-  return Math.round(clampScore(confidence));
+  return applyConfidenceCaps(data, confidence);
 }
 
 export function deriveFitLabel(data, atsScore) {
@@ -255,9 +265,11 @@ export function scoreJD(rawLLM) {
   };
 
   safe.overallScore = deriveAtsScore(safe);
+  // An LLM-supplied confidenceScore is still subject to the eligibility caps —
+  // never trusted verbatim past a visa/experience Issue.
   safe.confidenceScore =
     typeof raw.confidenceScore === "number"
-      ? clampScore(raw.confidenceScore)
+      ? applyConfidenceCaps(safe, clampScore(raw.confidenceScore))
       : deriveConfidenceScore(safe);
 
   safe.fitLabel = deriveFitLabel(safe, safe.overallScore);

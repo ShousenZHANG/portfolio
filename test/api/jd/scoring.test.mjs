@@ -8,8 +8,43 @@ import {
   deriveConfidenceScore,
   deriveFitLabel,
   patchFitTexts,
+  applyConfidenceCaps,
   scoreJD,
 } from '../../../api/agents/_jd/scoring.js';
+
+// ── eligibility caps on confidence (LLM value must not bypass) ──
+
+test('scoreJD caps an LLM-supplied confidenceScore on a visa Issue', () => {
+  const out = scoreJD({
+    confidenceScore: 95,
+    eligibility: { visa: { status: 'Issue' }, experience: { status: 'OK' }, location: { status: 'OK' } },
+  });
+  assert.ok(out.confidenceScore <= 40, `expected <=40, got ${out.confidenceScore}`);
+});
+
+test('scoreJD caps an LLM-supplied confidenceScore on an experience Issue', () => {
+  const out = scoreJD({
+    confidenceScore: 99,
+    eligibility: { experience: { status: 'Issue' } },
+  });
+  assert.ok(out.confidenceScore <= 45, `expected <=45, got ${out.confidenceScore}`);
+});
+
+test('scoreJD keeps an LLM confidenceScore when eligibility is clean', () => {
+  const out = scoreJD({
+    confidenceScore: 88,
+    eligibility: { visa: { status: 'OK' }, experience: { status: 'OK' }, location: { status: 'OK' } },
+  });
+  assert.equal(out.confidenceScore, 88);
+});
+
+test('applyConfidenceCaps is idempotent and clamps to 0-100', () => {
+  const eligIssue = { eligibility: { visa: { status: 'Issue' } } };
+  const once = applyConfidenceCaps(eligIssue, 95);
+  assert.equal(applyConfidenceCaps(eligIssue, once), once);
+  assert.equal(applyConfidenceCaps({}, 999), 100);
+  assert.equal(applyConfidenceCaps({}, -5), 0);
+});
 
 // ── clampScore ───────────────────────────────────────────────
 
