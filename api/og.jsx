@@ -13,7 +13,7 @@ import { ImageResponse } from "@vercel/og";
 export const config = { runtime: "edge" };
 
 const TITLE = "Eddy Zhang";
-const SUBTITLE = "AI Full Stack Engineer";
+const SUBTITLE = "AI Engineer · Copilot Studio";
 const URL_LABEL = "eddyzhang.me";
 
 export default function handler() {
@@ -134,7 +134,7 @@ export default function handler() {
               letterSpacing: "0.5px",
             }}
           >
-            React · Node.js · LLM Agents · Cloud Microservices
+            Power Platform · Dataverse · AI Agents · Microsoft 365
           </div>
         </div>
       </div>

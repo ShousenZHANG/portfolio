@@ -1,22 +1,24 @@
 const logoIconsList = [
-    // Backend & Frameworks
+    // Cloud & AI platform
+    { name: "Microsoft Azure", icon: "azure/azure-original.svg" },
+    { name: "Python", icon: "python/python-original.svg" },
+
+    // Backend & data
     { name: "Java", icon: "java/java-original.svg" },
     { name: "Spring Boot", icon: "spring/spring-original.svg" },
-    { name: "Maven", icon: "maven/maven-original.svg" },
+    { name: "PostgreSQL", icon: "postgresql/postgresql-original.svg" },
     { name: "MySQL", icon: "mysql/mysql-original.svg" },
-    { name: "Redis", icon: "redis/redis-original.svg" },
     { name: "RabbitMQ", icon: "rabbitmq/rabbitmq-original.svg" },
-
-    // DevOps & Tools
-    { name: "Docker", icon: "docker/docker-original.svg" },
-    { name: "Jenkins", icon: "jenkins/jenkins-original.svg" },
-    { name: "GitHub", icon: "github/github-original.svg" },
-    { name: "Postman", icon: "postman/postman-original.svg" },
 
     // Frontend
     { name: "React", icon: "react/react-original.svg" },
+    { name: "TypeScript", icon: "typescript/typescript-original.svg" },
     { name: "Tailwind CSS", icon: "tailwindcss/tailwindcss-original.svg" },
     { name: "JavaScript", icon: "javascript/javascript-original.svg" },
+
+    // DevOps
+    { name: "Docker", icon: "docker/docker-original.svg" },
+    { name: "GitHub", icon: "github/github-original.svg" },
 ];
 
 const LogoIcon = ({ name, icon }) => (

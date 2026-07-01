@@ -3,47 +3,63 @@ import TitleHeader from "../components/TitleHeader.jsx";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
 // the projects/experience that prove the skill. Edges link related work.
+// Foregrounds the Microsoft 365 agent stack (Copilot Studio / Power
+// Platform), with AI, integration, engineering, and cloud as support.
 const CATS = {
-    ai: { label: "AI / ML", color: "var(--sig)" },
-    fe: { label: "Frontend", color: "var(--sig-2)" },
-    be: { label: "Backend", color: "oklch(0.74 0.15 300)" },
-    ops: { label: "Cloud / DevOps", color: "oklch(0.78 0.13 195)" },
+    ms: { label: "Microsoft & Power Platform", color: "var(--sig)" },
+    ai: { label: "AI & Agents", color: "oklch(0.74 0.16 320)" },
+    data: { label: "Integration & Data", color: "var(--sig-2)" },
+    eng: { label: "Software Engineering", color: "oklch(0.80 0.15 155)" },
+    cloud: { label: "Cloud & DevOps", color: "oklch(0.78 0.12 240)" },
 };
 
 const NODES = [
-    // AI / ML (left)
-    { id: "llm", label: "LLM Agents", cat: "ai", x: 21, y: 12, r: 7, used: ["Joblit", "Corrs AI agents"] },
-    { id: "harness", label: "Harness Eng.", cat: "ai", x: 9, y: 23, r: 6, used: ["Corrs Chambers Westgarth"] },
-    { id: "copilot", label: "Copilot Studio Agent", cat: "ai", x: 33, y: 24, r: 6, used: ["Corrs Chambers Westgarth"] },
-    { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 24, y: 37, r: 5.5, used: ["Joblit", "JD matcher"] },
-    { id: "rag", label: "RAG", cat: "ai", x: 9, y: 40, r: 5.5, used: ["Corrs ServiceNow agent"] },
-    { id: "llmapi", label: "OpenAI / Claude", cat: "ai", x: 19, y: 51, r: 6, used: ["This site's JD matcher", "Joblit"] },
+    // Microsoft & Power Platform (top center — the signature cluster)
+    { id: "copilot", label: "Copilot Studio", cat: "ms", x: 47, y: 10, r: 7.5, used: ["Corrs — M365 agent", "Boomi triage flow"] },
+    { id: "pautomate", label: "Power Automate", cat: "ms", x: 32, y: 20, r: 6, used: ["Corrs agent flows", "Boomi log triage"] },
+    { id: "dataverse", label: "Dataverse", cat: "ms", x: 55, y: 24, r: 6.5, used: ["Corrs trusted knowledge base", "reusable agent Skills"] },
+    { id: "powerapps", label: "Power Apps", cat: "ms", x: 41, y: 33, r: 5, used: ["Microsoft Power Platform"] },
 
-    // Backend (lower-left)
-    { id: "python", label: "Python", cat: "be", x: 30, y: 60, r: 6, used: ["AI / ML work"] },
-    { id: "node", label: "Node.js", cat: "be", x: 17, y: 68, r: 6.5, used: ["JD matcher API", "Joblit"] },
-    { id: "java", label: "Java + Spring", cat: "be", x: 8, y: 61, r: 6, used: ["Competition Platform", "Newtouch"] },
+    // AI & Agents (left)
+    { id: "agents", label: "AI Agents", cat: "ai", x: 19, y: 30, r: 6.5, used: ["Corrs Copilot agent", "Joblit"] },
+    { id: "rag", label: "RAG", cat: "ai", x: 9, y: 43, r: 5.5, used: ["Corrs trusted knowledge base"] },
+    { id: "mcp", label: "MCP", cat: "ai", x: 23, y: 46, r: 5.5, used: ["Corrs — SharePoint / ServiceNow", "this site"] },
+    { id: "workiq", label: "Work IQ", cat: "ai", x: 11, y: 56, r: 5, used: ["Corrs M365 agent"] },
+    { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 27, y: 59, r: 5.5, used: ["Joblit", "JD matcher"] },
 
-    // Frontend (upper-right)
-    { id: "react", label: "React", cat: "fe", x: 75, y: 13, r: 7, used: ["This portfolio", "Joblit"] },
-    { id: "ts", label: "TypeScript", cat: "fe", x: 88, y: 26, r: 6, used: ["Joblit"] },
-    { id: "next", label: "Next.js", cat: "fe", x: 68, y: 29, r: 5.5, used: ["Joblit"] },
-    { id: "tw", label: "Tailwind", cat: "fe", x: 84, y: 41, r: 5, used: ["This portfolio", "Joblit"] },
+    // Integration & Data (lower center-left)
+    { id: "boomi", label: "Boomi", cat: "data", x: 41, y: 52, r: 6, used: ["Corrs production-log triage"] },
+    { id: "servicenow", label: "ServiceNow", cat: "data", x: 45, y: 65, r: 5.5, used: ["Corrs KM agent"] },
+    { id: "sql", label: "SQL / REST", cat: "data", x: 30, y: 70, r: 5, used: ["Newtouch APIs", "Contest Platform"] },
 
-    // Cloud / DevOps (lower-right)
-    { id: "pg", label: "PostgreSQL", cat: "ops", x: 66, y: 47, r: 5, used: ["Joblit"] },
-    { id: "docker", label: "Docker", cat: "ops", x: 73, y: 60, r: 6, used: ["Competition Platform"] },
-    { id: "cicd", label: "CI/CD", cat: "ops", x: 88, y: 55, r: 5.5, used: ["Competition Platform", "Joblit"] },
-    { id: "vercel", label: "Vercel", cat: "ops", x: 84, y: 67, r: 5, used: ["This portfolio", "Joblit"] },
+    // Software Engineering (right)
+    { id: "java", label: "Java + Spring", cat: "eng", x: 74, y: 13, r: 6.5, used: ["Newtouch", "Contest Platform"] },
+    { id: "python", label: "Python", cat: "eng", x: 88, y: 23, r: 5.5, used: ["AI / automation work"] },
+    { id: "ts", label: "TypeScript", cat: "eng", x: 67, y: 29, r: 5.5, used: ["Joblit", "this portfolio"] },
+    { id: "react", label: "React / Next", cat: "eng", x: 84, y: 37, r: 6, used: ["This portfolio", "Joblit"] },
+
+    // Cloud & DevOps (lower right)
+    { id: "azure", label: "Azure", cat: "cloud", x: 65, y: 49, r: 6, used: ["Microsoft 365 stack"] },
+    { id: "aws", label: "AWS", cat: "cloud", x: 80, y: 51, r: 5, used: ["Contest Platform"] },
+    { id: "docker", label: "Docker", cat: "cloud", x: 73, y: 63, r: 5.5, used: ["Contest Platform", "Newtouch"] },
+    { id: "cicd", label: "CI/CD", cat: "cloud", x: 88, y: 61, r: 5.5, used: ["Contest Platform", "Joblit"] },
 ];
 
 const EDGES = [
-    ["llm", "rag"], ["llm", "prompt"], ["llm", "llmapi"], ["prompt", "llmapi"],
-    ["harness", "llm"], ["harness", "prompt"], ["copilot", "llm"], ["copilot", "harness"], ["copilot", "rag"],
-    ["react", "ts"], ["react", "next"], ["ts", "next"], ["react", "tw"], ["next", "tw"],
-    ["node", "python"], ["java", "node"], ["python", "llm"], ["node", "next"],
-    ["docker", "cicd"], ["docker", "java"], ["pg", "node"], ["vercel", "next"], ["vercel", "cicd"],
-    ["llm", "python"], ["llmapi", "node"], ["ts", "vercel"],
+    // Microsoft cluster
+    ["copilot", "pautomate"], ["copilot", "dataverse"], ["pautomate", "dataverse"],
+    ["copilot", "powerapps"], ["dataverse", "powerapps"],
+    // the agent story — Copilot Studio wired to AI + integration + cloud
+    ["copilot", "agents"], ["copilot", "mcp"], ["copilot", "workiq"],
+    ["dataverse", "rag"], ["pautomate", "boomi"], ["azure", "copilot"],
+    // AI cluster
+    ["agents", "rag"], ["agents", "mcp"], ["agents", "prompt"], ["rag", "mcp"], ["mcp", "workiq"],
+    // Integration & data
+    ["boomi", "servicenow"], ["servicenow", "sql"], ["servicenow", "mcp"], ["sql", "java"],
+    // Engineering
+    ["java", "ts"], ["ts", "react"], ["python", "java"], ["python", "agents"],
+    // Cloud
+    ["azure", "aws"], ["azure", "docker"], ["docker", "cicd"], ["aws", "docker"], ["docker", "java"], ["cicd", "react"],
 ];
 
 const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
@@ -74,8 +90,9 @@ const SkillsConstellation = () => {
                 align="left"
             />
             <p className="ed-lead mt-5 mb-8">
-                The stack I build with, mapped by how it connects. Hover a node to
-                trace its links — click one to see what I shipped with it.
+                The Microsoft 365 agent stack I build with — Copilot Studio, Power
+                Platform, and the AI around them — mapped by how it connects. Hover a
+                node to trace its links; click one to see what I shipped with it.
             </p>
 
             <div className="ed-tile p-4 md:p-6">

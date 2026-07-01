@@ -21,7 +21,7 @@ const HEADLINE = [
     { t: "I", sig: false },
     { t: "build", sig: false, br: true },
     { t: "intelligent", sig: true },
-    { t: "systems.", sig: false },
+    { t: "agents.", sig: false },
 ];
 
 const Hero = () => {
@@ -76,10 +76,10 @@ const Hero = () => {
                     {/* LEFT — editorial headline */}
                     <div className="flex flex-col">
                         <p className="hero-eyebrow ed-eyebrow mb-6">
-                            AI Full-Stack Engineer · Sydney
+                            AI Engineer · Copilot Studio · Sydney
                         </p>
 
-                        <h1 className="hero-display ed-display" aria-label="I build intelligent systems.">
+                        <h1 className="hero-display ed-display" aria-label="I build intelligent agents.">
                             {HEADLINE.map((w, i) => (
                                 <span key={`${w.t}-${i}`}>
                                     <span
@@ -99,9 +99,10 @@ const Hero = () => {
                         </h1>
 
                         <p className="hero-lead ed-lead mt-7">
-                            3+ years shipping LLM agents, cloud microservices, and
-                            production web apps. Below is a live one — paste any job
-                            description and watch my AI score the fit in real time.
+                            3+ years shipping production AI agents across the Microsoft
+                            365 ecosystem — Copilot Studio, Power Platform, and Dataverse.
+                            Below is a live one — paste any job description and watch my
+                            AI score the fit in real time.
                         </p>
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
@@ -128,7 +129,7 @@ const Hero = () => {
                             <span className="ed-status-dot" aria-hidden="true" />
                             <span>Available for work</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
-                            <span className="font-mono text-xs tracking-wider">React · Node · Python · LLMs</span>
+                            <span className="font-mono text-xs tracking-wider">Copilot Studio · Power Automate · Dataverse · MCP</span>
                         </div>
                     </div>
 

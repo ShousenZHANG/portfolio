@@ -18,18 +18,20 @@ const navLinks = [
 const counterItems = [
   { value: 5, suffix: "+", label: "Years in Software Development" },
   { value: 3, suffix: "+", label: "Years of Professional Experience" },
-  { value: 10, suffix: "+", label: "AI Agent Skills Built & Deployed" },
+  { value: 10, suffix: "+", label: "Copilot & AI Agent Skills Shipped" },
   { value: 50, suffix: "K+", label: "Lines of AI-Powered Code Shipped" },
 ];
 
 const expCards = [
   {
     title: "Junior Integration & Automation Analyst — Corrs Chambers Westgarth",
-    date: "Mar 2026 – Present",
+    date: "Mar 2026 – Jun 2026",
     responsibilities: [
-      "Developed integration workflows on Boomi to automate cross-system data processing and business operations.",
-      "Automated previously manual processes by orchestrating enterprise workflows through AI agents — lifting team efficiency with built-in security and accuracy controls.",
-      "Built RAG-powered AI agents on Microsoft Copilot Studio with ServiceNow Knowledge Management, the M365 ecosystem, and MCP servers to accelerate internal support and cross-team automation.",
+      "Shipped a production Copilot Studio agent in the Microsoft 365 ecosystem that lets staff find technical solutions across SharePoint, ServiceNow, Loop, and NetDocuments via MCP and Work IQ.",
+      "Designed a Dataverse-backed trusted knowledge base — the data model and pipeline that store document metadata so the agent retrieves only vetted content.",
+      "Engineered reusable agent Skills in Dataverse that raise answer accuracy while cutting Credit cost.",
+      "Built dynamic Power Automate agent flows that orchestrate multi-step business logic across enterprise systems.",
+      "Automated daily Boomi production-log triage with a scheduled Copilot Studio flow that calls the Boomi API, analyses errors against a knowledge base, and emails fix recommendations.",
     ],
   },
   {
