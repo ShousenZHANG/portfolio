@@ -394,6 +394,49 @@ section {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     }
 
+    /* ── Nebula drift — two huge blurred aurora blobs breathing behind
+       everything. Blurred once, then transform-animated (compositor-only). ── */
+    .nebula {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .nebula span {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+        will-change: transform;
+    }
+    .nebula .neb-a {
+        width: 56vw;
+        height: 56vw;
+        left: -14vw;
+        top: -20vw;
+        opacity: 0.5;
+        background: radial-gradient(circle, oklch(0.42 0.16 290 / 0.55) 0%, transparent 65%);
+        animation: neb-drift-a 26s ease-in-out infinite alternate;
+    }
+    .nebula .neb-b {
+        width: 46vw;
+        height: 46vw;
+        right: -12vw;
+        top: 6vw;
+        opacity: 0.4;
+        background: radial-gradient(circle, oklch(0.48 0.12 215 / 0.45) 0%, transparent 65%);
+        animation: neb-drift-b 34s ease-in-out infinite alternate;
+    }
+    @keyframes neb-drift-a {
+        to { transform: translate(10vw, 8vh) scale(1.18); }
+    }
+    @keyframes neb-drift-b {
+        to { transform: translate(-9vw, 12vh) scale(0.88); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .nebula span { animation: none; }
+    }
+
     /* Hairline section divider */
     .ed-rule {
         height: 1px;
@@ -810,6 +853,43 @@ section {
 }
 @media (prefers-reduced-motion: reduce) {
   .jd-result { animation: none !important; }
+}
+
+/* ── Footer wordmark — giant outlined type, gradient fill sweeps in on hover ── */
+.footer-mark {
+  display: block;
+  width: fit-content;
+  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: transparent;
+  -webkit-text-stroke: 1px oklch(0.85 0.04 285 / 0.35);
+  background: linear-gradient(90deg, var(--sig), var(--sig-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.7s var(--ease-standard);
+}
+.footer-mark:hover,
+.footer-mark:focus-visible {
+  background-size: 100% 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-mark { background-size: 100% 100%; -webkit-text-stroke: 0; }
+}
+
+/* Project media — slow zoom + saturation lift on hover */
+.project-media img {
+  transition: transform 0.7s var(--ease-standard), filter 0.7s ease;
+}
+.project-media:hover img {
+  transform: scale(1.04);
+  filter: saturate(1.12);
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-media:hover img { transform: none; filter: none; }
 }
 
 /* Modal / dropdown fade-in */

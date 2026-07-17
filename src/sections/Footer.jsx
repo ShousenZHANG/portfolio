@@ -9,6 +9,12 @@ const Footer = () => {
   return (
     <footer style={{ borderTop: "1px solid var(--hair)" }}>
       <div className="ed-shell py-10 md:py-12">
+        {/* Giant outlined wordmark — the exit-point hook. Gradient fills on
+            hover; routed through Lenis via the global anchor handler. */}
+        <a href="#contact" className="footer-mark mb-10 md:mb-12" aria-label="Go to the contact section">
+          Let&rsquo;s build.
+        </a>
+
         {/* Top row: Links + Social */}
         <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 mb-8">
           {/* Contact links */}

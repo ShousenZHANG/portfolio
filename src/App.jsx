@@ -91,6 +91,10 @@ const App = () => {
             <a href="#main-content" className="skip-link">Skip to main content</a>
             <CustomCursor />
             <div className="ed-grid-bg" aria-hidden="true" />
+            <div className="nebula" aria-hidden="true">
+                <span className="neb-a" />
+                <span className="neb-b" />
+            </div>
             <InteractiveBackground />
             <NavBar />
             <main id="main-content">

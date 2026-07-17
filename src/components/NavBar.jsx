@@ -6,6 +6,30 @@ import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 import { navLinks } from "../constants";
 import Magnetic from "./Magnetic.jsx";
 import LogoMark from "./LogoMark.jsx";
+import { prefersReducedMotion } from "../lib/motion.js";
+
+// Hover-decode: nav labels scramble briefly and collapse back — the same
+// measurement motif as the hero headline, echoed in the chrome.
+const NAV_GLYPHS = "!<>-_\\/[]{}=+*^?#";
+const ScrambleText = ({ text, active }) => {
+  const [display, setDisplay] = useState(text);
+  useEffect(() => {
+    if (!active || prefersReducedMotion()) { setDisplay(text); return undefined; }
+    let f = 0;
+    const iv = setInterval(() => {
+      f += 1;
+      const settled = Math.floor((f / 9) * text.length);
+      if (settled >= text.length) { setDisplay(text); clearInterval(iv); return; }
+      let s = "";
+      for (let i = 0; i < text.length; i++) {
+        s += i < settled ? text[i] : NAV_GLYPHS[(i * 5 + f * 3) % NAV_GLYPHS.length];
+      }
+      setDisplay(s);
+    }, 26);
+    return () => clearInterval(iv);
+  }, [active, text]);
+  return display;
+};
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -164,7 +188,7 @@ const NavBar = () => {
                     onFocus={() => setHovered(id)}
                     onBlur={() => setHovered(null)}
                   >
-                    {name}
+                    <ScrambleText text={name} active={hovered === id} />
                   </a>
                 </li>
               );

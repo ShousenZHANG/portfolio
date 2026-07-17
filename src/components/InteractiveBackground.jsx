@@ -41,6 +41,16 @@ const InteractiveBackground = () => {
         let flashes = [];
         let nextFlashAt = 2.5;
 
+        // Depth field: each particle carries a z-factor. The whole field
+        // parallaxes gently against the cursor and lags behind scroll —
+        // the flat plane becomes a volume.
+        let lastScrollY = 0;
+        let scrollLag = 0;
+
+        // Comet: a single streak crossing the hero every ~7-11s.
+        let comet = null;
+        let nextCometAt = 5;
+
         const LINK_DIST = 150;
         const MOUSE_RADIUS = 220;
 
@@ -105,6 +115,8 @@ const InteractiveBackground = () => {
                     // zero-point jitter amplitude ∝ √(n+½) (uncertainty)
                     amp: 6 * Math.sqrt(n + 0.5),
                     r: 1.1 + n * 0.5,
+                    // depth 0.35 (far) → 1 (near): drives parallax strength
+                    depth: 0.35 + rng(i * 271 + 5) * 0.65,
                 };
             });
             nodes.forEach((nd) => { nd.x = nd.hx; nd.y = nd.hy; });
@@ -125,12 +137,21 @@ const InteractiveBackground = () => {
             ctx.clearRect(0, 0, width, height);
             t += 0.016;
 
+            // Scroll inertia: the field lags behind scroll then settles.
+            const sy = window.scrollY;
+            scrollLag += ((sy - lastScrollY) - scrollLag) * 0.12;
+            lastScrollY = sy;
+            // Cursor parallax offsets (0 when the mouse is idle/off-window).
+            const pxo = mouse.active ? (mouse.x - width / 2) * 0.018 : 0;
+            const pyo = mouse.active ? (mouse.y - height / 2) * 0.018 : 0;
+
             for (let i = 0; i < nodes.length; i++) {
                 const nd = nodes[i];
                 const ph = nd.phase + t * nd.omega;
-                // Quantum jitter around the home (|ψ|²) position.
-                nd.x = nd.hx + Math.cos(ph) * nd.amp;
-                nd.y = nd.hy + Math.sin(ph * 0.9 + nd.n) * nd.amp;
+                // Quantum jitter around the home (|ψ|²) position, displaced
+                // by depth-scaled cursor parallax + scroll lag.
+                nd.x = nd.hx + Math.cos(ph) * nd.amp + pxo * nd.depth;
+                nd.y = nd.hy + Math.sin(ph * 0.9 + nd.n) * nd.amp + pyo * nd.depth + scrollLag * nd.depth * 0.8;
 
                 // Observation = collapse toward the cursor.
                 if (mouse.active) {
@@ -207,6 +228,38 @@ const InteractiveBackground = () => {
                     ctx.arc(f.b.x, f.b.y, f.b.r + glow * 2.5, 0, Math.PI * 2);
                     ctx.fill();
                 }
+            }
+
+            // Comet — a lone streak with a fading tail
+            if (!comet && t >= nextCometAt) {
+                nextCometAt = t + 7 + ((t * 613) % 4);
+                const fromLeft = ((t * 89) % 2) < 1;
+                comet = {
+                    x: fromLeft ? -60 : width + 60,
+                    y: height * (0.12 + ((t * 331) % 0.5)),
+                    vx: (fromLeft ? 1 : -1) * (9 + ((t * 47) % 4)),
+                    vy: 1.2 + ((t * 23) % 1.4),
+                };
+            }
+            if (comet) {
+                comet.x += comet.vx;
+                comet.y += comet.vy;
+                const tailX = comet.x - comet.vx * 9;
+                const tailY = comet.y - comet.vy * 9;
+                const grad = ctx.createLinearGradient(comet.x, comet.y, tailX, tailY);
+                grad.addColorStop(0, `rgba(${CYAN}, 0.9)`);
+                grad.addColorStop(1, `rgba(${CYAN}, 0)`);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(comet.x, comet.y);
+                ctx.lineTo(tailX, tailY);
+                ctx.stroke();
+                ctx.fillStyle = `rgba(255, 255, 255, 0.95)`;
+                ctx.beginPath();
+                ctx.arc(comet.x, comet.y, 1.6, 0, Math.PI * 2);
+                ctx.fill();
+                if (comet.x < -120 || comet.x > width + 120 || comet.y > height + 60) comet = null;
             }
 
             // Particles + observation links
