@@ -795,6 +795,69 @@ section {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 1; filter: drop-shadow(0 0 1.5px var(--sig-glow)); }
 }
+/* Ambient float — each node drifts around its home point (staggered
+   phase per node via inline delay/duration) so the constellation breathes */
+.skill-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: skill-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes skill-float {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(0.55px, -0.75px); }
+}
+/* Energy flow — active edges carry a moving dash current */
+.skill-edge {
+  transition: opacity 0.25s, stroke 0.25s, stroke-width 0.25s;
+}
+.skill-edge.on {
+  stroke-dasharray: 1.5 1.6;
+  animation: skill-edge-flow 0.5s linear infinite;
+}
+@keyframes skill-edge-flow {
+  to { stroke-dashoffset: -3.1; }
+}
+/* Orbit ring — dashed satellite slowly circling the pinned node */
+.skill-orbit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skill-orbit-spin 8s linear infinite;
+}
+@keyframes skill-orbit-spin {
+  to { transform: rotate(360deg); }
+}
+/* Legend — clickable category spotlight */
+.skill-legend {
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  color: var(--tx-2);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.skill-legend:hover { color: var(--tx-0); border-color: var(--hair); }
+.skill-legend.on {
+  color: var(--tx-0);
+  background: var(--ink-2);
+  border-color: var(--hair-bright);
+}
+/* Hop chips — jump to a linked node from the detail panel */
+.skill-hop {
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--r-pill);
+  border: 1px solid;
+  font-size: 0.72rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  background: transparent;
+  transition: background 0.2s ease, transform 0.2s var(--ease-emphasis);
+}
+.skill-hop:hover {
+  background: var(--ink-2);
+  transform: translateY(-1px);
+}
+
 /* Select burst — one-shot ring that expands when a node is pinned */
 .skill-burst {
   transform-box: fill-box;
@@ -822,6 +885,7 @@ section {
 @media (prefers-reduced-motion: reduce) {
   .nr-skill-core, .skill-burst { animation: none !important; }
   .skill-detail, .skill-detail-line { animation: none !important; }
+  .skill-float, .skill-orbit, .skill-edge.on { animation: none !important; }
 }
 
 /* ── Experience timeline hover ── */

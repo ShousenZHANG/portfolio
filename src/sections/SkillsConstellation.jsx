@@ -64,22 +64,39 @@ const EDGES = [
 
 const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
 
+// Curved edge paths — a slight perpendicular bow (alternating side) turns
+// the wire diagram into an organic constellation. Precomputed once.
+const EDGE_PATHS = EDGES.map(([a, b], i) => {
+    const na = byId[a];
+    const nb = byId[b];
+    const dx = nb.x - na.x;
+    const dy = nb.y - na.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const bow = len * 0.10 * (i % 2 === 0 ? 1 : -1);
+    const cx = (na.x + nb.x) / 2 + (-dy / len) * bow;
+    const cy = (na.y + nb.y) / 2 + (dx / len) * bow;
+    return { a, b, d: `M ${na.x} ${na.y} Q ${cx} ${cy} ${nb.x} ${nb.y}` };
+});
+
 const SkillsConstellation = () => {
     const [active, setActive] = useState(null);   // hovered or focused id
     const [pinned, setPinned] = useState(null);    // clicked id (detail panel)
+    const [catFilter, setCatFilter] = useState(null); // legend category filter
 
     const focus = active || pinned;
     const neighbors = focus
         ? new Set(EDGES.filter((e) => e.includes(focus)).flatMap((e) => e))
         : null;
 
-    const isDim = (id) => neighbors && !neighbors.has(id);
+    const isDim = (id) =>
+        (neighbors && !neighbors.has(id)) ||
+        (catFilter && byId[id].cat !== catFilter);
     const edgeActive = (a, b) => focus && (a === focus || b === focus);
 
     const detail = pinned ? byId[pinned] : null;
-    const pinnedLinks = pinned
-        ? EDGES.filter((e) => e.includes(pinned)).length
-        : 0;
+    const linkedIds = pinned
+        ? EDGES.filter((e) => e.includes(pinned)).map(([a, b]) => (a === pinned ? b : a))
+        : [];
 
     // Roving tabindex — one tab stop for the whole graph, arrows move between
     // nodes, Enter/Space pins. Beats a flat 20-stop tab sequence with no way
@@ -121,13 +138,19 @@ const SkillsConstellation = () => {
             </p>
 
             <div className="ed-tile p-4 md:p-6">
-                {/* Legend */}
-                <div className="flex flex-wrap gap-x-5 gap-y-2 mb-4 font-mono text-xs">
-                    {Object.values(CATS).map((c) => (
-                        <span key={c.label} className="inline-flex items-center gap-1.5" style={{ color: "var(--tx-2)" }}>
+                {/* Legend — click a category to spotlight just that cluster */}
+                <div className="flex flex-wrap gap-2 mb-4 font-mono text-xs">
+                    {Object.entries(CATS).map(([key, c]) => (
+                        <button
+                            key={key}
+                            type="button"
+                            onClick={() => { setCatFilter(catFilter === key ? null : key); setPinned(null); setActive(null); }}
+                            aria-pressed={catFilter === key}
+                            className={`skill-legend inline-flex items-center gap-1.5 ${catFilter === key ? "on" : ""}`}
+                        >
                             <span className="inline-block w-2 h-2 rounded-full" style={{ background: c.color }} />
                             {c.label}
-                        </span>
+                        </button>
                     ))}
                 </div>
 
@@ -140,19 +163,19 @@ const SkillsConstellation = () => {
                         aria-label="Interactive skills graph"
                         onMouseLeave={() => setActive(null)}
                     >
-                        {/* edges */}
-                        {EDGES.map(([a, b]) => {
-                            const na = byId[a];
-                            const nb = byId[b];
+                        {/* edges — curved, with energy flow when active */}
+                        {EDGE_PATHS.map(({ a, b, d }) => {
                             const on = edgeActive(a, b);
+                            const catDim = catFilter && (byId[a].cat !== catFilter || byId[b].cat !== catFilter);
                             return (
-                                <line
+                                <path
                                     key={`${a}-${b}`}
-                                    x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
+                                    d={d}
+                                    fill="none"
+                                    className={`skill-edge ${on ? "on" : ""}`}
                                     stroke={on ? "var(--sig)" : "var(--hair-bright)"}
                                     strokeWidth={on ? 0.5 : 0.25}
-                                    opacity={focus ? (on ? 0.9 : 0.1) : 0.4}
-                                    style={{ transition: "opacity .25s, stroke .25s, stroke-width .25s" }}
+                                    opacity={catDim ? 0.05 : focus ? (on ? 0.9 : 0.1) : 0.4}
                                 />
                             );
                         })}
@@ -181,33 +204,51 @@ const SkillsConstellation = () => {
                                 >
                                     {/* invisible hit area — lifts the touch target to ~44px on mobile */}
                                     <circle r="6.5" fill="transparent" />
-                                    {/* select burst — re-mounts per pin via key, plays once */}
-                                    {isPinned && (
-                                        <circle key={`burst-${n.id}`} className="skill-burst" r="2" fill="none" stroke={CATS[n.cat].color} strokeWidth="0.6" />
-                                    )}
-                                    <circle
-                                        r={isFocus ? n.r * 0.62 : n.r * 0.5}
-                                        fill={CATS[n.cat].color}
-                                        opacity={isPinned ? 0.26 : 0.16}
-                                        style={{ transition: "r .25s, opacity .25s" }}
-                                    />
-                                    <circle
-                                        className="nr-skill-core"
-                                        r={isFocus ? 2.2 : 1.6}
-                                        fill={CATS[n.cat].color}
-                                        stroke={isPinned ? "var(--tx-0)" : "transparent"}
-                                        strokeWidth="0.5"
-                                        style={{ transition: "r .25s" }}
-                                    />
-                                    <text
-                                        y={n.r * 0.5 + 3.4}
-                                        textAnchor="middle"
-                                        fontSize="2.5"
-                                        fill={isFocus ? "var(--tx-0)" : "var(--tx-1)"}
-                                        style={{ fontWeight: isFocus ? 600 : 400, transition: "fill .25s" }}
+                                    {/* ambient float — the constellation breathes */}
+                                    <g
+                                        className="skill-float"
+                                        style={{ animationDuration: `${5 + (i % 4)}s`, animationDelay: `${-((i * 0.9) % 4)}s` }}
                                     >
-                                        {n.label}
-                                    </text>
+                                        {/* select burst — re-mounts per pin via key, plays once */}
+                                        {isPinned && (
+                                            <circle key={`burst-${n.id}`} className="skill-burst" r="2" fill="none" stroke={CATS[n.cat].color} strokeWidth="0.6" />
+                                        )}
+                                        {/* orbit ring — a slow dashed satellite around the pinned node */}
+                                        {isPinned && (
+                                            <circle
+                                                className="skill-orbit"
+                                                r={n.r * 0.62 + 1.4}
+                                                fill="none"
+                                                stroke={CATS[n.cat].color}
+                                                strokeWidth="0.22"
+                                                strokeDasharray="1.1 1.6"
+                                                opacity="0.85"
+                                            />
+                                        )}
+                                        <circle
+                                            r={isFocus ? n.r * 0.62 : n.r * 0.5}
+                                            fill={CATS[n.cat].color}
+                                            opacity={isPinned ? 0.26 : 0.16}
+                                            style={{ transition: "r .25s, opacity .25s" }}
+                                        />
+                                        <circle
+                                            className="nr-skill-core"
+                                            r={isFocus ? 2.2 : 1.6}
+                                            fill={CATS[n.cat].color}
+                                            stroke={isPinned ? "var(--tx-0)" : "transparent"}
+                                            strokeWidth="0.5"
+                                            style={{ transition: "r .25s" }}
+                                        />
+                                        <text
+                                            y={n.r * 0.5 + 3.4}
+                                            textAnchor="middle"
+                                            fontSize="2.5"
+                                            fill={isFocus ? "var(--tx-0)" : "var(--tx-1)"}
+                                            style={{ fontWeight: isFocus ? 600 : 400, transition: "fill .25s" }}
+                                        >
+                                            {n.label}
+                                        </text>
+                                    </g>
                                 </g>
                             );
                         })}
@@ -225,7 +266,7 @@ const SkillsConstellation = () => {
                                         {CATS[detail.cat].label}
                                     </span>
                                     <span className="font-mono text-xs" style={{ color: "var(--tx-2)" }}>
-                                        {pinnedLinks} links
+                                        {linkedIds.length} links
                                     </span>
                                 </div>
                                 <h3 className="skill-detail-line text-2xl font-bold mb-4" style={{ color: "var(--tx-0)" }}>
@@ -246,6 +287,34 @@ const SkillsConstellation = () => {
                                         </li>
                                     ))}
                                 </ul>
+
+                                {/* Linked skills — hop through the graph without touching it */}
+                                {linkedIds.length > 0 && (
+                                    <>
+                                        <p className="skill-detail-line text-xs font-mono uppercase tracking-wider mt-5 mb-2.5" style={{ color: "var(--tx-2)", "--i": detail.used.length + 2 }}>
+                                            Linked skills
+                                        </p>
+                                        <div className="skill-detail-line flex flex-wrap gap-1.5" style={{ "--i": detail.used.length + 3 }}>
+                                            {linkedIds.map((cid) => {
+                                                const cn = byId[cid];
+                                                return (
+                                                    <button
+                                                        key={cid}
+                                                        type="button"
+                                                        onClick={() => setPinned(cid)}
+                                                        className="skill-hop"
+                                                        style={{
+                                                            color: CATS[cn.cat].color,
+                                                            borderColor: `color-mix(in oklab, ${CATS[cn.cat].color} 40%, transparent)`,
+                                                        }}
+                                                    >
+                                                        {cn.label}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         ) : (
                             <div className="flex flex-col items-start justify-center h-full min-h-[160px]">
