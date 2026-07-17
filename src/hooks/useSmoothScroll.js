@@ -25,24 +25,11 @@ export function useSmoothScroll() {
 
         lenis.on("scroll", ScrollTrigger.update);
 
-        // Liquid scroll: the page skews a fraction of a degree with scroll
-        // velocity and eases back — the award-site "content has inertia"
-        // feel. The transform is REMOVED once settled so fixed-position
-        // descendants (e.g. the contact success dialog) keep their
-        // viewport containing block.
-        const main = document.getElementById("main-content");
-        let skew = 0;
-        const onTick = (time) => {
-            lenis.raf(time * 1000);
-            if (!main) return;
-            const target = Math.max(-0.7, Math.min(0.7, lenis.velocity * 0.012));
-            skew += (target - skew) * 0.12;
-            if (Math.abs(skew) < 0.005 && target === 0) {
-                if (main.style.transform) main.style.removeProperty("transform");
-            } else {
-                main.style.transform = `skewY(${skew.toFixed(3)}deg)`;
-            }
-        };
+        // NOTE: no scroll-coupled transform on #main-content. Skewing the
+        // whole page promoted a ~7000px-tall compositing layer and tore it
+        // down after every scroll — the re-rasterisation caused visible
+        // jank. Scroll smoothness > the liquid-skew flourish.
+        const onTick = (time) => lenis.raf(time * 1000);
         gsap.ticker.add(onTick);
         gsap.ticker.lagSmoothing(0);
 
@@ -62,7 +49,6 @@ export function useSmoothScroll() {
         return () => {
             document.removeEventListener("click", onAnchorClick);
             gsap.ticker.remove(onTick);
-            main?.style.removeProperty("transform");
             lenis.destroy();
         };
     }, []);

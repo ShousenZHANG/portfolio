@@ -47,10 +47,6 @@ const InteractiveBackground = () => {
         let lastScrollY = 0;
         let scrollLag = 0;
 
-        // Comet: a single streak crossing the hero every ~7-11s.
-        let comet = null;
-        let nextCometAt = 5;
-
         const LINK_DIST = 150;
         const MOUSE_RADIUS = 220;
 
@@ -228,38 +224,6 @@ const InteractiveBackground = () => {
                     ctx.arc(f.b.x, f.b.y, f.b.r + glow * 2.5, 0, Math.PI * 2);
                     ctx.fill();
                 }
-            }
-
-            // Comet — a lone streak with a fading tail
-            if (!comet && t >= nextCometAt) {
-                nextCometAt = t + 7 + ((t * 613) % 4);
-                const fromLeft = ((t * 89) % 2) < 1;
-                comet = {
-                    x: fromLeft ? -60 : width + 60,
-                    y: height * (0.12 + ((t * 331) % 0.5)),
-                    vx: (fromLeft ? 1 : -1) * (9 + ((t * 47) % 4)),
-                    vy: 1.2 + ((t * 23) % 1.4),
-                };
-            }
-            if (comet) {
-                comet.x += comet.vx;
-                comet.y += comet.vy;
-                const tailX = comet.x - comet.vx * 9;
-                const tailY = comet.y - comet.vy * 9;
-                const grad = ctx.createLinearGradient(comet.x, comet.y, tailX, tailY);
-                grad.addColorStop(0, `rgba(${CYAN}, 0.9)`);
-                grad.addColorStop(1, `rgba(${CYAN}, 0)`);
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = 1.6;
-                ctx.beginPath();
-                ctx.moveTo(comet.x, comet.y);
-                ctx.lineTo(tailX, tailY);
-                ctx.stroke();
-                ctx.fillStyle = `rgba(255, 255, 255, 0.95)`;
-                ctx.beginPath();
-                ctx.arc(comet.x, comet.y, 1.6, 0, Math.PI * 2);
-                ctx.fill();
-                if (comet.x < -120 || comet.x > width + 120 || comet.y > height + 60) comet = null;
             }
 
             // Particles + observation links

@@ -394,8 +394,11 @@ section {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     }
 
-    /* ── Nebula drift — two huge blurred aurora blobs breathing behind
-       everything. Blurred once, then transform-animated (compositor-only). ── */
+    /* ── Nebula drift — two huge aurora blobs breathing behind everything.
+       Softness is baked into the gradient stops (NO filter: blur — a live
+       90px gaussian on 800px+ elements re-runs on the GPU every composite
+       and caused scroll jank on integrated graphics). Transform-only
+       animation stays compositor-cheap. ── */
     .nebula {
         position: fixed;
         inset: 0;
@@ -406,7 +409,6 @@ section {
     .nebula span {
         position: absolute;
         border-radius: 50%;
-        filter: blur(90px);
         will-change: transform;
     }
     .nebula .neb-a {
@@ -414,8 +416,13 @@ section {
         height: 56vw;
         left: -14vw;
         top: -20vw;
-        opacity: 0.5;
-        background: radial-gradient(circle, oklch(0.42 0.16 290 / 0.55) 0%, transparent 65%);
+        background: radial-gradient(
+            circle,
+            oklch(0.42 0.16 290 / 0.30) 0%,
+            oklch(0.42 0.16 290 / 0.18) 30%,
+            oklch(0.42 0.16 290 / 0.07) 52%,
+            transparent 72%
+        );
         animation: neb-drift-a 26s ease-in-out infinite alternate;
     }
     .nebula .neb-b {
@@ -423,8 +430,13 @@ section {
         height: 46vw;
         right: -12vw;
         top: 6vw;
-        opacity: 0.4;
-        background: radial-gradient(circle, oklch(0.48 0.12 215 / 0.45) 0%, transparent 65%);
+        background: radial-gradient(
+            circle,
+            oklch(0.48 0.12 215 / 0.22) 0%,
+            oklch(0.48 0.12 215 / 0.13) 30%,
+            oklch(0.48 0.12 215 / 0.05) 52%,
+            transparent 72%
+        );
         animation: neb-drift-b 34s ease-in-out infinite alternate;
     }
     @keyframes neb-drift-a {
