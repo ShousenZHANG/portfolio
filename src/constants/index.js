@@ -22,7 +22,7 @@ const navLinks = [
 // - "40K+ lines" = the Contest Platform's stated 40,000+ LOC.
 const counterItems = [
   { value: 3, suffix: "+", label: "Years Building Production Software" },
-  { value: 4, suffix: "", label: "Enterprise Systems Unified by AI Agents" },
+  { value: 4, suffix: "", label: "Systems Unified by AI Agents" },
   { value: 10, suffix: "+", label: "Copilot & AI Agent Skills Shipped" },
   { value: 40, suffix: "K+", label: "Lines of Production Code Shipped" },
 ];

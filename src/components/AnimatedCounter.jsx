@@ -84,7 +84,7 @@ const AnimatedCounter = () => {
   }, []);
 
   return (
-    <div id="counter" ref={counterRef} className="ed-shell xl:mt-0 mt-24">
+    <div id="counter" ref={counterRef} className="ed-shell xl:mt-0 mt-16">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {counterItems.map((item, i) => (
           <StatTile key={item.label} item={item} Icon={ICONS[i % ICONS.length]} />

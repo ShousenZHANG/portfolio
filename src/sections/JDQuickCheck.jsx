@@ -131,7 +131,7 @@ const JDQuickCheck = () => {
   const over = MAX_JD_CHARS - jd.length;
 
   return (
-    <section id="jd-check" className="ed-shell py-[var(--sp-section)]">
+    <section id="jd-check" className="ed-shell pt-20 md:pt-24 pb-[var(--sp-section)]">
       <div className="max-w-[860px] mx-auto">
         <TitleHeader title="Match a JD against my CV" sub="01 / Live AI Demo" anchor="jd-check" align="left" />
 
@@ -141,20 +141,23 @@ const JDQuickCheck = () => {
         </p>
 
         <div className="ed-tile p-5 md:p-7" style={{ background: "var(--ink-1)" }}>
-          {/* Sample chips */}
+          {/* Sample chips — selected state derives from the textarea content */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>Try:</span>
-            {SAMPLES.map((s) => (
-              <button
-                key={s.label}
-                type="button"
-                onClick={() => setJd(s.jd)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
-                style={{ background: "var(--ink-2)", border: "1px solid var(--hair)", color: "var(--tx-1)" }}
-              >
-                {s.label}
-              </button>
-            ))}
+            {SAMPLES.map((s) => {
+              const isSelected = jd === s.jd;
+              return (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => setJd(s.jd)}
+                  aria-pressed={isSelected}
+                  className={`jd-chip px-3 py-1.5 rounded-full text-xs font-medium ${isSelected ? "selected" : ""}`}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Input */}
@@ -222,8 +225,9 @@ const JDQuickCheck = () => {
             {!result && !loading && (
               <div className="rounded-[var(--r-md)] p-8 text-center" style={{ border: "1px dashed var(--hair-bright)" }}>
                 <p className="text-sm" style={{ color: "var(--tx-2)" }}>
-                  Pick a sample above or paste a real JD, then hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span>.
-                  Results render here in a few seconds.
+                  {jd.trim()
+                    ? <>JD loaded — hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span> to score it. Results render here in a few seconds.</>
+                    : <>Pick a sample above or paste a real JD, then hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span>. Results render here in a few seconds.</>}
                 </p>
               </div>
             )}

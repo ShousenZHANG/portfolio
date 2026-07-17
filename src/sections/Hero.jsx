@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
@@ -9,6 +9,37 @@ import { useMagnetic } from "../hooks/useMagnetic.js";
 
 // CTA is a plain anchor: the global Lenis click handler routes #-links
 // through lenis.scrollTo, so easing matches every other in-page jump.
+
+// Quantum-decode: the signature word "collapses" out of scrambled glyphs
+// into its final state — the site's measurement-collapse motif, applied to
+// the very first thing a visitor reads. Static under reduced motion.
+const GLYPHS = "!<>-_\\/[]{}—=+*^?#";
+const DecodeWord = ({ text }) => {
+    const [out, setOut] = useState(text);
+    useEffect(() => {
+        if (prefersReducedMotion()) return undefined;
+        let frame = 0;
+        let raf = 0;
+        const start = performance.now() + 550; // let the mask-rise land first
+        const tick = (now) => {
+            if (now < start) { raf = requestAnimationFrame(tick); return; }
+            frame += 1;
+            const settled = Math.floor((now - start) / 70); // one char per 70ms
+            if (settled >= text.length) { setOut(text); return; }
+            let s = "";
+            for (let i = 0; i < text.length; i++) {
+                s += i < settled
+                    ? text[i]
+                    : GLYPHS[(i * 7 + frame * 3) % GLYPHS.length];
+            }
+            setOut(s);
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [text]);
+    return <>{out}</>;
+};
 
 const HERO_ANIM_TARGETS = [
     ".hero-eyebrow",
@@ -99,7 +130,7 @@ const Hero = () => {
                                             className={`hero-word${w.sig ? " sig" : ""}`}
                                             style={{ display: "inline-block", willChange: "transform" }}
                                         >
-                                            {w.t}
+                                            {w.sig ? <DecodeWord text={w.t} /> : w.t}
                                         </span>
                                     </span>
                                     {w.br ? <br /> : i < HEADLINE.length - 1 ? " " : ""}

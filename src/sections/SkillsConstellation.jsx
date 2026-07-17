@@ -115,8 +115,9 @@ const SkillsConstellation = () => {
             />
             <p className="ed-lead mt-5 mb-8">
                 The Microsoft 365 agent stack I build with — Copilot Studio, Power
-                Platform, and the AI around them — mapped by how it connects. Hover a
-                node to trace its links; click one to see what I shipped with it.
+                Platform, and the AI around them — mapped by how it connects. Tap or
+                hover a node to trace its links; select one to see what I shipped
+                with it.
             </p>
 
             <div className="ed-tile p-4 md:p-6">
@@ -178,6 +179,8 @@ const SkillsConstellation = () => {
                                     onBlur={() => setActive(null)}
                                     onKeyDown={(e) => onNodeKey(e, i)}
                                 >
+                                    {/* invisible hit area — lifts the touch target to ~44px on mobile */}
+                                    <circle r="6.5" fill="transparent" />
                                     {/* select burst — re-mounts per pin via key, plays once */}
                                     {isPinned && (
                                         <circle key={`burst-${n.id}`} className="skill-burst" r="2" fill="none" stroke={CATS[n.cat].color} strokeWidth="0.6" />

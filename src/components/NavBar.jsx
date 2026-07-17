@@ -45,21 +45,43 @@ const NavBar = () => {
     };
   }, []);
 
-  // Active section via IntersectionObserver
+  // Active section via IntersectionObserver.
+  // Some targets (#projects) live in lazy-loaded chunks and don't exist at
+  // mount — watch the DOM until every id is registered, else their nav link
+  // never activates.
   useEffect(() => {
     const ids = navLinks.map((l) => l.link.replace("#", ""));
     const observers = [];
-    ids.forEach((id) => {
+    const pending = new Set(ids);
+
+    const register = (id) => {
       const el = document.getElementById(id);
-      if (!el) return;
+      if (!el) return false;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
         { rootMargin: "-45% 0px -45% 0px" }
       );
       obs.observe(el);
       observers.push(obs);
-    });
-    return () => observers.forEach((o) => o.disconnect());
+      pending.delete(id);
+      return true;
+    };
+
+    ids.forEach(register);
+
+    let mo = null;
+    if (pending.size > 0) {
+      mo = new MutationObserver(() => {
+        pending.forEach((id) => register(id));
+        if (pending.size === 0) { mo.disconnect(); mo = null; }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+
+    return () => {
+      observers.forEach((o) => o.disconnect());
+      mo?.disconnect();
+    };
   }, []);
 
   // Position the sliding indicator behind the hovered (or active) link

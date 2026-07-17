@@ -10,8 +10,38 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
+import { prefersReducedMotion } from "./lib/motion.js";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
+
+// Aurora tiles: one delegated pointermove listener feeds --mx/--my to the
+// hovered .ed-tile so its ::after glow tracks the cursor. rAF-coalesced,
+// desktop-only, skipped under reduced motion.
+function useAuroraTiles() {
+    useEffect(() => {
+        const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        if (!fine || prefersReducedMotion()) return undefined;
+        let raf = 0;
+        let ev = null;
+        const apply = () => {
+            raf = 0;
+            const tile = ev?.target?.closest?.(".ed-tile");
+            if (!tile) return;
+            const r = tile.getBoundingClientRect();
+            tile.style.setProperty("--mx", `${ev.clientX - r.left}px`);
+            tile.style.setProperty("--my", `${ev.clientY - r.top}px`);
+        };
+        const onMove = (e) => {
+            ev = e;
+            if (!raf) raf = requestAnimationFrame(apply);
+        };
+        document.addEventListener("pointermove", onMove, { passive: true });
+        return () => {
+            document.removeEventListener("pointermove", onMove);
+            cancelAnimationFrame(raf);
+        };
+    }, []);
+}
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
@@ -39,6 +69,7 @@ const LazySection = ({ children }) => (
 
 const App = () => {
     useSmoothScroll();
+    useAuroraTiles();
 
     useEffect(() => {
         const schedule =

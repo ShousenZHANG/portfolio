@@ -36,6 +36,11 @@ const InteractiveBackground = () => {
         let t = 0; // global phase clock
         const mouse = { x: -9999, y: -9999, active: false };
 
+        // Entanglement flashes — every few seconds two nearby particles link
+        // with a bright violet→cyan arc that blooms and fades (~0.9s).
+        let flashes = [];
+        let nextFlashAt = 2.5;
+
         const LINK_DIST = 150;
         const MOUSE_RADIUS = 220;
 
@@ -159,6 +164,48 @@ const InteractiveBackground = () => {
                         ctx.lineTo(b.x, b.y);
                         ctx.stroke();
                     }
+                }
+            }
+
+            // Entanglement flashes — spawn, draw, expire
+            if (t >= nextFlashAt && nodes.length > 1) {
+                nextFlashAt = t + 2.5 + ((t * 997) % 2); // every ~2.5-4.5s
+                const a = nodes[Math.floor((t * 131) % nodes.length)];
+                let best = null;
+                let bestD2 = 220 * 220;
+                for (let j = 0; j < nodes.length; j++) {
+                    const b = nodes[j];
+                    if (b === a) continue;
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < bestD2 && d2 > 40 * 40) { bestD2 = d2; best = b; }
+                }
+                if (best) flashes.push({ a, b: best, t0: t });
+            }
+            if (flashes.length > 0) {
+                flashes = flashes.filter((f) => t - f.t0 < 0.9);
+                for (const f of flashes) {
+                    const p = (t - f.t0) / 0.9;              // 0→1
+                    const glow = Math.sin(Math.PI * p);       // bloom then fade
+                    const grad = ctx.createLinearGradient(f.a.x, f.a.y, f.b.x, f.b.y);
+                    grad.addColorStop(0, `rgba(${SIG}, ${glow * 0.85})`);
+                    grad.addColorStop(1, `rgba(${CYAN}, ${glow * 0.85})`);
+                    ctx.strokeStyle = grad;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(f.a.x, f.a.y);
+                    ctx.lineTo(f.b.x, f.b.y);
+                    ctx.stroke();
+                    // endpoint blooms
+                    ctx.fillStyle = `rgba(${SIG}, ${glow * 0.9})`;
+                    ctx.beginPath();
+                    ctx.arc(f.a.x, f.a.y, f.a.r + glow * 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = `rgba(${CYAN}, ${glow * 0.9})`;
+                    ctx.beginPath();
+                    ctx.arc(f.b.x, f.b.y, f.b.r + glow * 2.5, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
 

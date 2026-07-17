@@ -372,7 +372,8 @@ section {
             linear-gradient(90deg, oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px);
         background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
     }
-    /* Signature grid accent near top, fading down */
+    /* Signature grid accent near top, fading down. Long, soft falloff —
+       a hard mask stop paints a visible horizontal band across content. */
     .ed-grid-bg::before {
         content: "";
         position: absolute;
@@ -381,7 +382,7 @@ section {
             linear-gradient(var(--sig-glow) 1px, transparent 1px),
             linear-gradient(90deg, var(--sig-glow) 1px, transparent 1px);
         background-size: 60px 60px;
-        mask-image: radial-gradient(ellipse 65% 45% at 50% 0%, #000 0%, transparent 68%);
+        mask-image: radial-gradient(ellipse 75% 62% at 50% 0%, #000 0%, rgba(0,0,0,0.4) 55%, transparent 88%);
     }
     /* Static film grain — no mix-blend (full-screen blend repaints every
        scroll frame). Low-opacity alpha composite is GPU-cacheable. */
@@ -440,6 +441,7 @@ section {
 
     /* Surface card / bento tile (used selectively) */
     .ed-tile {
+        position: relative;
         background: var(--ink-1);
         border: 1px solid var(--hair);
         border-radius: var(--r-lg);
@@ -451,6 +453,28 @@ section {
         border-color: var(--hair-bright);
         background: var(--ink-2);
         transform: translateY(-3px);
+    }
+    /* Aurora wash — a signature glow that tracks the cursor inside the tile.
+       --mx/--my are set by a single delegated pointermove listener (App). */
+    .ed-tile::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.45s var(--ease-standard);
+        background: radial-gradient(
+            260px circle at var(--mx, 50%) var(--my, 50%),
+            var(--sig-glow),
+            transparent 65%
+        );
+    }
+    @media (hover: hover) and (pointer: fine) {
+        .ed-tile:hover::after { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .ed-tile::after { display: none; }
     }
 
     /* Live status dot */
@@ -758,6 +782,24 @@ section {
 }
 @media (prefers-reduced-motion: reduce) {
   .exp-card .exp-tile:hover { transform: none; }
+}
+
+/* JD sample chips — visible hover + selected feedback */
+.jd-chip {
+  background: var(--ink-2);
+  border: 1px solid var(--hair);
+  color: var(--tx-1);
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s var(--ease-emphasis);
+}
+.jd-chip:hover {
+  border-color: var(--hair-bright);
+  color: var(--tx-0);
+  transform: translateY(-1px);
+}
+.jd-chip.selected {
+  background: var(--sig-glow);
+  border-color: var(--sig-line);
+  color: var(--sig);
 }
 
 /* JD result reveal */
