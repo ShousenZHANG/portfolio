@@ -140,7 +140,10 @@ const Hero = () => {
                                             {w.sig ? <DecodeWord text={w.t} /> : w.t}
                                         </span>
                                     </span>
-                                    {w.br ? <br /> : i < HEADLINE.length - 1 ? " " : ""}
+                                    {/* The space is kept alongside <br> so the h1's text
+                                        content stays "I build intelligent agents." for
+                                        crawlers — a bare <br> glues the words together. */}
+                                    {w.br ? <> <br /></> : i < HEADLINE.length - 1 ? " " : ""}
                                 </span>
                             ))}
                         </h1>
@@ -191,6 +194,7 @@ const Hero = () => {
                                 <video
                                     ref={videoRef}
                                     src="/videos/eddy_intro.mp4"
+                                    poster="/images/hero_poster.webp"
                                     controls={videoStarted}
                                     loop
                                     playsInline

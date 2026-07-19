@@ -136,6 +136,8 @@ const AppShowcase = () => {
                             <img
                               src={img.src}
                               alt={img.alt}
+                              width={img.w}
+                              height={img.h}
                               className="max-w-full max-h-full object-contain rounded-lg"
                               loading={slideIndex === 0 ? "eager" : "lazy"}
                               decoding="async"

@@ -29,6 +29,8 @@ const LogoIcon = ({ name, icon }) => (
             src={icon.startsWith("http") ? icon : `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${icon}`}
             alt={name}
             title={name}
+            width={48}
+            height={48}
             className="logo-img object-contain w-10 h-10 sm:w-12 sm:h-12"
             loading="lazy"
             decoding="async"

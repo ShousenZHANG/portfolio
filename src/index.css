@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Self-hosted variable fonts (weight axis only) — served same-origin, so
+   no third-party DNS + TLS round trip sits on the critical path, and no
+   user data leaks to a font CDN. */
+@import "@fontsource-variable/mona-sans/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+
 :root {
     --motion-fast: 180ms;
     --motion-medium: 360ms;
@@ -67,7 +73,7 @@ body {
     background-color: var(--ink-0);
     color: var(--tx-0);
     /* No CSS smooth scroll — Lenis owns scroll easing; the two fight. */
-    font-family: "Mona Sans", sans-serif;
+    font-family: "Mona Sans Variable", "Mona Sans", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
@@ -309,7 +315,7 @@ section {
 
     /* Eyebrow — monospace index label (01 / Selected Work) */
     .ed-eyebrow {
-        font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+        font-family: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
         font-size: var(--fs-eyebrow);
         letter-spacing: 0.18em;
         text-transform: uppercase;
@@ -866,7 +872,7 @@ section {
   border-radius: var(--r-pill);
   border: 1px solid;
   font-size: 0.72rem;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
   background: transparent;
   transition: background 0.2s ease, transform 0.2s var(--ease-emphasis);
 }
