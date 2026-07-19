@@ -45,30 +45,38 @@ const Experience = () => {
                 />
 
                 <div className="relative mt-14">
-                    {/* Vertical connecting line */}
+                    {/* Vertical connecting line — centred on the node (w-14 / 4.6rem) */}
                     <div
-                        className="absolute left-[1.4rem] md:left-[2.1rem] top-0 bottom-0 w-px"
+                        className="absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px"
                         style={{ background: "linear-gradient(to bottom, var(--sig-line), var(--hair), transparent)" }}
                         aria-hidden="true"
                     />
 
                     <div className="flex flex-col gap-8 md:gap-12">
-                        {expCards.map((card, index) => {
+                        {expCards.map((card) => {
                             const [role, company] = card.title.split(" — ");
                             const isCurrent = /present/i.test(card.date);
+                            // The rail carries the year, not an index — a sequence
+                            // number tells a reader nothing about when this happened.
+                            const startYear = card.date.match(/\d{4}/)?.[0] ?? "";
                             return (
                             <div key={card.title} className="exp-card group/exp relative flex gap-5 md:gap-8">
-                                {/* Timeline node */}
+                                {/* Timeline node — the year makes the rail a real time axis */}
                                 <div className="flex-shrink-0 flex flex-col items-center">
                                     <div
-                                        className="exp-node w-11 h-11 md:w-[4.2rem] md:h-[4.2rem] rounded-[var(--r-sm)] flex items-center justify-center relative font-mono transition-all duration-300"
+                                        className="exp-node w-14 h-14 md:w-[4.6rem] md:h-[4.6rem] rounded-[var(--r-sm)] flex flex-col items-center justify-center relative font-mono transition-all duration-300"
                                         style={{ background: "var(--ink-1)", border: "1px solid var(--sig-line)" }}
                                     >
-                                        <span className="text-sm md:text-lg font-bold tracking-tight transition-colors duration-300" style={{ color: "var(--sig)" }}>
-                                            {String(index + 1).padStart(2, "0")}
+                                        <span className="text-[15px] md:text-xl font-bold tracking-tight leading-none transition-colors duration-300" style={{ color: "var(--sig)" }}>
+                                            {startYear}
                                         </span>
                                         {isCurrent && (
-                                            <div className="absolute inset-0 rounded-[var(--r-sm)] animate-pulse" style={{ border: "1px solid var(--sig-line)" }} />
+                                            <>
+                                                <span className="mt-1 text-[8px] md:text-[9px] uppercase tracking-[0.18em] leading-none" style={{ color: "var(--tx-2)" }}>
+                                                    now
+                                                </span>
+                                                <div className="absolute inset-0 rounded-[var(--r-sm)] animate-pulse" style={{ border: "1px solid var(--sig-line)" }} />
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -95,9 +103,13 @@ const Experience = () => {
                                                 </p>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs flex-shrink-0 font-mono px-2.5 py-1 rounded-full self-start"
-                                             style={{ color: "var(--tx-1)", background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                        {/* Dates read as data, not as a footnote: brighter
+                                            text, and the signature accent while current. */}
+                                        <div className="flex items-center gap-2 text-[13px] flex-shrink-0 font-mono px-3 py-1.5 rounded-full self-start tracking-tight"
+                                             style={isCurrent
+                                                 ? { color: "var(--sig)", background: "var(--sig-glow)", border: "1px solid var(--sig-line)" }
+                                                 : { color: "var(--tx-0)", background: "var(--ink-0)", border: "1px solid var(--hair-bright)" }}>
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-80" />
                                             <span>{card.date}</span>
                                         </div>
                                     </div>
