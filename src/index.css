@@ -127,7 +127,8 @@ section {
         max-width: 1200px;
         padding: 0.625rem 1.5rem;
         border-radius: 9999px;
-        will-change: background-color, border-color;
+        /* No will-change: it only helps transform/opacity — on paint
+           properties it buys a wasted layer. */
         transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
@@ -246,7 +247,7 @@ section {
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                     width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                     opacity 0.3s ease;
-        will-change: transform, width;
+        will-change: transform;
     }
 
     /* Reading-progress bar — pinned to the very top of the viewport */
@@ -569,7 +570,11 @@ section {
     align-items: center;
     gap: 3rem;
     animation: marquee 25s linear infinite;
+    animation-play-state: paused;   /* runs only while in view (.in-view) */
     will-change: transform;
+}
+.marquee-box.in-view {
+    animation-play-state: running;
 }
 
 @keyframes marquee {
@@ -620,10 +625,11 @@ section {
 }
 
 /* Monochrome by default → full colour + lift on hover (cohesive, premium) */
+/* No will-change here: `will-change: filter` on 26 marquee logos promoted
+   26 permanent compositing layers for a hover-only effect. */
 .logo-img {
     filter: grayscale(1) brightness(1.35) opacity(0.45);
     transition: filter 0.35s var(--ease-standard), transform 0.35s var(--ease-emphasis);
-    will-change: filter, transform;
 }
 .logo-cell:hover .logo-img {
     filter: grayscale(0) brightness(1) opacity(1);
@@ -791,9 +797,20 @@ section {
 }
 .nr-skill-node:nth-child(odd) .nr-skill-core { animation-delay: -1.2s; }
 .nr-skill-node:nth-child(3n) .nr-skill-core { animation-delay: -2.1s; }
+/* Opacity only — animating filter: drop-shadow here forced a main-thread
+   repaint of all 20 cores every frame, even while off-screen. */
 @keyframes nr-skill-pulse {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; filter: drop-shadow(0 0 1.5px var(--sig-glow)); }
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* Park every constellation animation while the graph is off-screen.
+   CSS animations keep repainting when nothing can see them. */
+.skill-graph:not(.in-view) .nr-skill-core,
+.skill-graph:not(.in-view) .skill-float,
+.skill-graph:not(.in-view) .skill-orbit,
+.skill-graph:not(.in-view) .skill-edge.on {
+  animation-play-state: paused;
 }
 /* Ambient float — each node drifts around its home point (staggered
    phase per node via inline delay/duration) so the constellation breathes */

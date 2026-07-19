@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
+import { useInView } from "../hooks/useInView.js";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
 // the projects/experience that prove the skill. Edges link related work.
@@ -105,6 +106,8 @@ const SkillsConstellation = () => {
     // to explore the edges that are the feature's whole point.
     const [rovingIndex, setRovingIndex] = useState(0);
     const nodeRefs = useRef([]);
+    // 40+ node/orbit/edge animations idle here — park them while off-screen.
+    const [graphRef, graphInView] = useInView();
 
     const onNodeKey = (e, i) => {
         const n = NODES.length;
@@ -159,8 +162,9 @@ const SkillsConstellation = () => {
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-4 items-stretch">
                     {/* Graph */}
                     <svg
+                        ref={graphRef}
                         viewBox="0 0 100 76"
-                        className="w-full h-auto select-none"
+                        className={`skill-graph w-full h-auto select-none ${graphInView ? "in-view" : ""}`}
                         role="img"
                         aria-label="Interactive skills graph"
                         onMouseLeave={() => setActive(null)}

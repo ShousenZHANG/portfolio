@@ -79,7 +79,14 @@ const Hero = () => {
         tl.fromTo(
             ".hero-word",
             { yPercent: 118 },
-            { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.09 }
+            {
+                yPercent: 0,
+                duration: 0.9,
+                ease: "power4.out",
+                stagger: 0.09,
+                // One-shot entrance — release the compositing layers after.
+                onComplete: () => gsap.set(".hero-word", { willChange: "auto" }),
+            }
         )
         .fromTo(
             HERO_ANIM_TARGETS,

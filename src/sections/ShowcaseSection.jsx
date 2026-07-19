@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -30,6 +30,28 @@ function renderHighlighted(text) {
 const AppShowcase = () => {
   const sectionRef = useRef(null);
   const projectRefs = useRef([]);
+  const swiperRefs = useRef([]);
+
+  // Swiper autoplay keeps cross-fading (and repainting a ~400px image plus
+  // its pagination bullets) even when the carousel is nowhere near the
+  // viewport. Run it only while the project is on screen.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return undefined;
+    const observers = projectRefs.current.filter(Boolean).map((el, i) => {
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          const swiper = swiperRefs.current[i];
+          if (!swiper || swiper.destroyed || !swiper.autoplay) return;
+          if (entry.isIntersecting) swiper.autoplay.start();
+          else swiper.autoplay.stop();
+        },
+        { rootMargin: "200px 0px" }
+      );
+      obs.observe(el);
+      return obs;
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
@@ -99,6 +121,7 @@ const AppShowcase = () => {
                 <div className="project-media ed-tile relative overflow-hidden h-[280px] sm:h-[340px] md:h-[400px]">
                   {project.slides.length > 0 ? (
                     <Swiper
+                      onSwiper={(s) => { swiperRefs.current[index] = s; }}
                       modules={[Autoplay, Pagination, EffectFade]}
                       autoplay={{ delay: project.autoplayDelay || 4000, disableOnInteraction: false }}
                       pagination={{ clickable: true }}

@@ -21,6 +21,8 @@ const logoIconsList = [
     { name: "GitHub", icon: "github/github-original.svg" },
 ];
 
+import { useInView } from "../hooks/useInView.js";
+
 const LogoIcon = ({ name, icon }) => (
     <div className="logo-cell flex-none flex items-center justify-center w-24 sm:w-28 h-16">
         <img
@@ -35,6 +37,9 @@ const LogoIcon = ({ name, icon }) => (
 );
 
 const LogoSection = () => {
+    // The 25s marquee keeps compositing while off-screen — park it.
+    const [trackRef, inView] = useInView();
+
     return (
         <section className="relative w-full overflow-hidden py-10 md:py-14">
             <p className="ed-eyebrow ed-shell mb-7 md:mb-9">Tools I work with daily</p>
@@ -43,8 +48,8 @@ const LogoSection = () => {
             <div className="logo-fade logo-fade-left" aria-hidden="true" />
             <div className="logo-fade logo-fade-right" aria-hidden="true" />
 
-            <div className="marquee">
-                <div className="marquee-box">
+            <div className="marquee" ref={trackRef}>
+                <div className={`marquee-box ${inView ? "in-view" : ""}`}>
                     {logoIconsList.concat(logoIconsList).map((logo, index) => (
                         <LogoIcon key={`${logo.name}-${index}`} name={logo.name} icon={logo.icon} />
                     ))}

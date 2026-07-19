@@ -36,6 +36,11 @@ const RevealText = ({ text, as = "span", className = "", onScroll = true, delay 
                 ease: "power4.out",
                 stagger: 0.08,
                 delay,
+                // Promote only for the duration of the one-shot reveal.
+                // Declaring will-change up front held a compositing layer
+                // per word for every heading on the page, forever.
+                onStart: () => gsap.set(targets, { willChange: "transform" }),
+                onComplete: () => gsap.set(targets, { willChange: "auto" }),
                 scrollTrigger: onScroll
                     ? { trigger: ref.current, start: "top 88%", once: true }
                     : undefined,
@@ -51,7 +56,7 @@ const RevealText = ({ text, as = "span", className = "", onScroll = true, delay 
                 key={`${word}-${i}`}
                 style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top", paddingBottom: "0.12em", marginBottom: "-0.12em" }}
             >
-                <span className="reveal-word" style={{ display: "inline-block", willChange: "transform" }}>
+                <span className="reveal-word" style={{ display: "inline-block" }}>
                     {word}
                 </span>
                 {i < words.length - 1 ? " " : ""}
