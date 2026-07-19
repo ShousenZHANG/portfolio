@@ -76,8 +76,10 @@ const Contact = () => {
         {/* LEFT — context + direct channels */}
         <div className="flex flex-col">
           <p className="ed-lead">
-            Open to full-time roles and interesting collaborations. The fastest
-            way to reach me is below — or send a note and I'll reply soon.
+            Open to full-time roles and interesting collaborations. Quick to
+            learn, clear in communication, honest about trade-offs — the
+            fastest way to reach me is below, or send a note and I'll reply
+            soon.
           </p>
 
           <div className="flex flex-col gap-3 mt-7">

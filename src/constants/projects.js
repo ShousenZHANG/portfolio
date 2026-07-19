@@ -18,9 +18,9 @@ export const projects = [
     description:
       "An {AI-powered job search platform} with {Claude Code} integration — orchestrates multi-provider LLMs to automate everything from discovering roles to auto-filling applications.",
     outcomes: [
-      "Orchestrated multi-provider LLMs with a portable AI Skill Pack and quality gates for consistent output",
-      "Built a Manifest V3 Chrome Extension with cross-site form detection and ATS-specific adapters",
+      "Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering",
       "Shipped on CI/CD with automated testing and containerized deploys (GitHub Actions + Vercel)",
+      "Integrating an open-source LLM with a wiki-style knowledge layer for persistent, grounded agent memory",
     ],
     tech: ["Next.js", "TypeScript", "Prisma + PostgreSQL", "Claude", "Chrome Extension"],
     links: [

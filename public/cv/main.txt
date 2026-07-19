@@ -1,5 +1,5 @@
 Eddy Zhang
-AI Engineer — Copilot Studio & Power Platform
+AI Engineer
 Sydney, NSW, Australia
 485 Graduate Work Visa (full work rights, valid until 4 Sep 2027)
 
@@ -11,21 +11,25 @@ GitHub: https://github.com/ShousenZHANG
 Portfolio: https://eddyzhang.me
 
 SUMMARY
-Copilot Studio & Power Platform engineer with 3+ years as a full-stack software engineer,
-building production AI agents across the Microsoft 365 ecosystem. I partner with
-non-technical stakeholders to turn business problems into live Copilot Studio agents and
-Power Automate automation, and know when to stay low-code versus extend with pro-code.
+AI Engineer with 3+ years as a software engineer, building AI solutions that make it
+into production and into daily use. I work end to end, partnering with stakeholders to
+understand the real problem, then designing, shipping, and improving what actually
+gets used. Quick to learn, clear in communication, and honest about trade-offs.
 
 PROFESSIONAL EXPERIENCE
 
+AI Engineer
+Stepping Stone House
+Sydney, Australia | Jul 2026 - Present
+- Shipped a production Copilot Studio agent grounded in SharePoint via MCP, fed by a Power Automate flow that captures meeting notes, converts them to Word, and archives them automatically.
+- Built an automated Python pipeline using open-source MarkItDown and Playwright that converts documents and web pages into Markdown, so the agent retrieves answers more accurately.
+
 Junior Integration & Automation Analyst
 Corrs Chambers Westgarth
-Sydney, Australia | Mar 2026 - Jun 2026
-- Shipped a production Copilot Studio agent in the Microsoft 365 ecosystem that lets staff find technical solutions across SharePoint, ServiceNow, Loop, and NetDocuments via MCP and Work IQ.
-- Designed a Dataverse-backed trusted knowledge base, building the data model and data pipeline that store document metadata so the agent retrieves only vetted content.
-- Engineered reusable agent Skills in Dataverse that raise answer accuracy while cutting Credit cost.
-- Built dynamic Power Automate agent flows that orchestrate multi-step business logic across enterprise systems.
-- Automated daily Boomi production-log triage with a scheduled Copilot Studio flow that calls the Boomi API, analyses errors against an error knowledge base, and emails fix recommendations.
+Sydney, Australia | Mar 2026 - Jul 2026
+- Shipped a production Copilot Studio agent in Teams that helps staff find trusted answers across enterprise systems.
+- Built a scheduled workflow that calls the Boomi REST API to triage and diagnose production log errors.
+- Engineered reusable agent Skills that raise answer accuracy while cutting Credit cost, alongside dynamic Power Automate agent flows orchestrating multi-step business logic.
 
 Software Engineer
 Newtouch Software Co., Ltd.
@@ -40,9 +44,8 @@ Joblit - AI Job Search Platform
 Next.js, TypeScript, Prisma, PostgreSQL, Claude | GitHub | Live App
 Sydney, Australia | Jul 2025 - Present
 - Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering.
-- Designed a portable AI Skill Pack with structured rules and quality gates for consistent LLM output across platforms.
-- Developed a Chrome Extension (Manifest V3) with cross-site form detection and platform-specific ATS adapters.
 - Established CI/CD pipelines, automated testing, and containerized deployment using GitHub Actions and Vercel.
+- Integrating an open-source LLM and wiki-style knowledge layer to give agents persistent, grounded memory.
 
 Project Contest Platform
 Java, MySQL, RabbitMQ, Docker, AWS | GitHub | Live App: https://project-contest-platform.vercel.app/ | Runner-up, Coding Fest 2025
@@ -64,6 +67,6 @@ SKILLS
 
 Microsoft & Power Platform: Copilot Studio (Agents, Agent Flows, Skills), Power Automate, Power Apps, Dataverse
 AI & Agents: AI Agents, RAG, LLM Orchestration, MCP, Work IQ, Prompt & Context Engineering, Skills Engineering
-Integration & Data: Boomi, ServiceNow, Dataverse Data Modeling, Data Pipelines, REST APIs, SQL
+Integration & Data: Boomi, ServiceNow, Dataverse Data Modeling, Data Pipelines, REST APIs, SQL, Playwright
 Software Engineering: Java, Spring Boot, Python, TypeScript, React, Next.js
 Cloud & DevOps: Azure, AWS, Docker, GitHub Actions, CI/CD

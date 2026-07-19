@@ -139,10 +139,11 @@ const Hero = () => {
                         </h1>
 
                         <p className="hero-lead ed-lead mt-7">
-                            3+ years as a full-stack engineer, now building production AI
-                            agents across the Microsoft 365 ecosystem — Copilot Studio,
-                            Power Platform, and Dataverse. Below is a live one — paste any
-                            job description and watch my AI score the fit in real time.
+                            3+ years as a software engineer, now shipping AI agents that
+                            make it into production — and into daily use. Copilot Studio
+                            across the Microsoft 365 ecosystem, built end to end. Below is
+                            a live one — paste any job description and watch my AI score
+                            the fit in real time.
                         </p>
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
