@@ -30,7 +30,9 @@ const Experience = () => {
                     scrollTrigger: {
                         trigger: block,
                         start: "top 86%",
-                        toggleActions: "play none none reverse",
+                        // Once: replaying/reversing the entrance on every
+                        // upward scroll read as flicker, not delight.
+                        once: true,
                     },
                 }
             );

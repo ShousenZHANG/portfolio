@@ -51,7 +51,9 @@ export function useScrollReveal(options = {}) {
         scrollTrigger: {
           trigger: ref.current,
           start,
-          toggleActions: "play none none reverse",
+          // Enter once and stay — reversing on upward scroll reads as
+          // flicker rather than polish.
+          once: true,
         },
       }
     );

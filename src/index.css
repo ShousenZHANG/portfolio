@@ -478,6 +478,9 @@ section {
         background: var(--ink-2);
         transform: translateY(-3px);
     }
+    @media (prefers-reduced-motion: reduce) {
+        .ed-tile:hover { transform: none; }
+    }
     /* Border ring — on hover a violet→cyan light runs the tile's edge.
        Together with the aurora wash below it forms the full light
        language: glow inside, current along the rim. Hover-only repaint,
@@ -1039,13 +1042,24 @@ section {
   background: linear-gradient(to top, var(--sig-2), transparent);
 }
 
-/* Cards idle dimmed; the arriving current powers them on */
+/* Cards idle dimmed; the arriving current powers them on.
+   NOTE: this transition list must include everything .ed-tile animates —
+   a bare `transition: opacity` here REPLACES the base list, which made
+   hover border/transform changes snap with no easing (the "torn" feel). */
 .exp-tile {
   opacity: 0.5;
-  transition: opacity 0.55s var(--ease-standard);
+  transition: opacity 0.55s var(--ease-standard),
+              border-color var(--motion-medium) var(--ease-standard),
+              transform var(--motion-medium) var(--ease-standard),
+              background var(--motion-medium) var(--ease-standard);
 }
 .exp-tile.lit {
   opacity: 1;
+}
+/* Torchlight: hovering an unpowered card lifts it toward readable —
+   a dim card that glows and moves while staying dim reads as broken. */
+.exp-tile:not(.lit):hover {
+  opacity: 0.9;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1055,10 +1069,10 @@ section {
   .exp-now-dot { animation: none; }
 }
 
-/* ── Experience timeline hover ── */
+/* ── Experience timeline hover — same lift language as every other tile
+   (the old translateX(4px) special case read as misalignment) ── */
 .exp-card .exp-tile:hover {
   border-color: var(--sig-line);
-  transform: translateX(4px);
 }
 /* Card hover echoes on the rail marker */
 .group\/exp:hover .exp-year {
@@ -1073,10 +1087,6 @@ section {
 .group\/exp:hover .exp-dot {
   border-color: var(--sig-2);
 }
-@media (prefers-reduced-motion: reduce) {
-  .exp-card .exp-tile:hover { transform: none; }
-}
-
 /* JD sample chips — visible hover + selected feedback */
 .jd-chip {
   background: var(--ink-2);
