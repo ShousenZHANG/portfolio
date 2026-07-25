@@ -89,29 +89,37 @@ const Experience = () => {
                     </div>
 
                     <div className="flex flex-col gap-8 md:gap-12">
-                        {expCards.map((card) => {
+                        {expCards.map((card, index) => {
                             const [role, company] = card.title.split(" — ");
                             const isCurrent = /present/i.test(card.date);
                             // The rail carries the year, not an index — a sequence
                             // number tells a reader nothing about when this happened.
                             const startYear = card.date.match(/\d{4}/)?.[0] ?? "";
+                            const prevYear = index > 0 ? expCards[index - 1].date.match(/\d{4}/)?.[0] : null;
+                            // Timeline convention: a year is marked once; further
+                            // entries in the same year ride the rail as dots.
+                            const repeatYear = startYear === prevYear;
                             return (
                             <div key={card.title} className="exp-card group/exp relative flex gap-5 md:gap-8">
-                                {/* Timeline node — the year makes the rail a real time axis */}
-                                <div className="flex-shrink-0 flex flex-col items-center">
-                                    <div className="exp-node w-14 h-14 md:w-[4.6rem] md:h-[4.6rem] rounded-[var(--r-sm)] flex flex-col items-center justify-center relative font-mono">
-                                        <span className="exp-year text-[15px] md:text-xl font-bold tracking-tight leading-none">
-                                            {startYear}
-                                        </span>
-                                        {isCurrent && (
-                                            <>
-                                                <span className="mt-1 text-[8px] md:text-[9px] uppercase tracking-[0.18em] leading-none" style={{ color: "var(--tx-2)" }}>
-                                                    now
+                                {/* Timeline marker — bare editorial year pressed onto
+                                    the rail (magazine folio style), or a dot for a
+                                    same-year follow-up entry */}
+                                <div className="flex-shrink-0 w-14 md:w-[4.6rem] flex flex-col items-center">
+                                    {repeatYear ? (
+                                        <div className="exp-node exp-dot" aria-hidden="true" />
+                                    ) : (
+                                        <div className="exp-node exp-yearmark relative font-mono">
+                                            <span className="exp-year font-bold tracking-tight leading-none">
+                                                {startYear}
+                                            </span>
+                                            {isCurrent && (
+                                                <span className="exp-now" aria-label="current role">
+                                                    <span className="exp-now-dot" aria-hidden="true" />
+                                                    NOW
                                                 </span>
-                                                <div className="absolute inset-0 rounded-[var(--r-sm)] animate-pulse" style={{ border: "1px solid var(--sig-line)" }} />
-                                            </>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Card content */}

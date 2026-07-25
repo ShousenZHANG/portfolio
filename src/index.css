@@ -907,38 +907,112 @@ section {
   .skill-float, .skill-orbit, .skill-edge.on { animation: none !important; }
 }
 
-/* ── Experience timeline: powered rail + lighting nodes ── */
+/* ── Experience timeline: dashed rail turns solid as the current passes,
+   bare editorial years press onto the line, same-year entries are dots ── */
 .exp-rail {
-  background: var(--hair);
+  /* Silent state: dashed hairline — "data hasn't arrived yet". Same
+     dashed language as the constellation's idle edges. */
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--hair-bright) 0 4px,
+    transparent 4px 9px
+  );
 }
 .exp-rail-fill {
+  /* Powered state: 2px solid gradient current over the 1px dashed track */
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: -0.5px;
+  width: 2px;
   transform: scaleY(0);
   transform-origin: top center;
   background: linear-gradient(to bottom, var(--sig), var(--sig-2));
-  box-shadow: 0 0 10px var(--sig-glow);
+  box-shadow: 0 0 12px var(--sig-glow);
   will-change: transform;
 }
-.exp-node {
-  background: var(--ink-1);
-  border: 1px solid var(--hair);
-  transition: border-color 0.45s var(--ease-standard),
-              box-shadow 0.45s var(--ease-standard);
+
+/* Bare year folio — magazine style. No backing box: a stack of tight
+   ink-coloured text-shadows forms a glyph-hugging halo that swallows the
+   rail where it passes behind the numerals — masking that follows the
+   letterforms instead of stamping a dark rectangle over the backdrop. */
+.exp-yearmark {
+  padding: 6px 2px;
 }
 .exp-year {
+  font-size: 24px;
   color: var(--tx-2);
-  transition: color 0.45s var(--ease-standard);
+  text-shadow:
+    0 0 5px var(--ink-0), 0 0 8px var(--ink-0),
+    0 0 12px var(--ink-0), 0 0 18px var(--ink-0);
+  transition: color 0.45s var(--ease-standard), text-shadow 0.45s var(--ease-standard);
 }
-.exp-node.lit {
-  border-color: var(--sig-line);
-  box-shadow: 0 0 0 3px var(--sig-glow), 0 6px 18px -8px var(--sig-glow);
+@media (min-width: 768px) {
+  .exp-year { font-size: 28px; }
 }
-.exp-node.lit .exp-year {
+.exp-yearmark.lit .exp-year {
+  color: var(--sig);
+  text-shadow:
+    0 0 5px var(--ink-0), 0 0 8px var(--ink-0),
+    0 0 12px var(--ink-0), 0 0 22px var(--sig-glow);
+}
+/* NOW tag — superscript beside the current year */
+.exp-now {
+  position: absolute;
+  top: -4px;
+  right: -14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
   color: var(--sig);
 }
+.exp-now-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--sig);
+  animation: ed-ping 2s var(--ease-soft) infinite;
+}
 
-/* Glowing head particle riding the tip of the fill line */
+/* Same-year follow-up entry — a dot riding the rail */
+.exp-dot {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: var(--ink-2);
+  border: 1px solid var(--hair-bright);
+  transition: background 0.45s var(--ease-standard),
+              border-color 0.45s var(--ease-standard),
+              box-shadow 0.45s var(--ease-standard);
+}
+.exp-dot.lit {
+  background: var(--sig-2);
+  border-color: var(--sig-2);
+  box-shadow: 0 0 10px var(--sig-2-glow), 0 0 22px var(--sig-glow);
+}
+/* Ignition burst on the dot when the current arrives */
+.exp-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  border: 1px solid var(--sig-2);
+  opacity: 0;
+  pointer-events: none;
+}
+.exp-dot.lit::after {
+  animation: exp-node-burst 0.6s var(--ease-standard);
+}
+@keyframes exp-node-burst {
+  from { opacity: 0.8; transform: scale(0.9); }
+  to   { opacity: 0; transform: scale(1.9); }
+}
+
+/* Glowing current head with a fading tail, riding the fill line's tip */
 .exp-rail-head {
   position: absolute;
   top: 0;
@@ -951,6 +1025,16 @@ section {
   box-shadow: 0 0 6px var(--sig-2), 0 0 20px var(--sig-glow);
   will-change: transform;
 }
+.exp-rail-head::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 2px;
+  height: 20px;
+  margin-left: -1px;
+  background: linear-gradient(to top, var(--sig-2), transparent);
+}
 
 /* Cards idle dimmed; the arriving current powers them on */
 .exp-tile {
@@ -961,27 +1045,11 @@ section {
   opacity: 1;
 }
 
-/* Node ignition burst — one expanding ring when the light arrives */
-.exp-node::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  border: 1px solid var(--sig);
-  opacity: 0;
-  pointer-events: none;
-}
-.exp-node.lit::after {
-  animation: exp-node-burst 0.6s var(--ease-standard);
-}
-@keyframes exp-node-burst {
-  from { opacity: 0.8; transform: scale(0.92); }
-  to   { opacity: 0; transform: scale(1.55); }
-}
 @media (prefers-reduced-motion: reduce) {
   .exp-rail-head { display: none; }
   .exp-tile { opacity: 1; transition: none; }
-  .exp-node.lit::after { animation: none; }
+  .exp-dot.lit::after { animation: none; }
+  .exp-now-dot { animation: none; }
 }
 
 /* ── Experience timeline hover ── */
@@ -989,11 +1057,18 @@ section {
   border-color: var(--sig-line);
   transform: translateX(4px);
 }
-/* Light up the timeline node when its card is hovered */
-.group\/exp:hover .exp-node {
-  border-color: var(--sig);
-  background: var(--sig-glow);
-  box-shadow: 0 0 0 4px var(--sig-glow), 0 6px 20px -6px var(--sig-glow);
+/* Card hover echoes on the rail marker */
+.group\/exp:hover .exp-year {
+  color: var(--tx-0);
+}
+.group\/exp:hover .exp-yearmark.lit .exp-year {
+  color: var(--sig);
+  text-shadow:
+    0 0 5px var(--ink-0), 0 0 8px var(--ink-0),
+    0 0 12px var(--ink-0), 0 0 28px var(--sig-glow);
+}
+.group\/exp:hover .exp-dot {
+  border-color: var(--sig-2);
 }
 @media (prefers-reduced-motion: reduce) {
   .exp-card .exp-tile:hover { transform: none; }
