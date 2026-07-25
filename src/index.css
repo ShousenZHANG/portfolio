@@ -29,34 +29,37 @@
        One owned accent pair. Premium minimalism over template noise.
        ══════════════════════════════════════════════════════════ */
 
-    /* Signature accent — electric indigo-violet, owned. Premium AI/intelligence
-       cue (Linear/Anthropic lineage), distinct from the generic dev blue. */
-    --sig: oklch(0.70 0.18 285);          /* electric indigo-violet */
-    --sig-dim: oklch(0.60 0.16 288);
-    --sig-ink: oklch(0.16 0.04 285);      /* text on signature fills */
-    --sig-glow: oklch(0.70 0.18 285 / 0.18);
-    --sig-line: oklch(0.70 0.18 285 / 0.32);
-    /* Secondary accent — cyan, for duotone depth (data/AI) */
-    --sig-2: oklch(0.80 0.13 210);        /* electric cyan */
-    --sig-2-glow: oklch(0.80 0.13 210 / 0.14);
+    /* Signature accent — electric indigo, owned. Deeper + cooler than the
+       old violet (hue 285→279, L 0.70→0.66): "charged", not "lilac".
+       Premium AI cue (Linear/Anthropic lineage). */
+    --sig: oklch(0.66 0.19 279);          /* electric indigo */
+    --sig-dim: oklch(0.56 0.17 280);
+    --sig-ink: oklch(0.15 0.04 279);      /* text on signature fills */
+    --sig-glow: oklch(0.66 0.19 279 / 0.18);
+    --sig-line: oklch(0.66 0.19 279 / 0.32);
+    /* Secondary accent — cyan, reined in from "pool blue" (L 0.80→0.76) */
+    --sig-2: oklch(0.76 0.12 210);        /* electric cyan */
+    --sig-2-glow: oklch(0.76 0.12 210 / 0.14);
 
-    /* Semantic status colours — single source (were scattered inline oklch) */
-    --ok: oklch(0.78 0.16 150);           /* success / OK */
-    --warn: oklch(0.82 0.14 80);          /* caution / possible */
-    --danger: oklch(0.70 0.17 18);        /* fail / Issue */
-    --danger-tx: oklch(0.80 0.13 20);     /* danger text on ink (lighter) */
+    /* Semantic status colours — desaturated to sit in the same quiet world */
+    --ok: oklch(0.76 0.14 150);           /* success / OK */
+    --warn: oklch(0.80 0.12 80);          /* caution / possible */
+    --danger: oklch(0.68 0.15 18);        /* fail / Issue */
+    --danger-tx: oklch(0.78 0.12 20);     /* danger text on ink (lighter) */
 
-    /* Cool violet-ink surface ladder (deep, premium, AI) */
-    --ink-0: oklch(0.16 0.018 280);       /* page floor — violet near-black */
-    --ink-1: oklch(0.195 0.020 282);      /* raised surface */
-    --ink-2: oklch(0.235 0.022 284);      /* surface hover */
-    --hair: oklch(0.85 0.04 285 / 0.10);  /* cool hairline border */
-    --hair-bright: oklch(0.85 0.05 285 / 0.18);
+    /* Ink ladder — sunk to near-black (0.16→0.135): the single biggest
+       "premium" lever. Depth, not murk. */
+    --ink-0: oklch(0.135 0.014 280);      /* page floor — near-black violet */
+    --ink-1: oklch(0.17 0.016 281);       /* raised surface */
+    --ink-2: oklch(0.205 0.018 282);      /* surface hover */
+    --hair: oklch(0.85 0.03 280 / 0.10);  /* cool hairline border */
+    --hair-bright: oklch(0.85 0.04 280 / 0.17);
 
-    /* Cool text ladder (WCAG-AA on --ink-0) */
-    --tx-0: oklch(0.97 0.006 280);        /* primary */
-    --tx-1: oklch(0.81 0.010 282);        /* secondary ~7:1 */
-    --tx-2: oklch(0.67 0.012 284);        /* tertiary ~4.6:1 */
+    /* Text ladder — evenly stepped (0.96/0.78/0.62) and de-dusted (less
+       violet cast). Every step clears WCAG AA on the darker floor. */
+    --tx-0: oklch(0.96 0.005 280);        /* primary ~17:1 */
+    --tx-1: oklch(0.78 0.008 281);        /* secondary ~9.5:1 */
+    --tx-2: oklch(0.62 0.010 282);        /* tertiary ~5.5:1 */
 
     /* Radius scale */
     --r-xs: 8px; --r-sm: 12px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
@@ -180,11 +183,11 @@ section {
         }
         /* Glass at rest on mobile so the bar always reads as one unit */
         .navbar.not-scrolled .navbar-inner {
-            background: rgba(20, 17, 30, 0.7);
+            background: rgba(15, 13, 21, 0.72);
             border: 1px solid var(--hair);
         }
         .navbar.scrolled .navbar-inner {
-            background: rgba(20, 17, 30, 0.9);
+            background: rgba(15, 13, 21, 0.92);
             border: 1px solid var(--hair-bright);
             box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
         }
@@ -393,16 +396,16 @@ section {
             /* film grain (opacity baked into the SVG rect) */
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
             /* faint hairline grid — visible page-wide */
-            linear-gradient(oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px),
-            linear-gradient(90deg, oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px),
+            linear-gradient(oklch(0.85 0.03 280 / 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.85 0.03 280 / 0.035) 1px, transparent 1px),
             /* nebula blobs (were animated .nebula spans — baked static) */
-            radial-gradient(ellipse 42% 40% at 6% 4%, oklch(0.42 0.16 290 / 0.22) 0%, transparent 70%),
-            radial-gradient(ellipse 34% 32% at 92% 16%, oklch(0.48 0.12 215 / 0.15) 0%, transparent 70%),
+            radial-gradient(ellipse 42% 40% at 6% 4%, oklch(0.40 0.15 283 / 0.22) 0%, transparent 70%),
+            radial-gradient(ellipse 34% 32% at 92% 16%, oklch(0.46 0.11 212 / 0.15) 0%, transparent 70%),
             /* signature aurora glows */
-            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.70 0.18 285 / 0.16) 0%, transparent 58%),
-            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.80 0.13 210 / 0.12) 0%, transparent 55%),
+            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.66 0.19 279 / 0.16) 0%, transparent 58%),
+            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.76 0.12 210 / 0.12) 0%, transparent 55%),
             /* ink cover that fades the accent grid below it (replaces mask) */
-            radial-gradient(ellipse 75% 62% at 50% 0%, transparent 0%, oklch(0.16 0.018 280 / 0.6) 55%, var(--ink-0) 88%),
+            radial-gradient(ellipse 75% 62% at 50% 0%, transparent 0%, oklch(0.135 0.014 280 / 0.6) 55%, var(--ink-0) 88%),
             /* signature accent grid — bright near the top, covered below */
             linear-gradient(var(--sig-glow) 1px, transparent 1px),
             linear-gradient(90deg, var(--sig-glow) 1px, transparent 1px);

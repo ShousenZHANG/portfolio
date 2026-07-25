@@ -24,8 +24,10 @@ const InteractiveBackground = () => {
         const ctx = canvas.getContext("2d", { alpha: true });
         if (!ctx) return undefined;
 
-        const SIG = "112, 90, 230";   // indigo-violet (ground / low energy)
-        const CYAN = "90, 190, 230";  // cyan (excited / high energy, + observation)
+        // Match the token system: --sig oklch(0.66 0.19 279), --sig-2
+        // oklch(0.76 0.12 210) — canvas needs raw RGB.
+        const SIG = "95, 79, 224";    // electric indigo (ground / low energy)
+        const CYAN = "79, 184, 217";  // cyan (excited / high energy, + observation)
 
         let width = 0;
         let height = 0;

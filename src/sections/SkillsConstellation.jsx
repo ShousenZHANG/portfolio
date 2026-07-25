@@ -6,12 +6,14 @@ import { useInView } from "../hooks/useInView.js";
 // the projects/experience that prove the skill. Edges link related work.
 // Foregrounds the Microsoft 365 agent stack (Copilot Studio / Power
 // Platform), with AI, integration, engineering, and cloud as support.
+// Category colours share one saturation band (C≈0.12-0.14) so the five
+// clusters read as siblings — distinct hues, no shouting.
 const CATS = {
     ms: { label: "Microsoft & Power Platform", color: "var(--sig)" },
-    ai: { label: "AI & Agents", color: "oklch(0.74 0.16 320)" },
+    ai: { label: "AI & Agents", color: "oklch(0.72 0.14 320)" },
     data: { label: "Integration & Data", color: "var(--sig-2)" },
-    eng: { label: "Software Engineering", color: "oklch(0.80 0.15 155)" },
-    cloud: { label: "Cloud & DevOps", color: "oklch(0.78 0.12 240)" },
+    eng: { label: "Software Engineering", color: "oklch(0.76 0.13 155)" },
+    cloud: { label: "Cloud & DevOps", color: "oklch(0.74 0.12 240)" },
 };
 
 const NODES = [

@@ -251,7 +251,7 @@ const Hero = () => {
                                         onClick={startVideo}
                                         aria-label="Play 30-second intro"
                                         className="absolute inset-0 flex flex-col items-center justify-center gap-4 group/play"
-                                        style={{ background: "linear-gradient(180deg, oklch(0.16 0.018 280 / 0.15) 0%, oklch(0.16 0.018 280 / 0.65) 100%)" }}
+                                        style={{ background: "linear-gradient(180deg, oklch(0.135 0.014 280 / 0.15) 0%, oklch(0.135 0.014 280 / 0.65) 100%)" }}
                                     >
                                         <span
                                             className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover/play:scale-110"
