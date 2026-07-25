@@ -38,7 +38,7 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform vec2 uMouse;
 uniform float uMouseAmp;
-uniform vec4 uRipples[8]; // xy = uv origin, z = birth time, w = strength
+uniform vec4 uRipples[4]; // xy = uv origin, z = birth time, w = strength
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
 
@@ -53,10 +53,12 @@ float noise(vec2 p) {
   );
 }
 
+// 3 octaves — integrated-GPU budget. The fog is low-frequency; the
+// fourth octave was invisible detail at 2x the ALU cost.
 float fbm(vec2 p) {
   float v = 0.0;
   float a = 0.5;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     v += a * noise(p);
     p = p * 2.03 + vec2(19.7, 7.3);
     a *= 0.55;
@@ -73,7 +75,7 @@ void main() {
   // *displaces the fog's domain* — the fog genuinely sloshes.
   float glow = 0.0;
   vec2 disp = vec2(0.0);
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 4; i++) {
     vec4 r = uRipples[i];
     float age = uTime - r.z;
     float on = step(0.001, r.w) * step(0.0, age) * step(age, 2.5);
@@ -86,13 +88,10 @@ void main() {
     disp += (d / dist) * ring * decay * 0.05;
   }
 
-  // Domain-warped fbm (two warp stages) — the flowing energy fog.
+  // Single-stage domain-warped fbm — the flowing energy fog. The second
+  // warp stage doubled the noise budget for marginal shape gain.
   vec2 q = vec2(fbm(p + uTime * 0.055), fbm(p + vec2(5.2, 1.3) - uTime * 0.045));
-  vec2 w = vec2(
-    fbm(p + 3.1 * q + disp * 7.0 + vec2(1.7, 9.2)),
-    fbm(p + 3.1 * q + vec2(8.3, 2.8))
-  );
-  float f = fbm(p + 2.9 * w + disp * 9.0);
+  float f = fbm(p + 2.7 * q + disp * 9.0);
 
   // Brand pair on the violet-ink floor — violet leads, cyan only ignites
   // at the energy peaks (it's the accent, not the wash).
@@ -117,7 +116,7 @@ void main() {
 }
 `;
 
-const MAX_RIPPLES = 8;
+const MAX_RIPPLES = 4;
 
 const QuantumFieldGL = ({ onFallback }) => {
     const canvasRef = useRef(null);
@@ -172,14 +171,16 @@ const QuantumFieldGL = ({ onFallback }) => {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); // premultiplied
 
-        // The fog is soft — render at 0.7× and let CSS upscale.
-        const SCALE = 0.7;
+        // The fog is soft — render at a fraction of the display resolution
+        // and let CSS upscale. `scale` can step down once if the FPS
+        // audition fails before we give up on the GPU entirely.
+        let scale = 0.5;
         let width = 0;
         let height = 0;
         const resize = () => {
             width = window.innerWidth;
             height = window.innerHeight;
-            const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * SCALE;
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * scale;
             canvas.width = Math.max(1, Math.floor(width * dpr));
             canvas.height = Math.max(1, Math.floor(height * dpr));
             canvas.style.width = `${width}px`;
@@ -230,15 +231,28 @@ const QuantumFieldGL = ({ onFallback }) => {
         let raf = 0;
         let running = true;
 
-        // FPS sentinel — judge the real device once, on visible frames only.
-        const samples = [];
+        // FPS sentinel — two-step ladder. A failed audition first drops the
+        // render scale (cheaper fill, same fog) and re-auditions; only a
+        // second failure falls back to the Canvas 2D field. Smoothness is
+        // the hard line; the effect degrades before it disappears.
+        let samples = [];
         let lastFrame = 0;
         let judged = false;
+        let demoted = false;
         const judge = () => {
-            judged = true;
             const sorted = [...samples].sort((a, b) => a - b);
             const p95 = sorted[Math.floor(sorted.length * 0.95)];
-            if (p95 > 24) { cleanup(); bail(); }
+            if (p95 <= 24) { judged = true; return; }
+            if (!demoted) {
+                demoted = true;
+                scale = 0.4;
+                resize();
+                samples = [];
+                lastFrame = 0;
+                return; // re-audition at the lower scale
+            }
+            cleanup();
+            bail();
         };
 
         const step = (ts) => {

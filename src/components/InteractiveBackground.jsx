@@ -47,6 +47,16 @@ const InteractiveBackground = () => {
         let lastScrollY = 0;
         let scrollLag = 0;
 
+        // 2D ripples — expanding cyan/violet rings seeded by the pointer.
+        let ripples2d = [];
+        let lastTrailT = 0;
+        let lastTrailX = -1;
+        let lastTrailY = -1;
+        const addRipple2d = (x, y, s) => {
+            ripples2d.push({ x, y, t0: t, s });
+            if (ripples2d.length > 6) ripples2d.shift();
+        };
+
         const LINK_DIST = 150;
         const MOUSE_RADIUS = 220;
 
@@ -226,6 +236,30 @@ const InteractiveBackground = () => {
                 }
             }
 
+            // Ripples — dual expanding rings (cyan front, violet trail)
+            if (ripples2d.length > 0) {
+                ripples2d = ripples2d.filter((r) => t - r.t0 < 1.3);
+                for (const r of ripples2d) {
+                    const age = t - r.t0;
+                    const pr = age / 1.3;
+                    const fade = (1 - pr) * (1 - pr) * r.s;
+                    const radius = 12 + age * 240;
+                    ctx.strokeStyle = `rgba(${CYAN}, ${fade * 0.55})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    const inner = radius - 26;
+                    if (inner > 0) {
+                        ctx.strokeStyle = `rgba(${SIG}, ${fade * 0.4})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(r.x, r.y, inner, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+            }
+
             // Particles + observation links
             for (let i = 0; i < nodes.length; i++) {
                 const nd = nodes[i];
@@ -267,8 +301,24 @@ const InteractiveBackground = () => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
             mouse.active = true;
+            // Ripple trail — interaction parity with the WebGL field, so
+            // devices on the 2D fallback still see the field respond.
+            const moved = Math.hypot(e.clientX - lastTrailX, e.clientY - lastTrailY);
+            if (t - lastTrailT > 0.12 && moved > 36) {
+                lastTrailT = t;
+                lastTrailX = e.clientX;
+                lastTrailY = e.clientY;
+                addRipple2d(e.clientX, e.clientY, 0.45);
+            }
         };
         const onLeave = () => { mouse.active = false; };
+        // Click inside the hero = collapse pulse + headline jolt, mirroring
+        // the GL field's behaviour.
+        const onClick = (e) => {
+            if (window.scrollY > window.innerHeight * 0.6) return;
+            addRipple2d(e.clientX, e.clientY, 1.0);
+            window.dispatchEvent(new CustomEvent("qf-collapse"));
+        };
 
         const shouldRun = () => !document.hidden && window.scrollY < window.innerHeight * 0.95;
         const sync = () => {
@@ -287,6 +337,7 @@ const InteractiveBackground = () => {
         raf = requestAnimationFrame(step);
         window.addEventListener("resize", resize, { passive: true });
         window.addEventListener("mousemove", onMove, { passive: true });
+        window.addEventListener("click", onClick, { passive: true });
         window.addEventListener("scroll", sync, { passive: true });
         document.addEventListener("mouseleave", onLeave);
         document.addEventListener("visibilitychange", sync);
@@ -295,6 +346,7 @@ const InteractiveBackground = () => {
             cancelAnimationFrame(raf);
             window.removeEventListener("resize", resize);
             window.removeEventListener("mousemove", onMove);
+            window.removeEventListener("click", onClick);
             window.removeEventListener("scroll", sync);
             document.removeEventListener("mouseleave", onLeave);
             document.removeEventListener("visibilitychange", sync);
