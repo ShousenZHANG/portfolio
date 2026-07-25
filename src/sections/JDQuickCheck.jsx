@@ -141,6 +141,7 @@ const JDQuickCheck = () => {
         </p>
 
         <div className="ed-tile p-5 md:p-7" style={{ background: "var(--ink-1)" }}>
+          <span className="jd-beacon" aria-hidden="true" />
           {/* Sample chips — selected state derives from the textarea content */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>Try:</span>

@@ -938,6 +938,52 @@ section {
   color: var(--sig);
 }
 
+/* Glowing head particle riding the tip of the fill line */
+.exp-rail-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 999px;
+  background: var(--sig-2);
+  box-shadow: 0 0 6px var(--sig-2), 0 0 20px var(--sig-glow);
+  will-change: transform;
+}
+
+/* Cards idle dimmed; the arriving current powers them on */
+.exp-tile {
+  opacity: 0.5;
+  transition: opacity 0.55s var(--ease-standard);
+}
+.exp-tile.lit {
+  opacity: 1;
+}
+
+/* Node ignition burst — one expanding ring when the light arrives */
+.exp-node::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1px solid var(--sig);
+  opacity: 0;
+  pointer-events: none;
+}
+.exp-node.lit::after {
+  animation: exp-node-burst 0.6s var(--ease-standard);
+}
+@keyframes exp-node-burst {
+  from { opacity: 0.8; transform: scale(0.92); }
+  to   { opacity: 0; transform: scale(1.55); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-rail-head { display: none; }
+  .exp-tile { opacity: 1; transition: none; }
+  .exp-node.lit::after { animation: none; }
+}
+
 /* ── Experience timeline hover ── */
 .exp-card .exp-tile:hover {
   border-color: var(--sig-line);
@@ -969,6 +1015,27 @@ section {
   background: var(--sig-glow);
   border-color: var(--sig-line);
   color: var(--sig);
+}
+
+/* JD beacon — the flagship card breathes a faint signature glow at idle,
+   steering the eye to the live demo. Pre-painted overlay animating only
+   opacity: fully compositor-composited, zero per-frame paint. */
+.jd-beacon {
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--sig-line);
+  box-shadow: 0 0 30px -8px var(--sig-glow);
+  opacity: 0;
+  pointer-events: none;
+  animation: jd-beacon-pulse 5.5s var(--ease-soft) infinite;
+}
+@keyframes jd-beacon-pulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jd-beacon { animation: none; }
 }
 
 /* JD result reveal */

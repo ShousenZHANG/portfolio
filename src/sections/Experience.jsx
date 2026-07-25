@@ -15,7 +15,7 @@ const Experience = () => {
         if (prefersReducedMotion()) {
             gsap.set(blocks, { opacity: 1, x: 0 });
             gsap.set(".exp-rail-fill", { scaleY: 1 });
-            document.querySelectorAll(".exp-node").forEach((n) => n.classList.add("lit"));
+            document.querySelectorAll(".exp-node, .exp-tile").forEach((n) => n.classList.add("lit"));
             return;
         }
         blocks.forEach((block) => {
@@ -36,24 +36,36 @@ const Experience = () => {
             );
         });
 
-        // The rail "powers on" as you read down the timeline — the fill
-        // line grows with scroll and each year node lights up as the line
-        // reaches it. Transform-only scrub, compositor-cheap.
-        gsap.to(".exp-rail-fill", {
-            scaleY: 1,
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".exp-rail",
-                start: "top 72%",
-                end: "bottom 45%",
-                scrub: 0.4,
-            },
-        });
+        // Stage-lighting timeline: the fill line grows with scroll, a
+        // glowing head particle rides its tip, and as the current reaches
+        // each entry the year node bursts + the whole card powers on
+        // (cards idle dimmed until the light arrives). Transform/opacity
+        // only — compositor-cheap.
+        const railScroll = {
+            trigger: ".exp-rail",
+            start: "top 72%",
+            end: "bottom 45%",
+            scrub: 0.4,
+        };
+        gsap.to(".exp-rail-fill", { scaleY: 1, ease: "none", scrollTrigger: railScroll });
+        gsap.fromTo(
+            ".exp-rail-head",
+            { y: 0 },
+            {
+                y: () => {
+                    const rail = document.querySelector(".exp-rail");
+                    return rail ? rail.offsetHeight - 9 : 0;
+                },
+                ease: "none",
+                scrollTrigger: { ...railScroll, invalidateOnRefresh: true },
+            }
+        );
         gsap.utils.toArray(".exp-node").forEach((node) => {
+            const tile = node.closest(".exp-card")?.querySelector(".exp-tile");
             ScrollTrigger.create({
                 trigger: node,
                 start: "top 70%",
-                toggleClass: { targets: node, className: "lit" },
+                toggleClass: { targets: [node, tile].filter(Boolean), className: "lit" },
             });
         });
     }, []);
@@ -73,6 +85,7 @@ const Experience = () => {
                         fill line grows with scroll; nodes light as it passes. */}
                     <div className="exp-rail absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px" aria-hidden="true">
                         <div className="exp-rail-fill" />
+                        <div className="exp-rail-head" />
                     </div>
 
                     <div className="flex flex-col gap-8 md:gap-12">
