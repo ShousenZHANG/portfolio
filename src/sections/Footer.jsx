@@ -22,7 +22,7 @@ const Footer = () => {
             <a
               href="mailto:eddy.zhang24@gmail.com"
               aria-label="Email eddy.zhang24@gmail.com"
-              className="flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
+              className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
               style={{ color: "var(--tx-1)" }}
             >
               <Mail className="w-4 h-4" />
@@ -32,7 +32,7 @@ const Footer = () => {
             <a
               href="tel:+610468761056"
               aria-label="Phone +61 0468 761 056"
-              className="flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
+              className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
               style={{ color: "var(--tx-1)" }}
             >
               <Phone className="w-4 h-4" />

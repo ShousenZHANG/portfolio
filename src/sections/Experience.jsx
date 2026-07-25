@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { expCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
@@ -13,6 +14,8 @@ const Experience = () => {
         const blocks = gsap.utils.toArray(".exp-card");
         if (prefersReducedMotion()) {
             gsap.set(blocks, { opacity: 1, x: 0 });
+            gsap.set(".exp-rail-fill", { scaleY: 1 });
+            document.querySelectorAll(".exp-node").forEach((n) => n.classList.add("lit"));
             return;
         }
         blocks.forEach((block) => {
@@ -32,6 +35,27 @@ const Experience = () => {
                 }
             );
         });
+
+        // The rail "powers on" as you read down the timeline — the fill
+        // line grows with scroll and each year node lights up as the line
+        // reaches it. Transform-only scrub, compositor-cheap.
+        gsap.to(".exp-rail-fill", {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".exp-rail",
+                start: "top 72%",
+                end: "bottom 45%",
+                scrub: 0.4,
+            },
+        });
+        gsap.utils.toArray(".exp-node").forEach((node) => {
+            ScrollTrigger.create({
+                trigger: node,
+                start: "top 70%",
+                toggleClass: { targets: node, className: "lit" },
+            });
+        });
     }, []);
 
     return (
@@ -45,12 +69,11 @@ const Experience = () => {
                 />
 
                 <div className="relative mt-14">
-                    {/* Vertical connecting line — centred on the node (w-14 / 4.6rem) */}
-                    <div
-                        className="absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px"
-                        style={{ background: "linear-gradient(to bottom, var(--sig-line), var(--hair), transparent)" }}
-                        aria-hidden="true"
-                    />
+                    {/* Vertical rail — centred on the node (w-14 / 4.6rem). The
+                        fill line grows with scroll; nodes light as it passes. */}
+                    <div className="exp-rail absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px" aria-hidden="true">
+                        <div className="exp-rail-fill" />
+                    </div>
 
                     <div className="flex flex-col gap-8 md:gap-12">
                         {expCards.map((card) => {
@@ -63,11 +86,8 @@ const Experience = () => {
                             <div key={card.title} className="exp-card group/exp relative flex gap-5 md:gap-8">
                                 {/* Timeline node — the year makes the rail a real time axis */}
                                 <div className="flex-shrink-0 flex flex-col items-center">
-                                    <div
-                                        className="exp-node w-14 h-14 md:w-[4.6rem] md:h-[4.6rem] rounded-[var(--r-sm)] flex flex-col items-center justify-center relative font-mono transition-all duration-300"
-                                        style={{ background: "var(--ink-1)", border: "1px solid var(--sig-line)" }}
-                                    >
-                                        <span className="text-[15px] md:text-xl font-bold tracking-tight leading-none transition-colors duration-300" style={{ color: "var(--sig)" }}>
+                                    <div className="exp-node w-14 h-14 md:w-[4.6rem] md:h-[4.6rem] rounded-[var(--r-sm)] flex flex-col items-center justify-center relative font-mono">
+                                        <span className="exp-year text-[15px] md:text-xl font-bold tracking-tight leading-none">
                                             {startYear}
                                         </span>
                                         {isCurrent && (

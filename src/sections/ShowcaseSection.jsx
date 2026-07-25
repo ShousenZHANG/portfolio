@@ -152,6 +152,7 @@ const AppShowcase = () => {
                       <h3 className="mt-3 text-xl md:text-2xl font-bold" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
                     </div>
                   )}
+                  <span className="sheen" aria-hidden="true" />
                 </div>
               </div>
 
@@ -203,7 +204,7 @@ const AppShowcase = () => {
                       href={project.highlight.cta.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/cta inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors hover:opacity-80"
+                      className="group/cta u-grow inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors"
                       style={{ color: "var(--sig)" }}
                     >
                       {project.highlight.cta.label}

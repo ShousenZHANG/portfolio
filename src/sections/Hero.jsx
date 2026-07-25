@@ -20,23 +20,39 @@ const DecodeWord = ({ text }) => {
         if (prefersReducedMotion()) return undefined;
         let frame = 0;
         let raf = 0;
-        const start = performance.now() + 550; // let the mask-rise land first
-        const tick = (now) => {
-            if (now < start) { raf = requestAnimationFrame(tick); return; }
-            frame += 1;
-            const settled = Math.floor((now - start) / 70); // one char per 70ms
-            if (settled >= text.length) { setOut(text); return; }
-            let s = "";
-            for (let i = 0; i < text.length; i++) {
-                s += i < settled
-                    ? text[i]
-                    : GLYPHS[(i * 7 + frame * 3) % GLYPHS.length];
-            }
-            setOut(s);
+        let cancelled = false;
+        const run = (delayMs) => {
+            const start = performance.now() + delayMs;
+            const tick = (now) => {
+                if (cancelled) return;
+                if (now < start) { raf = requestAnimationFrame(tick); return; }
+                frame += 1;
+                const settled = Math.floor((now - start) / 70); // one char per 70ms
+                if (settled >= text.length) { setOut(text); return; }
+                let s = "";
+                for (let i = 0; i < text.length; i++) {
+                    s += i < settled
+                        ? text[i]
+                        : GLYPHS[(i * 7 + frame * 3) % GLYPHS.length];
+                }
+                setOut(s);
+                raf = requestAnimationFrame(tick);
+            };
             raf = requestAnimationFrame(tick);
         };
-        raf = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(raf);
+        // Wait for the curtain: the decode is the opening line of the show,
+        // so it must not play behind the reveal overlay.
+        const onGo = () => run(320);
+        if (document.documentElement.dataset.revealed === "1") {
+            run(550); // no curtain this visit — let the mask-rise land first
+        } else {
+            window.addEventListener("ez-reveal-done", onGo, { once: true });
+        }
+        return () => {
+            cancelled = true;
+            cancelAnimationFrame(raf);
+            window.removeEventListener("ez-reveal-done", onGo);
+        };
     }, [text]);
     return <>{out}</>;
 };
@@ -91,6 +107,11 @@ const Hero = () => {
             return;
         }
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        // Hold the entrance until the reveal curtain is up (first visit).
+        if (document.documentElement.dataset.revealed !== "1") {
+            tl.pause();
+            window.addEventListener("ez-reveal-done", () => tl.play(), { once: true });
+        }
         tl.fromTo(
             ".hero-word",
             { yPercent: 118 },
@@ -202,7 +223,7 @@ const Hero = () => {
                     {/* RIGHT — editorial framed video */}
                     <div className="hero-aside">
                         <figure className="ed-tile p-2.5 rounded-[var(--r-lg)]">
-                            <div className="relative w-full aspect-[16/10] rounded-[var(--r-md)] overflow-hidden bg-black/50">
+                            <div className="sheen-host relative w-full aspect-[16/10] rounded-[var(--r-md)] overflow-hidden bg-black/50">
                                 {!videoLoaded && (
                                     <div className="absolute inset-0 animate-pulse" style={{ background: "var(--ink-2)" }} />
                                 )}
@@ -219,6 +240,8 @@ const Hero = () => {
                                     onLoadedData={() => setVideoLoaded(true)}
                                     onPlay={() => setVideoStarted(true)}
                                 />
+
+                                <span className="sheen" aria-hidden="true" />
 
                                 {/* At-rest cover — designed play affordance instead of raw
                                     native controls, so the right column reads as crafted. */}

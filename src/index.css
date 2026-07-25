@@ -6,6 +6,14 @@
 @import "@fontsource-variable/mona-sans/wght.css";
 @import "@fontsource-variable/jetbrains-mono/wght.css";
 
+/* Registered so the border-ring's conic angle can animate (unsupported
+   browsers simply show a static ring on hover — graceful). */
+@property --tile-ang {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
 :root {
     --motion-fast: 180ms;
     --motion-medium: 360ms;
@@ -13,6 +21,7 @@
     --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     /* ══════════════════════════════════════════════════════════
        EDITORIAL DESIGN SYSTEM — single source of truth.
@@ -362,7 +371,18 @@ section {
         max-width: 46ch;
     }
 
-    /* Violet-ink mesh backdrop + signature aurora (premium depth, not flat) */
+    /* ══════════════════════════════════════════════════════════
+       BACKDROP — one flattened fixed layer.
+       Previously this was 4+ stacked full-screen surfaces (base, masked
+       accent grid, grain, nebula blobs). Every fixed layer is re-blended
+       on every scrolled frame, and on integrated GPUs the memory
+       bandwidth for 4-6 full-screen textures was the site-wide jank.
+       All static imagery now bakes into ONE background-image stack —
+       rasterised once, composited as a single texture. Pixel-identical,
+       ~70% less per-frame bandwidth. The grid fade uses an ink-coloured
+       cover gradient instead of mask-image (masks force an extra
+       compositing pass).
+       ══════════════════════════════════════════════════════════ */
     .ed-grid-bg {
         position: fixed;
         inset: 0;
@@ -370,90 +390,29 @@ section {
         pointer-events: none;
         background-color: var(--ink-0);
         background-image:
-            /* indigo aurora glow, top-left */
-            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.70 0.18 285 / 0.16) 0%, transparent 58%),
-            /* cyan counter-glow, right */
-            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.80 0.13 210 / 0.12) 0%, transparent 55%),
-            /* faint hairline grid */
+            /* film grain (opacity baked into the SVG rect) */
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+            /* faint hairline grid — visible page-wide */
             linear-gradient(oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px),
-            linear-gradient(90deg, oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
-    }
-    /* Signature grid accent near top, fading down. Long, soft falloff —
-       a hard mask stop paints a visible horizontal band across content. */
-    .ed-grid-bg::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image:
+            linear-gradient(90deg, oklch(0.85 0.04 285 / 0.035) 1px, transparent 1px),
+            /* nebula blobs (were animated .nebula spans — baked static) */
+            radial-gradient(ellipse 42% 40% at 6% 4%, oklch(0.42 0.16 290 / 0.22) 0%, transparent 70%),
+            radial-gradient(ellipse 34% 32% at 92% 16%, oklch(0.48 0.12 215 / 0.15) 0%, transparent 70%),
+            /* signature aurora glows */
+            radial-gradient(ellipse 55% 50% at 8% -5%, oklch(0.70 0.18 285 / 0.16) 0%, transparent 58%),
+            radial-gradient(ellipse 50% 45% at 96% 12%, oklch(0.80 0.13 210 / 0.12) 0%, transparent 55%),
+            /* ink cover that fades the accent grid below it (replaces mask) */
+            radial-gradient(ellipse 75% 62% at 50% 0%, transparent 0%, oklch(0.16 0.018 280 / 0.6) 55%, var(--ink-0) 88%),
+            /* signature accent grid — bright near the top, covered below */
             linear-gradient(var(--sig-glow) 1px, transparent 1px),
             linear-gradient(90deg, var(--sig-glow) 1px, transparent 1px);
-        background-size: 60px 60px;
-        mask-image: radial-gradient(ellipse 75% 62% at 50% 0%, #000 0%, rgba(0,0,0,0.4) 55%, transparent 88%);
-    }
-    /* Static film grain — no mix-blend (full-screen blend repaints every
-       scroll frame). Low-opacity alpha composite is GPU-cacheable. */
-    .ed-grid-bg::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        opacity: 0.16;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    }
-
-    /* ── Nebula drift — two huge aurora blobs breathing behind everything.
-       Softness is baked into the gradient stops (NO filter: blur — a live
-       90px gaussian on 800px+ elements re-runs on the GPU every composite
-       and caused scroll jank on integrated graphics). Transform-only
-       animation stays compositor-cheap. ── */
-    .nebula {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
-    }
-    .nebula span {
-        position: absolute;
-        border-radius: 50%;
-        will-change: transform;
-    }
-    .nebula .neb-a {
-        width: 56vw;
-        height: 56vw;
-        left: -14vw;
-        top: -20vw;
-        background: radial-gradient(
-            circle,
-            oklch(0.42 0.16 290 / 0.30) 0%,
-            oklch(0.42 0.16 290 / 0.18) 30%,
-            oklch(0.42 0.16 290 / 0.07) 52%,
-            transparent 72%
-        );
-        animation: neb-drift-a 26s ease-in-out infinite alternate;
-    }
-    .nebula .neb-b {
-        width: 46vw;
-        height: 46vw;
-        right: -12vw;
-        top: 6vw;
-        background: radial-gradient(
-            circle,
-            oklch(0.48 0.12 215 / 0.22) 0%,
-            oklch(0.48 0.12 215 / 0.13) 30%,
-            oklch(0.48 0.12 215 / 0.05) 52%,
-            transparent 72%
-        );
-        animation: neb-drift-b 34s ease-in-out infinite alternate;
-    }
-    @keyframes neb-drift-a {
-        to { transform: translate(10vw, 8vh) scale(1.18); }
-    }
-    @keyframes neb-drift-b {
-        to { transform: translate(-9vw, 12vh) scale(0.88); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .nebula span { animation: none; }
+        background-size:
+            160px 160px,
+            60px 60px, 60px 60px,
+            100% 100%, 100% 100%,
+            100% 100%, 100% 100%,
+            100% 100%,
+            60px 60px, 60px 60px;
     }
 
     /* Hairline section divider */
@@ -516,6 +475,43 @@ section {
         background: var(--ink-2);
         transform: translateY(-3px);
     }
+    /* Border ring — on hover a violet→cyan light runs the tile's edge.
+       Together with the aurora wash below it forms the full light
+       language: glow inside, current along the rim. Hover-only repaint,
+       confined to one card at a time. */
+    .ed-tile::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        padding: 1px;
+        background: conic-gradient(
+            from var(--tile-ang, 0deg),
+            transparent 0deg,
+            var(--sig) 55deg,
+            var(--sig-2) 105deg,
+            transparent 150deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.4s var(--ease-standard);
+        pointer-events: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        .ed-tile:hover::before {
+            opacity: 1;
+            animation: tile-ring 2.6s linear infinite;
+        }
+    }
+    @keyframes tile-ring {
+        to { --tile-ang: 360deg; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .ed-tile::before { display: none; }
+    }
+
     /* Aurora wash — a signature glow that tracks the cursor inside the tile.
        --mx/--my are set by a single delegated pointermove listener (App). */
     .ed-tile::after {
@@ -911,6 +907,37 @@ section {
   .skill-float, .skill-orbit, .skill-edge.on { animation: none !important; }
 }
 
+/* ── Experience timeline: powered rail + lighting nodes ── */
+.exp-rail {
+  background: var(--hair);
+}
+.exp-rail-fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  background: linear-gradient(to bottom, var(--sig), var(--sig-2));
+  box-shadow: 0 0 10px var(--sig-glow);
+  will-change: transform;
+}
+.exp-node {
+  background: var(--ink-1);
+  border: 1px solid var(--hair);
+  transition: border-color 0.45s var(--ease-standard),
+              box-shadow 0.45s var(--ease-standard);
+}
+.exp-year {
+  color: var(--tx-2);
+  transition: color 0.45s var(--ease-standard);
+}
+.exp-node.lit {
+  border-color: var(--sig-line);
+  box-shadow: 0 0 0 3px var(--sig-glow), 0 6px 18px -8px var(--sig-glow);
+}
+.exp-node.lit .exp-year {
+  color: var(--sig);
+}
+
 /* ── Experience timeline hover ── */
 .exp-card .exp-tile:hover {
   border-color: var(--sig-line);
@@ -989,6 +1016,146 @@ section {
 }
 @media (prefers-reduced-motion: reduce) {
   .project-media:hover img { transform: none; filter: none; }
+}
+
+/* ── Press physics — every control compresses under the finger and
+   springs back on release (overshoot bezier). Transform-only. ── */
+.ed-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+.ed-btn-ghost:active,
+.navbar-cta:active,
+.navbar-burger:active,
+.jd-chip:active,
+.skill-legend:active,
+.skill-hop:active {
+  transform: scale(0.95);
+}
+.ed-btn { transition-timing-function: var(--ease-spring); }
+.ed-btn-ghost,
+.skill-legend,
+.navbar-burger {
+  transition-property: border-color, background, color, transform;
+  transition-duration: 0.2s;
+  transition-timing-function: var(--ease-spring);
+}
+.jd-chip, .skill-hop { transition-timing-function: var(--ease-spring); }
+
+/* ── Growing underline — hover density for text links ── */
+.u-grow {
+  position: relative;
+}
+.u-grow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ease-standard);
+}
+.u-grow:hover::after,
+.u-grow:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ── Sheen sweep — a diagonal glass glint crosses media cards on hover ── */
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  bottom: -25%;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent 15%, rgba(255, 255, 255, 0.09) 50%, transparent 85%);
+  transform: skewX(-16deg) translateX(-180%);
+}
+@media (hover: hover) and (pointer: fine) {
+  .project-media:hover .sheen::after,
+  .ed-tile:hover > .sheen::after,
+  .ed-tile:hover .sheen-host .sheen::after {
+    transform: skewX(-16deg) translateX(340%);
+    transition: transform 0.9s var(--ease-standard);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheen { display: none; }
+}
+
+/* ── Site reveal — the opening curtain (first visit, ≤1.2s) ── */
+.site-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  pointer-events: none;
+}
+.site-reveal-pane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--ink-0);
+  will-change: transform;
+}
+.pane-top {
+  top: 0;
+  animation: reveal-pane-up 0.55s var(--ease-standard) 0.68s both;
+}
+.pane-bottom {
+  bottom: 0;
+  animation: reveal-pane-down 0.55s var(--ease-standard) 0.68s both;
+}
+@keyframes reveal-pane-up { to { transform: translateY(-101%); } }
+@keyframes reveal-pane-down { to { transform: translateY(101%); } }
+
+.site-reveal-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  animation: reveal-center-out 0.3s ease 0.6s both;
+}
+@keyframes reveal-center-out { to { opacity: 0; transform: scale(0.96); } }
+
+.site-reveal-mark {
+  border-radius: 12px;
+  animation: reveal-mark-in 0.45s var(--ease-emphasis) both,
+             reveal-mark-glow 0.9s var(--ease-soft) 0.1s;
+}
+@keyframes reveal-mark-in {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes reveal-mark-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 6px 26px var(--sig-glow)); }
+}
+
+.site-reveal-line {
+  width: 132px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sig), var(--sig-2));
+  transform-origin: left center;
+  animation: reveal-line 0.58s var(--ease-standard) 0.12s both;
+}
+@keyframes reveal-line {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 /* Headline jolt — sympathetic response to a field collapse (hero click) */
