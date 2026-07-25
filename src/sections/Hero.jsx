@@ -70,6 +70,21 @@ const Hero = () => {
         setVideoStarted(true);
     };
 
+    // Measurement-collapse link: when the WebGL field fires a collapse pulse
+    // (hero click), the headline takes a sympathetic jolt — one motif, two
+    // media. No-op when the field runs in fallback (event never fires).
+    useEffect(() => {
+        const el = rootRef.current?.querySelector(".hero-display");
+        if (!el) return undefined;
+        const onCollapse = () => {
+            el.classList.remove("hero-jolt");
+            void el.offsetWidth; // restart the animation
+            el.classList.add("hero-jolt");
+        };
+        window.addEventListener("qf-collapse", onCollapse);
+        return () => window.removeEventListener("qf-collapse", onCollapse);
+    }, []);
+
     useGSAP(() => {
         if (prefersReducedMotion()) {
             gsap.set([...HERO_ANIM_TARGETS, ".hero-word", ".hero-aside"], { opacity: 1, y: 0, yPercent: 0 });

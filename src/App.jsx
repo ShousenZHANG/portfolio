@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Hero from "./sections/Hero.jsx";
 import NavBar from "./components/NavBar.jsx";
 import LogoSection from "./sections/LogoSection.jsx";
@@ -9,6 +9,7 @@ import SkillsConstellation from "./sections/SkillsConstellation.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
+import QuantumFieldGL from "./components/QuantumFieldGL.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
 import { prefersReducedMotion } from "./lib/motion.js";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -70,6 +71,10 @@ const LazySection = ({ children }) => (
 const App = () => {
     useSmoothScroll();
     useAuroraTiles();
+    // Progressive enhancement: try the WebGL field first; on missing WebGL,
+    // shader failure, reduced motion, or a failed FPS audition it swaps to
+    // the Canvas 2D field + CSS nebula (the proven baseline).
+    const [glOk, setGlOk] = useState(true);
 
     useEffect(() => {
         const schedule =
@@ -91,11 +96,17 @@ const App = () => {
             <a href="#main-content" className="skip-link">Skip to main content</a>
             <CustomCursor />
             <div className="ed-grid-bg" aria-hidden="true" />
-            <div className="nebula" aria-hidden="true">
-                <span className="neb-a" />
-                <span className="neb-b" />
-            </div>
-            <InteractiveBackground />
+            {glOk ? (
+                <QuantumFieldGL onFallback={() => setGlOk(false)} />
+            ) : (
+                <>
+                    <div className="nebula" aria-hidden="true">
+                        <span className="neb-a" />
+                        <span className="neb-b" />
+                    </div>
+                    <InteractiveBackground />
+                </>
+            )}
             <NavBar />
             <main id="main-content">
                 <Hero />

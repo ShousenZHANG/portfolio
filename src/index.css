@@ -991,6 +991,20 @@ section {
   .project-media:hover img { transform: none; filter: none; }
 }
 
+/* Headline jolt — sympathetic response to a field collapse (hero click) */
+.hero-jolt {
+  animation: hero-jolt 0.45s var(--ease-emphasis);
+}
+@keyframes hero-jolt {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(2px) scale(0.997); }
+  60% { transform: translateY(-1px) scale(1.001); }
+  100% { transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-jolt { animation: none !important; }
+}
+
 /* Modal / dropdown fade-in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-8px); }
