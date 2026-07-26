@@ -161,6 +161,9 @@ const EDPanel = ({ onClose }) => {
         setStatus("listening");
         setError(null);
         rec.onresult = (e) => {
+            // Recognition delivers one last result AFTER stop() — without
+            // this guard it re-fills the input right after send cleared it.
+            if (!listeningRef.current) return;
             // Stitch finals + current interim into the input, live.
             let text = "";
             for (let i = 0; i < e.results.length; i++) {

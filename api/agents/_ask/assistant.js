@@ -7,7 +7,12 @@ import OpenAI from "openai";
 import { LLMError } from "../_jd/llm.js";
 import { PERSONA } from "./persona.js";
 
-const MODEL_NAME = process.env.OPENAI_MODEL || "gpt-4o-mini";
+// E.D. runs a smarter default than the JD matcher: personality + style
+// adherence live or die on instruction-following, and gpt-4.1-mini is a
+// clear step up from 4o-mini there while a reply still costs ~$0.001.
+// Override with OPENAI_ASK_MODEL without touching the matcher's model.
+const MODEL_NAME =
+  process.env.OPENAI_ASK_MODEL || process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const TTS_MODEL = "tts-1";
 const TTS_VOICE = "onyx";
 

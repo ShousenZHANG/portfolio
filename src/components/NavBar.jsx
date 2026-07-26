@@ -42,20 +42,25 @@ const NavBar = () => {
   const linkRefs = useRef({});
   const progressRef = useRef(null);
 
-  // One-time E.D. introduction: appears after the reveal settles and
-  // STAYS until the visitor actually engages (clicks the pill, the tip,
-  // or opens the deck via "/") — an auto-vanishing hint was missed.
+  // One-time E.D. introduction: floats in after the reveal settles,
+  // lingers long enough to be read (14s), then fades itself out.
+  // "leaving" drives the exit animation before unmount.
   const [edTip, setEdTip] = useState(false);
+  const [tipLeaving, setTipLeaving] = useState(false);
   useEffect(() => {
     try {
       if (sessionStorage.getItem("ed-tip-shown")) return undefined;
       sessionStorage.setItem("ed-tip-shown", "1");
     } catch { /* storage unavailable — still show once */ }
     const show = setTimeout(() => setEdTip(true), 2600);
+    const leave = setTimeout(() => setTipLeaving(true), 14000);
+    const gone = setTimeout(() => setEdTip(false), 14600);
     const dismiss = () => setEdTip(false);
     window.addEventListener("ed-open", dismiss);
     return () => {
       clearTimeout(show);
+      clearTimeout(leave);
+      clearTimeout(gone);
       window.removeEventListener("ed-open", dismiss);
     };
   }, []);
@@ -231,10 +236,10 @@ const NavBar = () => {
             {edTip && (
               <button
                 type="button"
-                className="ed-tip"
+                className={`ed-tip ${tipLeaving ? "leaving" : ""}`}
                 onClick={() => { setEdTip(false); window.dispatchEvent(new CustomEvent("ed-open")); }}
               >
-                Meet E.D. — my AI. Ask it anything · press /
+                First time here? Click and ask my AI anything
               </button>
             )}
           </div>

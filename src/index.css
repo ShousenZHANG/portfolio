@@ -1319,6 +1319,12 @@ section {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.ed-tip.leaving {
+  animation: ed-tip-out 0.55s var(--ease-standard) both;
+}
+@keyframes ed-tip-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
 .ed-orb-core {
   width: 12px;
   height: 12px;
