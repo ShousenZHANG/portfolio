@@ -1437,6 +1437,8 @@ section {
   min-height: 120px;
   max-height: 42dvh;
   overflow-y: auto;
+  /* Never chain a finished scroll to the page behind the dialog */
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;

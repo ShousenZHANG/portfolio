@@ -90,11 +90,16 @@ const EDPanel = ({ onClose }) => {
             listeningRef.current = false; // stop the keep-alive before aborting
             recRef.current?.abort?.();
             abortRef.current?.abort();
+            // Hand the wheel back to the page (Lenis resumes on this).
+            window.dispatchEvent(new CustomEvent("ed-close"));
         };
     }, [onClose]);
 
     useEffect(() => {
-        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+        scrollRef.current?.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: prefersReducedMotion() ? "auto" : "smooth",
+        });
     }, [messages, status]);
 
     const speak = (b64) => {
@@ -195,7 +200,7 @@ const EDPanel = ({ onClose }) => {
     };
 
     return (
-        <div className="ed-panel" role="dialog" aria-modal="true" aria-label="E.D. — Eddy's AI assistant">
+        <div className="ed-panel" role="dialog" aria-modal="true" aria-label="E.D. — Eddy's AI assistant" data-lenis-prevent>
             <div className="ed-panel-inner">
                 <header className="flex items-center justify-between mb-6">
                     <p className="ed-eyebrow">E.D. · Eddy&rsquo;s Digital Deputy</p>

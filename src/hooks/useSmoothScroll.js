@@ -16,12 +16,22 @@ export function useSmoothScroll() {
         if (prefersReducedMotion()) return undefined;
 
         const lenis = new Lenis({
-            duration: 1.1,
+            duration: 1.15,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothWheel: true,
             wheelMultiplier: 1,
             touchMultiplier: 1.5,
+            // Elements marked data-lenis-prevent (e.g. E.D.'s message
+            // stream) keep native scrolling — Lenis stays hands-off.
+            prevent: (node) => !!node?.closest?.("[data-lenis-prevent]"),
         });
+
+        // Freeze page scroll entirely while the E.D. deck is open — the
+        // wheel belongs to the dialog, not the page behind it.
+        const onEdOpen = () => lenis.stop();
+        const onEdClose = () => lenis.start();
+        window.addEventListener("ed-open", onEdOpen);
+        window.addEventListener("ed-close", onEdClose);
 
         lenis.on("scroll", ScrollTrigger.update);
 
@@ -48,6 +58,8 @@ export function useSmoothScroll() {
 
         return () => {
             document.removeEventListener("click", onAnchorClick);
+            window.removeEventListener("ed-open", onEdOpen);
+            window.removeEventListener("ed-close", onEdClose);
             gsap.ticker.remove(onTick);
             lenis.destroy();
         };
