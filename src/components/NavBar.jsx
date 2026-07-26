@@ -196,24 +196,37 @@ const NavBar = () => {
           </ul>
         </nav>
 
-        <Magnetic strength={0.4} className="hidden lg:inline-flex">
-          <a href="#contact" className="navbar-cta group">
-            <span>Contact me</span>
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </a>
-        </Magnetic>
+        <div className="flex items-center gap-2.5">
+          {/* E.D. orb — the ship's AI, breathing at idle */}
+          <button
+            type="button"
+            className="ed-orb"
+            onClick={() => window.dispatchEvent(new CustomEvent("ed-open"))}
+            aria-label="Open E.D., Eddy's AI assistant (or press /)"
+            title="Ask E.D. — press /"
+          >
+            <span className="ed-orb-core" aria-hidden="true" />
+          </button>
 
-        {/* Mobile hamburger — glass pill button */}
-        <button
-          type="button"
-          className="navbar-burger lg:hidden flex items-center justify-center"
-          onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-dropdown"
-        >
-          {menuOpen ? <X className="w-[18px] h-[18px]" /> : <Menu className="w-[18px] h-[18px]" />}
-        </button>
+          <Magnetic strength={0.4} className="hidden lg:inline-flex">
+            <a href="#contact" className="navbar-cta group">
+              <span>Contact me</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </a>
+          </Magnetic>
+
+          {/* Mobile hamburger — glass pill button */}
+          <button
+            type="button"
+            className="navbar-burger lg:hidden flex items-center justify-center"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-dropdown"
+          >
+            {menuOpen ? <X className="w-[18px] h-[18px]" /> : <Menu className="w-[18px] h-[18px]" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile dropdown */}

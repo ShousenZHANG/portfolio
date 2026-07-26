@@ -42,6 +42,11 @@ Heavy sections (`ShowcaseSection`, `Contact`) are lazy-loaded with `React.lazy` 
 
 The leading underscore in `_jd/` prevents Vercel from routing those files as endpoints.
 
+**E.D. (ask-me-anything) feature** — A JARVIS-style assistant ("Eddy's Digital Deputy"): navbar orb (or `/` key) opens a full-screen command deck (`src/components/EDPanel.jsx`, lazy chunk). `POST /api/agents/ask` (`api/agents/ask.js`) delegates to `api/agents/_ask/`:
+- `_ask/persona.js` — the grounded persona document (facts E.D. may state, UNKNOWN redirects, injection fence, tone) + suggested questions.
+- `_ask/assistant.js` — `buildMessages` (clamps question/history), `callAsk` (chat completion, injectable client), `synthesize` (OpenAI TTS `tts-1`/onyx, best-effort — returns null on failure, never blocks the text answer).
+Voice in = browser Web Speech API (degrades silently); voice out = TTS on the same `OPENAI_API_KEY`. Rate limiting shares `_jd/rateLimit.js` with an `ask:` key prefix (separate bucket per feature).
+
 **Scoring logic** — The backend does NOT trust the LLM's raw scores. `scoreJD` recomputes `overallScore` from a weighted formula (exact match 42%, related 18%, keyword coverage 15%, dimension average 25%, minus gap penalty 20%). Hard eligibility failures (visa/experience Issue) cap `overallScore` at 35; location Issue caps at 75. See [CONTEXT.md](CONTEXT.md) for the domain glossary.
 
 **Response shape** — Flat. Top-level fields: `overallScore`, `exactMatchScore`, `relatedMatchScore`, `gapScore`, `confidenceScore`, `dimensionScores`, `fitLabel`, `fitHeadline`, `fitVerdict`, `eligibility`, `evidencePairs`, `matchedKeywords`, `missingKeywords`, `related`, `riskFlags`, `summary`, `strengths`, `gaps`, `suggestions`. No nested `score` object — frontend reads fields directly.

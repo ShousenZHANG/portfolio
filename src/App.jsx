@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Hero from "./sections/Hero.jsx";
 import NavBar from "./components/NavBar.jsx";
 import LogoSection from "./sections/LogoSection.jsx";
@@ -46,6 +46,7 @@ function useAuroraTiles() {
 
 const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
+const EDPanel = lazy(() => import("./components/EDPanel.jsx"));
 
 // Warm the heavy chunks during idle time after first paint, so by the
 // time the user scrolls to a lazy section the JS is already cached and
@@ -71,6 +72,25 @@ const LazySection = ({ children }) => (
 const App = () => {
     useSmoothScroll();
     useAuroraTiles();
+
+    // E.D. — opened from the navbar orb (custom event) or the "/" key.
+    const [edOpen, setEdOpen] = useState(false);
+    useEffect(() => {
+        const onOpen = () => setEdOpen(true);
+        const onKey = (e) => {
+            if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+            const el = document.activeElement;
+            if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+            e.preventDefault();
+            setEdOpen(true);
+        };
+        window.addEventListener("ed-open", onOpen);
+        window.addEventListener("keydown", onKey);
+        return () => {
+            window.removeEventListener("ed-open", onOpen);
+            window.removeEventListener("keydown", onKey);
+        };
+    }, []);
 
     useEffect(() => {
         const schedule =
@@ -105,6 +125,13 @@ const App = () => {
                 <LazySection><Contact /></LazySection>
             </main>
             <Footer />
+            {edOpen && (
+                <ErrorBoundary>
+                    <Suspense fallback={null}>
+                        <EDPanel onClose={() => setEdOpen(false)} />
+                    </Suspense>
+                </ErrorBoundary>
+            )}
             <SpeedInsights />
             <Analytics />
         </>
