@@ -1295,8 +1295,13 @@ section {
   border: 1px solid var(--sig-line);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -8px var(--sig-glow);
   animation: ed-tip-in 0.45s var(--ease-emphasis) both;
-  pointer-events: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   z-index: 5;
+}
+.ed-tip:hover {
+  border-color: var(--sig);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 26px -6px var(--sig-glow);
 }
 .ed-tip::before {
   content: "";

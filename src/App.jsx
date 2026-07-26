@@ -82,7 +82,9 @@ const App = () => {
             const el = document.activeElement;
             if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
             e.preventDefault();
-            setEdOpen(true);
+            // Route through the same event as the orb so listeners (e.g.
+            // the intro tooltip) see every way of opening the deck.
+            window.dispatchEvent(new CustomEvent("ed-open"));
         };
         window.addEventListener("ed-open", onOpen);
         window.addEventListener("keydown", onKey);

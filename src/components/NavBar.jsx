@@ -42,8 +42,9 @@ const NavBar = () => {
   const linkRefs = useRef({});
   const progressRef = useRef(null);
 
-  // One-time E.D. introduction: appears after the reveal settles, retires
-  // itself, and never comes back within the session.
+  // One-time E.D. introduction: appears after the reveal settles and
+  // STAYS until the visitor actually engages (clicks the pill, the tip,
+  // or opens the deck via "/") — an auto-vanishing hint was missed.
   const [edTip, setEdTip] = useState(false);
   useEffect(() => {
     try {
@@ -51,8 +52,12 @@ const NavBar = () => {
       sessionStorage.setItem("ed-tip-shown", "1");
     } catch { /* storage unavailable — still show once */ }
     const show = setTimeout(() => setEdTip(true), 2600);
-    const hide = setTimeout(() => setEdTip(false), 10000);
-    return () => { clearTimeout(show); clearTimeout(hide); };
+    const dismiss = () => setEdTip(false);
+    window.addEventListener("ed-open", dismiss);
+    return () => {
+      clearTimeout(show);
+      window.removeEventListener("ed-open", dismiss);
+    };
   }, []);
 
   // Scroll: glass state + reading-progress bar.
@@ -224,9 +229,13 @@ const NavBar = () => {
               <span className="ed-orb-label">E.D.</span>
             </button>
             {edTip && (
-              <span className="ed-tip" role="status">
-                Ask my AI anything · press /
-              </span>
+              <button
+                type="button"
+                className="ed-tip"
+                onClick={() => { setEdTip(false); window.dispatchEvent(new CustomEvent("ed-open")); }}
+              >
+                Meet E.D. — my AI. Ask it anything · press /
+              </button>
             )}
           </div>
 

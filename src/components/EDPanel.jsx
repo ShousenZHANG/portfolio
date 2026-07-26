@@ -57,7 +57,11 @@ const getRecognition = () => {
     if (!SR) return null;
     const rec = new SR();
     rec.lang = navigator.language?.startsWith("zh") ? "zh-CN" : "en-AU";
-    rec.interimResults = false;
+    // Continuous: the default mode stops at the first ~1s pause, which
+    // cut people off mid-sentence. Interim results stream the transcript
+    // into the input so the visitor sees E.D. hearing them.
+    rec.continuous = true;
+    rec.interimResults = true;
     rec.maxAlternatives = 1;
     return rec;
 };
@@ -83,6 +87,7 @@ const EDPanel = ({ onClose }) => {
         return () => {
             window.removeEventListener("keydown", onKey);
             audioRef.current?.pause();
+            listeningRef.current = false; // stop the keep-alive before aborting
             recRef.current?.abort?.();
             abortRef.current?.abort();
         };
@@ -136,28 +141,54 @@ const EDPanel = ({ onClose }) => {
         }
     };
 
+    const listeningRef = useRef(false);
+
+    const stopListening = () => {
+        listeningRef.current = false;
+        recRef.current?.stop();
+        setStatus("idle");
+        // Submit whatever was transcribed.
+        const text = inputRef.current?.value?.trim();
+        if (text) send(text);
+    };
+
     const listen = () => {
-        if (status === "listening") { recRef.current?.stop(); return; }
+        if (status === "listening") { stopListening(); return; }
         const rec = getRecognition();
         if (!rec) return;
         recRef.current = rec;
+        listeningRef.current = true;
         setStatus("listening");
+        setError(null);
         rec.onresult = (e) => {
-            const text = e.results[0]?.[0]?.transcript || "";
-            setStatus("idle");
-            if (text.trim()) send(text);
+            // Stitch finals + current interim into the input, live.
+            let text = "";
+            for (let i = 0; i < e.results.length; i++) {
+                text += e.results[i][0]?.transcript || "";
+            }
+            setInput(text);
         };
         rec.onerror = (e) => {
+            listeningRef.current = false;
             setStatus("idle");
             // A silent failure here looked like a dead button — say why.
-            setError(
-                e?.error === "not-allowed" || e?.error === "service-not-allowed"
-                    ? "Microphone access is blocked — check the address-bar permission, or just type."
-                    : "Voice input hit a snag — typing works just as well."
-            );
+            if (e?.error !== "no-speech" && e?.error !== "aborted") {
+                setError(
+                    e?.error === "not-allowed" || e?.error === "service-not-allowed"
+                        ? "Microphone access is blocked — check the address-bar permission, or just type."
+                        : "Voice input hit a snag — typing works just as well."
+                );
+            }
         };
-        rec.onend = () => setStatus((s) => (s === "listening" ? "idle" : s));
-        try { rec.start(); } catch { setStatus("idle"); }
+        rec.onend = () => {
+            // Chrome hard-stops recognition (~60s or on silence). If the
+            // visitor is still in listening mode, quietly restart — the
+            // mic should stay open until THEY end it.
+            if (listeningRef.current) {
+                try { rec.start(); } catch { listeningRef.current = false; setStatus("idle"); }
+            }
+        };
+        try { rec.start(); } catch { listeningRef.current = false; setStatus("idle"); }
     };
 
     return (
@@ -218,7 +249,11 @@ const EDPanel = ({ onClose }) => {
 
                 <form
                     className="ed-input-row"
-                    onSubmit={(e) => { e.preventDefault(); send(); }}
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (status === "listening") stopListening();
+                        else send();
+                    }}
                 >
                     {canListen && (
                         <button
@@ -236,7 +271,9 @@ const EDPanel = ({ onClose }) => {
                         value={input}
                         maxLength={MAX_QUESTION}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder="Ask about Eddy — experience, visa, projects…"
+                        placeholder={status === "listening"
+                            ? "Listening — tap the mic again to send…"
+                            : "Ask about Eddy — experience, visa, projects…"}
                         aria-label="Ask E.D. a question"
                     />
                     <button type="submit" className="ed-icon-btn send" disabled={status === "thinking"} aria-label="Send">
