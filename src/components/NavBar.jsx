@@ -42,6 +42,19 @@ const NavBar = () => {
   const linkRefs = useRef({});
   const progressRef = useRef(null);
 
+  // One-time E.D. introduction: appears after the reveal settles, retires
+  // itself, and never comes back within the session.
+  const [edTip, setEdTip] = useState(false);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("ed-tip-shown")) return undefined;
+      sessionStorage.setItem("ed-tip-shown", "1");
+    } catch { /* storage unavailable — still show once */ }
+    const show = setTimeout(() => setEdTip(true), 2600);
+    const hide = setTimeout(() => setEdTip(false), 10000);
+    return () => { clearTimeout(show); clearTimeout(hide); };
+  }, []);
+
   // Scroll: glass state + reading-progress bar.
   // Under Lenis, native scroll fires ~every frame — so coalesce reads into a
   // single rAF, drive the progress bar imperatively (no React render per
@@ -197,16 +210,25 @@ const NavBar = () => {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          {/* E.D. orb — the ship's AI, breathing at idle */}
-          <button
-            type="button"
-            className="ed-orb"
-            onClick={() => window.dispatchEvent(new CustomEvent("ed-open"))}
-            aria-label="Open E.D., Eddy's AI assistant (or press /)"
-            title="Ask E.D. — press /"
-          >
-            <span className="ed-orb-core" aria-hidden="true" />
-          </button>
+          {/* E.D. — the ship's AI. A labelled pill (a bare orb read as
+              decoration); a one-time tooltip introduces it on first visit */}
+          <div className="relative">
+            <button
+              type="button"
+              className="ed-orb"
+              onClick={() => { setEdTip(false); window.dispatchEvent(new CustomEvent("ed-open")); }}
+              aria-label="Open E.D., Eddy's AI assistant (or press /)"
+              title="Ask E.D. — press /"
+            >
+              <span className="ed-orb-core" aria-hidden="true" />
+              <span className="ed-orb-label">E.D.</span>
+            </button>
+            {edTip && (
+              <span className="ed-tip" role="status">
+                Ask my AI anything · press /
+              </span>
+            )}
+          </div>
 
           <Magnetic strength={0.4} className="hidden lg:inline-flex">
             <a href="#contact" className="navbar-cta group">

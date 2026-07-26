@@ -1252,15 +1252,15 @@ section {
    E.D. — Eddy's Digital Deputy (navbar orb + command deck)
    ══════════════════════════════════════════════════════════ */
 
-/* Navbar orb — a small breathing energy core */
+/* Navbar E.D. pill — breathing core + label (a bare orb read as décor) */
 .ed-orb {
   position: relative;
-  width: 34px;
   height: 34px;
+  padding: 0 12px 0 10px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 7px;
   border: 1px solid var(--sig-line);
   background: var(--ink-2);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s var(--ease-spring);
@@ -1269,7 +1269,51 @@ section {
   border-color: var(--sig);
   box-shadow: 0 0 18px -4px var(--sig-glow);
 }
-.ed-orb:active { transform: scale(0.92); }
+.ed-orb:active { transform: scale(0.94); }
+.ed-orb-label {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--tx-1);
+}
+.ed-orb:hover .ed-orb-label { color: var(--sig); }
+
+/* One-time introduction tooltip under the pill */
+.ed-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  white-space: nowrap;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--tx-0);
+  background: var(--ink-1);
+  border: 1px solid var(--sig-line);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -8px var(--sig-glow);
+  animation: ed-tip-in 0.45s var(--ease-emphasis) both;
+  pointer-events: none;
+  z-index: 5;
+}
+.ed-tip::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: 22px;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: var(--ink-1);
+  border-left: 1px solid var(--sig-line);
+  border-top: 1px solid var(--sig-line);
+}
+@keyframes ed-tip-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 .ed-orb-core {
   width: 12px;
   height: 12px;
@@ -1454,10 +1498,21 @@ section {
   animation: ed-blink 1s steps(2) infinite;
 }
 
+/* Hero secondary entry to E.D. */
+.hero-ed-link {
+  color: var(--sig);
+  transition: color 0.2s ease;
+}
+.hero-ed-link:hover {
+  color: var(--sig-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ed-orb-core, .ed-core-heart, .ed-core-ring,
   .ed-msg-thinking, .ed-icon-btn.listening { animation: none !important; }
-  .ed-panel, .ed-panel-inner { animation: none !important; }
+  .ed-panel, .ed-panel-inner, .ed-tip { animation: none !important; }
 }
 
 /* ── Site reveal — the opening curtain (first visit, ≤1.2s) ── */

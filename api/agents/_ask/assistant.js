@@ -64,7 +64,7 @@ export async function callAsk(question, history, client) {
   try {
     completion = await oa.chat.completions.create({
       model: MODEL_NAME,
-      temperature: 0.5,
+      temperature: 0.7, // room for personality; facts stay pinned by the persona
       max_tokens: LIMITS.answerTokens,
       messages: buildMessages(question, history),
     });

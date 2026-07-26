@@ -147,7 +147,15 @@ const EDPanel = ({ onClose }) => {
             setStatus("idle");
             if (text.trim()) send(text);
         };
-        rec.onerror = () => setStatus("idle");
+        rec.onerror = (e) => {
+            setStatus("idle");
+            // A silent failure here looked like a dead button — say why.
+            setError(
+                e?.error === "not-allowed" || e?.error === "service-not-allowed"
+                    ? "Microphone access is blocked — check the address-bar permission, or just type."
+                    : "Voice input hit a snag — typing works just as well."
+            );
+        };
         rec.onend = () => setStatus((s) => (s === "listening" ? "idle" : s));
         try { rec.start(); } catch { setStatus("idle"); }
     };

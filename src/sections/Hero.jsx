@@ -217,6 +217,14 @@ const Hero = () => {
                             <span>Available for work</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
                             <span className="font-mono text-xs tracking-wider">Copilot Studio · Power Automate · Dataverse · MCP</span>
+                            <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
+                            <button
+                                type="button"
+                                className="hero-ed-link font-mono text-xs tracking-wider"
+                                onClick={() => window.dispatchEvent(new CustomEvent("ed-open"))}
+                            >
+                                Ask E.D. about him ↗
+                            </button>
                         </div>
                     </div>
 
