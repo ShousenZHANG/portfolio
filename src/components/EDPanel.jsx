@@ -68,6 +68,58 @@ const blobToBase64 = (blob) =>
         reader.readAsDataURL(blob);
     });
 
+const BAR_COUNT = 34;
+const fmtClock = (ms) => {
+    const s = Math.floor(ms / 1000);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+};
+
+/**
+ * Live recording bars. Reads the frequency spectrum straight from the
+ * analyser on its own rAF loop and writes bar heights imperatively —
+ * animating 34 bars through React state would re-render the deck ~60x/s.
+ */
+const WaveBars = ({ analyser }) => {
+    const hostRef = useRef(null);
+    useEffect(() => {
+        const host = hostRef.current;
+        if (!host || !analyser) return undefined;
+        const bars = Array.from(host.children);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        // Sample the low-mid band — that's where speech energy lives.
+        const span = Math.floor(data.length * 0.6);
+        let raf = 0;
+        const tick = () => {
+            analyser.getByteFrequencyData(data);
+            for (let i = 0; i < bars.length; i++) {
+                const v = data[Math.floor((i / bars.length) * span)] / 255;
+                bars[i].style.transform = `scaleY(${Math.max(0.08, v * 1.35)})`;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [analyser]);
+
+    return (
+        <div ref={hostRef} className="ed-wave" aria-hidden="true">
+            {Array.from({ length: BAR_COUNT }, (_, i) => (
+                <span key={i} className="ed-wave-bar" />
+            ))}
+        </div>
+    );
+};
+
+/** Elapsed-time readout that ticks while a phase is in flight. */
+const Elapsed = ({ since, step = 100 }) => {
+    const [ms, setMs] = useState(0);
+    useEffect(() => {
+        const id = setInterval(() => setMs(performance.now() - since), step);
+        return () => clearInterval(id);
+    }, [since, step]);
+    return <>{(ms / 1000).toFixed(1)}s</>;
+};
+
 const EDPanel = ({ onClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
@@ -75,6 +127,9 @@ const EDPanel = ({ onClose }) => {
     const [voiceOn, setVoiceOn] = useState(true);
     const [error, setError] = useState(null);
     const [level, setLevel] = useState(0); // live mic amplitude, 0..1
+    const [analyser, setAnalyser] = useState(null); // drives the wave bars
+    const [recMs, setRecMs] = useState(0);          // recording stopwatch
+    const [phase, setPhase] = useState(null);       // {label, since} while working
     const inputRef = useRef(null);
     const scrollRef = useRef(null);
     const audioRef = useRef(null);
@@ -82,6 +137,7 @@ const EDPanel = ({ onClose }) => {
     const abortRef = useRef(null);
     const levelRafRef = useRef(0);
     const clipTimerRef = useRef(null);
+    const clockRef = useRef(null);
     const canListen = canRecord();
 
     useEffect(() => {
@@ -93,6 +149,7 @@ const EDPanel = ({ onClose }) => {
             audioRef.current?.pause();
             cancelAnimationFrame(levelRafRef.current);
             clearTimeout(clipTimerRef.current);
+            clearInterval(clockRef.current);
             const rec = recRef.current;
             if (rec && rec.state !== "inactive") {
                 rec.onstop = null; // don't transcribe into an unmounted panel
@@ -134,6 +191,7 @@ const EDPanel = ({ onClose }) => {
         const history = messages.slice(-8);
         setMessages((m) => [...m, { role: "user", content: question }]);
         setStatus("thinking");
+        setPhase({ label: "thinking", since: performance.now() });
         abortRef.current?.abort();
         const controller = new AbortController();
         abortRef.current = controller;
@@ -146,11 +204,13 @@ const EDPanel = ({ onClose }) => {
             });
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data?.error || `E.D. hit a fault (${res.status}).`);
+            setPhase(null);
             setMessages((m) => [...m, { role: "assistant", content: data.answer, fresh: true }]);
             if (voiceOn && data.audio) speak(data.audio);
             else setStatus("idle");
         } catch (err) {
             if (err?.name === "AbortError") return;
+            setPhase(null);
             setError(err?.message || "E.D.'s core is unreachable. Reach Eddy directly: eddy.zhang24@gmail.com");
             setStatus("idle");
         }
@@ -179,17 +239,19 @@ const EDPanel = ({ onClose }) => {
             return;
         }
 
-        // Real amplitude for the listening ripple.
+        // Real amplitude drives the core; the same analyser feeds the bars.
         let audioCtx;
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 256;
-            audioCtx.createMediaStreamSource(stream).connect(analyser);
-            const buf = new Uint8Array(analyser.frequencyBinCount);
+            const node = audioCtx.createAnalyser();
+            node.fftSize = 256;
+            node.smoothingTimeConstant = 0.7;
+            audioCtx.createMediaStreamSource(stream).connect(node);
+            setAnalyser(node);
+            const buf = new Uint8Array(node.frequencyBinCount);
             const meter = () => {
                 if (!recRef.current || recRef.current.state === "inactive") return;
-                analyser.getByteTimeDomainData(buf);
+                node.getByteTimeDomainData(buf);
                 let peak = 0;
                 for (let i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i] - 128));
                 setLevel(Math.min(1, peak / 60));
@@ -209,13 +271,18 @@ const EDPanel = ({ onClose }) => {
         rec.ondataavailable = (e) => { if (e.data?.size) chunks.push(e.data); };
         rec.onstop = async () => {
             cancelAnimationFrame(levelRafRef.current);
+            clearInterval(clockRef.current);
+            clearTimeout(clipTimerRef.current);
             setLevel(0);
+            setAnalyser(null);
+            setRecMs(0);
             stream.getTracks().forEach((t) => t.stop());
             audioCtx?.close?.();
             recRef.current = null;
             const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
             if (blob.size < 1200) { setStatus("idle"); return; } // basically silence
             setStatus("thinking");
+            setPhase({ label: "transcribing", since: performance.now() });
             try {
                 const audio = await blobToBase64(blob);
                 const res = await fetch(TRANSCRIBE_ENDPOINT, {
@@ -227,14 +294,18 @@ const EDPanel = ({ onClose }) => {
                 if (!res.ok) throw new Error(data?.error || "Transcription failed.");
                 const text = (data.text || "").trim();
                 if (text) send(text);
-                else { setStatus("idle"); setError("Didn't catch that — try again, or type it."); }
+                else { setStatus("idle"); setPhase(null); setError("Didn't catch that — try again, or type it."); }
             } catch (err) {
                 setStatus("idle");
+                setPhase(null);
                 setError(err?.message || "Voice input hit a snag — typing works just as well.");
             }
         };
         rec.start();
         setStatus("listening");
+        const startedAt = performance.now();
+        setRecMs(0);
+        clockRef.current = setInterval(() => setRecMs(performance.now() - startedAt), 200);
         // Hard stop so a forgotten mic can't record (or bill) forever.
         clipTimerRef.current = setTimeout(stopListening, MAX_CLIP_MS);
     };
@@ -295,7 +366,13 @@ const EDPanel = ({ onClose }) => {
                                 : m.content}
                         </div>
                     ))}
-                    {status === "thinking" && <div className="ed-msg assistant ed-msg-thinking">▊</div>}
+                    {status === "thinking" && phase && (
+                        <div className="ed-msg assistant ed-msg-thinking">
+                            <span className="ed-think-dot" aria-hidden="true" />
+                            {phase.label}
+                            <span className="ed-think-clock"><Elapsed since={phase.since} /></span>
+                        </div>
+                    )}
                     {error && <p className="ed-msg assistant" role="alert" style={{ color: "var(--danger-tx)" }}>{error}</p>}
                 </div>
 
@@ -319,18 +396,30 @@ const EDPanel = ({ onClose }) => {
                             <Mic className="w-4 h-4" />
                         </button>
                     )}
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        maxLength={MAX_QUESTION}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder={status === "listening"
-                            ? "Recording — tap the mic again when you're done…"
-                            : "Ask about Eddy — experience, visa, projects…"}
-                        aria-label="Ask E.D. a question"
-                    />
-                    <button type="submit" className="ed-icon-btn send" disabled={status === "thinking"} aria-label="Send">
+                    {status === "listening" ? (
+                        <div className="ed-recording" role="status" aria-label="Recording">
+                            <WaveBars analyser={analyser} />
+                            <span className={`ed-rec-clock ${recMs > MAX_CLIP_MS - 10_000 ? "warn" : ""}`}>
+                                {fmtClock(recMs)}
+                            </span>
+                        </div>
+                    ) : (
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            maxLength={MAX_QUESTION}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Ask about Eddy — experience, visa, projects…"
+                            aria-label="Ask E.D. a question"
+                        />
+                    )}
+                    <button
+                        type="submit"
+                        className="ed-icon-btn send"
+                        disabled={status === "thinking"}
+                        aria-label={status === "listening" ? "Stop recording and send" : "Send"}
+                    >
                         <Send className="w-4 h-4" />
                     </button>
                 </form>

@@ -1474,8 +1474,83 @@ section {
   color: var(--tx-1);
   border-bottom-left-radius: 4px;
 }
-.ed-msg-thinking { animation: ed-blink 0.9s steps(2) infinite; }
+/* Thinking bubble — phase label + live stopwatch (waiting stops being a
+   black box, and the readout itself reads as instrumentation) */
+.ed-msg-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--tx-2);
+}
+.ed-think-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--sig);
+  animation: ed-blink 0.9s steps(2) infinite;
+}
+.ed-think-clock {
+  color: var(--sig-2);
+  font-variant-numeric: tabular-nums;
+}
 @keyframes ed-blink { 50% { opacity: 0.25; } }
+
+/* Recording strip — replaces the text input while the mic is hot */
+.ed-recording {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 42px;
+  padding: 0 1rem;
+  border-radius: var(--r-pill);
+  background: var(--ink-0);
+  border: 1px solid var(--sig-line);
+  box-shadow: 0 0 22px -10px var(--sig-glow);
+}
+.ed-wave {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+}
+.ed-wave-bar {
+  flex: 1;
+  min-width: 2px;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to top, var(--sig), var(--sig-2));
+  transform: scaleY(0.08);
+  transform-origin: center;
+  will-change: transform;
+}
+.ed-rec-clock {
+  flex-shrink: 0;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: var(--tx-2);
+  font-variant-numeric: tabular-nums;
+}
+.ed-rec-clock.warn { color: var(--warn); }
+
+/* Mic button while hot — unmistakably "recording" */
+.ed-icon-btn.listening {
+  color: var(--sig-ink);
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-wave-bar { transition: none; }
+  .ed-think-dot { animation: none; }
+}
 
 /* Input row */
 .ed-input-row {
@@ -1513,9 +1588,7 @@ section {
 .ed-icon-btn.send { background: var(--sig); color: var(--sig-ink); border-color: var(--sig); }
 .ed-icon-btn.send:disabled { opacity: 0.5; }
 .ed-icon-btn.listening {
-  color: var(--sig-2);
-  border-color: var(--sig-2);
-  animation: ed-blink 1s steps(2) infinite;
+  animation: ed-blink 1.4s steps(2) infinite;
 }
 
 /* Hero secondary entry to E.D. */
