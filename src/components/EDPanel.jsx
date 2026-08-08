@@ -52,19 +52,21 @@ const TypeOut = ({ text, onDone }) => {
     return <>{shown}</>;
 };
 
-const getRecognition = () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return null;
-    const rec = new SR();
-    rec.lang = navigator.language?.startsWith("zh") ? "zh-CN" : "en-AU";
-    // Continuous: the default mode stops at the first ~1s pause, which
-    // cut people off mid-sentence. Interim results stream the transcript
-    // into the input so the visitor sees E.D. hearing them.
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.maxAlternatives = 1;
-    return rec;
-};
+const TRANSCRIBE_ENDPOINT = "/api/agents/transcribe";
+const MAX_CLIP_MS = 60_000;
+
+const canRecord = () =>
+    typeof window !== "undefined" &&
+    typeof MediaRecorder !== "undefined" &&
+    Boolean(navigator.mediaDevices?.getUserMedia);
+
+const blobToBase64 = (blob) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(",")[1] || "");
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
 
 const EDPanel = ({ onClose }) => {
     const [messages, setMessages] = useState([]);
@@ -72,13 +74,15 @@ const EDPanel = ({ onClose }) => {
     const [status, setStatus] = useState("idle"); // idle|listening|thinking|speaking
     const [voiceOn, setVoiceOn] = useState(true);
     const [error, setError] = useState(null);
+    const [level, setLevel] = useState(0); // live mic amplitude, 0..1
     const inputRef = useRef(null);
     const scrollRef = useRef(null);
     const audioRef = useRef(null);
     const recRef = useRef(null);
     const abortRef = useRef(null);
-    const canListen = typeof window !== "undefined" &&
-        Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
+    const levelRafRef = useRef(0);
+    const clipTimerRef = useRef(null);
+    const canListen = canRecord();
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -87,8 +91,14 @@ const EDPanel = ({ onClose }) => {
         return () => {
             window.removeEventListener("keydown", onKey);
             audioRef.current?.pause();
-            listeningRef.current = false; // stop the keep-alive before aborting
-            recRef.current?.abort?.();
+            cancelAnimationFrame(levelRafRef.current);
+            clearTimeout(clipTimerRef.current);
+            const rec = recRef.current;
+            if (rec && rec.state !== "inactive") {
+                rec.onstop = null; // don't transcribe into an unmounted panel
+                rec.stop();
+                rec.stream?.getTracks?.().forEach((t) => t.stop());
+            }
             abortRef.current?.abort();
             // Hand the wheel back to the page (Lenis resumes on this).
             window.dispatchEvent(new CustomEvent("ed-close"));
@@ -146,57 +156,87 @@ const EDPanel = ({ onClose }) => {
         }
     };
 
-    const listeningRef = useRef(false);
-
+    /**
+     * Voice capture: record with MediaRecorder, transcribe server-side.
+     * The mic stays open until the visitor ends it — no vendor VAD cutting
+     * people off mid-sentence — and a live analyser drives the core's
+     * ripple from the real signal.
+     */
     const stopListening = () => {
-        listeningRef.current = false;
-        recRef.current?.stop();
-        setStatus("idle");
-        // Submit whatever was transcribed.
-        const text = inputRef.current?.value?.trim();
-        if (text) send(text);
+        const rec = recRef.current;
+        if (rec && rec.state !== "inactive") rec.stop();
     };
 
-    const listen = () => {
+    const listen = async () => {
         if (status === "listening") { stopListening(); return; }
-        const rec = getRecognition();
-        if (!rec) return;
-        recRef.current = rec;
-        listeningRef.current = true;
-        setStatus("listening");
+        if (!canRecord()) return;
         setError(null);
-        rec.onresult = (e) => {
-            // Recognition delivers one last result AFTER stop() — without
-            // this guard it re-fills the input right after send cleared it.
-            if (!listeningRef.current) return;
-            // Stitch finals + current interim into the input, live.
-            let text = "";
-            for (let i = 0; i < e.results.length; i++) {
-                text += e.results[i][0]?.transcript || "";
+        let stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch {
+            setError("Microphone access is blocked — check the address-bar permission, or just type.");
+            return;
+        }
+
+        // Real amplitude for the listening ripple.
+        let audioCtx;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            audioCtx.createMediaStreamSource(stream).connect(analyser);
+            const buf = new Uint8Array(analyser.frequencyBinCount);
+            const meter = () => {
+                if (!recRef.current || recRef.current.state === "inactive") return;
+                analyser.getByteTimeDomainData(buf);
+                let peak = 0;
+                for (let i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i] - 128));
+                setLevel(Math.min(1, peak / 60));
+                levelRafRef.current = requestAnimationFrame(meter);
+            };
+            levelRafRef.current = requestAnimationFrame(meter);
+        } catch { /* metering is decoration — never block recording */ }
+
+        const chunks = [];
+        const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+            ? "audio/webm;codecs=opus"
+            : MediaRecorder.isTypeSupported("audio/mp4")
+                ? "audio/mp4"
+                : "";
+        const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+        recRef.current = rec;
+        rec.ondataavailable = (e) => { if (e.data?.size) chunks.push(e.data); };
+        rec.onstop = async () => {
+            cancelAnimationFrame(levelRafRef.current);
+            setLevel(0);
+            stream.getTracks().forEach((t) => t.stop());
+            audioCtx?.close?.();
+            recRef.current = null;
+            const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
+            if (blob.size < 1200) { setStatus("idle"); return; } // basically silence
+            setStatus("thinking");
+            try {
+                const audio = await blobToBase64(blob);
+                const res = await fetch(TRANSCRIBE_ENDPOINT, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ audio, mimeType: rec.mimeType }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data?.error || "Transcription failed.");
+                const text = (data.text || "").trim();
+                if (text) send(text);
+                else { setStatus("idle"); setError("Didn't catch that — try again, or type it."); }
+            } catch (err) {
+                setStatus("idle");
+                setError(err?.message || "Voice input hit a snag — typing works just as well.");
             }
-            setInput(text);
         };
-        rec.onerror = (e) => {
-            listeningRef.current = false;
-            setStatus("idle");
-            // A silent failure here looked like a dead button — say why.
-            if (e?.error !== "no-speech" && e?.error !== "aborted") {
-                setError(
-                    e?.error === "not-allowed" || e?.error === "service-not-allowed"
-                        ? "Microphone access is blocked — check the address-bar permission, or just type."
-                        : "Voice input hit a snag — typing works just as well."
-                );
-            }
-        };
-        rec.onend = () => {
-            // Chrome hard-stops recognition (~60s or on silence). If the
-            // visitor is still in listening mode, quietly restart — the
-            // mic should stay open until THEY end it.
-            if (listeningRef.current) {
-                try { rec.start(); } catch { listeningRef.current = false; setStatus("idle"); }
-            }
-        };
-        try { rec.start(); } catch { listeningRef.current = false; setStatus("idle"); }
+        rec.start();
+        setStatus("listening");
+        // Hard stop so a forgotten mic can't record (or bill) forever.
+        clipTimerRef.current = setTimeout(stopListening, MAX_CLIP_MS);
     };
 
     return (
@@ -222,13 +262,17 @@ const EDPanel = ({ onClose }) => {
 
                 {/* The core — breathes at idle, ripples when listening,
                     spins while thinking, pulses while speaking */}
-                <div className={`ed-core ed-core--${status}`} aria-hidden="true">
+                <div
+                    className={`ed-core ed-core--${status}`}
+                    aria-hidden="true"
+                    style={status === "listening" ? { "--level": level.toFixed(2) } : undefined}
+                >
                     <span className="ed-core-ring r1" />
                     <span className="ed-core-ring r2" />
                     <span className="ed-core-heart" />
                 </div>
                 <p className="ed-status font-mono" aria-live="polite">
-                    {status === "listening" && "LISTENING…"}
+                    {status === "listening" && "LISTENING — TAP MIC TO SEND"}
                     {status === "thinking" && "PROCESSING…"}
                     {status === "speaking" && "RESPONDING…"}
                     {status === "idle" && (messages.length === 0 ? "ASK ME ABOUT EDDY" : " ")}
@@ -259,6 +303,8 @@ const EDPanel = ({ onClose }) => {
                     className="ed-input-row"
                     onSubmit={(e) => {
                         e.preventDefault();
+                        // Enter while recording ends the clip (which then
+                        // transcribes and sends itself).
                         if (status === "listening") stopListening();
                         else send();
                     }}
@@ -280,7 +326,7 @@ const EDPanel = ({ onClose }) => {
                         maxLength={MAX_QUESTION}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={status === "listening"
-                            ? "Listening — tap the mic again to send…"
+                            ? "Recording — tap the mic again when you're done…"
                             : "Ask about Eddy — experience, visa, projects…"}
                         aria-label="Ask E.D. a question"
                     />

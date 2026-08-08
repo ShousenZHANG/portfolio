@@ -1395,7 +1395,8 @@ section {
 }
 .ed-core-ring.r2 { inset: 12px; border-color: var(--sig-2-glow); }
 
-/* listening — rings ripple outward */
+/* listening — rings ripple outward, and the heart tracks the REAL mic
+   amplitude (--level, written by the analyser each frame) */
 .ed-core--listening .ed-core-ring {
   animation: ed-ripple 1.4s var(--ease-soft) infinite;
 }
@@ -1403,6 +1404,12 @@ section {
 @keyframes ed-ripple {
   0% { transform: scale(0.82); opacity: 0.9; }
   100% { transform: scale(1.28); opacity: 0; }
+}
+.ed-core--listening .ed-core-heart {
+  animation: none;
+  transform: scale(calc(1 + var(--level, 0) * 0.45));
+  box-shadow: 0 0 calc(20px + var(--level, 0) * 30px) var(--sig-glow);
+  transition: transform 0.08s linear, box-shadow 0.08s linear;
 }
 /* thinking — rings spin (dashed) */
 .ed-core--thinking .ed-core-ring {

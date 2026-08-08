@@ -5,14 +5,13 @@
 
 import OpenAI from "openai";
 import { LLMError } from "../_jd/llm.js";
-import { PERSONA } from "./persona.js";
+import { PERSONA, STYLE_SHOTS } from "./persona.js";
 
-// E.D. runs a smarter default than the JD matcher: personality + style
-// adherence live or die on instruction-following, and gpt-4.1-mini is a
-// clear step up from 4o-mini there while a reply still costs ~$0.001.
-// Override with OPENAI_ASK_MODEL without touching the matcher's model.
-const MODEL_NAME =
-  process.env.OPENAI_ASK_MODEL || process.env.OPENAI_MODEL || "gpt-4.1-mini";
+// E.D. deliberately does NOT fall back to OPENAI_MODEL: that variable is
+// the JD matcher's dial (often pinned to a cheap model), and inheriting it
+// silently downgraded E.D.'s brain — which is exactly what personality and
+// style adherence depend on. Only an explicit OPENAI_ASK_MODEL overrides.
+const MODEL_NAME = process.env.OPENAI_ASK_MODEL || "gpt-4.1-mini";
 const TTS_MODEL = "tts-1";
 const TTS_VOICE = "onyx";
 
@@ -44,8 +43,16 @@ export function buildMessages(question, history) {
       content: t.content.slice(0, LIMITS.historyChars),
     }));
 
+  // Few-shots go in as real turns, before the live conversation: the model
+  // imitates what it sees said, not what it's told about saying.
+  const shots = STYLE_SHOTS.flatMap((s) => [
+    { role: "user", content: s.user },
+    { role: "assistant", content: s.assistant },
+  ]);
+
   return [
     { role: "system", content: PERSONA },
+    ...shots,
     ...turns,
     {
       role: "user",
@@ -69,7 +76,9 @@ export async function callAsk(question, history, client) {
   try {
     completion = await oa.chat.completions.create({
       model: MODEL_NAME,
-      temperature: 0.7, // room for personality; facts stay pinned by the persona
+      temperature: 0.75,      // room for personality; facts stay pinned by the persona
+      presence_penalty: 0.4,  // discourages the stock "As an assistant…" cadence
+      frequency_penalty: 0.3, // stops phrase-recycling across a conversation
       max_tokens: LIMITS.answerTokens,
       messages: buildMessages(question, history),
     });

@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { buildMessages, callAsk, synthesize, LIMITS } from '../../../api/agents/_ask/assistant.js';
-import { PERSONA, SUGGESTED_QUESTIONS } from '../../../api/agents/_ask/persona.js';
+import { PERSONA, SUGGESTED_QUESTIONS, STYLE_SHOTS } from '../../../api/agents/_ask/persona.js';
+
+// system + (user/assistant per style shot)
+const PREFIX = 1 + STYLE_SHOTS.length * 2;
 import { LLMError } from '../../../api/agents/_jd/llm.js';
 
 const throwingClient = (err) => ({
@@ -50,12 +53,20 @@ test('buildMessages truncates an oversized question', () => {
   assert.equal(msgs.at(-1).content.length, LIMITS.question);
 });
 
+test('buildMessages injects the style shots as real turns', () => {
+  const msgs = buildMessages('q', []);
+  assert.equal(msgs.length, PREFIX + 1);
+  assert.equal(msgs[1].role, 'user');
+  assert.equal(msgs[1].content, STYLE_SHOTS[0].user);
+  assert.equal(msgs[2].role, 'assistant');
+  assert.equal(msgs[2].content, STYLE_SHOTS[0].assistant);
+});
+
 test('buildMessages keeps only the most recent turns', () => {
   const history = Array.from({ length: 20 }, (_, i) => ({ role: 'user', content: `q${i}` }));
   const msgs = buildMessages('now', history);
-  // system + 8 turns + question
-  assert.equal(msgs.length, 1 + LIMITS.historyTurns + 1);
-  assert.equal(msgs[1].content, 'q12'); // oldest kept
+  assert.equal(msgs.length, PREFIX + LIMITS.historyTurns + 1);
+  assert.equal(msgs[PREFIX].content, 'q12'); // oldest kept
 });
 
 test('buildMessages drops junk roles and non-string content', () => {
@@ -66,18 +77,18 @@ test('buildMessages drops junk roles and non-string content', () => {
     null,
     'garbage',
   ]);
-  assert.equal(msgs.length, 3); // system + 1 legit turn + question
-  assert.equal(msgs[1].content, 'legit');
+  assert.equal(msgs.length, PREFIX + 1 + 1); // shots + 1 legit turn + question
+  assert.equal(msgs[PREFIX].content, 'legit');
 });
 
 test('buildMessages truncates oversized history turns', () => {
   const msgs = buildMessages('q', [{ role: 'user', content: 'y'.repeat(5000) }]);
-  assert.equal(msgs[1].content.length, LIMITS.historyChars);
+  assert.equal(msgs[PREFIX].content.length, LIMITS.historyChars);
 });
 
 test('buildMessages tolerates a non-array history', () => {
   const msgs = buildMessages('q', 'not-an-array');
-  assert.equal(msgs.length, 2);
+  assert.equal(msgs.length, PREFIX + 1);
 });
 
 // ── callAsk error taxonomy ────────────────────────────────────
