@@ -11,48 +11,47 @@ GitHub: https://github.com/ShousenZHANG
 Portfolio: https://eddyzhang.me
 
 SUMMARY
-AI Engineer with 3+ years as a software engineer, building AI solutions that make it
-into production and into daily use. I work end to end, partnering with stakeholders to
-understand the real problem, then designing, shipping, and improving what actually
-gets used. Quick to learn, clear in communication, and honest about trade-offs.
+AI Engineer building production agents across the Microsoft ecosystem - Copilot Studio,
+MCP, Power Automate, Dataverse - and shipping an end-to-end LLM product solo.
+Full-time working rights (485 visa).
 
 PROFESSIONAL EXPERIENCE
 
 AI Engineer
 Stepping Stone House
-Sydney, Australia | Jul 2026 - Present
-- Shipped a production Copilot Studio agent grounded in SharePoint via MCP, fed by a Power Automate flow that captures meeting notes, converts them to Word, and archives them automatically.
-- Built an automated Python pipeline using open-source MarkItDown and Playwright that converts documents and web pages into Markdown, so the agent retrieves answers more accurately.
+Sydney, Australia | Jul 2026 - Aug 2026
+- Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.
+- Built a C#/Python desktop tool converting 15+ document, audio and web formats into agent-ready Markdown via MarkItDown, faster-whisper and Playwright, powering the agents' curated knowledge base.
+- Automated audit archiving of Teams AI meeting notes: a weekly Power Automate workflow pulls ~10 meetings' notes via the Microsoft Graph meeting AI insights API, converts them to Word and files them in SharePoint.
 
 Junior Integration & Automation Analyst
 Corrs Chambers Westgarth
 Sydney, Australia | Mar 2026 - Jul 2026
-- Shipped a production Copilot Studio agent in Teams that helps staff find trusted answers across enterprise systems.
-- Built a scheduled workflow that calls the Boomi REST API to triage and diagnose production log errors.
-- Engineered reusable agent Skills that raise answer accuracy while cutting Credit cost, alongside dynamic Power Automate agent flows orchestrating multi-step business logic.
+- Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.
+- Delivered and piloted the agent across five platforms - ServiceNow, SharePoint, Loop, NetDocs and Intapp - letting staff query trusted knowledge and submit articles through an AI-assisted review flow.
+- Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team - replacing ~30 minutes of daily manual triage.
+- Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.
+- Engineered reusable agent Skills that raised answer accuracy while cutting per-query Copilot Credit cost across the firm's Copilot Studio agents.
 
 Software Engineer
 Newtouch Software Co., Ltd.
 Shanghai, China | Aug 2022 - Apr 2023
-- Developed and maintained high-scale microservices and RESTful APIs using Java and Spring Boot.
-- Implemented unit testing using JUnit to improve code reliability and reduce production regressions.
-- Delivered repeatable releases by containerising services with Docker and running CI/CD pipelines on Linux.
+- Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.
+- Containerised services with Docker and ran CI/CD pipelines on Linux for repeatable releases.
 
 PROJECTS
 
 Joblit - AI Job Search Platform
 Next.js, TypeScript, Prisma, PostgreSQL, Claude | GitHub | Live App
 Sydney, Australia | Jul 2025 - Present
-- Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering.
-- Established CI/CD pipelines, automated testing, and containerized deployment using GitHub Actions and Vercel.
-- Integrating an open-source LLM and wiki-style knowledge layer to give agents persistent, grounded memory.
+- Architected and shipped a local-first AI platform solo: versioned prompt contracts, strict Zod validation of any LLM's JSON, no server-side model keys, backed by 2,100+ automated tests across five CI gates.
+- Built deterministic evaluation gates: an evidence ledger that blocks unsupported AI claims before publication, and an ATS PDF validator enforcing page, text-layer and keyword-coverage rules.
 
 Project Contest Platform
 Java, MySQL, RabbitMQ, Docker, AWS | GitHub | Live App: https://project-contest-platform.vercel.app/ | Runner-up, Coding Fest 2025
 Sydney, Australia | Feb 2025 - Jun 2025
-- Built backend microservices using Spring Cloud and implemented secure authentication with OAuth2/JWT.
-- Enabled event-driven messaging with RabbitMQ for real-time notifications and cross-service coordination.
-- Delivered end-to-end testing with JUnit, and automated deployment via a CI/CD pipeline on Docker.
+- Built backend microservices with Spring Cloud and secured authentication with OAuth2/JWT; event-driven messaging via RabbitMQ powers real-time notifications across services.
+- Delivered end-to-end JUnit testing and automated Docker CI/CD deployment across services.
 
 EDUCATION
 
@@ -65,8 +64,7 @@ Jiangsu, China | Sep 2016 - Jun 2020
 
 SKILLS
 
-Microsoft & Power Platform: Copilot Studio (Agents, Agent Flows, Skills), Power Automate, Power Apps, Dataverse
-AI & Agents: AI Agents, RAG, LLM Orchestration, MCP, Work IQ, Prompt & Context Engineering, Skills Engineering
-Integration & Data: Boomi, ServiceNow, Dataverse Data Modeling, Data Pipelines, REST APIs, SQL, Playwright
-Software Engineering: Java, Spring Boot, Python, TypeScript, React, Next.js
-Cloud & DevOps: Azure, AWS, Docker, GitHub Actions, CI/CD
+Microsoft & Power Platform: Copilot Studio (Agents, Flows, Skills), Power Automate, Power Apps, Dataverse
+AI & Agents: RAG, Model Context Protocol (MCP), LLM Orchestration, Prompt & Context Engineering
+Integration & Data: Boomi, ServiceNow, Dataverse Data Modelling, REST APIs, SQL, Playwright
+Engineering & Cloud: Java, Spring Boot, Python, TypeScript, React, Next.js, Azure, AWS, Docker, GitHub Actions

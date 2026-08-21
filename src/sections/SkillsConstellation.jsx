@@ -18,27 +18,27 @@ const CATS = {
 
 const NODES = [
     // Microsoft & Power Platform (top center — the signature cluster)
-    { id: "copilot", label: "Copilot Studio", cat: "ms", x: 47, y: 10, r: 7.5, used: ["Stepping Stone House — SharePoint agent", "Corrs — Teams agent"] },
-    { id: "pautomate", label: "Power Automate", cat: "ms", x: 32, y: 20, r: 6, used: ["SSH meeting-notes flow", "Corrs agent flows"] },
-    { id: "dataverse", label: "Dataverse", cat: "ms", x: 55, y: 24, r: 6.5, used: ["Reusable agent Skills", "data modeling"] },
+    { id: "copilot", label: "Copilot Studio", cat: "ms", x: 47, y: 10, r: 7.5, used: ["Stepping Stone House — 2 published agents", "Corrs — trusted KM agent"] },
+    { id: "pautomate", label: "Power Automate", cat: "ms", x: 32, y: 20, r: 6, used: ["Teams meeting-notes archiving", "Corrs daily log-triage flow"] },
+    { id: "dataverse", label: "Dataverse", cat: "ms", x: 55, y: 24, r: 6.5, used: ["Corrs — verifiable KM data model", "reusable agent Skills"] },
     { id: "powerapps", label: "Power Apps", cat: "ms", x: 41, y: 33, r: 5, used: ["Microsoft Power Platform"] },
 
     // AI & Agents (left)
-    { id: "agents", label: "AI Agents", cat: "ai", x: 19, y: 30, r: 6.5, used: ["SSH + Corrs Copilot agents", "Joblit"] },
-    { id: "rag", label: "RAG", cat: "ai", x: 9, y: 43, r: 5.5, used: ["Grounded retrieval at SSH + Corrs"] },
-    { id: "mcp", label: "MCP", cat: "ai", x: 23, y: 46, r: 5.5, used: ["SSH — SharePoint grounding", "this site"] },
-    { id: "workiq", label: "Work IQ", cat: "ai", x: 11, y: 56, r: 5, used: ["Microsoft 365 agent work"] },
-    { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 27, y: 59, r: 5.5, used: ["Joblit", "JD matcher"] },
+    { id: "agents", label: "AI Agents", cat: "ai", x: 19, y: 30, r: 6.5, used: ["2 published agents — 10+ staff (SSH)", "Corrs KM agent — piloted across 5 platforms"] },
+    { id: "rag", label: "RAG", cat: "ai", x: 9, y: 43, r: 5.5, used: ["Curated Markdown knowledge (SSH)", "Corrs trusted answers"] },
+    { id: "mcp", label: "MCP", cat: "ai", x: 23, y: 46, r: 5.5, used: ["SSH agents — grounded via MCP tool calls"] },
+    { id: "llmorch", label: "LLM Orchestration", cat: "ai", x: 11, y: 56, r: 5.5, used: ["Joblit — any-LLM, Zod-validated"] },
+    { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 27, y: 59, r: 5.5, used: ["Joblit prompt contracts", "JD matcher"] },
 
     // Integration & Data (lower center-left)
-    { id: "boomi", label: "Boomi", cat: "data", x: 41, y: 52, r: 6, used: ["Corrs production-log triage"] },
-    { id: "servicenow", label: "ServiceNow", cat: "data", x: 45, y: 65, r: 5.5, used: ["Corrs enterprise systems"] },
-    { id: "playwright", label: "Playwright", cat: "data", x: 57, y: 71, r: 5, used: ["SSH Markdown pipeline"] },
+    { id: "boomi", label: "Boomi", cat: "data", x: 41, y: 52, r: 6, used: ["Corrs log triage (~30 min/day saved)", "NL flow-building prototype"] },
+    { id: "servicenow", label: "ServiceNow", cat: "data", x: 45, y: 65, r: 5.5, used: ["1 of 5 platforms the Corrs agent spans"] },
+    { id: "playwright", label: "Playwright", cat: "data", x: 57, y: 71, r: 5, used: ["SSH Markdown conversion tool"] },
     { id: "sql", label: "SQL / REST", cat: "data", x: 30, y: 70, r: 5, used: ["Newtouch APIs", "Contest Platform"] },
 
     // Software Engineering (right)
-    { id: "java", label: "Java + Spring", cat: "eng", x: 74, y: 13, r: 6.5, used: ["Newtouch", "Contest Platform"] },
-    { id: "python", label: "Python", cat: "eng", x: 88, y: 23, r: 5.5, used: ["SSH Markdown pipeline (MarkItDown)"] },
+    { id: "java", label: "Java + Spring", cat: "eng", x: 74, y: 13, r: 6.5, used: ["Newtouch (+ MinIO migration)", "Contest Platform"] },
+    { id: "python", label: "Python", cat: "eng", x: 88, y: 23, r: 5.5, used: ["SSH desktop tool — 15+ formats"] },
     { id: "ts", label: "TypeScript", cat: "eng", x: 67, y: 29, r: 5.5, used: ["Joblit", "this portfolio"] },
     { id: "react", label: "React / Next", cat: "eng", x: 84, y: 37, r: 6, used: ["This portfolio", "Joblit"] },
 
@@ -54,10 +54,10 @@ const EDGES = [
     ["copilot", "pautomate"], ["copilot", "dataverse"], ["pautomate", "dataverse"],
     ["copilot", "powerapps"], ["dataverse", "powerapps"],
     // the agent story — Copilot Studio wired to AI + integration + cloud
-    ["copilot", "agents"], ["copilot", "mcp"], ["copilot", "workiq"],
+    ["copilot", "agents"], ["copilot", "mcp"], ["copilot", "llmorch"],
     ["dataverse", "rag"], ["pautomate", "boomi"], ["azure", "copilot"],
     // AI cluster
-    ["agents", "rag"], ["agents", "mcp"], ["agents", "prompt"], ["rag", "mcp"], ["mcp", "workiq"],
+    ["agents", "rag"], ["agents", "mcp"], ["agents", "prompt"], ["rag", "mcp"], ["llmorch", "prompt"],
     // Integration & data
     ["boomi", "servicenow"], ["servicenow", "sql"], ["servicenow", "mcp"], ["sql", "java"],
     ["playwright", "python"], ["playwright", "copilot"],

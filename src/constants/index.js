@@ -15,42 +15,47 @@ const navLinks = [
   },
 ];
 
-// Every stat is defensible against the CV, and none contradict each other:
-// - "3+ years" matches the CV summary verbatim.
-// - "2 production Copilot agents" = Stepping Stone House + Corrs, both shipped.
-// - "10+ Skills & flows" = reusable agent Skills + Power Automate agent flows + pipelines.
-// - "40K+ lines" = the Contest Platform's stated 40,000+ LOC.
+// Every stat quotes a specific CV line verbatim — no round numbers a
+// recruiter could arithmetic-check into a lie, and no verb the CV didn't
+// use ("published" and "piloted" are not interchangeable):
+// - 2 published = "Built and published two Copilot Studio agents" (SSH).
+// - 10+ staff = "now used by 10+ staff" (SSH).
+// - 5 platforms = ServiceNow, SharePoint, Loop, NetDocs, Intapp (Corrs).
+// - 2,100+ tests across five CI gates = Joblit.
 const counterItems = [
-  { value: 3, suffix: "+", label: "Years Building Production Software" },
-  { value: 2, suffix: "", label: "Production Copilot Agents Shipped" },
-  { value: 10, suffix: "+", label: "AI Agent Skills & Flows Shipped" },
-  { value: 40, suffix: "K+", label: "Lines of Production Code Shipped" },
+  { value: 2, suffix: "", label: "Copilot Agents Published" },
+  { value: 10, suffix: "+", label: "Staff Using His Agents" },
+  { value: 5, suffix: "", label: "Enterprise Systems Unified" },
+  { value: 2100, suffix: "+", label: "Automated Tests Behind Joblit" },
 ];
 
 const expCards = [
   {
     title: "AI Engineer — Stepping Stone House",
-    date: "Jul 2026 – Present",
+    date: "Jul 2026 – Aug 2026",
     responsibilities: [
-      "Shipped a production Copilot Studio agent grounded in SharePoint via MCP, fed by a Power Automate flow that captures meeting notes, converts them to Word, and archives them automatically.",
-      "Built an automated Python pipeline using open-source MarkItDown and Playwright that converts documents and web pages into Markdown, so the agent retrieves answers more accurately.",
+      "Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.",
+      "Built a C#/Python desktop tool converting 15+ document, audio and web formats into agent-ready Markdown via MarkItDown, faster-whisper and Playwright, powering the agents' curated knowledge base.",
+      "Automated audit archiving of Teams AI meeting notes: a weekly Power Automate workflow pulls ~10 meetings' notes via the Microsoft Graph meeting AI insights API, converts them to Word and files them in SharePoint.",
     ],
   },
   {
     title: "Junior Integration & Automation Analyst — Corrs Chambers Westgarth",
     date: "Mar 2026 – Jul 2026",
     responsibilities: [
-      "Shipped a production Copilot Studio agent in Teams that helps staff find trusted answers across enterprise systems.",
-      "Built a scheduled workflow that calls the Boomi REST API to triage and diagnose production log errors.",
-      "Engineered reusable agent Skills that raise answer accuracy while cutting Credit cost, alongside dynamic Power Automate agent flows orchestrating multi-step business logic.",
+      "Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.",
+      "Delivered and piloted the agent across five platforms — ServiceNow, SharePoint, Loop, NetDocs and Intapp — letting staff query trusted knowledge and submit articles through an AI-assisted review flow.",
+      "Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team — replacing ~30 minutes of daily manual triage.",
+      "Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.",
+      "Engineered reusable agent Skills that raised answer accuracy while cutting per-query Copilot Credit cost across the firm's Copilot Studio agents.",
     ],
   },
   {
     title: "Master of Information Technology — UNSW Sydney",
     date: "Sep 2023 – Jun 2025",
     responsibilities: [
-      "Graduated with Excellence Honours (WAM 82.4/100), completing the program one term early.",
-      "Led the Coding Fest 2025 runner-up project — a scalable Spring Cloud microservices competition platform.",
+      "Graduated with Excellence Honours (WAM 82.4/100).",
+      "Built the backend of the Coding Fest 2025 runner-up project — a Spring Cloud microservices competition platform.",
       "Explored AI disciplines including machine learning, NLP, and large language models (LLMs).",
     ],
   },
@@ -58,9 +63,8 @@ const expCards = [
     title: "Software Engineer — Newtouch Software Co., Ltd.",
     date: "Aug 2022 – Apr 2023",
     responsibilities: [
-      "Developed and maintained high-scale microservices and RESTful APIs using Java and Spring Boot.",
-      "Implemented unit testing using JUnit to improve code reliability and reduce production regressions.",
-      "Delivered repeatable releases by containerising services with Docker and running CI/CD pipelines on Linux.",
+      "Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.",
+      "Containerised services with Docker and ran CI/CD pipelines on Linux for repeatable releases.",
     ],
   },
 ];

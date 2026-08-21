@@ -16,11 +16,11 @@ export const projects = [
       { src: "/images/joblit_extension.webp", alt: "Joblit AutoFill Chrome Extension installation page", w: 1600, h: 842 },
     ],
     description:
-      "An {AI-powered job search platform} with {Claude Code} integration — orchestrates multi-provider LLMs to automate everything from discovering roles to auto-filling applications.",
+      "A {local-first AI job platform, architected and shipped solo} — versioned prompt contracts, strict Zod validation of any LLM's JSON, and {no server-side model keys}, backed by {2,100+ automated tests} across five CI gates.",
     outcomes: [
-      "Integrated Claude Code with multi-provider LLM orchestration and structured prompt engineering",
-      "Shipped on CI/CD with automated testing and containerized deploys (GitHub Actions + Vercel)",
-      "Integrating an open-source LLM with a wiki-style knowledge layer for persistent, grounded agent memory",
+      "Evidence ledger: deterministic gate that blocks unsupported AI claims before publication",
+      "ATS PDF validator enforcing page, text-layer and keyword-coverage rules",
+      "Any-LLM JSON is Zod-validated against versioned prompt contracts — no silent drift",
     ],
     tech: ["Next.js", "TypeScript", "Prisma + PostgreSQL", "Claude", "Chrome Extension"],
     links: [
@@ -40,7 +40,7 @@ export const projects = [
       { src: "/images/Pipeline.webp", alt: "CI/CD Pipeline", w: 1536, h: 1024 },
     ],
     description:
-      "Cloud-native competition system — {7+ Spring Cloud microservices}, JWT SSO, RBAC, and async messaging via RabbitMQ. {40,000+ lines} of production code at {95%+ CI/CD consistency}.",
+      "Cloud-native competition system — {Spring Cloud microservices} secured with {OAuth2/JWT}, with {event-driven RabbitMQ messaging} powering real-time notifications across services.",
     highlight: {
       title: "Runner-up — Best Project in AI for Education",
       description:
