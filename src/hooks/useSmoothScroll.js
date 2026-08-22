@@ -53,6 +53,19 @@ export function useSmoothScroll() {
             if (!target) return;
             e.preventDefault();
             lenis.scrollTo(target, { offset: -80 });
+            // preventDefault() cancels the fragment navigation, and with it
+            // the browser's move of the sequential-focus origin — so the skip
+            // link scrolled but the next Tab went straight back to the navbar.
+            // Move the origin by hand. Targets that aren't natively focusable
+            // (tabIndex < 0 with no attribute) need the tabindex or focus() is
+            // a silent no-op — the guard keeps natively focusable targets in
+            // the tab order instead of quietly evicting them. No stray ring for
+            // mouse users: the only outline rule in index.css is :focus-visible,
+            // which programmatic focus after a click does not match.
+            if (target.tabIndex < 0 && !target.hasAttribute("tabindex")) {
+                target.setAttribute("tabindex", "-1");
+            }
+            target.focus({ preventScroll: true });
         };
         document.addEventListener("click", onAnchorClick);
 

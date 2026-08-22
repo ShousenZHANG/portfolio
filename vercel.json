@@ -22,15 +22,27 @@
       ]
     },
     {
-      "source": "/(.*).(svg|png|jpg|jpeg|webp|avif|mp4|woff2)",
+      "source": "/(images|videos|files|cv)/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/(favicon.svg|apple-touch-icon.svg|apple-touch-icon.png)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/api/agents/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/api/og",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=604800" }
       ]
     }
   ]

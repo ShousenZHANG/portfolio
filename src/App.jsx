@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Hero from "./sections/Hero.jsx";
 import NavBar from "./components/NavBar.jsx";
 import LogoSection from "./sections/LogoSection.jsx";
@@ -28,14 +28,14 @@ function useAuroraTiles() {
         // Measuring inside the rAF callback instead would run before the
         // frame's layout, so it flushes whatever GSAP/ScrollTrigger/Lenis
         // queued that tick — a full-document reflow at 60fps whenever you
-        // hover a tile while scrolling. Same cache-on-enter shape as
-        // useTilt/useMagnetic.
-        // Known caveat: scrolling with the pointer parked on a tile leaves
-        // the rect stale, which only slides the glow's origin by the scroll
-        // delta (cosmetic, no jump). Nulling hoverRect is the whole fix, so
-        // a later scroll listener can invalidate all three hooks together.
+        // hover a tile while scrolling. The rect is viewport-relative, so
+        // scrolling with the pointer parked on a tile would leave it stale —
+        // onScroll below slides it by the exact delta instead of re-measuring,
+        // which would otherwise read the tile mid-hover-transform (it is
+        // lifted 3px) and cost a layout. Same shape in useTilt/useMagnetic.
         let hoverTile = null;
         let hoverRect = null;
+        let scrollAt = 0;
         const apply = () => {
             raf = 0;
             if (!hoverTile || !hoverRect || !ev) return;
@@ -43,7 +43,7 @@ function useAuroraTiles() {
             hoverTile.style.setProperty("--my", `${ev.clientY - hoverRect.top}px`);
         };
         const onMove = (e) => {
-            if (!hoverTile) return;
+            if (!hoverTile || !hoverRect) return;
             ev = e;
             if (!raf) raf = requestAnimationFrame(apply);
         };
@@ -53,7 +53,13 @@ function useAuroraTiles() {
             const tile = e.target?.closest?.(".ed-tile") ?? null;
             if (tile === hoverTile) return;
             hoverTile = tile;
-            hoverRect = tile ? tile.getBoundingClientRect() : null;
+            if (tile) {
+                const r = tile.getBoundingClientRect();
+                hoverRect = { left: r.left, top: r.top };
+                scrollAt = window.scrollY;
+            } else {
+                hoverRect = null;
+            }
         };
         const onOut = (e) => {
             if (!hoverTile) return;
@@ -64,13 +70,24 @@ function useAuroraTiles() {
             hoverTile = null;
             hoverRect = null;
         };
+        // Lenis scrolls the window for real, so the native scroll event still
+        // fires. Slide the cached rect by the delta: exact, and it never
+        // reads layout on the hottest path on the site.
+        const onScroll = () => {
+            if (!hoverRect) return;
+            const y = window.scrollY;
+            hoverRect = { left: hoverRect.left, top: hoverRect.top - (y - scrollAt) };
+            scrollAt = y;
+        };
         document.addEventListener("pointermove", onMove, { passive: true });
         document.addEventListener("pointerover", onOver, { passive: true });
         document.addEventListener("pointerout", onOut, { passive: true });
+        window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerover", onOver);
             document.removeEventListener("pointerout", onOut);
+            window.removeEventListener("scroll", onScroll);
             cancelAnimationFrame(raf);
             // Drop the DOM/event refs so an unmounted tree isn't retained.
             hoverTile = null;
@@ -111,6 +128,11 @@ const App = () => {
 
     // E.D. — opened from the navbar orb (custom event) or the "/" key.
     const [edOpen, setEdOpen] = useState(false);
+    // Stable identity matters: EDPanel's mount effect lists onClose in its
+    // deps, so a fresh arrow per App render would tear that effect down
+    // mid-session — killing a live recording, aborting the in-flight answer,
+    // restarting Lenis behind the open dialog and stealing the caret.
+    const closeEd = useCallback(() => setEdOpen(false), []);
     useEffect(() => {
         const onOpen = () => setEdOpen(true);
         const onKey = (e) => {
@@ -153,7 +175,9 @@ const App = () => {
             <div className="ed-grid-bg" aria-hidden="true" />
             <InteractiveBackground />
             <NavBar />
-            <main id="main-content">
+            {/* tabIndex -1 so the skip link can actually park focus here;
+                without it focus() is a no-op and Tab falls back to the navbar. */}
+            <main id="main-content" tabIndex={-1}>
                 <Hero />
                 <JDQuickCheck />
                 <LogoSection />
@@ -166,7 +190,7 @@ const App = () => {
             {edOpen && (
                 <ErrorBoundary>
                     <Suspense fallback={null}>
-                        <EDPanel onClose={() => setEdOpen(false)} />
+                        <EDPanel onClose={closeEd} />
                     </Suspense>
                 </ErrorBoundary>
             )}

@@ -41,14 +41,18 @@ const CustomCursor = () => {
             raf = requestAnimationFrame(tick);
         };
 
-        let wasInGraph = false;
+        let wasSuppressed = false;
         let wasInteractive = false;
         const onOver = (e) => {
-            // Over the precise skills graph, suppress the custom cursor.
-            const inGraph = Boolean(e.target.closest("#skills"));
-            if (inGraph !== wasInGraph) {
-                document.documentElement.classList.toggle("cursor-hidden", inGraph);
-                wasInGraph = inGraph;
+            // Suppress the decorative cursor where the real one carries meaning:
+            // the precise skills graph, and any text field — those get the native
+            // I-beam back in CSS, and showing both at once reads as a glitch.
+            const suppressed = Boolean(
+                e.target.closest('#skills, input, textarea, [contenteditable="true"]')
+            );
+            if (suppressed !== wasSuppressed) {
+                document.documentElement.classList.toggle("cursor-hidden", suppressed);
+                wasSuppressed = suppressed;
             }
             const interactive = Boolean(
                 e.target.closest('a, button, [role="button"], input, textarea, [data-magnetic]')

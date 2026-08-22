@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useJDAnalysis } from "../hooks/useJDAnalysis";
+import { useInView } from "../hooks/useInView.js";
 import Send from "lucide-react/dist/esm/icons/send";
 import Sparkles from "lucide-react/dist/esm/icons/sparkles";
 
@@ -113,6 +114,10 @@ const JDQuickCheck = () => {
   const [isMac, setIsMac] = useState(false);
   const [step, setStep] = useState(0);
   const stepTimer = useRef(null);
+  // The beacon pulses forever; park it while the card is off-screen. The CSS
+  // half keys off `.ed-tile:not(.in-view) > .jd-beacon`, so `in-view` has to
+  // sit on the tile itself and the beacon has to stay its direct child.
+  const [tileRef, tileInView] = useInView();
 
   useEffect(() => { setIsMac(detectIsMac()); }, []);
 
@@ -140,7 +145,7 @@ const JDQuickCheck = () => {
           real time. Same RAG + LLM stack I ship in production.
         </p>
 
-        <div className="ed-tile p-5 md:p-7" style={{ background: "var(--ink-1)" }}>
+        <div ref={tileRef} className={`ed-tile p-5 md:p-7 ${tileInView ? "in-view" : ""}`} style={{ background: "var(--ink-1)" }}>
           <span className="jd-beacon" aria-hidden="true" />
           {/* Sample chips — selected state derives from the textarea content */}
           <div className="flex flex-wrap items-center gap-2 mb-4">

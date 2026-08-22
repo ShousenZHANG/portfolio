@@ -23,27 +23,43 @@ export function useMagnetic(strength = 0.4) {
         const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
         const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
 
-        // Cache the rect on enter — avoids a layout read every mousemove.
-        let cx = 0;
-        let cy = 0;
+        // Cache the centre on enter — avoids a layout read every mousemove.
+        let centre = null;
+        let scrollAt = 0;
         const onEnter = () => {
             const r = el.getBoundingClientRect();
-            cx = r.left + r.width / 2;
-            cy = r.top + r.height / 2;
+            centre = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+            scrollAt = window.scrollY;
         };
         const onMove = (e) => {
-            xTo((e.clientX - cx) * strength);
-            yTo((e.clientY - cy) * strength);
+            if (!centre) onEnter();
+            xTo((e.clientX - centre.x) * strength);
+            yTo((e.clientY - centre.y) * strength);
         };
-        const onLeave = () => { xTo(0); yTo(0); };
+        const onLeave = () => { centre = null; xTo(0); yTo(0); };
+        // The centre is in viewport coords, so scrolling with the cursor
+        // parked on the element (trivial under Lenis' momentum) leaves it off
+        // by the scroll delta and the next mousemove yanks the element
+        // sideways. Slide it by the delta rather than re-measuring: while
+        // hovered the element is already displaced by the magnetic pull, so
+        // getBoundingClientRect would return the DISPLACED centre and each
+        // scroll-then-move cycle would decay the pull toward zero.
+        const onScroll = () => {
+            if (!centre) return;
+            const y = window.scrollY;
+            centre = { x: centre.x, y: centre.y - (y - scrollAt) };
+            scrollAt = y;
+        };
 
         el.addEventListener("mouseenter", onEnter);
         el.addEventListener("mousemove", onMove);
         el.addEventListener("mouseleave", onLeave);
+        window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
             el.removeEventListener("mouseenter", onEnter);
             el.removeEventListener("mousemove", onMove);
             el.removeEventListener("mouseleave", onLeave);
+            window.removeEventListener("scroll", onScroll);
             gsap.killTweensOf(el);
         };
     }, [strength]);

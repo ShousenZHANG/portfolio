@@ -7,8 +7,9 @@ import { prefersReducedMotion } from "../lib/motion.js";
  * perspective, plus a tiny lift, then springs back on leave. Physics-
  * eased via GSAP quickTo. Desktop + reduced-motion gated.
  *
- * The element rect is cached on mouseenter (and resize) instead of being
- * read every mousemove — avoids a layout read per frame (jank).
+ * The element rect is cached on mouseenter (and invalidated on scroll)
+ * instead of being read every mousemove — avoids a layout read per
+ * frame (jank).
  *
  * @param {number} max  max tilt in degrees (default 8)
  */
@@ -29,9 +30,15 @@ export function useTilt(max = 8) {
         const lift = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
 
         let rect = null;
-        const onEnter = () => { rect = el.getBoundingClientRect(); };
+        let scrollAt = 0;
+        const measure = () => {
+            const r = el.getBoundingClientRect();
+            rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+            scrollAt = window.scrollY;
+        };
+        const onEnter = measure;
         const onMove = (e) => {
-            if (!rect) rect = el.getBoundingClientRect();
+            if (!rect) measure();
             const px = (e.clientX - rect.left) / rect.width - 0.5;
             const py = (e.clientY - rect.top) / rect.height - 0.5;
             ry(px * max * 2);
@@ -39,14 +46,28 @@ export function useTilt(max = 8) {
             lift(-6);
         };
         const onLeave = () => { rect = null; rx(0); ry(0); lift(0); };
+        // The rect is in viewport coords, so scrolling with the cursor parked
+        // on the card leaves it stale by the scroll delta and the next
+        // mousemove snaps the tilt to the wrong angle. Slide it by the delta
+        // rather than re-measuring: mid-hover the card is lifted 6px and
+        // rotated, so a fresh getBoundingClientRect would return the
+        // transformed box and bake that error into the cache.
+        const onScroll = () => {
+            if (!rect) return;
+            const y = window.scrollY;
+            rect = { ...rect, top: rect.top - (y - scrollAt) };
+            scrollAt = y;
+        };
 
         el.addEventListener("mouseenter", onEnter);
         el.addEventListener("mousemove", onMove);
         el.addEventListener("mouseleave", onLeave);
+        window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
             el.removeEventListener("mouseenter", onEnter);
             el.removeEventListener("mousemove", onMove);
             el.removeEventListener("mouseleave", onLeave);
+            window.removeEventListener("scroll", onScroll);
             gsap.killTweensOf(el);
         };
     }, [max]);

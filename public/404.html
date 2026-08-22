@@ -6,14 +6,18 @@
     <title>404 — Eddy Zhang</title>
     <meta name="description" content="Page not found." />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#0e0e10" />
+    <meta name="theme-color" content="#07080e" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style>
+      /* This file ships from /public and never sees src/index.css, so every design
+         token is inlined as its literal sRGB value. They are the gamut-clipped
+         paints of --sig #7d7fff, --sig-2 #35c5db, --sig-ink #08091b, --ink-0 #07080e
+         and the --tx-0/1/2 ladder; update them here whenever :root moves. */
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html, body { height: 100%; }
       body {
-        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(124,92,255,0.08) 0%, transparent 60%), #0a0a0c;
-        color: #fff;
+        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(125,127,255,0.08) 0%, transparent 60%), #07080e;
+        color: #f1f1f5;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
         display: flex;
         align-items: center;
@@ -31,7 +35,7 @@
         font-size: 14px;
         text-transform: uppercase;
         letter-spacing: 4px;
-        color: rgba(255,255,255,0.55);
+        color: #85858c;
         margin-bottom: 12px;
       }
       h1 {
@@ -42,13 +46,13 @@
         margin-bottom: 16px;
       }
       h1 .accent {
-        background: linear-gradient(90deg, #7C5CFF, #38C6E8);
+        background: linear-gradient(90deg, #7d7fff, #35c5db);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
       }
       p {
-        color: rgba(255,255,255,0.7);
+        color: #b6b7bc;
         font-size: 16px;
         line-height: 1.6;
         margin-bottom: 32px;
@@ -59,18 +63,22 @@
         gap: 10px;
         padding: 14px 24px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #7C5CFF, #38C6E8);
-        color: #0e0e10;
+        background: linear-gradient(135deg, #7d7fff, #35c5db);
+        color: #08091b;
         text-decoration: none;
         font-weight: 700;
         font-size: 15px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
-      .home:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(56,189,248,0.4); }
-      .home:focus-visible { outline: 2px solid #7C5CFF; outline-offset: 4px; }
+      .home:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(53,197,219,0.4); }
+      .home:focus-visible { outline: 2px solid #7d7fff; outline-offset: 4px; }
       .home svg { width: 16px; height: 16px; }
       @media (prefers-reduced-motion: reduce) {
+        /* transition:none alone still lets the hover lift happen — instantly, which is
+           the jump reduced-motion users ask to avoid. Drop the displacement too and
+           keep the glow, since a colour change is not motion. */
         .home { transition: none; }
+        .home:hover { transform: none; }
       }
     </style>
   </head>
@@ -79,17 +87,17 @@
       <svg class="mark" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
         <defs>
           <linearGradient id="g404" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#38C6E8"/>
+            <stop offset="0" stop-color="#7d7fff"/><stop offset="1" stop-color="#35c5db"/>
           </linearGradient>
         </defs>
         <rect width="64" height="64" rx="15" fill="url(#g404)"/>
-        <g fill="#14111E">
+        <g fill="#08091b">
           <rect x="18" y="17" width="6.5" height="30" rx="3.25"/>
           <rect x="18" y="17" width="27" height="6.5" rx="3.25"/>
           <rect x="18" y="28.75" width="18" height="6.5" rx="3.25"/>
           <rect x="18" y="40.5" width="27" height="6.5" rx="3.25"/>
         </g>
-        <circle cx="42.5" cy="32" r="3.6" fill="#14111E"/>
+        <circle cx="42.5" cy="32" r="3.6" fill="#08091b"/>
       </svg>
       <p class="code">Error 404</p>
       <h1>This page <span class="accent">went missing</span></h1>

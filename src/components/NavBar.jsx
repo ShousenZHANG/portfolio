@@ -41,6 +41,8 @@ const NavBar = () => {
   const ulRef = useRef(null);
   const linkRefs = useRef({});
   const progressRef = useRef(null);
+  const burgerRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // One-time E.D. introduction: floats in after the reveal settles,
   // lingers long enough to be read (14s), then fades itself out.
@@ -75,7 +77,13 @@ const NavBar = () => {
     const read = () => {
       ticking = false;
       const y = window.scrollY;
-      setScrolled((prev) => (y > 10 === prev ? prev : y > 10));
+      // Dead band, not a single threshold: at a bare y > 10 a cursor parked on
+      // the line — or Lenis' inertial wobble as it settles — flips the header
+      // between its two states every frame. Enter at 24, leave at 8.
+      setScrolled((prev) => {
+        const next = prev ? y > 8 : y > 24;
+        return next === prev ? prev : next;
+      });
       const doc = document.documentElement;
       const max = doc.scrollHeight - doc.clientHeight;
       const p = max > 0 ? Math.min(1, y / max) : 0;
@@ -168,6 +176,23 @@ const NavBar = () => {
     };
   }, [menuOpen]);
 
+  // The closed dropdown is only *visually* clipped (max-h-0 + overflow-hidden),
+  // so a keyboard or switch user still tabs through five invisible links and the
+  // Contact CTA. `inert` removes them — but applying it the instant menuOpen
+  // flips would rip focus out mid-collapse (React 19 takes `inert` natively), so
+  // it lands after the 300ms transition, with focus handed back to the burger.
+  const [navInert, setNavInert] = useState(true);
+  useEffect(() => {
+    if (menuOpen) { setNavInert(false); return undefined; }
+    const t = setTimeout(() => {
+      if (dropdownRef.current?.contains(document.activeElement)) {
+        burgerRef.current?.focus({ preventScroll: true });
+      }
+      setNavInert(true);
+    }, 320);
+    return () => clearTimeout(t);
+  }, [menuOpen]);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -253,6 +278,7 @@ const NavBar = () => {
 
           {/* Mobile hamburger — glass pill button */}
           <button
+            ref={burgerRef}
             type="button"
             className="navbar-burger lg:hidden flex items-center justify-center"
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -268,6 +294,8 @@ const NavBar = () => {
       {/* Mobile dropdown */}
       <div
         id="mobile-dropdown"
+        ref={dropdownRef}
+        inert={navInert}
         className={`lg:hidden overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <nav aria-label="Mobile navigation" className="mx-4 mb-4 p-3 rounded-xl" style={{ background: "var(--ink-1)", border: "1px solid var(--hair)" }}>

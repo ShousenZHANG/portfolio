@@ -27,8 +27,13 @@ export default function handler() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "80px",
+          // Ink ladder as literal sRGB — @vercel/og's satori has no access to the
+          // :root custom properties in src/index.css. Stops 1-2 are --ink-0 / --ink-1
+          // verbatim; the last is --ink-2 held at its exact L and C but rotated to the
+          // --sig-2 hue (oklch(0.205 0.018 210)), which keeps the card's violet-to-cyan
+          // drift without inventing a lightness that is not on the ladder.
           background:
-            "linear-gradient(135deg, #131019 0%, #16121f 55%, #101a24 100%)",
+            "linear-gradient(135deg, #07080e 0%, #0e0f16 55%, #0d191c 100%)",
           color: "white",
           fontFamily: "sans-serif",
         }}
@@ -51,10 +56,12 @@ export default function handler() {
               height: "96px",
               borderRadius: "22px",
               background:
-                "linear-gradient(135deg, #7C5CFF 0%, #38C6E8 100%)",
+                "linear-gradient(135deg, #7d7fff 0%, #35c5db 100%)",
               fontSize: "60px",
               fontWeight: 900,
-              color: "#16121f",
+              // --sig-ink: the token for a fill sitting ON the signature gradient,
+              // same role the monogram plays in public/favicon.svg.
+              color: "#08091b",
               letterSpacing: "-2px",
             }}
           >
@@ -98,7 +105,7 @@ export default function handler() {
               fontSize: "56px",
               fontWeight: 700,
               background:
-                "linear-gradient(90deg, #7C5CFF 0%, #38C6E8 100%)",
+                "linear-gradient(90deg, #7d7fff 0%, #35c5db 100%)",
               backgroundClip: "text",
               color: "transparent",
               letterSpacing: "-1px",
@@ -122,7 +129,7 @@ export default function handler() {
               height: "3px",
               width: "100%",
               background:
-                "linear-gradient(90deg, transparent 0%, #7C5CFF 30%, #38C6E8 70%, transparent 100%)",
+                "linear-gradient(90deg, transparent 0%, #7d7fff 30%, #35c5db 70%, transparent 100%)",
               opacity: 0.7,
             }}
           />

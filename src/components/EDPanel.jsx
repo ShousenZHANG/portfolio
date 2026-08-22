@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import X from "lucide-react/dist/esm/icons/x";
 import Send from "lucide-react/dist/esm/icons/send";
 import Mic from "lucide-react/dist/esm/icons/mic";
@@ -28,11 +28,28 @@ const CHIPS = [
 
 const GLYPHS = "!<>-_\\/[]{}=+*^?#";
 
-/** Decode-style type-out for E.D.'s replies (skipped under reduced motion). */
+// The document is lang="en" (index.html), but E.D. answers in the visitor's
+// language. A Chinese reply left inside that subtree gets read aloud by an
+// English voice engine and set in a Latin fallback face at the wrong optical
+// size — Mona Sans has no CJK coverage. Tag the bubble that actually holds it.
+const HAN = /\p{Script=Han}/u;
+const KANA = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
+const langOf = (text) => {
+    const s = typeof text === "string" ? text : "";
+    if (KANA.test(s)) return "ja";     // kana present → Japanese, not Chinese
+    return HAN.test(s) ? "zh" : undefined;
+};
+
+/**
+ * Decode-style type-out for E.D.'s replies (skipped under reduced motion).
+ * The scrambling pass is aria-hidden: it rewrites its own text ~70x/s, which
+ * a screen reader queues and reads as glyph soup. The settled answer is
+ * announced exactly once, from onDone, through the deck's single live region.
+ */
 const TypeOut = ({ text, onDone }) => {
     const [shown, setShown] = useState(prefersReducedMotion() ? text : "");
     useEffect(() => {
-        if (prefersReducedMotion()) { onDone?.(); return undefined; }
+        if (prefersReducedMotion()) { onDone?.(text); return undefined; }
         let i = 0;
         let raf = 0;
         let last = 0;
@@ -40,7 +57,7 @@ const TypeOut = ({ text, onDone }) => {
             if (now - last > 14) {
                 last = now;
                 i += 2;
-                if (i >= text.length) { setShown(text); onDone?.(); return; }
+                if (i >= text.length) { setShown(text); onDone?.(text); return; }
                 const scramble = GLYPHS[(i * 7) % GLYPHS.length];
                 setShown(text.slice(0, i) + scramble);
             }
@@ -49,7 +66,9 @@ const TypeOut = ({ text, onDone }) => {
         raf = requestAnimationFrame(tick);
         return () => cancelAnimationFrame(raf);
     }, [text, onDone]);
-    return <>{shown}</>;
+    // Hidden only while it is still scrambling — once settled the bubble
+    // carries real text again, so the transcript stays readable on review.
+    return <span aria-hidden={shown === text ? undefined : "true"}>{shown}</span>;
 };
 
 const TRANSCRIBE_ENDPOINT = "/api/agents/transcribe";
@@ -135,6 +154,7 @@ const EDPanel = ({ onClose }) => {
     const [analyser, setAnalyser] = useState(null); // drives the wave bars
     const [recMs, setRecMs] = useState(0);          // recording stopwatch
     const [phase, setPhase] = useState(null);       // {label, since} while working
+    const [announcement, setAnnouncement] = useState(""); // the deck's ONE live region
     const inputRef = useRef(null);
     const scrollRef = useRef(null);
     const audioRef = useRef(null);
@@ -146,6 +166,27 @@ const EDPanel = ({ onClose }) => {
     const coreRef = useRef(null);
     const innerRef = useRef(null);
     const canListen = canRecord();
+
+    /**
+     * Everything worth announcing funnels through one polite region (rendered
+     * sr-only below). Nothing else in the deck is live: the transcript rewrites
+     * itself ~70x/s while a reply decodes, and a second region on the status
+     * line just made two voices read over each other.
+     *
+     * Stable identity on purpose — TypeOut's effect keys off `onDone`, so a
+     * fresh closure per render would restart the decode from zero.
+     */
+    const announce = useCallback((text) => setAnnouncement(text || ""), []);
+
+    // speaking/idle stay silent by design: by then the region already holds the
+    // settled answer, and "responding" would bury it before it was read out.
+    useEffect(() => {
+        if (status === "listening") setAnnouncement("Listening.");
+        else if (status === "thinking") setAnnouncement("Processing.");
+    }, [status]);
+
+    // Errors are shown AND announced — there is no separate role="alert".
+    const fail = (msg) => { setError(msg); setAnnouncement(msg); };
 
     /**
      * Modal hygiene, for the lifetime of the mount. Deliberately dependency-free:
@@ -287,7 +328,7 @@ const EDPanel = ({ onClose }) => {
         } catch (err) {
             if (err?.name === "AbortError") return;
             setPhase(null);
-            setError(err?.message || "E.D.'s core is unreachable. Reach Eddy directly: eddy.zhang24@gmail.com");
+            fail(err?.message || "E.D.'s core is unreachable. Reach Eddy directly: eddy.zhang24@gmail.com");
             setStatus("idle");
         }
     };
@@ -311,7 +352,7 @@ const EDPanel = ({ onClose }) => {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         } catch {
-            setError("Microphone access is blocked — check the address-bar permission, or just type.");
+            fail("Microphone access is blocked — check the address-bar permission, or just type.");
             return;
         }
 
@@ -373,11 +414,11 @@ const EDPanel = ({ onClose }) => {
                 if (!res.ok) throw new Error(data?.error || "Transcription failed.");
                 const text = (data.text || "").trim();
                 if (text) send(text);
-                else { setStatus("idle"); setPhase(null); setError("Didn't catch that — try again, or type it."); }
+                else { setStatus("idle"); setPhase(null); fail("Didn't catch that — try again, or type it."); }
             } catch (err) {
                 setStatus("idle");
                 setPhase(null);
-                setError(err?.message || "Voice input hit a snag — typing works just as well.");
+                fail(err?.message || "Voice input hit a snag — typing works just as well.");
             }
         };
         rec.start();
@@ -428,27 +469,36 @@ const EDPanel = ({ onClose }) => {
                     <span className="ed-core-ring r2" />
                     <span className="ed-core-heart" />
                 </div>
-                <p className="ed-status font-mono" aria-live="polite">
+                <p className="ed-status font-mono">
                     {status === "listening" && "LISTENING — TAP MIC TO SEND"}
                     {status === "thinking" && "PROCESSING…"}
                     {status === "speaking" && "RESPONDING…"}
                     {status === "idle" && (messages.length === 0 ? "ASK ME ABOUT EDDY" : " ")}
                 </p>
 
-                <div ref={scrollRef} className="ed-msgs" aria-live="polite" data-lenis-prevent>
+                {/* The deck's single live region: terse status while E.D. works,
+                    then the settled answer, announced exactly once. Everything
+                    else here is deliberately NOT live. */}
+                <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+
+                <div ref={scrollRef} className="ed-msgs" data-lenis-prevent>
                     {messages.length === 0 && (
+                        // px-3/py-1.5 is a ~28px pill: over WCAG 2.5.8's 24px floor but
+                        // half of what a thumb wants. Coarse pointers get the 44px box
+                        // via min-height only, so the desktop chip is untouched (growing
+                        // the padding instead would collide with the gap-2 wrap rows).
                         <div className="flex flex-wrap gap-2 justify-center">
                             {CHIPS.map((c) => (
-                                <button key={c} type="button" className="jd-chip px-3 py-1.5 rounded-full text-xs font-medium" onClick={() => send(c)}>
+                                <button key={c} type="button" className="jd-chip px-3 py-1.5 pointer-coarse:min-h-11 pointer-coarse:inline-flex pointer-coarse:items-center rounded-full text-xs font-medium" onClick={() => send(c)}>
                                     {c}
                                 </button>
                             ))}
                         </div>
                     )}
                     {messages.map((m, i) => (
-                        <div key={`${m.role}-${i}`} className={`ed-msg ${m.role}`}>
+                        <div key={`${m.role}-${i}`} className={`ed-msg ${m.role}`} lang={langOf(m.content)}>
                             {m.role === "assistant" && m.fresh && i === messages.length - 1
-                                ? <TypeOut text={m.content} />
+                                ? <TypeOut text={m.content} onDone={announce} />
                                 : m.content}
                         </div>
                     ))}
@@ -459,7 +509,9 @@ const EDPanel = ({ onClose }) => {
                             <span className="ed-think-clock"><Elapsed since={phase.since} /></span>
                         </div>
                     )}
-                    {error && <p className="ed-msg assistant" role="alert" style={{ color: "var(--danger-tx)" }}>{error}</p>}
+                    {/* No role="alert" — that is a live region too, and `fail()`
+                        already pushes the same string through the one above. */}
+                    {error && <p className="ed-msg assistant" style={{ color: "var(--danger-tx)" }}>{error}</p>}
                 </div>
 
                 <form
@@ -483,7 +535,10 @@ const EDPanel = ({ onClose }) => {
                         </button>
                     )}
                     {status === "listening" ? (
-                        <div className="ed-recording" role="status" aria-label="Recording">
+                        // role="status" here was a third live region, re-announcing a
+                        // clock that ticks 5x/s. It is a visualiser; "Listening." from
+                        // the one region above is the accessible signal.
+                        <div className="ed-recording" aria-hidden="true">
                             <WaveBars analyser={analyser} />
                             <span className={`ed-rec-clock ${recMs > MAX_CLIP_MS - 10_000 ? "warn" : ""}`}>
                                 {fmtClock(recMs)}
