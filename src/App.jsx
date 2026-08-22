@@ -24,22 +24,58 @@ function useAuroraTiles() {
         if (!fine || prefersReducedMotion()) return undefined;
         let raf = 0;
         let ev = null;
+        // Geometry of the tile under the pointer, measured once on enter.
+        // Measuring inside the rAF callback instead would run before the
+        // frame's layout, so it flushes whatever GSAP/ScrollTrigger/Lenis
+        // queued that tick — a full-document reflow at 60fps whenever you
+        // hover a tile while scrolling. Same cache-on-enter shape as
+        // useTilt/useMagnetic.
+        // Known caveat: scrolling with the pointer parked on a tile leaves
+        // the rect stale, which only slides the glow's origin by the scroll
+        // delta (cosmetic, no jump). Nulling hoverRect is the whole fix, so
+        // a later scroll listener can invalidate all three hooks together.
+        let hoverTile = null;
+        let hoverRect = null;
         const apply = () => {
             raf = 0;
-            const tile = ev?.target?.closest?.(".ed-tile");
-            if (!tile) return;
-            const r = tile.getBoundingClientRect();
-            tile.style.setProperty("--mx", `${ev.clientX - r.left}px`);
-            tile.style.setProperty("--my", `${ev.clientY - r.top}px`);
+            if (!hoverTile || !hoverRect || !ev) return;
+            hoverTile.style.setProperty("--mx", `${ev.clientX - hoverRect.left}px`);
+            hoverTile.style.setProperty("--my", `${ev.clientY - hoverRect.top}px`);
         };
         const onMove = (e) => {
+            if (!hoverTile) return;
             ev = e;
             if (!raf) raf = requestAnimationFrame(apply);
         };
+        // pointerover/out bubble, so one delegated pair still covers tiles
+        // that lazy sections mount later — no per-tile listeners needed.
+        const onOver = (e) => {
+            const tile = e.target?.closest?.(".ed-tile") ?? null;
+            if (tile === hoverTile) return;
+            hoverTile = tile;
+            hoverRect = tile ? tile.getBoundingClientRect() : null;
+        };
+        const onOut = (e) => {
+            if (!hoverTile) return;
+            // Moving between children of the same tile also fires pointerout;
+            // only drop the cache when the pointer really left the tile.
+            const next = e.relatedTarget;
+            if (next && hoverTile.contains(next)) return;
+            hoverTile = null;
+            hoverRect = null;
+        };
         document.addEventListener("pointermove", onMove, { passive: true });
+        document.addEventListener("pointerover", onOver, { passive: true });
+        document.addEventListener("pointerout", onOut, { passive: true });
         return () => {
             document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerover", onOver);
+            document.removeEventListener("pointerout", onOut);
             cancelAnimationFrame(raf);
+            // Drop the DOM/event refs so an unmounted tree isn't retained.
+            hoverTile = null;
+            hoverRect = null;
+            ev = null;
         };
     }, []);
 }

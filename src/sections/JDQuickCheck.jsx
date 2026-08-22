@@ -161,10 +161,15 @@ const JDQuickCheck = () => {
             })}
           </div>
 
-          {/* Input */}
+          {/* Input — focus:outline-none lives in @layer utilities and beats the base
+              :focus-visible outline, so this ring is the control's ONLY focus indicator.
+              Full --sig rather than Contact's --sig-line: a 32%-alpha ring is invisible
+              on --ink-0, and this is the page's headline interactive element.
+              16px on coarse pointers stops iOS Safari zooming the viewport on focus, and
+              overscroll-behavior keeps a long JD's scroll from chaining into the page. */}
           <textarea
-            className="w-full rounded-[var(--r-sm)] px-4 py-3 text-sm resize-none transition-all duration-300 focus:outline-none"
-            style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", minHeight: 130 }}
+            className="w-full rounded-[var(--r-sm)] px-4 py-3 text-sm pointer-coarse:text-base resize-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sig)]"
+            style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", minHeight: 130, overscrollBehavior: "contain" }}
             placeholder="Paste the JD here — stack, responsibilities, experience band, visa, location…"
             rows="5"
             maxLength={MAX_JD_CHARS}

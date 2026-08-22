@@ -11,8 +11,11 @@ import TitleHeader from "../components/TitleHeader";
 import Magnetic from "../components/Magnetic.jsx";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 
+// pointer-coarse:text-base — anything under 16px makes iOS Safari zoom the
+// viewport the moment the field is tapped, which throws the rest of the form
+// off screen. Desktop keeps the smaller editorial size.
 const INPUT_CLASS =
-  "rounded-[var(--r-sm)] px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--sig-line)] focus:border-[var(--sig-line)] transition-all duration-300 disabled:opacity-50";
+  "rounded-[var(--r-sm)] px-4 py-3 text-sm pointer-coarse:text-base focus:outline-none focus:ring-1 focus:ring-[var(--sig-line)] focus:border-[var(--sig-line)] transition-all duration-300 disabled:opacity-50";
 const INPUT_STYLE = { background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)" };
 
 const Contact = () => {

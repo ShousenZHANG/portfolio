@@ -94,6 +94,9 @@ body {
 html {
     scrollbar-width: thin;
     scrollbar-color: oklch(0.38 0.03 285) transparent;
+    /* Reserve the gutter permanently so freezing the root (the E.D. deck's
+       scroll lock) can't shift the whole page sideways by the scrollbar width. */
+    scrollbar-gutter: stable;
 }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -1325,6 +1328,19 @@ section {
 @keyframes ed-tip-out {
   to { opacity: 0; transform: translateY(-6px); }
 }
+/* Phones: the copy measures ~341px on one line, but the orb it hangs off sits
+   only ~305px from the left edge of a 375px viewport — so the nowrap version
+   ran off the left and was silently cut by html { overflow-x: clip }. The
+   first-run introduction to the site's flagship feature was truncated on the
+   most common phone width. Wrap it and cap the width instead. */
+@media (max-width: 639px) {
+  .ed-tip {
+    white-space: normal;
+    max-width: min(260px, calc(100vw - 2.5rem));
+    line-height: 1.45;
+    text-align: left;
+  }
+}
 .ed-orb-core {
   width: 12px;
   height: 12px;
@@ -1567,9 +1583,21 @@ section {
   background: var(--ink-0);
   border: 1px solid var(--hair);
   color: var(--tx-0);
-  font-size: 0.92rem;
+  /* 16px, not 0.92rem: iOS Safari zooms the viewport on focus for anything
+     smaller, and .ed-panel-inner is capped in dvh — which does not shrink for
+     the software keyboard — so the zoom parks the input behind the keyboard. */
+  font-size: 16px;
 }
+/* :focus, not :focus-visible, so the border still warms for mouse users… */
 .ed-input-row input:focus { outline: none; border-color: var(--sig-line); }
+/* …but a 32%-alpha border shift is ~1.1:1 — nowhere near the 3:1 WCAG 2.4.11
+   wants for a focus indicator. Keyboard focus gets a real ring. This rule is
+   unlayered like the one above, so it beats the @layer base :focus-visible. */
+.ed-input-row input:focus-visible {
+  outline: none;
+  border-color: var(--sig);
+  box-shadow: 0 0 0 2px var(--sig-glow), 0 0 0 1px var(--sig);
+}
 .ed-icon-btn {
   width: 38px;
   height: 38px;

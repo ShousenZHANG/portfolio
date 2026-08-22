@@ -120,13 +120,18 @@ const Elapsed = ({ since, step = 100 }) => {
     return <>{(ms / 1000).toFixed(1)}s</>;
 };
 
+/** Everything the browser will hand a Tab to, inside the deck. */
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+/** Landmarks that sit BESIDE the deck in #root — inerting #root would inert the deck itself. */
+const BACKGROUND_LANDMARKS = "main#main-content, header.navbar, footer, .skip-link";
+
 const EDPanel = ({ onClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [status, setStatus] = useState("idle"); // idle|listening|thinking|speaking
     const [voiceOn, setVoiceOn] = useState(true);
     const [error, setError] = useState(null);
-    const [level, setLevel] = useState(0); // live mic amplitude, 0..1
     const [analyser, setAnalyser] = useState(null); // drives the wave bars
     const [recMs, setRecMs] = useState(0);          // recording stopwatch
     const [phase, setPhase] = useState(null);       // {label, since} while working
@@ -138,7 +143,78 @@ const EDPanel = ({ onClose }) => {
     const levelRafRef = useRef(0);
     const clipTimerRef = useRef(null);
     const clockRef = useRef(null);
+    const coreRef = useRef(null);
+    const innerRef = useRef(null);
     const canListen = canRecord();
+
+    /**
+     * Modal hygiene, for the lifetime of the mount. Deliberately dependency-free:
+     * a parent re-render must never tear this down and leave the page inert or
+     * the scroll locked.
+     *
+     * Scroll lock: lenis.stop() only governs wheel events Lenis actually sees,
+     * and it never sees touch at all (syncTouch is off), so mobile still drags
+     * the page behind the deck. Freezing the root element is the only lock that
+     * covers both. (html carries scrollbar-gutter: stable so this can't shift
+     * the layout by the scrollbar width.)
+     *
+     * Inerting: aria-modal alone doesn't stop Tab or a screen reader from
+     * walking into the page behind the deck.
+     */
+    useEffect(() => {
+        const opener = document.activeElement; // stash BEFORE the input autofocuses
+        const root = document.documentElement;
+        const prevOverflow = root.style.overflow; // may already be set — restore exactly
+        root.style.overflow = "hidden";
+
+        const supportsInert = "inert" in HTMLElement.prototype;
+        const background = Array.from(document.querySelectorAll(BACKGROUND_LANDMARKS)).map((el) => ({
+            el,
+            prevAriaHidden: el.getAttribute("aria-hidden"),
+        }));
+        background.forEach(({ el }) => {
+            if (supportsInert) el.inert = true;
+            else el.setAttribute("aria-hidden", "true");
+        });
+
+        return () => {
+            root.style.overflow = prevOverflow;
+            background.forEach(({ el, prevAriaHidden }) => {
+                if (supportsInert) el.inert = false;
+                else if (prevAriaHidden === null) el.removeAttribute("aria-hidden");
+                else el.setAttribute("aria-hidden", prevAriaHidden);
+            });
+            // Un-inert first, then hand focus back to whatever opened the deck
+            // (the orb) — otherwise it lands on <body> and Tab restarts the page.
+            if (opener instanceof HTMLElement && opener.isConnected) {
+                opener.focus({ preventScroll: true });
+            }
+        };
+    }, []);
+
+    // Tab trap. Wraps at both ends of the deck's own focusables; the inert
+    // background above handles everything outside it.
+    const onTrapKeyDown = (e) => {
+        if (e.key !== "Tab") return;
+        const host = innerRef.current;
+        if (!host) return;
+        const items = Array.from(host.querySelectorAll(FOCUSABLE)).filter(
+            (el) =>
+                !el.disabled &&
+                el.tabIndex >= 0 &&
+                (el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+        );
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    };
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -254,7 +330,10 @@ const EDPanel = ({ onClose }) => {
                 node.getByteTimeDomainData(buf);
                 let peak = 0;
                 for (let i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i] - 128));
-                setLevel(Math.min(1, peak / 60));
+                // Written straight to the DOM: routing 60 frames/s of amplitude
+                // through React state re-renders the whole deck — the message
+                // list, the form, all 34 wave bars — once per frame.
+                coreRef.current?.style.setProperty("--level", (Math.min(1, peak / 60)).toFixed(2));
                 levelRafRef.current = requestAnimationFrame(meter);
             };
             levelRafRef.current = requestAnimationFrame(meter);
@@ -273,7 +352,7 @@ const EDPanel = ({ onClose }) => {
             cancelAnimationFrame(levelRafRef.current);
             clearInterval(clockRef.current);
             clearTimeout(clipTimerRef.current);
-            setLevel(0);
+            coreRef.current?.style.setProperty("--level", "0");
             setAnalyser(null);
             setRecMs(0);
             stream.getTracks().forEach((t) => t.stop());
@@ -311,8 +390,14 @@ const EDPanel = ({ onClose }) => {
     };
 
     return (
-        <div className="ed-panel" role="dialog" aria-modal="true" aria-label="E.D. — Eddy's AI assistant" data-lenis-prevent>
-            <div className="ed-panel-inner">
+        // data-lenis-prevent deliberately does NOT live here. Lenis' wheel
+        // handler returns on prevent() BEFORE its isStopped → preventDefault
+        // branch, so putting it on this full-screen root let every wheel event
+        // fall through to native scroll and slid the page behind the deck —
+        // lenis.stop() was being defeated by our own attribute. It belongs on
+        // the one element that genuinely owns a scrollbar: .ed-msgs.
+        <div className="ed-panel" role="dialog" aria-modal="true" aria-label="E.D. — Eddy's AI assistant">
+            <div className="ed-panel-inner" ref={innerRef} onKeyDown={onTrapKeyDown}>
                 <header className="flex items-center justify-between mb-6">
                     <p className="ed-eyebrow">E.D. · Eddy&rsquo;s Digital Deputy</p>
                     <div className="flex items-center gap-2">
@@ -334,9 +419,10 @@ const EDPanel = ({ onClose }) => {
                 {/* The core — breathes at idle, ripples when listening,
                     spins while thinking, pulses while speaking */}
                 <div
+                    ref={coreRef}
                     className={`ed-core ed-core--${status}`}
                     aria-hidden="true"
-                    style={status === "listening" ? { "--level": level.toFixed(2) } : undefined}
+                    style={{ "--level": 0 }}
                 >
                     <span className="ed-core-ring r1" />
                     <span className="ed-core-ring r2" />
@@ -349,7 +435,7 @@ const EDPanel = ({ onClose }) => {
                     {status === "idle" && (messages.length === 0 ? "ASK ME ABOUT EDDY" : " ")}
                 </p>
 
-                <div ref={scrollRef} className="ed-msgs" aria-live="polite">
+                <div ref={scrollRef} className="ed-msgs" aria-live="polite" data-lenis-prevent>
                     {messages.length === 0 && (
                         <div className="flex flex-wrap gap-2 justify-center">
                             {CHIPS.map((c) => (
