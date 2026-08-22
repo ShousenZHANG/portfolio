@@ -167,8 +167,13 @@ section {
         background: color-mix(in oklab, var(--ink-0) 88%, transparent);
         border: 1px solid var(--hair);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        /* Do NOT hand-write -webkit-backdrop-filter next to this. Lightning
+           CSS autoprefixes from the build targets, and a manual prefixed copy
+           makes it dedupe the pair down to the -webkit- one alone — which
+           Firefox does not understand, so every glass surface on the site
+           silently lost its blur there. Same applies to the two other
+           backdrop-filter declarations in this file. */
         backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
     }
 
     .navbar.not-scrolled .navbar-inner {
@@ -193,7 +198,6 @@ section {
         .navbar-inner {
             padding: 0.5rem 0.5rem 0.5rem 0.875rem;
             backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
         }
         /* Glass at rest on mobile so the bar always reads as one unit.
            Both states mix the page floor, like the desktop rule above — the
@@ -1465,7 +1469,6 @@ section {
      is deciding whether the deck feels fast. The tint that used to sit here
      now fades on its own plain-colour ::before, which is pure compositing. */
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 /* The scrim. position: absolute, not static — a static pseudo-element in a
    flex container becomes a flex item and would lay out beside the deck. */
