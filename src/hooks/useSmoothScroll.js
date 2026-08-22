@@ -52,7 +52,14 @@ export function useSmoothScroll() {
             const target = document.querySelector(id);
             if (!target) return;
             e.preventDefault();
-            lenis.scrollTo(target, { offset: -80 });
+            // -100 to match `section { scroll-margin-top: 100px }`. Reduced-motion
+            // visitors never get here (Lenis is skipped entirely) and land via the
+            // native fragment jump, so an 80 here put every heading 20px higher for
+            // them than for everyone else. 100 clears the bar comfortably: scrolled,
+            // it ends at 68px on both breakpoints — desktop 8px .navbar padding +
+            // 60px pill (38px CTA + 20px padding + 2px border), mobile 10px top +
+            // 58px pill (40px burger + 16px + 2px).
+            lenis.scrollTo(target, { offset: -100 });
             // preventDefault() cancels the fragment navigation, and with it
             // the browser's move of the sequential-focus origin — so the skip
             // link scrolled but the next Tab went straight back to the navbar.

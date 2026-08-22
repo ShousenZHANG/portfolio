@@ -23,8 +23,11 @@ const logoIconsList = [
 
 import { useInView } from "../hooks/useInView.js";
 
-const LogoIcon = ({ name, icon }) => (
-    <div className="logo-cell flex-none flex items-center justify-center w-24 sm:w-28 h-16">
+// `duplicate` marks the second pass of the list — the half that exists only so
+// translateX(-50%) can loop seamlessly. Announcing all 13 logos twice is the
+// screen-reader version of a visual artifact, so that pass leaves the a11y tree.
+const LogoIcon = ({ name, icon, duplicate }) => (
+    <div className="logo-cell flex-none flex items-center justify-center w-24 sm:w-28 h-16" aria-hidden={duplicate || undefined}>
         <img
             src={icon.startsWith("http") ? icon : `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${icon}`}
             alt={name}
@@ -53,7 +56,12 @@ const LogoSection = () => {
             <div className="marquee" ref={trackRef}>
                 <div className={`marquee-box ${inView ? "in-view" : ""}`}>
                     {logoIconsList.concat(logoIconsList).map((logo, index) => (
-                        <LogoIcon key={`${logo.name}-${index}`} name={logo.name} icon={logo.icon} />
+                        <LogoIcon
+                            key={`${logo.name}-${index}`}
+                            name={logo.name}
+                            icon={logo.icon}
+                            duplicate={index >= logoIconsList.length}
+                        />
                     ))}
                 </div>
             </div>

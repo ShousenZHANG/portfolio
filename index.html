@@ -17,7 +17,13 @@
     <!-- Raster only: iOS ignores an SVG here and screenshots the page instead.
          Generated from apple-touch-icon.svg by scripts/gen-icons.mjs. -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <!-- Fonts are self-hosted (see src/index.css) — no third-party font CDN. -->
+    <!-- Without this Android's "add to home screen" has no name, icon or theme to use
+         and falls back to the document title plus a screenshot. Same-origin, so the CSP's
+         default-src 'self' already covers the fetch (manifest-src falls back to it). -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Fonts are self-hosted (see src/index.css) — no third-party font CDN.
+         The display face is preloaded by the preloadDisplayFont plugin in vite.config.js;
+         its filename is content-hashed, so the tag is injected at build time. -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 
     <meta property="og:type" content="website" />
@@ -35,13 +41,25 @@
     <meta name="twitter:title" content="Eddy Zhang — AI Engineer | Copilot Studio & Power Platform" />
     <meta name="twitter:description" content="AI Engineer building production AI agents across the Microsoft 365 ecosystem." />
     <meta name="twitter:image" content="https://eddyzhang.me/api/og" />
+    <!-- Mirrors og:image:alt. X renders the card from the twitter:* namespace when it is
+         present, so an alt supplied only on the OG side never reaches a screen reader there. -->
+    <meta name="twitter:image:alt" content="Eddy Zhang — AI Engineer, Copilot Studio & Power Platform" />
 
+    <!-- CSP-COUPLED: vercel.json pins a sha256 of this block in script-src, and Chrome does
+         evaluate application/ld+json against script-src. Because a hash is present, browsers
+         ignore 'unsafe-inline' entirely, so ANY edit below — including whitespace or indent —
+         silently drops the structured data. After changing it, rebuild and repin:
+         npm run build
+         node -e "const c=require('crypto'),f=require('fs');const m=f.readFileSync('dist/index.html','utf8').match(/ld\+json\">([\s\S]*?)<\/script>/);console.log('sha256-'+c.createHash('sha256').update(m[1]).digest('base64'))"
+         Keep this file LF-only; a CRLF checkout changes the bytes and therefore the hash.
+         (vercel.json is strict JSON and cannot carry this note itself.) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Eddy Zhang",
         "url": "https://eddyzhang.me/",
+        "image": "https://eddyzhang.me/api/og",
         "jobTitle": "AI Engineer",
         "address": { "@type": "PostalAddress", "addressLocality": "Sydney", "addressCountry": "AU" },
         "email": "mailto:eddy.zhang24@gmail.com",

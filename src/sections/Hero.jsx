@@ -6,6 +6,7 @@ import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useMagnetic } from "../hooks/useMagnetic.js";
+import { useInView } from "../hooks/useInView.js";
 
 // CTA is a plain anchor: the global Lenis click handler routes #-links
 // through lenis.scrollTo, so easing matches every other in-page jump.
@@ -75,6 +76,9 @@ const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
     const [videoStarted, setVideoStarted] = useState(false);
     const magneticCta = useMagnetic(0.45);
+    // The availability dot pings forever; park it once the hero has scrolled
+    // away — the CSS half keys off `.ping-scope:not(.in-view)`.
+    const [pingRef, pingInView] = useInView();
 
     const rootRef = useRef(null);
     const videoRef = useRef(null);
@@ -104,6 +108,9 @@ const Hero = () => {
     useGSAP(() => {
         if (prefersReducedMotion()) {
             gsap.set([...HERO_ANIM_TARGETS, ".hero-word", ".hero-aside"], { opacity: 1, y: 0, yPercent: 0 });
+            // No timeline is built on this path, so nothing ever reaches the
+            // onComplete below that hands the words' layers back.
+            gsap.set(".hero-word", { willChange: "auto" });
             return;
         }
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -211,7 +218,7 @@ const Hero = () => {
                             </a>
                         </div>
 
-                        <div className="hero-meta mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm" style={{ color: "var(--tx-2)" }}>
+                        <div ref={pingRef} className={`hero-meta ping-scope ${pingInView ? "in-view" : ""} mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm`} style={{ color: "var(--tx-2)" }}>
                             <span className="ed-status-dot" aria-hidden="true" />
                             <span>Available for work</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>

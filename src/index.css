@@ -86,6 +86,13 @@ body {
 html {
     scrollbar-width: thin;
     scrollbar-color: oklch(0.38 0.03 285) transparent;
+    /* Lenis owns vertical scroll; the browser's own overscroll affordances sit
+       on top of it and read as glitches — the rubber-band at the extremes
+       fights the easing, and an over-pull at the top fires pull-to-refresh
+       mid-gesture. `none` (not `contain`) because the affordance itself, not
+       just the chaining, is what conflicts. Accepted cost: no pull-to-refresh
+       on Android Chrome — reloading needs the browser UI. */
+    overscroll-behavior-y: none;
     /* Reserve the gutter permanently so freezing the root (the E.D. deck's
        scroll lock) can't shift the whole page sideways by the scrollbar width. */
     scrollbar-gutter: stable;
@@ -188,13 +195,17 @@ section {
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
         }
-        /* Glass at rest on mobile so the bar always reads as one unit */
+        /* Glass at rest on mobile so the bar always reads as one unit.
+           Both states mix the page floor, like the desktop rule above — the
+           literal #0f0d15 they used to carry predates the sunk ink ladder, so
+           the pill floated a shade lighter and greyer than the page under it.
+           Only the base colour moves; the 72/92% opacities are unchanged. */
         .navbar.not-scrolled .navbar-inner {
-            background: rgba(15, 13, 21, 0.72);
+            background: color-mix(in oklab, var(--ink-0) 72%, transparent);
             border: 1px solid var(--hair);
         }
         .navbar.scrolled .navbar-inner {
-            background: rgba(15, 13, 21, 0.92);
+            background: color-mix(in oklab, var(--ink-0) 92%, transparent);
             border: 1px solid var(--hair-bright);
             box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
         }
@@ -274,6 +285,11 @@ section {
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                     width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                     opacity 0.3s ease;
+        /* Kept permanent on purpose, unlike the marquee's: this is a single
+           small element that re-animates on every nav hover AND on every
+           active-section change, inside a bar that backdrop-filter already
+           keeps promoted. Re-promoting per hover would cost more than the one
+           layer it saves. */
         will-change: transform;
     }
 
@@ -578,6 +594,25 @@ section {
     }
 }
 
+/* Park the availability pings while nothing can see them. Two render today —
+   the hero's `hero-meta` dot and the Contact dot — and between them the page
+   never reached an idle frame no matter where the reader was. The
+   `.exp-now-dot` / Experience "Current" badge arms are pre-wired but dormant:
+   they only mount when an expCards entry's `date` matches /present/i
+   (src/constants/index.js), which none currently does. Keep the Experience
+   `.ping-scope` regardless — Experience.jsx reads its `in-view` flag to drive
+   the rail's will-change.
+   `.ping-scope` is the marker the JSX puts on each dot's nearest stable
+   container, carrying `in-view` from useInView like the marquee and the
+   constellation do. Written as :not() so a dot whose scope never arrives keeps
+   pinging (status quo) instead of going silently dead.
+   Unlayered on purpose: `.ed-status-dot::before` lives in @layer components,
+   and a layered rule loses to an unlayered one regardless of specificity. */
+.ping-scope:not(.in-view) .ed-status-dot::before,
+.ping-scope:not(.in-view) .exp-now-dot {
+    animation-play-state: paused;
+}
+
 /* ── Logo marquee ── */
 .marquee {
     width: 100%;
@@ -591,10 +626,14 @@ section {
     gap: 3rem;
     animation: marquee 25s linear infinite;
     animation-play-state: paused;   /* runs only while in view (.in-view) */
-    will-change: transform;
 }
 .marquee-box.in-view {
     animation-play-state: running;
+    /* Promoted only while the track is actually moving. Declared on the base
+       rule it held a compositing layer for a very wide element for the whole
+       session, including the ~90% of the page where the strip is off-screen
+       and the animation is already parked. */
+    will-change: transform;
 }
 
 @keyframes marquee {
@@ -657,7 +696,8 @@ section {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .marquee-box { animation: none !important; transform: none !important; }
+    /* No animation here, so the .in-view promotion would be a layer for nothing */
+    .marquee-box { animation: none !important; transform: none !important; will-change: auto !important; }
     .marquee { overflow-x: auto; }
     .logo-img { transition: none; }
 }
@@ -955,7 +995,8 @@ section {
   transform-origin: top center;
   background: linear-gradient(to bottom, var(--sig), var(--sig-2));
   box-shadow: 0 0 12px var(--sig-glow);
-  will-change: transform;
+  /* will-change lives inline in Experience.jsx, keyed to the rail's in-view
+     flag — the layer is only worth holding while the scrub can actually run. */
 }
 
 /* Bare year folio — magazine style. No backing box: a stack of tight
@@ -1049,7 +1090,7 @@ section {
   border-radius: 999px;
   background: var(--sig-2);
   box-shadow: 0 0 6px var(--sig-2), 0 0 20px var(--sig-glow);
-  will-change: transform;
+  /* will-change lives inline in Experience.jsx — see .exp-rail-fill. */
 }
 .exp-rail-head::before {
   content: "";
@@ -1087,6 +1128,9 @@ section {
   .exp-tile { opacity: 1; transition: none; }
   .exp-dot.lit::after { animation: none; }
   .exp-now-dot { animation: none; }
+  /* The hero and Contact availability dots run the same ed-ping. The in-view
+     gate only helps once they scroll away, and the hero's is on screen at load. */
+  .ed-status-dot::before { animation: none; }
 }
 
 /* ── Experience timeline hover — same lift language as every other tile
@@ -1375,6 +1419,10 @@ section {
   height: 12px;
   border-radius: 999px;
   background: radial-gradient(circle at 35% 30%, var(--sig-2), var(--sig) 70%);
+  /* The one infinite animation left running for the whole session, on purpose:
+     the orb is how a first-time visitor learns E.D. exists, and a pulse that
+     stops looks like a dead feature. It is transform+opacity only (see below),
+     so it costs the compositor a repeating tick and the main thread nothing. */
   animation: ed-orb-breathe 3.2s var(--ease-soft) infinite;
 }
 /* The breathing glow used to be a keyframed box-shadow. box-shadow is a paint
@@ -1410,9 +1458,23 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in oklab, var(--ink-0) 88%, transparent);
+  /* The blur is static and never animates. Fading opacity on the same layer
+     that carries backdrop-filter makes the compositor re-evaluate a
+     full-viewport blur on every frame of the 0.35s entrance — the most
+     expensive frame budget on the site, spent at the exact moment the visitor
+     is deciding whether the deck feels fast. The tint that used to sit here
+     now fades on its own plain-colour ::before, which is pure compositing. */
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+}
+/* The scrim. position: absolute, not static — a static pseudo-element in a
+   flex container becomes a flex item and would lay out beside the deck. */
+.ed-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: color-mix(in oklab, var(--ink-0) 88%, transparent);
   animation: ed-panel-in 0.35s var(--ease-standard) both;
 }
 @keyframes ed-panel-in {
@@ -1420,6 +1482,9 @@ section {
   to   { opacity: 1; }
 }
 .ed-panel-inner {
+  /* Positioned so it paints after the ::before scrim (both z-index: auto →
+     DOM order decides, and ::before is the first child). */
+  position: relative;
   width: min(680px, calc(100vw - 2rem));
   max-height: calc(100dvh - 3rem);
   display: flex;
@@ -1722,7 +1787,9 @@ section {
   .ed-orb-core, .ed-core-heart, .ed-core-ring,
   .ed-orb-core::after, .ed-core-heart::after,
   .ed-msg-thinking, .ed-icon-btn.listening { animation: none !important; }
-  .ed-panel, .ed-panel-inner, .ed-tip { animation: none !important; }
+  /* ::before is the scrim: with the animation off it holds its static
+     opacity: 1, so the deck still opens fully dimmed — just instantly. */
+  .ed-panel, .ed-panel::before, .ed-panel-inner, .ed-tip { animation: none !important; }
 }
 
 /* ── Site reveal — the opening curtain (first visit, ≤1.2s) ── */

@@ -6,9 +6,14 @@ import { expCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
 import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { useInView } from "../hooks/useInView.js";
 
 const Experience = () => {
     const containerRef = useRef(null);
+    // One observer on the timeline block, two duties: it parks the two NOW
+    // pings (CSS keys off `.ping-scope:not(.in-view)`) and it hands back the
+    // rail's compositing layers while the scrub is nowhere near the viewport.
+    const [scopeRef, scopeInView] = useInView();
 
     useGSAP(() => {
         const blocks = gsap.utils.toArray(".exp-card");
@@ -82,12 +87,20 @@ const Experience = () => {
                     align="left"
                 />
 
-                <div className="relative mt-14">
+                <div ref={scopeRef} className={`relative mt-14 ping-scope ${scopeInView ? "in-view" : ""}`}>
                     {/* Vertical rail — centred on the node (w-14 / 4.6rem). The
                         fill line grows with scroll; nodes light as it passes. */}
                     <div className="exp-rail absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px" aria-hidden="true">
-                        <div className="exp-rail-fill" />
-                        <div className="exp-rail-head" />
+                        {/* The scrub transforms both of these on every scroll frame,
+                            so the layer earns its keep — but only here. Inline wins
+                            over the base rule's blanket `will-change: transform`,
+                            which held two layers for the whole session for a scrub
+                            that runs across one section. Gated on the observer, not
+                            on ScrollTrigger: a scrub keeps lerping for its 0.4s
+                            catch-up after the trigger goes inactive, so onToggle
+                            would drop the layer mid-motion. */}
+                        <div className="exp-rail-fill" style={{ willChange: scopeInView ? "transform" : "auto" }} />
+                        <div className="exp-rail-head" style={{ willChange: scopeInView ? "transform" : "auto" }} />
                     </div>
 
                     <div className="flex flex-col gap-8 md:gap-12">

@@ -165,6 +165,7 @@ const EDPanel = ({ onClose }) => {
     const clockRef = useRef(null);
     const coreRef = useRef(null);
     const innerRef = useRef(null);
+    const pressedBackdrop = useRef(false);
     const canListen = canRecord();
 
     /**
@@ -430,6 +431,31 @@ const EDPanel = ({ onClose }) => {
         clipTimerRef.current = setTimeout(stopListening, MAX_CLIP_MS);
     };
 
+    /**
+     * Dismiss on the dimmed area — the expectation every full-screen overlay
+     * sets. It hands off to the same `onClose` as ✕ and Escape, so the unmount
+     * tears down the scroll lock, the inert background and the focus return in
+     * one place; nothing here unwinds any of that itself.
+     *
+     * Guarded on BOTH ends of the press, and on pointerup rather than click: a
+     * drag-select that starts in the input and overshoots the deck's edge
+     * releases on the scrim, and clobbering the visitor's half-typed question
+     * for it would be worse than having no backdrop dismissal at all. (`click`
+     * alone can't tell the two apart — it retargets to the common ancestor,
+     * which for down-inside/up-outside is this very element.)
+     *
+     * .ed-panel::before is the scrim and carries pointer-events: none, so a
+     * press on the dim lands on .ed-panel itself and the identity check holds.
+     */
+    const onBackdropPointerDown = (e) => {
+        pressedBackdrop.current = e.button === 0 && e.target === e.currentTarget;
+    };
+    const onBackdropPointerUp = (e) => {
+        const started = pressedBackdrop.current;
+        pressedBackdrop.current = false;
+        if (started && e.target === e.currentTarget) onClose();
+    };
+
     return (
         // data-lenis-prevent deliberately does NOT live here. Lenis' wheel
         // handler returns on prevent() BEFORE its isStopped → preventDefault
@@ -437,7 +463,14 @@ const EDPanel = ({ onClose }) => {
         // fall through to native scroll and slid the page behind the deck —
         // lenis.stop() was being defeated by our own attribute. It belongs on
         // the one element that genuinely owns a scrollbar: .ed-msgs.
-        <div className="ed-panel" role="dialog" aria-modal="true" aria-label="E.D. — Eddy's AI assistant">
+        <div
+            className="ed-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="E.D. — Eddy's AI assistant"
+            onPointerDown={onBackdropPointerDown}
+            onPointerUp={onBackdropPointerUp}
+        >
             <div className="ed-panel-inner" ref={innerRef} onKeyDown={onTrapKeyDown}>
                 <header className="flex items-center justify-between mb-6">
                     <p className="ed-eyebrow">E.D. · Eddy&rsquo;s Digital Deputy</p>

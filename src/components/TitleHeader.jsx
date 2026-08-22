@@ -56,11 +56,20 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
             <div className="group relative flex items-center gap-2">
                 <RevealText as="h2" className="ed-h2" text={title} />
                 {anchor && (
+                    /* The reveal is hover-driven, so on a touch device this was a
+                       permanently invisible ~30px target parked against the heading:
+                       one stray thumb and a URL was silently on the clipboard. Killing
+                       the hit test is enough — `display: none` would also drop it out of
+                       the tab order, and `pointer: coarse` describes the PRIMARY pointer,
+                       so it fires on a tablet that has a hardware keyboard attached.
+                       Keyboard users there still reach it, and focus-visible reveals it.
+                       Not made permanently visible: a copy glyph welded beside every h2
+                       costs more of the editorial line than the shortcut is worth. */
                     <button
                         type="button"
                         onClick={handleCopy}
                         aria-label={copied ? "Link copied" : `Copy link to ${title} section`}
-                        className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 p-1.5 rounded-md hover:bg-white/8"
+                        className="pointer-coarse:pointer-events-none opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 p-1.5 rounded-md hover:bg-white/8"
                         style={{ color: "var(--tx-2)" }}
                     >
                         {copied

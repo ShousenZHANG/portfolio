@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- One URL, so the only field that buys anything is <lastmod>: Google has said
+     publicly that it ignores <changefreq> and <priority>, and priority is
+     meaningless anyway when there is nothing to rank this page against.
+     Bump the date whenever the page's content actually changes — a <lastmod>
+     that moves without the content moving is the one way to lose the signal. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://eddyzhang.me/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-08-22</lastmod>
   </url>
 </urlset>

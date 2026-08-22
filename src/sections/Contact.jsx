@@ -10,6 +10,7 @@ import Github from "lucide-react/dist/esm/icons/github";
 import TitleHeader from "../components/TitleHeader";
 import Magnetic from "../components/Magnetic.jsx";
 import { useScrollReveal } from "../hooks/useScrollReveal";
+import { useInView } from "../hooks/useInView.js";
 
 // pointer-coarse:text-base — anything under 16px makes iOS Safari zoom the
 // viewport the moment the field is tapped, which throws the rest of the form
@@ -21,6 +22,9 @@ const INPUT_STYLE = { background: "var(--ink-0)", border: "1px solid var(--hair)
 const Contact = () => {
   const formRef = useRef(null);
   const sectionRef = useScrollReveal({ y: 40, duration: 0.8 });
+  // The availability dot pings forever; park it while the section is off-screen
+  // — the CSS half keys off `.ping-scope:not(.in-view)`.
+  const [pingRef, pingInView] = useInView();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState("");
@@ -127,7 +131,7 @@ const Contact = () => {
                 <Github className="w-[18px] h-[18px]" />
               </a>
             </Magnetic>
-            <span className="inline-flex items-center gap-2 ml-1 text-sm" style={{ color: "var(--tx-1)" }}>
+            <span ref={pingRef} className={`ping-scope ${pingInView ? "in-view" : ""} inline-flex items-center gap-2 ml-1 text-sm`} style={{ color: "var(--tx-1)" }}>
               <span className="ed-status-dot" aria-hidden="true" />
               Available for work
             </span>

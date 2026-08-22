@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Eddy Zhang — AI Engineer",
+  "short_name": "Eddy Zhang",
+  "description": "Portfolio of Eddy Zhang, an AI Engineer building production AI agents across the Microsoft 365 ecosystem.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#07080e",
+  "background_color": "#07080e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
