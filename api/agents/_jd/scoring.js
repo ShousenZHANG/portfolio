@@ -27,6 +27,22 @@ const ELIGIBILITY_CAP = {
   locationIssue: 75,
 };
 
+// Which eligibility axes can HARD-FAIL a match, per locale. This is config,
+// not scattered conditionals, because the axes genuinely differ by market:
+// the mainland page has no visa dimension at all, and leaving the slot in
+// place would default it to "Unknown" and quietly dock every Chinese result
+// 10 confidence points forever.
+const HARD_AXES = {
+  en: ["visa", "experience"],
+  zh: ["experience"],
+};
+
+// Axes that produce an "Unknown" confidence penalty, per locale — same reason.
+const UNKNOWN_PENALTY_AXES = {
+  en: ["visa", "experience", "location"],
+  zh: ["experience", "location"],
+};
+
 const CONFIDENCE = {
   base: 45,
   coverageWeight: 30,
@@ -67,6 +83,16 @@ function toStatus(v) {
   return v ? String(v).trim().toLowerCase() : "unknown";
 }
 
+function axes(map, locale) {
+  return map[locale] || map.en;
+}
+
+/** Statuses of the axes that can hard-fail, for this locale. */
+function issuedHardAxes(data, locale) {
+  const elig = data.eligibility || {};
+  return axes(HARD_AXES, locale).filter((a) => toStatus(elig[a]?.status) === "issue");
+}
+
 export function normalizeDimensionScores(data) {
   const d = data?.dimensionScores || {};
   const exact = clampScore(data?.exactMatchScore ?? 0);
@@ -84,10 +110,9 @@ export function normalizeDimensionScores(data) {
   };
 }
 
-export function deriveAtsScore(data) {
+export function deriveAtsScore(data, locale = "en") {
   const elig = data.eligibility || {};
-  const visaStatus = toStatus(elig.visa?.status);
-  const expStatus = toStatus(elig.experience?.status);
+  const hardIssues = issuedHardAxes(data, locale);
   const locStatus = toStatus(elig.location?.status);
 
   const matched = asArray(data.matchedKeywords).length;
@@ -116,11 +141,10 @@ export function deriveAtsScore(data) {
 
   score -= gap * WEIGHTS.gapPenalty;
 
-  if (visaStatus === "issue") score -= ELIGIBILITY_PENALTY.visa;
-  if (expStatus === "issue") score -= ELIGIBILITY_PENALTY.experience;
+  for (const axis of hardIssues) score -= ELIGIBILITY_PENALTY[axis];
   if (locStatus === "issue") score -= ELIGIBILITY_PENALTY.location;
 
-  if (visaStatus === "issue" || expStatus === "issue") {
+  if (hardIssues.length > 0) {
     score = Math.min(score, ELIGIBILITY_CAP.hardFail);
   } else if (locStatus === "issue") {
     score = Math.min(score, ELIGIBILITY_CAP.locationIssue);
@@ -132,21 +156,15 @@ export function deriveAtsScore(data) {
 // Hard-eligibility caps on confidence. Applied to BOTH the derived value and
 // any LLM-supplied confidenceScore, so a hallucinated / prompt-injected "95"
 // on a visa-Issue JD can never survive — the "don't trust the LLM" invariant.
-export function applyConfidenceCaps(data, confidence) {
-  const elig = data.eligibility || {};
-  const visaStatus = toStatus(elig.visa?.status);
-  const expStatus = toStatus(elig.experience?.status);
+export function applyConfidenceCaps(data, confidence, locale = "en") {
+  const caps = { visa: CONFIDENCE.visaIssueCap, experience: CONFIDENCE.expIssueCap };
   let c = confidence;
-  if (visaStatus === "issue") c = Math.min(c, CONFIDENCE.visaIssueCap);
-  if (expStatus === "issue") c = Math.min(c, CONFIDENCE.expIssueCap);
+  for (const axis of issuedHardAxes(data, locale)) c = Math.min(c, caps[axis]);
   return Math.round(clampScore(c));
 }
 
-export function deriveConfidenceScore(data) {
+export function deriveConfidenceScore(data, locale = "en") {
   const elig = data.eligibility || {};
-  const visaStatus = toStatus(elig.visa?.status);
-  const expStatus = toStatus(elig.experience?.status);
-  const locStatus = toStatus(elig.location?.status);
 
   const matched = asArray(data.matchedKeywords).length;
   const missing = asArray(data.missingKeywords).length;
@@ -161,54 +179,96 @@ export function deriveConfidenceScore(data) {
   confidence += Math.min(CONFIDENCE.evidenceCap, evidenceCount * CONFIDENCE.evidencePerItem);
   confidence += Math.min(CONFIDENCE.relatedCap, relatedCount * CONFIDENCE.relatedPerItem);
 
-  if (visaStatus === "unknown") confidence -= CONFIDENCE.unknownVisaPenalty;
-  if (expStatus === "unknown") confidence -= CONFIDENCE.unknownExpPenalty;
-  if (locStatus === "unknown") confidence -= CONFIDENCE.unknownLocPenalty;
+  const unknownPenalty = {
+    visa: CONFIDENCE.unknownVisaPenalty,
+    experience: CONFIDENCE.unknownExpPenalty,
+    location: CONFIDENCE.unknownLocPenalty,
+  };
+  for (const axis of axes(UNKNOWN_PENALTY_AXES, locale)) {
+    if (toStatus(elig[axis]?.status) === "unknown") confidence -= unknownPenalty[axis];
+  }
 
-  return applyConfidenceCaps(data, confidence);
+  return applyConfidenceCaps(data, confidence, locale);
 }
 
-export function deriveFitLabel(data, atsScore) {
-  const elig = data.eligibility || {};
-  const visaStatus = toStatus(elig.visa?.status);
-  const expStatus = toStatus(elig.experience?.status);
-
-  if (visaStatus === "issue" || expStatus === "issue") return "Not a fit";
-  if (atsScore >= FIT_THRESHOLDS.strong) return "Strong match";
-  if (atsScore >= FIT_THRESHOLDS.good) return "Good match";
-  if (atsScore >= FIT_THRESHOLDS.possible) return "Possible match";
-  return "Not a fit";
+/**
+ * The locale-free verdict key. The frontend colours the gauge from THIS, not
+ * from fitLabel: prefix-matching a display string ("Strong…") silently turned
+ * every result red the moment the label was not English.
+ */
+export function deriveFitKey(data, atsScore, locale = "en") {
+  if (issuedHardAxes(data, locale).length > 0) return "none";
+  if (atsScore >= FIT_THRESHOLDS.strong) return "strong";
+  if (atsScore >= FIT_THRESHOLDS.good) return "good";
+  if (atsScore >= FIT_THRESHOLDS.possible) return "possible";
+  return "none";
 }
 
-export function patchFitTexts(data, atsScore) {
-  const elig = data.eligibility || {};
-  const visaStatus = toStatus(elig.visa?.status);
-  const expStatus = toStatus(elig.experience?.status);
+const FIT_LABELS = {
+  en: { strong: "Strong match", good: "Good match", possible: "Possible match", none: "Not a fit" },
+  zh: { strong: "高度匹配", good: "较为匹配", possible: "可以一谈", none: "不匹配" },
+};
+
+export function deriveFitLabel(data, atsScore, locale = "en") {
+  const labels = FIT_LABELS[locale] || FIT_LABELS.en;
+  return labels[deriveFitKey(data, atsScore, locale)];
+}
+
+// Canned verdicts, per locale. The zh set has no visa arm — that axis does
+// not exist on the mainland page — and its character budgets are roughly half
+// the English ones, because a Chinese sentence carrying the same content is
+// about half as long and the UI slot is the same width.
+const FIT_TEXTS = {
+  en: {
+    hardFail: {
+      "visa+experience": "Not a fit - visa and experience requirements are not met.",
+      visa: "Not a fit - visa/work-rights requirement is not met.",
+      experience: "Not a fit - experience requirement is not met.",
+    },
+    hardFailVerdict: "Hard eligibility requirements block progression for this JD.",
+    byScore: {
+      strong: "Strong match for this role.",
+      good: "Good match for this role.",
+      possible: "Possible match if requirements are flexible.",
+      none: "Not a fit for this role right now.",
+    },
+    verdictGood: "Core requirements are mostly aligned with clear delivery evidence.",
+    verdictWeak: "There are material gaps that require targeted upskilling and stronger evidence.",
+  },
+  zh: {
+    hardFail: {
+      experience: "硬性年限要求未达到。",
+    },
+    hardFailVerdict: "该岗位存在硬性门槛未满足,不建议投递。",
+    byScore: {
+      strong: "与该岗位高度匹配。",
+      good: "与该岗位较为匹配。",
+      possible: "若要求可放宽,可以一谈。",
+      none: "目前与该岗位不匹配。",
+    },
+    verdictGood: "核心要求基本对得上,且有可查证的交付记录。",
+    verdictWeak: "存在实质差距,需要针对性补齐并拿出更硬的证据。",
+  },
+};
+
+export function patchFitTexts(data, atsScore, locale = "en") {
+  const t = FIT_TEXTS[locale] || FIT_TEXTS.en;
+  const hardIssues = issuedHardAxes(data, locale);
 
   let fitHeadline = data.fitHeadline || "";
   let fitVerdict = data.fitVerdict || "";
 
-  if (visaStatus === "issue" || expStatus === "issue") {
-    if (visaStatus === "issue" && expStatus === "issue") {
-      fitHeadline = "Not a fit - visa and experience requirements are not met.";
-    } else if (visaStatus === "issue") {
-      fitHeadline = "Not a fit - visa/work-rights requirement is not met.";
-    } else {
-      fitHeadline = "Not a fit - experience requirement is not met.";
-    }
-    fitVerdict = "Hard eligibility requirements block progression for this JD.";
+  if (hardIssues.length > 0) {
+    // Key on the joined axis list so a multi-axis failure names both.
+    const key = hardIssues.join("+");
+    fitHeadline = t.hardFail[key] || t.hardFail[hardIssues[0]] || t.byScore.none;
+    fitVerdict = t.hardFailVerdict;
   } else if (!fitHeadline) {
-    if (atsScore >= FIT_THRESHOLDS.strong) fitHeadline = "Strong match for this role.";
-    else if (atsScore >= FIT_THRESHOLDS.good) fitHeadline = "Good match for this role.";
-    else if (atsScore >= FIT_THRESHOLDS.possible) fitHeadline = "Possible match if requirements are flexible.";
-    else fitHeadline = "Not a fit for this role right now.";
+    fitHeadline = t.byScore[deriveFitKey(data, atsScore, locale)];
   }
 
   if (!fitVerdict) {
-    fitVerdict =
-      atsScore >= FIT_THRESHOLDS.good
-        ? "Core requirements are mostly aligned with clear delivery evidence."
-        : "There are material gaps that require targeted upskilling and stronger evidence.";
+    fitVerdict = atsScore >= FIT_THRESHOLDS.good ? t.verdictGood : t.verdictWeak;
   }
 
   return { fitHeadline, fitVerdict };
@@ -227,19 +287,21 @@ function normalizeEvidencePairs(value) {
     .slice(0, LIMITS.evidencePairs);
 }
 
-function defaultEligibility() {
-  return {
-    visa: { status: "Unknown", note: "" },
+function defaultEligibility(locale = "en") {
+  // zh omits visa entirely rather than defaulting it to Unknown: an axis that
+  // is always Unknown is an axis that always costs confidence.
+  const base = {
     experience: { status: "Unknown", note: "" },
     location: { status: "Unknown", note: "" },
   };
+  return locale === "zh" ? base : { visa: { status: "Unknown", note: "" }, ...base };
 }
 
 /**
  * Pure scoring: takes raw LLM result, produces flat JDScore.
  * Idempotent. No I/O. Safe to call with arbitrary input shape.
  */
-export function scoreJD(rawLLM) {
+export function scoreJD(rawLLM, locale = "en") {
   const raw = rawLLM && typeof rawLLM === "object" ? rawLLM : {};
 
   const safe = {
@@ -259,21 +321,23 @@ export function scoreJD(rawLLM) {
     evidencePairs: normalizeEvidencePairs(raw.evidencePairs),
     summary: typeof raw.summary === "string" ? raw.summary : "",
     fitLabel: "",
+    fitKey: "none",
     fitHeadline: typeof raw.fitHeadline === "string" ? raw.fitHeadline : "",
     fitVerdict: typeof raw.fitVerdict === "string" ? raw.fitVerdict : "",
-    eligibility: { ...defaultEligibility(), ...(raw.eligibility || {}) },
+    eligibility: { ...defaultEligibility(locale), ...(raw.eligibility || {}) },
   };
 
-  safe.overallScore = deriveAtsScore(safe);
+  safe.overallScore = deriveAtsScore(safe, locale);
   // An LLM-supplied confidenceScore is still subject to the eligibility caps —
   // never trusted verbatim past a visa/experience Issue.
   safe.confidenceScore =
     typeof raw.confidenceScore === "number"
-      ? applyConfidenceCaps(safe, clampScore(raw.confidenceScore))
-      : deriveConfidenceScore(safe);
+      ? applyConfidenceCaps(safe, clampScore(raw.confidenceScore), locale)
+      : deriveConfidenceScore(safe, locale);
 
-  safe.fitLabel = deriveFitLabel(safe, safe.overallScore);
-  const patched = patchFitTexts(safe, safe.overallScore);
+  safe.fitKey = deriveFitKey(safe, safe.overallScore, locale);
+  safe.fitLabel = deriveFitLabel(safe, safe.overallScore, locale);
+  const patched = patchFitTexts(safe, safe.overallScore, locale);
   safe.fitHeadline = patched.fitHeadline;
   safe.fitVerdict = patched.fitVerdict;
 

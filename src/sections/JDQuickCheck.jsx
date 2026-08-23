@@ -26,22 +26,35 @@ function detectIsMac() {
   return /mac|iphone|ipad|ipod/i.test(p);
 }
 
-const FIT_COLOR = (label = "") =>
-  label.startsWith("Strong") ? "var(--ok)" :
-  label.startsWith("Good") ? "var(--sig-2)" :
-  label.startsWith("Possible") ? "var(--warn)" :
-  "var(--danger)";
+// Colour keys off the locale-free `fitKey` the scorer emits, NOT off the
+// display label. Prefix-matching "Strong…" meant the gauge turned red for
+// every strong match the moment the label stopped being English — a silent
+// failure with no error anywhere. Falls back to the old prefix test only for
+// a response predating fitKey.
+const FIT_COLOR = (key, label = "") => {
+  const k = key || (
+    label.startsWith("Strong") ? "strong" :
+    label.startsWith("Good") ? "good" :
+    label.startsWith("Possible") ? "possible" : "none"
+  );
+  return k === "strong" ? "var(--ok)" :
+    k === "good" ? "var(--sig-2)" :
+    k === "possible" ? "var(--warn)" :
+    "var(--danger)";
+};
 
+// eligibility.*.status is a wire enum and stays ASCII end-to-end for the same
+// reason; only the row captions and the rendered word are localised.
 const STATUS_COLOR = (s) =>
   s === "OK" ? "var(--ok)" :
   s === "Issue" ? "var(--danger)" :
   "var(--tx-2)";
 
 // ── Animated circular score gauge ──
-function ScoreGauge({ score, label }) {
+function ScoreGauge({ score, fitKey, label }) {
   const R = 52;
   const C = 2 * Math.PI * R;
-  const color = FIT_COLOR(label);
+  const color = FIT_COLOR(fitKey, label);
   return (
     <div className="relative flex items-center justify-center" style={{ width: 140, height: 140 }}>
       <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
@@ -240,10 +253,10 @@ const JDQuickCheck = () => {
               <div className="jd-result space-y-7">
                 {/* Hero: gauge + verdict */}
                 <div className="flex flex-col sm:flex-row items-center gap-6">
-                  <ScoreGauge score={result.overallScore} label={result.fitLabel} />
+                  <ScoreGauge score={result.overallScore} fitKey={result.fitKey} label={result.fitLabel} />
                   <div className="flex-1 text-center sm:text-left">
                     <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-2"
-                          style={{ background: `color-mix(in oklch, ${FIT_COLOR(result.fitLabel)} 18%, transparent)`, color: FIT_COLOR(result.fitLabel) }}>
+                          style={{ background: `color-mix(in oklch, ${FIT_COLOR(result.fitKey, result.fitLabel)} 18%, transparent)`, color: FIT_COLOR(result.fitKey, result.fitLabel) }}>
                       {result.fitLabel || "-"}
                     </span>
                     {result.fitHeadline && <p className="text-lg font-semibold leading-snug" style={{ color: "var(--tx-0)" }}>{result.fitHeadline}</p>}
@@ -280,16 +293,19 @@ const JDQuickCheck = () => {
                 <div className="flex flex-wrap gap-2">
                   {/* Row captions are dictionary copy; v?.status stays the raw wire
                       enum — STATUS_COLOR matches it with === and it renders as-is. */}
-                  {[
-                    { k: dict.jd.eligibilityNames.visa, v: result?.eligibility?.visa },
-                    { k: dict.jd.eligibilityNames.experience, v: result?.eligibility?.experience },
-                    { k: dict.jd.eligibilityNames.location, v: result?.eligibility?.location },
-                  ].map(({ k, v }) => (
+                  {/* Driven by the axes the response actually carries: the zh
+                      scorer omits visa entirely (no such dimension in that
+                      market), and a hardcoded three-row list would render an
+                      empty chip for it. */}
+                  {["visa", "experience", "location"]
+                    .filter((axis) => result?.eligibility?.[axis])
+                    .map((axis) => ({ k: dict.jd.eligibilityNames[axis], v: result.eligibility[axis] }))
+                    .map(({ k, v }) => (
                     <span key={k} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[var(--r-sm)] text-xs"
                           style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
                       <span className="w-1.5 h-1.5 rounded-full" style={{ background: STATUS_COLOR(v?.status) }} />
                       <span style={{ color: "var(--tx-2)" }}>{k}</span>
-                      <span className="font-medium" style={{ color: "var(--tx-0)" }}>{v?.status || dict.jd.statusUnknown}</span>
+                      <span className="font-medium" style={{ color: "var(--tx-0)" }}>{dict.jd.statuses?.[v?.status] || v?.status || dict.jd.statusUnknown}</span>
                     </span>
                   ))}
                 </div>

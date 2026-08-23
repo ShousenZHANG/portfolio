@@ -5,7 +5,7 @@ import Mic from "lucide-react/dist/esm/icons/mic";
 import Volume2 from "lucide-react/dist/esm/icons/volume-2";
 import VolumeX from "lucide-react/dist/esm/icons/volume-x";
 import { prefersReducedMotion } from "../lib/motion.js";
-import { dict } from "../i18n/index.js";
+import { dict, locale, isZh } from "../i18n/index.js";
 
 /**
  * E.D. — Eddy's Digital Deputy. Full-screen command deck (lazy chunk).
@@ -145,7 +145,11 @@ const EDPanel = ({ onClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [status, setStatus] = useState("idle"); // idle|listening|thinking|speaking
-    const [voiceOn, setVoiceOn] = useState(true);
+    // Voice OUT defaults off on zh: OpenAI TTS Mandarin is materially weaker
+    // than its English, and a page whose whole claim is "the AI I build
+    // works" is the wrong place to ship degraded audio. Voice IN stays on —
+    // server transcription with an explicit zh hint is genuinely good.
+    const [voiceOn, setVoiceOn] = useState(!isZh);
     const [error, setError] = useState(null);
     const [analyser, setAnalyser] = useState(null); // drives the wave bars
     const [recMs, setRecMs] = useState(0);          // recording stopwatch
@@ -313,7 +317,7 @@ const EDPanel = ({ onClose }) => {
             const res = await fetch(ENDPOINT, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, history, voice: voiceOn }),
+                body: JSON.stringify({ question, history, voice: voiceOn, locale }),
                 signal: controller.signal,
             });
             const data = await res.json().catch(() => ({}));
@@ -405,7 +409,7 @@ const EDPanel = ({ onClose }) => {
                 const res = await fetch(TRANSCRIBE_ENDPOINT, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ audio, mimeType: rec.mimeType }),
+                    body: JSON.stringify({ audio, mimeType: rec.mimeType, language: locale }),
                 });
                 const data = await res.json().catch(() => ({}));
                 if (!res.ok) throw new Error(data?.error || dict.ed.errors.transcribeFailed);

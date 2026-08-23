@@ -69,7 +69,9 @@ export default async function handler(req, res) {
     return send(res, 400, { error: "Invalid JSON body" });
   }
 
-  const { jd, cvText } = body || {};
+  const { jd, cvText, locale: rawLocale } = body || {};
+  // Allowlisted, never trusted: anything but "zh" is English.
+  const locale = rawLocale === "zh" ? "zh" : "en";
   if (typeof jd !== "string" || typeof cvText !== "string" || !jd.trim() || !cvText.trim()) {
     return send(res, 400, { error: "jd and cvText are required" });
   }
@@ -85,7 +87,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const score = await evaluateJD(jd.trim(), cvText.trim());
+    const score = await evaluateJD(jd.trim(), cvText.trim(), locale);
     return send(res, 200, score, {
       "X-RateLimit-Limit": String(RATE_LIMIT_CONFIG.MAX_REQUESTS),
       "X-RateLimit-Remaining": String(limit.remaining),

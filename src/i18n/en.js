@@ -156,6 +156,10 @@ export const en = {
             experience: "Experience",
             location: "Location",
         },
+        // The eligibility status VALUES stay ASCII on the wire (STATUS_COLOR
+        // matches them with ===). This maps them to display text at the last
+        // render step, which is the only place a locale may touch them.
+        statuses: { OK: "OK", Issue: "Issue", Unknown: "Unknown" },
         statusUnknown: "Unknown",
         matched: "Matched",
         gaps: "Gaps",

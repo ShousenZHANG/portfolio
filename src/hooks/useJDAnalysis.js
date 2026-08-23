@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { dict, isZh } from "../i18n/index.js";
+import { dict, isZh, locale } from "../i18n/index.js";
 
 const MAX_JD_LENGTH = 12_000; // matches the server cap (api/agents/jd.js)
 // The matcher grounds on the CV in the reader's own language: scoring a
@@ -64,7 +64,7 @@ export function useJDAnalysis() {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jd: jd.trim(), cvText: cvText.trim() }),
+        body: JSON.stringify({ jd: jd.trim(), cvText: cvText.trim(), locale }),
         signal: controller.signal,
       });
       if (!res.ok) {
