@@ -1,10 +1,18 @@
 // Dynamic Open Graph image endpoint.
-// Renders a 1200×630 PNG branded card for social shares.
+// Renders a 1200×630 PNG branded card for social shares, per locale:
+//   /api/og          → English card
+//   /api/og?lang=zh  → Chinese card (linked from zh/index.html)
 // Edge runtime is required by @vercel/og.
 //
 // React must be imported because Vercel's edge bundler (esbuild) uses
 // classic JSX transform by default — JSX expands to React.createElement(...)
 // and the file fails at runtime without React in scope.
+//
+// Satori (the renderer inside @vercel/og) ships a Latin face only, so CJK
+// would paint as tofu. api/_og/ holds two Noto Sans SC (OFL) subsets cut to
+// the EXACT ~86 characters this card can render — ~12 KB per weight, which
+// keeps the edge bundle small. The underscore prefix stops Vercel routing
+// those files as endpoints. Regenerate them if the zh copy below changes.
 
 // eslint-disable-next-line no-unused-vars
 import React from "react";
@@ -12,11 +20,43 @@ import { ImageResponse } from "@vercel/og";
 
 export const config = { runtime: "edge" };
 
-const TITLE = "Eddy Zhang";
-const SUBTITLE = "AI Engineer · Copilot Studio";
-const URL_LABEL = "eddyzhang.me";
+const COPY = {
+  en: {
+    title: "Eddy Zhang",
+    subtitle: "AI Engineer · Copilot Studio",
+    urlLabel: "eddyzhang.me",
+    tagline: "Power Platform · Dataverse · AI Agents · Microsoft 365",
+  },
+  zh: {
+    title: "张守森",
+    subtitle: "AI 应用工程师 · Copilot Studio",
+    urlLabel: "eddyzhang.me",
+    tagline: "企业级 Agent 落地 · 大模型输出可验证 · Microsoft 365",
+  },
+};
 
-export default function handler() {
+// Resolved once per edge instance, then reused across requests.
+let zhFontsPromise = null;
+function loadZhFonts() {
+  zhFontsPromise ||= Promise.all([
+    fetch(new URL("./_og/og-zh-bold.ttf", import.meta.url)).then((r) => r.arrayBuffer()),
+    fetch(new URL("./_og/og-zh-regular.ttf", import.meta.url)).then((r) => r.arrayBuffer()),
+  ]).then(([bold, regular]) => [
+    { name: "Noto Sans SC", data: bold, weight: 700, style: "normal" },
+    { name: "Noto Sans SC", data: regular, weight: 400, style: "normal" },
+  ]);
+  return zhFontsPromise;
+}
+
+export default async function handler(req) {
+  // Allowlisted — the raw param is never interpolated into rendered text.
+  const zh = new URL(req.url).searchParams.get("lang") === "zh";
+  const t = zh ? COPY.zh : COPY.en;
+  // The subset ships 400/700 only, so the zh card pins to those; the en card
+  // keeps 800/900 on the system Latin face. Negative tracking is a Latin
+  // display technique — on Han it makes glyphs collide, so zh gets 0.
+  const fonts = zh ? await loadZhFonts() : undefined;
+
   return new ImageResponse(
     (
       <div
@@ -35,7 +75,7 @@ export default function handler() {
           background:
             "linear-gradient(135deg, #07080e 0%, #0e0f16 55%, #0d191c 100%)",
           color: "white",
-          fontFamily: "sans-serif",
+          fontFamily: zh ? '"Noto Sans SC"' : "sans-serif",
         }}
       >
         {/* Top row — logo mark + URL */}
@@ -58,7 +98,7 @@ export default function handler() {
               background:
                 "linear-gradient(135deg, #7d7fff 0%, #35c5db 100%)",
               fontSize: "60px",
-              fontWeight: 900,
+              fontWeight: zh ? 700 : 900,
               // --sig-ink: the token for a fill sitting ON the signature gradient,
               // same role the monogram plays in public/favicon.svg.
               color: "#08091b",
@@ -75,7 +115,7 @@ export default function handler() {
               letterSpacing: "1px",
             }}
           >
-            {URL_LABEL}
+            {t.urlLabel}
           </div>
         </div>
 
@@ -91,13 +131,13 @@ export default function handler() {
             style={{
               display: "flex",
               fontSize: "120px",
-              fontWeight: 800,
+              fontWeight: zh ? 700 : 800,
               color: "white",
-              letterSpacing: "-4px",
+              letterSpacing: zh ? "0" : "-4px",
               lineHeight: 1,
             }}
           >
-            {TITLE}
+            {t.title}
           </div>
           <div
             style={{
@@ -108,10 +148,10 @@ export default function handler() {
                 "linear-gradient(90deg, #7d7fff 0%, #35c5db 100%)",
               backgroundClip: "text",
               color: "transparent",
-              letterSpacing: "-1px",
+              letterSpacing: zh ? "0" : "-1px",
             }}
           >
-            {SUBTITLE}
+            {t.subtitle}
           </div>
         </div>
 
@@ -137,11 +177,12 @@ export default function handler() {
             style={{
               display: "flex",
               fontSize: "26px",
+              fontWeight: 400,
               color: "rgba(255,255,255,0.7)",
               letterSpacing: "0.5px",
             }}
           >
-            Power Platform · Dataverse · AI Agents · Microsoft 365
+            {t.tagline}
           </div>
         </div>
       </div>
@@ -149,6 +190,7 @@ export default function handler() {
     {
       width: 1200,
       height: 630,
+      ...(fonts ? { fonts } : {}),
     }
   );
 }

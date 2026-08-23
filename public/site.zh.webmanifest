@@ -1,0 +1,15 @@
+{
+  "id": "/zh",
+  "name": "张守森 — AI 应用工程师",
+  "short_name": "张守森",
+  "description": "张守森的个人网站。AI 应用工程师,构建生产级 Copilot Studio 智能体,大模型输出可验证。",
+  "start_url": "/zh",
+  "scope": "/zh",
+  "display": "standalone",
+  "theme_color": "#07080e",
+  "background_color": "#07080e",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}

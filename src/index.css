@@ -69,6 +69,46 @@
     --sp-gutter: clamp(1.25rem, 0.5rem + 3vw, 5rem);      /* page side gutter */
 }
 
+/* ── Legacy-engine fallback (WeChat XWeb, pre-Chromium-111 WebViews) ──
+   oklch() and color-mix() land in Chrome 111/113; an engine that predates
+   them DROPS the declaration, which for `color` on `background-color` means
+   invisible text — the worst possible failure for the mainland audience the
+   /zh page targets, since most of that traffic arrives inside WeChat's
+   in-app browser. Every token repeats here as its exact sRGB paint (computed
+   from the OKLCH values, gamut-clipped where the display would clip anyway).
+   Decorative layers (nebula gradients, text-stroke, scrollbar tint) are left
+   to degrade — readability is what this block guarantees. */
+@supports not (color: oklch(0 0 0)) {
+    :root {
+        --sig: #7d7fff;
+        --sig-dim: #6463d4;
+        --sig-ink: #08091b;
+        --sig-glow: #7d7fff2e;
+        --sig-line: #7d7fff52;
+        --sig-2: #35c5db;
+        --sig-2-glow: #35c5db24;
+        --ok: #68ca80;
+        --warn: #e6b55d;
+        --danger: #e66d75;
+        --danger-tx: #fb9797;
+        --ink-0: #07080e;
+        --ink-1: #0e0f16;
+        --ink-2: #16161f;
+        --hair: #c9cce21a;
+        --hair-bright: #c8cbe82b;
+        --tx-0: #f1f1f5;
+        --tx-1: #b6b7bc;
+        --tx-2: #85858c;
+    }
+    /* color-mix() glass surfaces — same engines, same silent drop. */
+    .navbar.scrolled .navbar-inner { background: rgba(7, 8, 14, 0.88); }
+    .ed-panel::before { background: rgba(7, 8, 14, 0.88); }
+    @media (max-width: 1023px) {
+        .navbar.not-scrolled .navbar-inner { background: rgba(7, 8, 14, 0.72); }
+        .navbar.scrolled .navbar-inner { background: rgba(7, 8, 14, 0.92); }
+    }
+}
+
 html,
 body {
     width: 100%;
@@ -1357,6 +1397,23 @@ section {
   color: var(--tx-1);
 }
 .ed-orb:hover .ed-orb-label { color: var(--sig); }
+
+/* Language switch — a real navigation between the two static entries
+   (/ ⇄ /zh), styled in the same quiet mono chrome as the orb label. */
+.nav-lang {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--tx-2);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.nav-lang:hover { color: var(--tx-0); border-color: var(--hair-bright); }
 
 /* One-time introduction tooltip under the pill */
 .ed-tip {

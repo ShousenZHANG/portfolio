@@ -10,6 +10,7 @@ import "swiper/css/effect-fade";
 import { projects } from "../constants/projects";
 import TitleHeader from "../components/TitleHeader";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { dict } from "../i18n/index.js";
 import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 
 /**
@@ -103,8 +104,8 @@ const AppShowcase = () => {
     <section id="projects" ref={sectionRef} className="ed-shell py-[var(--sp-section)]">
       <div>
         <TitleHeader
-          title="Selected Work"
-          sub="03 / Selected Work"
+          title={dict.showcase.title}
+          sub={dict.showcase.sub}
           anchor="projects"
           align="left"
         />
@@ -148,7 +149,7 @@ const AppShowcase = () => {
                     </Swiper>
                   ) : (
                     <div className="h-full w-full p-6 md:p-8 flex flex-col justify-center items-center text-center" style={{ background: "var(--ink-2)" }}>
-                      <p className="ed-eyebrow">Enterprise Project</p>
+                      <p className="ed-eyebrow">{dict.showcase.fallbackEyebrow}</p>
                       <h3 className="mt-3 text-xl md:text-2xl font-bold" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
                     </div>
                   )}

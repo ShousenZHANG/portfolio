@@ -4,6 +4,7 @@ import X from "lucide-react/dist/esm/icons/x";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 
 import { navLinks } from "../constants";
+import { dict, isZh, altHref } from "../i18n/index.js";
 import Magnetic from "./Magnetic.jsx";
 import LogoMark from "./LogoMark.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
@@ -208,10 +209,10 @@ const NavBar = () => {
       <div className="navbar-inner">
         <a href="#hero" onClick={closeMenu} className="navbar-logo">
           <LogoMark className="navbar-logo-mark" size={34} />
-          <span className="navbar-logo-text">Eddy Zhang</span>
+          <span className="navbar-logo-text">{dict.nav.logoText}</span>
         </a>
 
-        <nav className="navbar-nav" aria-label="Main navigation">
+        <nav className="navbar-nav" aria-label={dict.nav.mainNavLabel}>
           <ul ref={ulRef} onMouseLeave={() => setHovered(null)}>
             <span
               className="navbar-indicator"
@@ -245,6 +246,17 @@ const NavBar = () => {
         </nav>
 
         <div className="flex items-center gap-2.5">
+          {/* Language switch — navigates to the other static entry (no
+              client-side locale state exists to flip; see src/i18n/locale.js) */}
+          <a
+            className="nav-lang"
+            href={altHref}
+            aria-label={isZh ? "Switch to the English version" : "切换到中文版"}
+            hrefLang={isZh ? "en" : "zh-Hans"}
+          >
+            {isZh ? "EN" : "中文"}
+          </a>
+
           {/* E.D. — the ship's AI. A labelled pill (a bare orb read as
               decoration); a one-time tooltip introduces it on first visit */}
           <div className="relative">
@@ -252,11 +264,11 @@ const NavBar = () => {
               type="button"
               className="ed-orb"
               onClick={() => { setEdTip(false); window.dispatchEvent(new CustomEvent("ed-open")); }}
-              aria-label="Open E.D., Eddy's AI assistant (or press /)"
-              title="Ask E.D. — press /"
+              aria-label={dict.nav.orbAria}
+              title={dict.nav.orbTitle}
             >
               <span className="ed-orb-core" aria-hidden="true" />
-              <span className="ed-orb-label">E.D.</span>
+              <span className="ed-orb-label">{dict.nav.orbLabel}</span>
             </button>
             {edTip && (
               <button
@@ -264,14 +276,14 @@ const NavBar = () => {
                 className={`ed-tip ${tipLeaving ? "leaving" : ""}`}
                 onClick={() => { setEdTip(false); window.dispatchEvent(new CustomEvent("ed-open")); }}
               >
-                First time here? Click and ask my AI anything
+                {dict.nav.tip}
               </button>
             )}
           </div>
 
           <Magnetic strength={0.4} className="hidden lg:inline-flex">
             <a href="#contact" className="navbar-cta group">
-              <span>Contact me</span>
+              <span>{dict.nav.contactCta}</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </a>
           </Magnetic>
@@ -282,7 +294,7 @@ const NavBar = () => {
             type="button"
             className="navbar-burger lg:hidden flex items-center justify-center"
             onClick={() => setMenuOpen((prev) => !prev)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? dict.nav.menuClose : dict.nav.menuOpen}
             aria-expanded={menuOpen}
             aria-controls="mobile-dropdown"
           >
@@ -298,7 +310,7 @@ const NavBar = () => {
         inert={navInert}
         className={`lg:hidden overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}
       >
-        <nav aria-label="Mobile navigation" className="mx-4 mb-4 p-3 rounded-xl" style={{ background: "var(--ink-1)", border: "1px solid var(--hair)" }}>
+        <nav aria-label={dict.nav.mobileNavLabel} className="mx-4 mb-4 p-3 rounded-xl" style={{ background: "var(--ink-1)", border: "1px solid var(--hair)" }}>
           {navLinks.map(({ link, name }) => {
             const id = link.replace("#", "");
             const isActive = activeSection === id;
@@ -322,7 +334,7 @@ const NavBar = () => {
               className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-sm font-semibold"
               style={{ background: "var(--sig)", color: "var(--sig-ink)" }}
             >
-              Contact me
+              {dict.nav.contactCta}
             </a>
           </div>
         </nav>

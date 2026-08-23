@@ -70,7 +70,9 @@ export default async function handler(req, res) {
     return send(res, 400, { error: "Invalid JSON body" });
   }
 
-  const { question, history, voice } = body || {};
+  const { question, history, voice, locale: rawLocale } = body || {};
+  // Allowlisted, never trusted: anything but "zh" is English.
+  const locale = rawLocale === "zh" ? "zh" : "en";
   if (typeof question !== "string" || !question.trim()) {
     return send(res, 400, { error: "question is required" });
   }
@@ -79,7 +81,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const answer = await callAsk(question.trim(), history);
+    const answer = await callAsk(question.trim(), history, undefined, locale);
     // Voice is best-effort: a TTS failure must never sink the answer.
     const audio = voice === true ? await synthesize(answer) : null;
     return send(res, 200, { answer, audio }, {
@@ -93,7 +95,9 @@ export default async function handler(req, res) {
         ? 500
         : err.status || 502;
       const clientMsg = err.code === "missing_api_key" || err.code === "auth"
-        ? "E.D.'s core is offline. Reach Eddy directly: eddy.zhang24@gmail.com"
+        ? (locale === "zh"
+            ? "E.D. 核心离线。直接联系张守森:17368139916@163.com"
+            : "E.D.'s core is offline. Reach Eddy directly: eddy.zhang24@gmail.com")
         : err.message;
       const headers = err.status === 429 ? { "Retry-After": "20" } : {};
       return send(res, status, { error: clientMsg, code: err.code }, headers);

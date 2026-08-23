@@ -7,6 +7,7 @@ import TitleHeader from "../components/TitleHeader";
 import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 
 const Experience = () => {
     const containerRef = useRef(null);
@@ -81,8 +82,8 @@ const Experience = () => {
         <section id="experience" className="ed-shell py-[var(--sp-section)]">
             <div ref={containerRef}>
                 <TitleHeader
-                    title="Professional Experience"
-                    sub="02 / Experience"
+                    title={dict.experience.title}
+                    sub={dict.experience.sub}
                     anchor="experience"
                     align="left"
                 />
@@ -128,9 +129,9 @@ const Experience = () => {
                                                 {startYear}
                                             </span>
                                             {isCurrent && (
-                                                <span className="exp-now" aria-label="current role">
+                                                <span className="exp-now" aria-label={dict.experience.currentAria}>
                                                     <span className="exp-now-dot" aria-hidden="true" />
-                                                    NOW
+                                                    {dict.experience.nowBadge}
                                                 </span>
                                             )}
                                         </div>
@@ -149,7 +150,7 @@ const Experience = () => {
                                                     <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono uppercase tracking-wider"
                                                           style={{ background: "var(--sig-glow)", color: "var(--sig)", border: "1px solid var(--sig-line)" }}>
                                                         <span className="ed-status-dot" style={{ width: 6, height: 6 }} aria-hidden="true" />
-                                                        Current
+                                                        {dict.experience.currentBadge}
                                                     </span>
                                                 )}
                                             </div>

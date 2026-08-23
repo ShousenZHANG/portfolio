@@ -1,3 +1,5 @@
+// Brand names — identical in every locale, so the list stays hardcoded;
+// only the eyebrow above the marquee is dictionary copy.
 const logoIconsList = [
     // Cloud & AI platform
     { name: "Microsoft Azure", icon: "azure/azure-original.svg" },
@@ -22,6 +24,7 @@ const logoIconsList = [
 ];
 
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 
 // `duplicate` marks the second pass of the list — the half that exists only so
 // translateX(-50%) can loop seamlessly. Announcing all 13 logos twice is the
@@ -47,7 +50,7 @@ const LogoSection = () => {
 
     return (
         <section className="relative w-full overflow-hidden py-10 md:py-14">
-            <p className="ed-eyebrow ed-shell mb-7 md:mb-9">Tools I work with daily</p>
+            <p className="ed-eyebrow ed-shell mb-7 md:mb-9">{dict.logos.eyebrow}</p>
 
             {/* Edge fades — match the page floor so the track dissolves cleanly */}
             <div className="logo-fade logo-fade-left" aria-hidden="true" />

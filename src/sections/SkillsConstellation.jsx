@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
 // the projects/experience that prove the skill. Edges link related work.
@@ -9,45 +10,47 @@ import { useInView } from "../hooks/useInView.js";
 // Category colours share one saturation band (C≈0.12-0.14) so the five
 // clusters read as siblings — distinct hues, no shouting.
 const CATS = {
-    ms: { label: "Microsoft & Power Platform", color: "var(--sig)" },
-    ai: { label: "AI & Agents", color: "oklch(0.72 0.14 320)" },
-    data: { label: "Integration & Data", color: "var(--sig-2)" },
-    eng: { label: "Software Engineering", color: "oklch(0.76 0.13 155)" },
-    cloud: { label: "Cloud & DevOps", color: "oklch(0.74 0.12 240)" },
+    ms: { label: dict.skills.cats.ms, color: "var(--sig)" },
+    ai: { label: dict.skills.cats.ai, color: "oklch(0.72 0.14 320)" },
+    data: { label: dict.skills.cats.data, color: "var(--sig-2)" },
+    eng: { label: dict.skills.cats.eng, color: "oklch(0.76 0.13 155)" },
+    cloud: { label: dict.skills.cats.cloud, color: "oklch(0.74 0.12 240)" },
 };
 
+// Copy ({ label, used }) lives in dict.skills.nodes, keyed by id; geometry,
+// categories and edges are structure and stay here.
 const NODES = [
     // Microsoft & Power Platform (top center — the signature cluster)
-    { id: "copilot", label: "Copilot Studio", cat: "ms", x: 47, y: 10, r: 7.5, used: ["Stepping Stone House — 2 published agents", "Corrs — trusted KM agent"] },
-    { id: "pautomate", label: "Power Automate", cat: "ms", x: 32, y: 20, r: 6, used: ["Teams meeting-notes archiving", "Corrs daily log-triage flow"] },
-    { id: "dataverse", label: "Dataverse", cat: "ms", x: 55, y: 24, r: 6.5, used: ["Corrs — verifiable KM data model", "reusable agent Skills"] },
-    { id: "powerapps", label: "Power Apps", cat: "ms", x: 41, y: 33, r: 5, used: ["Microsoft Power Platform"] },
+    { id: "copilot", cat: "ms", x: 47, y: 10, r: 7.5 },
+    { id: "pautomate", cat: "ms", x: 32, y: 20, r: 6 },
+    { id: "dataverse", cat: "ms", x: 55, y: 24, r: 6.5 },
+    { id: "powerapps", cat: "ms", x: 41, y: 33, r: 5 },
 
     // AI & Agents (left)
-    { id: "agents", label: "AI Agents", cat: "ai", x: 19, y: 30, r: 6.5, used: ["2 published agents — 10+ staff (SSH)", "Corrs KM agent — piloted across 5 platforms"] },
-    { id: "rag", label: "RAG", cat: "ai", x: 9, y: 43, r: 5.5, used: ["Curated Markdown knowledge (SSH)", "Corrs trusted answers"] },
-    { id: "mcp", label: "MCP", cat: "ai", x: 23, y: 46, r: 5.5, used: ["SSH agents — grounded via MCP tool calls"] },
-    { id: "llmorch", label: "LLM Orchestration", cat: "ai", x: 11, y: 56, r: 5.5, used: ["Joblit — any-LLM, Zod-validated"] },
-    { id: "prompt", label: "Prompt Eng.", cat: "ai", x: 27, y: 59, r: 5.5, used: ["Joblit prompt contracts", "JD matcher"] },
+    { id: "agents", cat: "ai", x: 19, y: 30, r: 6.5 },
+    { id: "rag", cat: "ai", x: 9, y: 43, r: 5.5 },
+    { id: "mcp", cat: "ai", x: 23, y: 46, r: 5.5 },
+    { id: "llmorch", cat: "ai", x: 11, y: 56, r: 5.5 },
+    { id: "prompt", cat: "ai", x: 27, y: 59, r: 5.5 },
 
     // Integration & Data (lower center-left)
-    { id: "boomi", label: "Boomi", cat: "data", x: 41, y: 52, r: 6, used: ["Corrs log triage (~30 min/day saved)", "NL flow-building prototype"] },
-    { id: "servicenow", label: "ServiceNow", cat: "data", x: 45, y: 65, r: 5.5, used: ["1 of 5 platforms the Corrs agent spans"] },
-    { id: "playwright", label: "Playwright", cat: "data", x: 57, y: 71, r: 5, used: ["SSH Markdown conversion tool"] },
-    { id: "sql", label: "SQL / REST", cat: "data", x: 30, y: 70, r: 5, used: ["Newtouch APIs", "Contest Platform"] },
+    { id: "boomi", cat: "data", x: 41, y: 52, r: 6 },
+    { id: "servicenow", cat: "data", x: 45, y: 65, r: 5.5 },
+    { id: "playwright", cat: "data", x: 57, y: 71, r: 5 },
+    { id: "sql", cat: "data", x: 30, y: 70, r: 5 },
 
     // Software Engineering (right)
-    { id: "java", label: "Java + Spring", cat: "eng", x: 74, y: 13, r: 6.5, used: ["Newtouch (+ MinIO migration)", "Contest Platform"] },
-    { id: "python", label: "Python", cat: "eng", x: 88, y: 23, r: 5.5, used: ["SSH desktop tool — 15+ formats"] },
-    { id: "ts", label: "TypeScript", cat: "eng", x: 67, y: 29, r: 5.5, used: ["Joblit", "this portfolio"] },
-    { id: "react", label: "React / Next", cat: "eng", x: 84, y: 37, r: 6, used: ["This portfolio", "Joblit"] },
+    { id: "java", cat: "eng", x: 74, y: 13, r: 6.5 },
+    { id: "python", cat: "eng", x: 88, y: 23, r: 5.5 },
+    { id: "ts", cat: "eng", x: 67, y: 29, r: 5.5 },
+    { id: "react", cat: "eng", x: 84, y: 37, r: 6 },
 
     // Cloud & DevOps (lower right)
-    { id: "azure", label: "Azure", cat: "cloud", x: 65, y: 49, r: 6, used: ["Microsoft 365 stack"] },
-    { id: "aws", label: "AWS", cat: "cloud", x: 80, y: 51, r: 5, used: ["Contest Platform"] },
-    { id: "docker", label: "Docker", cat: "cloud", x: 73, y: 63, r: 5.5, used: ["Contest Platform", "Newtouch"] },
-    { id: "cicd", label: "CI/CD", cat: "cloud", x: 88, y: 61, r: 5.5, used: ["Contest Platform", "Joblit"] },
-];
+    { id: "azure", cat: "cloud", x: 65, y: 49, r: 6 },
+    { id: "aws", cat: "cloud", x: 80, y: 51, r: 5 },
+    { id: "docker", cat: "cloud", x: 73, y: 63, r: 5.5 },
+    { id: "cicd", cat: "cloud", x: 88, y: 61, r: 5.5 },
+].map((n) => ({ ...n, ...dict.skills.nodes[n.id] }));
 
 const EDGES = [
     // Microsoft cluster
@@ -132,16 +135,13 @@ const SkillsConstellation = () => {
     return (
         <section id="skills" className="ed-shell py-[var(--sp-section)]">
             <TitleHeader
-                title="Skill Constellation"
-                sub="04 / Stack"
+                title={dict.skills.title}
+                sub={dict.skills.sub}
                 anchor="skills"
                 align="left"
             />
             <p className="ed-lead mt-5 mb-8">
-                The Microsoft 365 agent stack I build with — Copilot Studio, Power
-                Platform, and the AI around them — mapped by how it connects. Tap or
-                hover a node to trace its links; select one to see what I shipped
-                with it.
+                {dict.skills.lead}
             </p>
 
             <div className="ed-tile p-4 md:p-6">
@@ -168,7 +168,7 @@ const SkillsConstellation = () => {
                         viewBox="0 0 100 76"
                         className={`skill-graph w-full h-auto select-none ${graphInView ? "in-view" : ""}`}
                         role="img"
-                        aria-label="Interactive skills graph"
+                        aria-label={dict.skills.graphAria}
                         onMouseLeave={() => setActive(null)}
                     >
                         {/* edges — curved, with energy flow when active */}
@@ -205,7 +205,7 @@ const SkillsConstellation = () => {
                                     tabIndex={i === rovingIndex ? 0 : -1}
                                     role="button"
                                     aria-pressed={isPinned}
-                                    aria-label={`${n.label}, ${CATS[n.cat].label}`}
+                                    aria-label={dict.skills.nodeAria(n.label, CATS[n.cat].label)}
                                     onFocus={() => { setActive(n.id); setRovingIndex(i); }}
                                     onBlur={() => setActive(null)}
                                     onKeyDown={(e) => onNodeKey(e, i)}
@@ -274,14 +274,14 @@ const SkillsConstellation = () => {
                                         {CATS[detail.cat].label}
                                     </span>
                                     <span className="font-mono text-xs" style={{ color: "var(--tx-2)" }}>
-                                        {linkedIds.length} links
+                                        {dict.skills.linksCount(linkedIds.length)}
                                     </span>
                                 </div>
                                 <h3 className="skill-detail-line text-2xl font-bold mb-4" style={{ color: "var(--tx-0)" }}>
                                     {detail.label}
                                 </h3>
                                 <p className="skill-detail-line text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "var(--tx-2)", "--i": 1 }}>
-                                    Shipped in
+                                    {dict.skills.shippedIn}
                                 </p>
                                 <ul className="space-y-2.5">
                                     {detail.used.map((u, idx) => (
@@ -300,7 +300,7 @@ const SkillsConstellation = () => {
                                 {linkedIds.length > 0 && (
                                     <>
                                         <p className="skill-detail-line text-xs font-mono uppercase tracking-wider mt-5 mb-2.5" style={{ color: "var(--tx-2)", "--i": detail.used.length + 2 }}>
-                                            Linked skills
+                                            {dict.skills.linkedSkills}
                                         </p>
                                         <div className="skill-detail-line flex flex-wrap gap-1.5" style={{ "--i": detail.used.length + 3 }}>
                                             {linkedIds.map((cid) => {
@@ -326,10 +326,9 @@ const SkillsConstellation = () => {
                             </div>
                         ) : (
                             <div className="flex flex-col items-start justify-center h-full min-h-[160px]">
-                                <p className="ed-eyebrow mb-3">Interactive</p>
+                                <p className="ed-eyebrow mb-3">{dict.skills.interactive}</p>
                                 <p className="text-sm" style={{ color: "var(--tx-2)" }}>
-                                    Click any node to see the projects and roles where I
-                                    used that skill in production.
+                                    {dict.skills.hint}
                                 </p>
                             </div>
                         )}

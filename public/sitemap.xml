@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- One URL, so the only field that buys anything is <lastmod>: Google has said
-     publicly that it ignores <changefreq> and <priority>, and priority is
-     meaningless anyway when there is nothing to rank this page against.
-     Bump the date whenever the page's content actually changes — a <lastmod>
-     that moves without the content moving is the one way to lose the signal. -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!-- Two URLs, one per locale. <lastmod> is the only field that buys anything:
+     Google has said publicly that it ignores <changefreq> and <priority>.
+     Bump the date whenever a page's content actually changes.
+     The xhtml:link alternates mirror the in-page hreflang set — reciprocal
+     and self-referencing on both entries, the condition Google imposes
+     before honouring hreflang at all. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://eddyzhang.me/</loc>
-    <lastmod>2026-08-22</lastmod>
+    <lastmod>2026-08-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eddyzhang.me/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://eddyzhang.me/zh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://eddyzhang.me/" />
+  </url>
+  <url>
+    <loc>https://eddyzhang.me/zh</loc>
+    <lastmod>2026-08-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eddyzhang.me/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://eddyzhang.me/zh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://eddyzhang.me/" />
   </url>
 </urlset>

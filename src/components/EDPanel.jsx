@@ -5,6 +5,7 @@ import Mic from "lucide-react/dist/esm/icons/mic";
 import Volume2 from "lucide-react/dist/esm/icons/volume-2";
 import VolumeX from "lucide-react/dist/esm/icons/volume-x";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { dict } from "../i18n/index.js";
 
 /**
  * E.D. — Eddy's Digital Deputy. Full-screen command deck (lazy chunk).
@@ -19,12 +20,7 @@ const ENDPOINT = "/api/agents/ask";
 const MAX_QUESTION = 600;
 
 // Cold-start chips — every one is a question Eddy WANTS recruiters to ask.
-const CHIPS = [
-    "What's Eddy's visa status?",
-    "Why did he pivot to Copilot Studio?",
-    "What has he actually shipped?",
-    "How do I get in touch with him?",
-];
+const CHIPS = dict.ed.chips;
 
 const GLYPHS = "!<>-_\\/[]{}=+*^?#";
 
@@ -182,8 +178,8 @@ const EDPanel = ({ onClose }) => {
     // speaking/idle stay silent by design: by then the region already holds the
     // settled answer, and "responding" would bury it before it was read out.
     useEffect(() => {
-        if (status === "listening") setAnnouncement("Listening.");
-        else if (status === "thinking") setAnnouncement("Processing.");
+        if (status === "listening") setAnnouncement(dict.ed.announceListening);
+        else if (status === "thinking") setAnnouncement(dict.ed.announceThinking);
     }, [status]);
 
     // Errors are shown AND announced — there is no separate role="alert".
@@ -309,7 +305,7 @@ const EDPanel = ({ onClose }) => {
         const history = messages.slice(-8);
         setMessages((m) => [...m, { role: "user", content: question }]);
         setStatus("thinking");
-        setPhase({ label: "thinking", since: performance.now() });
+        setPhase({ label: dict.ed.thinking, since: performance.now() });
         abortRef.current?.abort();
         const controller = new AbortController();
         abortRef.current = controller;
@@ -321,7 +317,7 @@ const EDPanel = ({ onClose }) => {
                 signal: controller.signal,
             });
             const data = await res.json().catch(() => ({}));
-            if (!res.ok) throw new Error(data?.error || `E.D. hit a fault (${res.status}).`);
+            if (!res.ok) throw new Error(data?.error || dict.ed.errors.fault(res.status));
             setPhase(null);
             setMessages((m) => [...m, { role: "assistant", content: data.answer, fresh: true }]);
             if (voiceOn && data.audio) speak(data.audio);
@@ -329,7 +325,7 @@ const EDPanel = ({ onClose }) => {
         } catch (err) {
             if (err?.name === "AbortError") return;
             setPhase(null);
-            fail(err?.message || "E.D.'s core is unreachable. Reach Eddy directly: eddy.zhang24@gmail.com");
+            fail(err?.message || dict.ed.errors.unreachable);
             setStatus("idle");
         }
     };
@@ -353,7 +349,7 @@ const EDPanel = ({ onClose }) => {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         } catch {
-            fail("Microphone access is blocked — check the address-bar permission, or just type.");
+            fail(dict.ed.errors.micBlocked);
             return;
         }
 
@@ -403,7 +399,7 @@ const EDPanel = ({ onClose }) => {
             const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
             if (blob.size < 1200) { setStatus("idle"); return; } // basically silence
             setStatus("thinking");
-            setPhase({ label: "transcribing", since: performance.now() });
+            setPhase({ label: dict.ed.transcribing, since: performance.now() });
             try {
                 const audio = await blobToBase64(blob);
                 const res = await fetch(TRANSCRIBE_ENDPOINT, {
@@ -412,14 +408,14 @@ const EDPanel = ({ onClose }) => {
                     body: JSON.stringify({ audio, mimeType: rec.mimeType }),
                 });
                 const data = await res.json().catch(() => ({}));
-                if (!res.ok) throw new Error(data?.error || "Transcription failed.");
+                if (!res.ok) throw new Error(data?.error || dict.ed.errors.transcribeFailed);
                 const text = (data.text || "").trim();
                 if (text) send(text);
-                else { setStatus("idle"); setPhase(null); fail("Didn't catch that — try again, or type it."); }
+                else { setStatus("idle"); setPhase(null); fail(dict.ed.errors.noSpeech); }
             } catch (err) {
                 setStatus("idle");
                 setPhase(null);
-                fail(err?.message || "Voice input hit a snag — typing works just as well.");
+                fail(err?.message || dict.ed.errors.voiceSnag);
             }
         };
         rec.start();
@@ -467,24 +463,24 @@ const EDPanel = ({ onClose }) => {
             className="ed-panel"
             role="dialog"
             aria-modal="true"
-            aria-label="E.D. — Eddy's AI assistant"
+            aria-label={dict.ed.panelAria}
             onPointerDown={onBackdropPointerDown}
             onPointerUp={onBackdropPointerUp}
         >
             <div className="ed-panel-inner" ref={innerRef} onKeyDown={onTrapKeyDown}>
                 <header className="flex items-center justify-between mb-6">
-                    <p className="ed-eyebrow">E.D. · Eddy&rsquo;s Digital Deputy</p>
+                    <p className="ed-eyebrow">{dict.ed.eyebrow}</p>
                     <div className="flex items-center gap-2">
                         <button
                             type="button"
                             className="ed-icon-btn"
                             onClick={() => setVoiceOn((v) => !v)}
                             aria-pressed={voiceOn}
-                            aria-label={voiceOn ? "Voice replies on" : "Voice replies off"}
+                            aria-label={voiceOn ? dict.ed.voiceOn : dict.ed.voiceOff}
                         >
                             {voiceOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                         </button>
-                        <button type="button" className="ed-icon-btn" onClick={onClose} aria-label="Close E.D.">
+                        <button type="button" className="ed-icon-btn" onClick={onClose} aria-label={dict.ed.close}>
                             <X className="w-4 h-4" />
                         </button>
                     </div>
@@ -503,10 +499,10 @@ const EDPanel = ({ onClose }) => {
                     <span className="ed-core-heart" />
                 </div>
                 <p className="ed-status font-mono">
-                    {status === "listening" && "LISTENING — TAP MIC TO SEND"}
-                    {status === "thinking" && "PROCESSING…"}
-                    {status === "speaking" && "RESPONDING…"}
-                    {status === "idle" && (messages.length === 0 ? "ASK ME ABOUT EDDY" : " ")}
+                    {status === "listening" && dict.ed.statusListening}
+                    {status === "thinking" && dict.ed.statusThinking}
+                    {status === "speaking" && dict.ed.statusSpeaking}
+                    {status === "idle" && (messages.length === 0 ? dict.ed.statusIdle : " ")}
                 </p>
 
                 {/* The deck's single live region: terse status while E.D. works,
@@ -562,7 +558,7 @@ const EDPanel = ({ onClose }) => {
                             type="button"
                             className={`ed-icon-btn ${status === "listening" ? "listening" : ""}`}
                             onClick={listen}
-                            aria-label={status === "listening" ? "Stop listening" : "Ask by voice"}
+                            aria-label={status === "listening" ? dict.ed.micAria.stop : dict.ed.micAria.listen}
                         >
                             <Mic className="w-4 h-4" />
                         </button>
@@ -584,15 +580,15 @@ const EDPanel = ({ onClose }) => {
                             value={input}
                             maxLength={MAX_QUESTION}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder="Ask about Eddy — experience, visa, projects…"
-                            aria-label="Ask E.D. a question"
+                            placeholder={dict.ed.inputPlaceholder}
+                            aria-label={dict.ed.inputAria}
                         />
                     )}
                     <button
                         type="submit"
                         className="ed-icon-btn send"
                         disabled={status === "thinking"}
-                        aria-label={status === "listening" ? "Stop recording and send" : "Send"}
+                        aria-label={status === "listening" ? dict.ed.sendAria.stop : dict.ed.sendAria.send}
                     >
                         <Send className="w-4 h-4" />
                     </button>

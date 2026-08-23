@@ -12,6 +12,7 @@ import InteractiveBackground from "./components/InteractiveBackground.jsx";
 import SiteReveal from "./components/SiteReveal.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
 import { prefersReducedMotion } from "./lib/motion.js";
+import { dict } from "./i18n/index.js";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -110,7 +111,7 @@ const prefetchLazyChunks = () => {
     import("./sections/Contact.jsx");
 };
 
-const SectionLoader = ({ label = "Loading section" }) => (
+const SectionLoader = ({ label = dict.misc.sectionLoader }) => (
     <div className="w-full min-h-[40vh] flex items-center justify-center" role="status" aria-label={label}>
         <div className="w-8 h-8 rounded-full animate-spin" style={{ border: "2px solid var(--hair)", borderTopColor: "var(--sig)" }} />
     </div>
@@ -169,7 +170,7 @@ const App = () => {
 
     return (
         <>
-            <a href="#main-content" className="skip-link">Skip to main content</a>
+            <a href="#main-content" className="skip-link">{dict.misc.skipLink}</a>
             <SiteReveal />
             <CustomCursor />
             <div className="ed-grid-bg" aria-hidden="true" />

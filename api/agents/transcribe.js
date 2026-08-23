@@ -49,7 +49,7 @@ async function readBody(req) {
 }
 
 /** Transcribe a clip. `client` injectable for tests. */
-export async function transcribeClip(buffer, mimeType, client) {
+export async function transcribeClip(buffer, mimeType, client, language) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new LLMError("OPENAI_API_KEY is not set on the server", {
@@ -63,6 +63,9 @@ export async function transcribeClip(buffer, mimeType, client) {
     const res = await oa.audio.transcriptions.create({
       model: MODEL,
       file: await OpenAI.toFile(buffer, `clip.${ext}`, { type: mimeType || "audio/webm" }),
+      // A language hint stops the model auto-detecting per clip — without it,
+      // short Mandarin clips from the /zh page frequently mis-transcribe.
+      ...(language ? { language } : {}),
     });
     return (res?.text || "").trim();
   } catch (err) {
@@ -98,15 +101,17 @@ export default async function handler(req, res) {
     return send(res, 413, { error: "Clip is too long — keep it under a minute." });
   }
 
-  const { audio, mimeType } = body || {};
+  const { audio, mimeType, language: rawLanguage } = body || {};
   if (typeof audio !== "string" || !audio) {
     return send(res, 400, { error: "audio is required" });
   }
+  // Allowlisted ISO 639-1 hints only — never pass client input through raw.
+  const language = rawLanguage === "zh" || rawLanguage === "en" ? rawLanguage : undefined;
 
   try {
     const buffer = Buffer.from(audio, "base64");
     if (!buffer.length) return send(res, 400, { error: "audio is empty" });
-    const text = await transcribeClip(buffer, mimeType);
+    const text = await transcribeClip(buffer, mimeType, undefined, language);
     return send(res, 200, { text });
   } catch (err) {
     logError("transcribe error:", err);

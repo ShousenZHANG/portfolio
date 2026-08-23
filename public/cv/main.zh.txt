@@ -1,0 +1,58 @@
+张守森 Shousen Zhang
+AI 应用工程师 | 企业级 Agent 0 到 1 落地,大模型输出可验证
+(+86) 173 6813 9916 | 17368139916@163.com | github.com/ShousenZHANG | eddyzhang.me
+
+个人优势
+AI 应用工程师,做企业内部 Agent 的 0 到 1 落地。在澳洲顶级律所任技术负责人,主导可信知识管理 Agent,打通五个异构平台,让每条答案可回溯至原始文档;另交付每日值守 Agent Flow,替代约 30 分钟/天的人工排查。两个 Copilot Studio Agent 有 10+ 名员工日常使用,经 RAG 与 MCP 锚定权威文档而非依赖模型记忆。UNSW 信息技术硕士,专业前 10%,中英双语。
+
+工作经历
+
+集成与自动化分析师 | Corrs Chambers Westgarth(澳大利亚顶级律师事务所)| 澳大利亚 悉尼 | 2026.03 – 2026.07
+
+可信知识管理 Agent | 技术负责人,0 到 1 主导
+- 问题与约束:知识散落在 ServiceNow、SharePoint、Loop、NetDocs、Intapp 五个平台,员工无从判断文档是否已过期或仍为草稿;律所场景要求每条答案可回溯至原始文档才可用于业务。
+- 技术方案:设计知识入库工作流与 Dataverse 数据模型,为每条记录附带来源标识;由 Copilot Studio Agent Skills 编排检索,员工以对话方式获取可溯源答案,经 AI 辅助审核后发布。已交付并完成试点,打通 5 个异构企业平台。
+- 角色与决策:任技术负责人,与业务分析师、经理及多个团队完成需求调研并独立完成技术选型;选用 Microsoft 生态而非自建检索栈,直接继承企业既有权限模型,避免另建一套权限体系。
+
+生产日志值守 Agent Flow | 设计与交付
+- 原先支持团队每天需人工翻查生产日志、判断报错归属;改为每日定时触发,经 Boomi API 拉取日志,由大模型分析报错并归类后自动分发至对应团队,错误与解决方案沉淀至 Dataverse 知识库,替代约 30 分钟/天的人工排查。
+
+其他交付
+- 设计可复用 Agent Skills,提升回答准确率并降低单次查询的 Copilot Credit 消耗;完成自然语言生成集成流的原型验证,业务团队描述需求即可产出集成流与简易前端。
+
+AI 工程师 | Stepping Stone House(澳大利亚非营利机构)| 澳大利亚 悉尼 | 2026.07 – 2026.08
+
+企业级知识问答 Agent | 构建与上线
+- 上线两个 Copilot Studio Agent,10+ 名员工日常使用;经 MCP 锚定 SharePoint 权威文档,答案可溯源而非模型记忆。
+- 自研 C#/Python 客户端(MarkItDown、faster-whisper、Playwright),将 15+ 种文档、音频与网页格式统一转为 Markdown 知识库并存入 SharePoint 权威文档库,供 Agent 经 MCP 检索。
+
+会议纪要合规归档流程 | 设计与交付
+- 基于 Power Automate 每周定时流程,经 Microsoft Graph 抓取约 10 场会议 AI 纪要,转 Word 后归档至指定 SharePoint 站点,用于记录留痕与合规审计。
+
+软件工程师 | 上海新致软件股份有限公司 | 中国 上海 | 2022.08 – 2023.04
+- Java / Spring Boot 微服务与 RESTful API 开发,MinIO 对象存储集成与数据迁移设计,Docker 容器化与 Linux CI/CD 部署。
+
+项目经历
+
+Joblit — AI 求职工作流平台 | 独立开发 | 开源 | 已上线运行 | Next.js / TypeScript / PostgreSQL | joblit.tech | 2025.07 – 至今
+- 产品闭环:自动抓取岗位并解析 JD 需求,过滤掉不匹配的岗位;再由大模型结合岗位描述定制简历摘要与技能排序,一键渲染 LaTeX 导出可投递 PDF,把单个岗位的定制投递从半小时压到几分钟。
+- AI 设计:技能由模型按索引从候选人自有技能库中选取,只返回位置编号而不返回技能名;生成内容再过确定性校验闸,数字与技能须在原始档案中可查证,从机制上杜绝模型编造不存在的经历。
+- 上线与工程:独立完成全栈开发,自建 GitHub Actions CI/CD 流水线,2,100+ 自动化测试通过后自动部署至云端;项目已开源上线,有真实用户在用。
+
+项目竞赛管理平台 | Java / Spring Cloud / RabbitMQ / MySQL | 澳洲高校编程大赛亚军 | 2025.02 – 2025.06
+- Spring Cloud 微服务后端,OAuth2 / JWT 鉴权,RabbitMQ 事件驱动跨服务通知,JUnit 测试与 Docker CI/CD 部署。
+
+教育经历
+新南威尔士大学(UNSW)| 信息技术硕士 | 专业前 10%,优秀毕业生,超额修读提前毕业 | 2023.09 – 2025.06
+江苏科技大学苏州理工学院 | 工学学士 | 2016.09 – 2020.06
+
+证书与认证
+Microsoft Certified: AI Agent Builder Associate | Microsoft
+
+专业技能
+- Agent 与大模型应用:Copilot Studio(Agents / Flows / Skills)、RAG 检索增强生成、Model Context Protocol(MCP)、大模型编排、提示词与上下文工程、Agent Harness 运行框架设计、Loop Engineering 循环控制与终止策略、AI 输出校验与可溯源设计
+- 集成与自动化平台:Power Automate、Power Apps、Dataverse 数据建模、Boomi、ServiceNow、Microsoft Graph API、SQL
+- 工程与后端:Java、Spring Boot、Python、C#、TypeScript、React、Next.js、PostgreSQL、Docker、GitHub Actions、Azure、AWS
+
+工作地点与状态
+- 现居澳大利亚悉尼,可远程协作;Stepping Stone House 合同已于 2026 年 8 月结束,当前可到岗。

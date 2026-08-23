@@ -3,6 +3,7 @@ import CountUp from "react-countup";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useJDAnalysis } from "../hooks/useJDAnalysis";
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 import Send from "lucide-react/dist/esm/icons/send";
 import Sparkles from "lucide-react/dist/esm/icons/sparkles";
 
@@ -12,22 +13,12 @@ const MAX_ACTIONS = 3;
 const MAX_RISKS = 3;
 const MAX_JD_CHARS = 12000;
 
-const SAMPLES = [
-  {
-    label: "Senior React Engineer",
-    jd: "Senior React Engineer — Sydney (hybrid). 5+ years with React and TypeScript, building component libraries and design systems. Strong with Node.js REST APIs and AWS. You will mentor junior engineers and own frontend architecture. Full working rights in Australia required.",
-  },
-  {
-    label: "ML / AI Engineer",
-    jd: "Machine Learning Engineer. Ship production AI features: LLM agents, RAG pipelines, prompt engineering, vector databases. Python and cloud-native services. Experience with OpenAI / Anthropic APIs. Remote within Australia.",
-  },
-  {
-    label: "Full-Stack (PR required)",
-    jd: "Full-Stack Developer — Next.js, PostgreSQL, Docker, CI/CD on Vercel. Own features end to end. Must be an Australian citizen or hold permanent residency.",
-  },
-];
+// Sample chips ({ label, body }) and the fake-thinking step captions are
+// locale copy — the JD text itself is part of the demo's copy, so each
+// locale ships its own samples.
+const SAMPLES = dict.jd.samples;
 
-const LOADING_STEPS = ["Parsing the JD", "Matching against my CV", "Scoring the fit"];
+const LOADING_STEPS = dict.jd.loadingSteps;
 
 function detectIsMac() {
   if (typeof navigator === "undefined") return false;
@@ -66,7 +57,7 @@ function ScoreGauge({ score, label }) {
         <span className="text-3xl font-bold" style={{ color: "var(--tx-0)" }}>
           <CountUp end={score} duration={1.1} />
         </span>
-        <span className="text-[11px] font-mono" style={{ color: "var(--tx-2)" }}>/ 100</span>
+        <span className="text-[11px] font-mono" style={{ color: "var(--tx-2)" }}>{dict.jd.outOf100}</span>
       </div>
     </div>
   );
@@ -106,7 +97,7 @@ function Chip({ children, tone = "neutral" }) {
 
 function MoreCount({ shown, total }) {
   if (total <= shown) return null;
-  return <span className="text-xs self-center" style={{ color: "var(--tx-2)" }}>+{total - shown} more</span>;
+  return <span className="text-xs self-center" style={{ color: "var(--tx-2)" }}>{dict.jd.moreCount(total - shown)}</span>;
 }
 
 const JDQuickCheck = () => {
@@ -138,25 +129,24 @@ const JDQuickCheck = () => {
   return (
     <section id="jd-check" className="ed-shell pt-20 md:pt-24 pb-[var(--sp-section)]">
       <div className="max-w-[860px] mx-auto">
-        <TitleHeader title="Match a JD against my CV" sub="01 / Live AI Demo" anchor="jd-check" align="left" />
+        <TitleHeader title={dict.jd.title} sub={dict.jd.sub} anchor="jd-check" align="left" />
 
         <p className="ed-lead mt-5 mb-8">
-          Paste any job description — my own AI engine scores how well I fit, in
-          real time. Same RAG + LLM stack I ship in production.
+          {dict.jd.lead}
         </p>
 
         <div ref={tileRef} className={`ed-tile p-5 md:p-7 ${tileInView ? "in-view" : ""}`} style={{ background: "var(--ink-1)" }}>
           <span className="jd-beacon" aria-hidden="true" />
           {/* Sample chips — selected state derives from the textarea content */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>Try:</span>
+            <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>{dict.jd.tryLabel}</span>
             {SAMPLES.map((s) => {
-              const isSelected = jd === s.jd;
+              const isSelected = jd === s.body;
               return (
                 <button
                   key={s.label}
                   type="button"
-                  onClick={() => setJd(s.jd)}
+                  onClick={() => setJd(s.body)}
                   aria-pressed={isSelected}
                   className={`jd-chip px-3 py-1.5 rounded-full text-xs font-medium ${isSelected ? "selected" : ""}`}
                 >
@@ -175,13 +165,13 @@ const JDQuickCheck = () => {
           <textarea
             className="w-full rounded-[var(--r-sm)] px-4 py-3 text-sm pointer-coarse:text-base resize-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sig)]"
             style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", minHeight: 130, overscrollBehavior: "contain" }}
-            placeholder="Paste the JD here — stack, responsibilities, experience band, visa, location…"
+            placeholder={dict.jd.placeholder}
             rows="5"
             maxLength={MAX_JD_CHARS}
             value={jd}
             onChange={(e) => setJd(e.target.value)}
             onKeyDown={handleKeyDown}
-            aria-label="Job description input"
+            aria-label={dict.jd.inputAria}
             aria-describedby="jd-shortcut-hint"
           />
 
@@ -189,7 +179,7 @@ const JDQuickCheck = () => {
             <div className="flex items-center gap-3">
               <button type="button" onClick={submit} disabled={loading} className="ed-btn disabled:opacity-50 disabled:cursor-not-allowed" data-magnetic>
                 {loading ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Send className="w-4 h-4" />}
-                {loading ? "Analysing…" : "Check Fit"}
+                {loading ? dict.jd.analysing : dict.jd.analyse}
               </button>
               <p id="jd-shortcut-hint" className="text-xs hidden sm:block" style={{ color: "var(--tx-2)" }}>
                 <kbd className="px-1.5 py-0.5 rounded font-mono text-[10px]" style={{ border: "1px solid var(--hair-bright)", color: "var(--tx-1)" }}>{isMac ? "⌘" : "Ctrl"}</kbd>
@@ -212,7 +202,7 @@ const JDQuickCheck = () => {
                 into a live region. Detailed panels below are not live. */}
             <p className="sr-only" role="status" aria-live="polite">
               {result && !loading
-                ? `${result.fitLabel}. Score ${result.overallScore} out of 100.${result.fitHeadline ? " " + result.fitHeadline : ""}`
+                ? dict.jd.srResult(result.fitLabel, result.overallScore, result.fitHeadline)
                 : ""}
             </p>
             {loading && (
@@ -236,9 +226,12 @@ const JDQuickCheck = () => {
             {!result && !loading && (
               <div className="rounded-[var(--r-md)] p-8 text-center" style={{ border: "1px dashed var(--hair-bright)" }}>
                 <p className="text-sm" style={{ color: "var(--tx-2)" }}>
+                  {/* Assembled from dictionary segments — the CTA name carries its
+                      own styled span mid-sentence, so the string can't be one piece.
+                      The segments own their edge spaces. */}
                   {jd.trim()
-                    ? <>JD loaded — hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span> to score it. Results render here in a few seconds.</>
-                    : <>Pick a sample above or paste a real JD, then hit <span style={{ color: "var(--tx-1)" }}>Check Fit</span>. Results render here in a few seconds.</>}
+                    ? <>{dict.jd.emptyLoaded.before}<span style={{ color: "var(--tx-1)" }}>{dict.jd.emptyLoaded.cta}</span>{dict.jd.emptyLoaded.after}</>
+                    : <>{dict.jd.emptyIdle.before}<span style={{ color: "var(--tx-1)" }}>{dict.jd.emptyIdle.cta}</span>{dict.jd.emptyIdle.after}</>}
                 </p>
               </div>
             )}
@@ -261,10 +254,10 @@ const JDQuickCheck = () => {
                 {/* Sub-scores */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { label: "Exact", value: result.exactMatchScore },
-                    { label: "Related", value: result.relatedMatchScore },
-                    { label: "Gap", value: result.gapScore },
-                    { label: "Confidence", value: result.confidenceScore },
+                    { label: dict.jd.subScores.exact, value: result.exactMatchScore },
+                    { label: dict.jd.subScores.related, value: result.relatedMatchScore },
+                    { label: dict.jd.subScores.gap, value: result.gapScore },
+                    { label: dict.jd.subScores.confidence, value: result.confidenceScore },
                   ].map(({ label, value }) => (
                     <div key={label} className="rounded-[var(--r-sm)] p-3" style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
                       <p className="text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>{label}</p>
@@ -276,25 +269,27 @@ const JDQuickCheck = () => {
                 {/* Dimension bars */}
                 {result.dimensionScores && (
                   <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-                    <DimBar label="Tech Stack" value={result.dimensionScores.techStack} />
-                    <DimBar label="Responsibilities" value={result.dimensionScores.responsibilities} />
-                    <DimBar label="Domain" value={result.dimensionScores.domainContext} />
-                    <DimBar label="Seniority" value={result.dimensionScores.seniority} />
+                    <DimBar label={dict.jd.dims.techStack} value={result.dimensionScores.techStack} />
+                    <DimBar label={dict.jd.dims.responsibilities} value={result.dimensionScores.responsibilities} />
+                    <DimBar label={dict.jd.dims.domainContext} value={result.dimensionScores.domainContext} />
+                    <DimBar label={dict.jd.dims.seniority} value={result.dimensionScores.seniority} />
                   </div>
                 )}
 
                 {/* Eligibility chips */}
                 <div className="flex flex-wrap gap-2">
+                  {/* Row captions are dictionary copy; v?.status stays the raw wire
+                      enum — STATUS_COLOR matches it with === and it renders as-is. */}
                   {[
-                    { k: "Visa", v: result?.eligibility?.visa },
-                    { k: "Experience", v: result?.eligibility?.experience },
-                    { k: "Location", v: result?.eligibility?.location },
+                    { k: dict.jd.eligibilityNames.visa, v: result?.eligibility?.visa },
+                    { k: dict.jd.eligibilityNames.experience, v: result?.eligibility?.experience },
+                    { k: dict.jd.eligibilityNames.location, v: result?.eligibility?.location },
                   ].map(({ k, v }) => (
                     <span key={k} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[var(--r-sm)] text-xs"
                           style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}>
                       <span className="w-1.5 h-1.5 rounded-full" style={{ background: STATUS_COLOR(v?.status) }} />
                       <span style={{ color: "var(--tx-2)" }}>{k}</span>
-                      <span className="font-medium" style={{ color: "var(--tx-0)" }}>{v?.status || "Unknown"}</span>
+                      <span className="font-medium" style={{ color: "var(--tx-0)" }}>{v?.status || dict.jd.statusUnknown}</span>
                     </span>
                   ))}
                 </div>
@@ -303,7 +298,7 @@ const JDQuickCheck = () => {
                 <div className="grid sm:grid-cols-2 gap-5">
                   {result.matchedKeywords?.length > 0 && (
                     <div>
-                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Matched</p>
+                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>{dict.jd.matched}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {result.matchedKeywords.slice(0, MAX_MATCHED).map((k) => {
                           const t = typeof k === "string" ? k : k?.name;
@@ -315,7 +310,7 @@ const JDQuickCheck = () => {
                   )}
                   {result.missingKeywords?.length > 0 && (
                     <div>
-                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Gaps</p>
+                      <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>{dict.jd.gaps}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {result.missingKeywords.slice(0, MAX_GAPS).map((k) => {
                           const t = typeof k === "string" ? k : k?.name;
@@ -330,7 +325,7 @@ const JDQuickCheck = () => {
                 {/* Suggestions */}
                 {result.suggestions?.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>Suggested actions</p>
+                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>{dict.jd.suggestions}</p>
                     <ul className="space-y-2">
                       {result.suggestions.slice(0, MAX_ACTIONS).map((s, i) => (
                         <li key={`s-${i}`} className="text-sm flex gap-2.5" style={{ color: "var(--tx-1)" }}>
@@ -344,7 +339,7 @@ const JDQuickCheck = () => {
                 {/* Risk flags */}
                 {result.riskFlags?.length > 0 && (
                   <div className="rounded-[var(--r-sm)] p-4" style={{ border: "1px solid color-mix(in oklab, var(--warn) 28%, transparent)", background: "color-mix(in oklab, var(--warn) 8%, transparent)" }}>
-                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2" style={{ color: "var(--warn)" }}>Risk flags</p>
+                    <p className="text-[11px] font-mono uppercase tracking-wider mb-2" style={{ color: "var(--warn)" }}>{dict.jd.riskFlags}</p>
                     <ul className="space-y-1">
                       {result.riskFlags.slice(0, MAX_RISKS).map((item, idx) => (
                         <li key={`r-${idx}`} className="text-sm" style={{ color: "var(--tx-1)" }}>{item}</li>

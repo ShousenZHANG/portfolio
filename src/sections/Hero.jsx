@@ -7,6 +7,7 @@ import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useMagnetic } from "../hooks/useMagnetic.js";
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 
 // CTA is a plain anchor: the global Lenis click handler routes #-links
 // through lenis.scrollTo, so easing matches every other in-page jump.
@@ -65,12 +66,9 @@ const HERO_ANIM_TARGETS = [
     ".hero-meta",
 ];
 
-const HEADLINE = [
-    { t: "I", sig: false },
-    { t: "build", sig: false, br: true },
-    { t: "intelligent", sig: true },
-    { t: "agents.", sig: false },
-];
+// Word array for the masked stagger — `sig` marks the decode word, `br`
+// breaks the line after it. headlineAria is the assembled sentence.
+const HEADLINE = dict.hero.headline;
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
@@ -166,10 +164,10 @@ const Hero = () => {
                     {/* LEFT — editorial headline */}
                     <div className="flex flex-col">
                         <p className="hero-eyebrow ed-eyebrow mb-6">
-                            AI Engineer · Copilot Studio · Sydney
+                            {dict.hero.eyebrow}
                         </p>
 
-                        <h1 className="hero-display ed-display" aria-label="I build intelligent agents.">
+                        <h1 className="hero-display ed-display" aria-label={dict.hero.headlineAria}>
                             {HEADLINE.map((w, i) => (
                                 <span key={`${w.t}-${i}`}>
                                     <span
@@ -192,10 +190,7 @@ const Hero = () => {
                         </h1>
 
                         <p className="hero-lead ed-lead mt-7">
-                            I build production agents across the Microsoft ecosystem —
-                            Copilot Studio, MCP, Power Automate, Dataverse — and ship
-                            end-to-end LLM products solo. Below is a live one: paste any
-                            job description and watch my AI score the fit in real time.
+                            {dict.hero.lead}
                         </p>
 
                         <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
@@ -205,31 +200,31 @@ const Hero = () => {
                                 data-magnetic
                                 className="ed-btn"
                             >
-                                Try the live AI matcher
+                                {dict.hero.ctaPrimary}
                                 <ArrowDown className="w-4 h-4" />
                             </a>
                             <a
-                                href="/files/Eddy_Zhang_CV.pdf"
-                                download="Eddy_Zhang_CV.pdf"
+                                href={dict.hero.cvHref}
+                                download={dict.hero.cvDownloadName}
                                 className="ed-btn-ghost"
                             >
                                 <Download className="w-4 h-4" />
-                                Download CV
+                                {dict.hero.ctaCv}
                             </a>
                         </div>
 
                         <div ref={pingRef} className={`hero-meta ping-scope ${pingInView ? "in-view" : ""} mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm`} style={{ color: "var(--tx-2)" }}>
                             <span className="ed-status-dot" aria-hidden="true" />
-                            <span>Available for work</span>
+                            <span>{dict.hero.available}</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
-                            <span className="font-mono text-xs tracking-wider">Copilot Studio · Power Automate · Dataverse · MCP</span>
+                            <span className="font-mono text-xs tracking-wider">{dict.hero.stackLine}</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
                             <button
                                 type="button"
                                 className="hero-ed-link font-mono text-xs tracking-wider"
                                 onClick={() => window.dispatchEvent(new CustomEvent("ed-open"))}
                             >
-                                Ask E.D. about him ↗
+                                {dict.hero.askEd}
                             </button>
                         </div>
                     </div>
@@ -249,7 +244,7 @@ const Hero = () => {
                                     loop
                                     playsInline
                                     preload="metadata"
-                                    aria-label="Personal introduction video by Eddy Zhang"
+                                    aria-label={dict.hero.videoAria}
                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                                     onLoadedData={() => setVideoLoaded(true)}
                                     onPlay={() => setVideoStarted(true)}
@@ -263,7 +258,7 @@ const Hero = () => {
                                     <button
                                         type="button"
                                         onClick={startVideo}
-                                        aria-label="Play 30-second intro"
+                                        aria-label={dict.hero.playAria}
                                         className="absolute inset-0 flex flex-col items-center justify-center gap-4 group/play"
                                         style={{ background: "linear-gradient(180deg, oklch(0.135 0.014 280 / 0.15) 0%, oklch(0.135 0.014 280 / 0.65) 100%)" }}
                                     >
@@ -275,12 +270,12 @@ const Hero = () => {
                                                 <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.29-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z" />
                                             </svg>
                                         </span>
-                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>Play intro · 30s</span>
+                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>{dict.hero.playLabel}</span>
                                     </button>
                                 )}
                             </div>
                             <figcaption className="ed-eyebrow mt-3 px-1 pb-1">
-                                30s intro · who I am
+                                {dict.hero.figcaption}
                             </figcaption>
                         </figure>
                     </div>

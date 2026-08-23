@@ -1,3 +1,5 @@
+import { dict } from "../i18n/index.js";
+
 /**
  * Eddy Zhang brand mark — geometric "E" monogram with a neural signal
  * node, on the signature violet→cyan gradient. Matches favicon.svg.
@@ -9,7 +11,7 @@ const LogoMark = ({ className = "", size = 34 }) => (
     viewBox="0 0 64 64"
     className={className}
     role="img"
-    aria-label="Eddy Zhang"
+    aria-label={dict.misc.logoMarkAria}
   >
     <defs>
       <linearGradient id="logoMarkGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">

@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import Link2 from "lucide-react/dist/esm/icons/link-2";
 import Check from "lucide-react/dist/esm/icons/check";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { dict } from "../i18n/index.js";
 import RevealText from "./RevealText.jsx";
 
 /**
@@ -68,7 +69,7 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
                     <button
                         type="button"
                         onClick={handleCopy}
-                        aria-label={copied ? "Link copied" : `Copy link to ${title} section`}
+                        aria-label={copied ? dict.misc.linkCopied : dict.misc.copyLink(title)}
                         className="pointer-coarse:pointer-events-none opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 p-1.5 rounded-md hover:bg-white/8"
                         style={{ color: "var(--tx-2)" }}
                     >
@@ -81,7 +82,7 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
 
             {copied && (
                 <p role="status" aria-live="polite" className="text-xs" style={{ color: "var(--sig)" }}>
-                    Link copied
+                    {dict.misc.linkCopied}
                 </p>
             )}
         </div>

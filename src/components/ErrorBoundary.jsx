@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { dict } from "../i18n/index.js";
 
 /**
  * Catches render errors in lazy-loaded sections so a single failure
@@ -30,14 +31,14 @@ class ErrorBoundary extends Component {
           className="w-full min-h-[40vh] flex flex-col items-center justify-center gap-4 px-6 text-center"
         >
           <p className="text-white/80 text-sm">
-            This section failed to load.
+            {dict.misc.sectionFailed}
           </p>
           <button
             type="button"
             onClick={this.handleRetry}
             className="px-4 py-2 rounded-lg border border-white/15 text-white/85 text-sm hover:bg-white/5 transition-colors"
           >
-            Retry
+            {dict.misc.retry}
           </button>
         </div>
       );

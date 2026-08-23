@@ -6,6 +6,7 @@
 import OpenAI from "openai";
 import { LLMError } from "../_jd/llm.js";
 import { PERSONA, STYLE_SHOTS } from "./persona.js";
+import { PERSONA_ZH, STYLE_SHOTS_ZH } from "./persona.zh.js";
 
 // E.D. deliberately does NOT fall back to OPENAI_MODEL: that variable is
 // the JD matcher's dial (often pinned to a cheap model), and inheriting it
@@ -28,7 +29,14 @@ export const LIMITS = {
  * Arbitrary input tolerated: non-arrays, junk roles and oversized
  * content are dropped/truncated rather than trusted.
  */
-export function buildMessages(question, history) {
+export function buildMessages(question, history, locale = "en") {
+  // The zh persona is a parallel document, not a translation — mainland
+  // fact set (+86/163, no visa talk) and a Chinese register brief. Selected
+  // by the /zh page's request, never by sniffing the question: a Chinese
+  // recruiter typing an English stack name must not flip E.D.'s persona.
+  const zh = locale === "zh";
+  const persona = zh ? PERSONA_ZH : PERSONA;
+  const styleShots = zh ? STYLE_SHOTS_ZH : STYLE_SHOTS;
   const turns = (Array.isArray(history) ? history : [])
     .filter(
       (t) =>
@@ -45,13 +53,13 @@ export function buildMessages(question, history) {
 
   // Few-shots go in as real turns, before the live conversation: the model
   // imitates what it sees said, not what it's told about saying.
-  const shots = STYLE_SHOTS.flatMap((s) => [
+  const shots = styleShots.flatMap((s) => [
     { role: "user", content: s.user },
     { role: "assistant", content: s.assistant },
   ]);
 
   return [
-    { role: "system", content: PERSONA },
+    { role: "system", content: persona },
     ...shots,
     ...turns,
     {
@@ -62,7 +70,7 @@ export function buildMessages(question, history) {
 }
 
 /** Ask E.D. — returns the answer text. `client` injectable for tests. */
-export async function callAsk(question, history, client) {
+export async function callAsk(question, history, client, locale = "en") {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new LLMError("OPENAI_API_KEY is not set on the server", {
@@ -80,7 +88,7 @@ export async function callAsk(question, history, client) {
       presence_penalty: 0.4,  // discourages the stock "As an assistant…" cadence
       frequency_penalty: 0.3, // stops phrase-recycling across a conversation
       max_tokens: LIMITS.answerTokens,
-      messages: buildMessages(question, history),
+      messages: buildMessages(question, history, locale),
     });
   } catch (err) {
     const status = err?.status;

@@ -1,6 +1,10 @@
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // The display face sits two hops from the document: index.html loads the CSS bundle,
 // and only once that has downloaded AND parsed does the `@fontsource-variable/mona-sans`
@@ -65,6 +69,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), preloadDisplayFont()],
   build: {
     rollupOptions: {
+      // Two static entries — / (en) and /zh. Declaring `input` REPLACES Vite's
+      // implicit root entry, so the root index.html must be listed explicitly
+      // or it silently vanishes from the build (a deploy that "works" and
+      // serves nothing). Baidu does not reliably execute JS, which is why /zh
+      // is a real prerendered HTML file with a Chinese <head>, not a client-
+      // side rewrite.
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        zh: resolve(__dirname, 'zh/index.html'),
+      },
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined

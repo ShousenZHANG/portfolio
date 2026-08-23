@@ -4,6 +4,11 @@ import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Github from "lucide-react/dist/esm/icons/github";
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
 import Magnetic from "../components/Magnetic.jsx";
+import { dict } from "../i18n/index.js";
+
+// Channel values (email/phone) come from contact.channels — the footer only
+// owns the aria phrasings wrapped around them.
+const { email, phoneDisplay, phoneHref } = dict.contact.channels;
 
 const Footer = () => {
   return (
@@ -11,8 +16,8 @@ const Footer = () => {
       <div className="ed-shell py-10 md:py-12">
         {/* Giant outlined wordmark — the exit-point hook. Gradient fills on
             hover; routed through Lenis via the global anchor handler. */}
-        <a href="#contact" className="footer-mark mb-10 md:mb-12" aria-label="Go to the contact section">
-          Let&rsquo;s build.
+        <a href="#contact" className="footer-mark mb-10 md:mb-12" aria-label={dict.footer.wordmarkAria}>
+          {dict.footer.wordmark}
         </a>
 
         {/* Top row: Links + Social */}
@@ -20,23 +25,23 @@ const Footer = () => {
           {/* Contact links */}
           <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-6 gap-y-3">
             <a
-              href="mailto:eddy.zhang24@gmail.com"
-              aria-label="Email eddy.zhang24@gmail.com"
+              href={`mailto:${email}`}
+              aria-label={dict.footer.emailAria(email)}
               className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
               style={{ color: "var(--tx-1)" }}
             >
               <Mail className="w-4 h-4" />
-              <span>eddy.zhang24@gmail.com</span>
+              <span>{email}</span>
             </a>
 
             <a
-              href="tel:+610468761056"
-              aria-label="Phone +61 0468 761 056"
+              href={phoneHref}
+              aria-label={dict.footer.phoneAria(phoneDisplay)}
               className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
               style={{ color: "var(--tx-1)" }}
             >
               <Phone className="w-4 h-4" />
-              <span>+61 0468 761 056</span>
+              <span>{phoneDisplay}</span>
             </a>
           </div>
 
@@ -47,7 +52,7 @@ const Footer = () => {
                 href="https://linkedin.com/in/eddy-shousen-zhang"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="LinkedIn profile"
+                aria-label={dict.footer.socialAria.linkedin}
                 className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
               >
@@ -59,7 +64,7 @@ const Footer = () => {
                 href="https://github.com/ShousenZHANG"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="GitHub profile"
+                aria-label={dict.footer.socialAria.github}
                 className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
               >
@@ -73,7 +78,7 @@ const Footer = () => {
             <Magnetic strength={0.5}>
               <a
                 href="#hero"
-                aria-label="Back to top"
+                aria-label={dict.footer.backToTop}
                 className="w-11 h-11 flex items-center justify-center rounded-full transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
               >
@@ -88,8 +93,8 @@ const Footer = () => {
 
         {/* Bottom row: Copyright + Location */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono" style={{ color: "var(--tx-2)" }}>
-          <p>&copy; {new Date().getFullYear()} Eddy Zhang. All rights reserved.</p>
-          <p>Sydney, Australia</p>
+          <p>{dict.footer.rights(new Date().getFullYear())}</p>
+          <p>{dict.footer.location}</p>
         </div>
       </div>
     </footer>

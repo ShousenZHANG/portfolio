@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { dict, isZh } from "../i18n/index.js";
 
 const MAX_JD_LENGTH = 12_000; // matches the server cap (api/agents/jd.js)
-const CV_URL = "/cv/main.txt";
+// The matcher grounds on the CV in the reader's own language: scoring a
+// Chinese JD against the English CV loses every term that only exists in
+// one of them.
+const CV_URL = isZh ? "/cv/main.zh.txt" : "/cv/main.txt";
 const ENDPOINT = "/api/agents/jd";
 
 /**
@@ -38,15 +42,15 @@ export function useJDAnalysis() {
     setResult(null);
 
     if (!jd.trim() || loading) {
-      setError("Please paste the job description first.");
+      setError(dict.jd.errors.empty);
       return;
     }
     if (jd.trim().length > MAX_JD_LENGTH) {
-      setError(`JD text is too long (max ${MAX_JD_LENGTH.toLocaleString()} characters).`);
+      setError(dict.jd.errors.tooLong(MAX_JD_LENGTH));
       return;
     }
     if (!cvText.trim()) {
-      setError("CV text is empty. Please check /public/cv/main.txt.");
+      setError(dict.jd.errors.cvMissing);
       return;
     }
 
@@ -72,12 +76,12 @@ export function useJDAnalysis() {
         } catch {
           // body wasn't JSON — keep raw text
         }
-        throw new Error(message || `Request failed: ${res.status}`);
+        throw new Error(message || dict.jd.errors.requestFailed(res.status));
       }
       setResult(await res.json());
     } catch (err) {
       if (err?.name === "AbortError") return; // superseded/unmounted — ignore
-      setError(err?.message || "Analysis failed. Please try again later.");
+      setError(err?.message || dict.jd.errors.failed);
     } finally {
       if (abortRef.current === controller) {
         abortRef.current = null;

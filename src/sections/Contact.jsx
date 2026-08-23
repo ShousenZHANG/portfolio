@@ -11,6 +11,7 @@ import TitleHeader from "../components/TitleHeader";
 import Magnetic from "../components/Magnetic.jsx";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { useInView } from "../hooks/useInView.js";
+import { dict } from "../i18n/index.js";
 
 // pointer-coarse:text-base — anything under 16px makes iOS Safari zoom the
 // viewport the moment the field is tapped, which throws the rest of the form
@@ -69,7 +70,7 @@ const Contact = () => {
       setSent(true);
       setForm({ name: "", email: "", message: "" });
     } catch {
-      setSendError("Failed to send message. Please try again or email me directly.");
+      setSendError(dict.contact.form.error);
     } finally {
       setLoading(false);
     }
@@ -77,20 +78,17 @@ const Contact = () => {
 
   return (
     <section id="contact" ref={sectionRef} className="ed-shell pt-[var(--sp-section)] pb-16 md:pb-20">
-      <TitleHeader title="Get in Touch" sub="05 / Contact" anchor="contact" align="left" />
+      <TitleHeader title={dict.contact.title} sub={dict.contact.sub} anchor="contact" align="left" />
 
       <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-12 mt-10 items-start">
         {/* LEFT — context + direct channels */}
         <div className="flex flex-col">
           <p className="ed-lead">
-            Open to full-time roles and interesting collaborations. Quick to
-            learn, clear in communication, honest about trade-offs — the
-            fastest way to reach me is below, or send a note and I'll reply
-            soon.
+            {dict.contact.lead}
           </p>
 
           <div className="flex flex-col gap-3 mt-7">
-            <a href="mailto:eddy.zhang24@gmail.com"
+            <a href={`mailto:${dict.contact.channels.email}`}
                className="group/row flex items-center gap-3 p-3 rounded-[var(--r-sm)] transition-colors"
                style={{ border: "1px solid var(--hair)", background: "var(--ink-1)" }}>
               <span className="w-9 h-9 rounded-[var(--r-xs)] flex items-center justify-center flex-shrink-0"
@@ -98,11 +96,11 @@ const Contact = () => {
                 <Mail className="w-4 h-4" style={{ color: "var(--sig)" }} />
               </span>
               <span className="min-w-0">
-                <span className="block text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>Email</span>
-                <span className="block text-sm truncate" style={{ color: "var(--tx-0)" }}>eddy.zhang24@gmail.com</span>
+                <span className="block text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>{dict.contact.channels.emailLabel}</span>
+                <span className="block text-sm truncate" style={{ color: "var(--tx-0)" }}>{dict.contact.channels.email}</span>
               </span>
             </a>
-            <a href="tel:+610468761056"
+            <a href={dict.contact.channels.phoneHref}
                className="group/row flex items-center gap-3 p-3 rounded-[var(--r-sm)] transition-colors"
                style={{ border: "1px solid var(--hair)", background: "var(--ink-1)" }}>
               <span className="w-9 h-9 rounded-[var(--r-xs)] flex items-center justify-center flex-shrink-0"
@@ -110,8 +108,8 @@ const Contact = () => {
                 <Phone className="w-4 h-4" style={{ color: "var(--sig)" }} />
               </span>
               <span className="min-w-0">
-                <span className="block text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>Phone</span>
-                <span className="block text-sm" style={{ color: "var(--tx-0)" }}>+61 0468 761 056</span>
+                <span className="block text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--tx-2)" }}>{dict.contact.channels.phoneLabel}</span>
+                <span className="block text-sm" style={{ color: "var(--tx-0)" }}>{dict.contact.channels.phoneDisplay}</span>
               </span>
             </a>
           </div>
@@ -119,21 +117,21 @@ const Contact = () => {
           <div className="flex items-center gap-3 mt-6">
             <Magnetic strength={0.5}>
               <a href="https://linkedin.com/in/eddy-shousen-zhang" target="_blank" rel="noopener noreferrer"
-                 aria-label="LinkedIn" className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                 aria-label={dict.contact.socialAria.linkedin} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
                  style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
                 <Linkedin className="w-[18px] h-[18px]" />
               </a>
             </Magnetic>
             <Magnetic strength={0.5}>
               <a href="https://github.com/ShousenZHANG" target="_blank" rel="noopener noreferrer"
-                 aria-label="GitHub" className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                 aria-label={dict.contact.socialAria.github} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
                  style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
                 <Github className="w-[18px] h-[18px]" />
               </a>
             </Magnetic>
             <span ref={pingRef} className={`ping-scope ${pingInView ? "in-view" : ""} inline-flex items-center gap-2 ml-1 text-sm`} style={{ color: "var(--tx-1)" }}>
               <span className="ed-status-dot" aria-hidden="true" />
-              Available for work
+              {dict.contact.available}
             </span>
           </div>
         </div>
@@ -143,7 +141,7 @@ const Contact = () => {
           <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Honeypot */}
             <div aria-hidden="true" className="absolute left-[-10000px] top-auto w-px h-px overflow-hidden">
-              <label htmlFor="company-website">Website</label>
+              <label htmlFor="company-website">{dict.contact.form.honeypotLabel}</label>
               <input type="text" id="company-website" name="company-website" tabIndex="-1" autoComplete="off"
                      value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
             </div>
@@ -151,34 +149,34 @@ const Contact = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="name" className="flex items-center gap-2 text-sm" style={{ color: "var(--tx-1)" }}>
-                  <User className="w-3.5 h-3.5" /> Name
+                  <User className="w-3.5 h-3.5" /> {dict.contact.form.name}
                 </label>
                 <input type="text" id="name" name="name" value={form.name} onChange={handleChange}
-                       placeholder="Your name" required disabled={loading}
+                       placeholder={dict.contact.form.placeholders.name} required disabled={loading}
                        className={INPUT_CLASS} style={INPUT_STYLE} />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="email" className="flex items-center gap-2 text-sm" style={{ color: "var(--tx-1)" }}>
-                  <Mail className="w-3.5 h-3.5" /> Email
+                  <Mail className="w-3.5 h-3.5" /> {dict.contact.form.email}
                 </label>
                 <input type="email" id="email" name="email" value={form.email} onChange={handleChange}
-                       placeholder="your@email.com" required disabled={loading}
+                       placeholder={dict.contact.form.placeholders.email} required disabled={loading}
                        className={INPUT_CLASS} style={INPUT_STYLE} />
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="message" className="flex items-center gap-2 text-sm" style={{ color: "var(--tx-1)" }}>
-                <MessageSquare className="w-3.5 h-3.5" /> Message
+                <MessageSquare className="w-3.5 h-3.5" /> {dict.contact.form.message}
               </label>
               <textarea id="message" name="message" value={form.message} onChange={handleChange}
-                        placeholder="What would you like to discuss?" rows="5" required disabled={loading}
+                        placeholder={dict.contact.form.placeholders.message} rows="5" required disabled={loading}
                         className={`${INPUT_CLASS} resize-none`} style={INPUT_STYLE} />
             </div>
 
             <button type="submit" disabled={loading} className="ed-btn mt-1 self-start disabled:opacity-50 disabled:cursor-not-allowed" data-magnetic>
               <Send className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
-              {loading ? "Sending…" : "Send Message"}
+              {loading ? dict.contact.form.sending : dict.contact.form.send}
             </button>
 
             {sendError && <p className="text-sm" role="alert" style={{ color: "var(--danger-tx)" }}>{sendError}</p>}
@@ -196,15 +194,15 @@ const Contact = () => {
                     <Send className="w-5 h-5" style={{ color: "var(--sig)" }} />
                   </div>
                   <h3 id="contact-success-title" className="text-xl font-semibold mb-2" style={{ color: "var(--tx-0)" }}>
-                    Message Sent
+                    {dict.contact.form.sentTitle}
                   </h3>
                   <p className="text-sm mb-6" style={{ color: "var(--tx-1)" }}>
-                    Thanks for reaching out. I'll get back to you soon.
+                    {dict.contact.form.sentBody}
                   </p>
                   <button type="button" onClick={() => setSent(false)} autoFocus
                           className="px-5 py-2 text-sm rounded-[var(--r-sm)] transition-colors"
                           style={{ background: "var(--ink-2)", border: "1px solid var(--hair-bright)", color: "var(--tx-0)" }}>
-                    Close
+                    {dict.contact.form.close}
                   </button>
                 </div>
               </div>

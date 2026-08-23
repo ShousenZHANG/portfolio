@@ -1,59 +1,59 @@
 /**
- * Project showcase data.
+ * Project showcase data — structure only: ids, slide srcs/dimensions,
+ * hrefs, autoplay timing, tech-brand tags. All copy (titles, alts,
+ * descriptions, outcomes, highlight text, link labels) lives in the
+ * dictionary, index-aligned with this array.
  * Descriptions use plain text — highlighted phrases are wrapped at render time.
  */
+import { dict } from "../i18n/index.js";
+
+const copy = dict.showcase.projects;
+
 export const projects = [
   {
     id: "joblit",
-    title: "Joblit",
+    title: copy[0].title,
     desktopReverse: false,
     autoplayDelay: 3800,
     slides: [
-      { src: "/images/joblit_landing.webp", alt: "Joblit AI-powered landing page with live demo", w: 1600, h: 842 },
-      { src: "/images/joblit_jobs.webp", alt: "Joblit jobs workspace with AI keyword highlighting", w: 1600, h: 842 },
-      { src: "/images/joblit_autofill.webp", alt: "Joblit Chrome Extension auto-filling ATS application form", w: 1600, h: 842 },
-      { src: "/images/joblit_resume.webp", alt: "Joblit resume builder with PDF preview", w: 1600, h: 842 },
-      { src: "/images/joblit_extension.webp", alt: "Joblit AutoFill Chrome Extension installation page", w: 1600, h: 842 },
+      { src: "/images/joblit_landing.webp", alt: copy[0].alts[0], w: 1600, h: 842 },
+      { src: "/images/joblit_jobs.webp", alt: copy[0].alts[1], w: 1600, h: 842 },
+      { src: "/images/joblit_autofill.webp", alt: copy[0].alts[2], w: 1600, h: 842 },
+      { src: "/images/joblit_resume.webp", alt: copy[0].alts[3], w: 1600, h: 842 },
+      { src: "/images/joblit_extension.webp", alt: copy[0].alts[4], w: 1600, h: 842 },
     ],
-    description:
-      "A {local-first AI job platform, architected and shipped solo} — versioned prompt contracts, strict Zod validation of any LLM's JSON, and {no server-side model keys}, backed by {2,100+ automated tests} across five CI gates.",
-    outcomes: [
-      "Evidence ledger: deterministic gate that blocks unsupported AI claims before publication",
-      "ATS PDF validator enforcing page, text-layer and keyword-coverage rules",
-      "Any-LLM JSON is Zod-validated against versioned prompt contracts — no silent drift",
-    ],
+    description: copy[0].description,
+    outcomes: copy[0].outcomes,
     tech: ["Next.js", "TypeScript", "Prisma + PostgreSQL", "Claude", "Chrome Extension"],
     links: [
-      { href: "https://github.com/ShousenZHANG/jobflow-web", label: "View on GitHub" },
-      { href: "https://www.joblit.tech/", label: "Live Demo" },
+      { href: "https://github.com/ShousenZHANG/jobflow-web", label: dict.showcase.viewOnGithub },
+      { href: "https://www.joblit.tech/", label: dict.showcase.liveDemo },
     ],
   },
   {
     id: "contest-platform",
-    title: "Scalable Competition Platform",
+    title: copy[1].title,
     desktopReverse: false,
     autoplayDelay: 4000,
     slides: [
-      { src: "/images/award_certificate.webp", alt: "Coding Fest 2025 Runner-up Certificate", w: 1524, h: 2252 },
-      { src: "/images/award_team_photo.webp", alt: "Coding Fest 2025 Award Ceremony Team Photo", w: 1400, h: 2099 },
-      { src: "/images/Competition_System_Architecture.webp", alt: "System Architecture", w: 1564, h: 845 },
-      { src: "/images/Pipeline.webp", alt: "CI/CD Pipeline", w: 1536, h: 1024 },
+      { src: "/images/award_certificate.webp", alt: copy[1].alts[0], w: 1524, h: 2252 },
+      { src: "/images/award_team_photo.webp", alt: copy[1].alts[1], w: 1400, h: 2099 },
+      { src: "/images/Competition_System_Architecture.webp", alt: copy[1].alts[2], w: 1564, h: 845 },
+      { src: "/images/Pipeline.webp", alt: copy[1].alts[3], w: 1536, h: 1024 },
     ],
-    description:
-      "Cloud-native competition system — {Spring Cloud microservices} secured with {OAuth2/JWT}, with {event-driven RabbitMQ messaging} powering real-time notifications across services.",
+    description: copy[1].description,
     highlight: {
-      title: "Runner-up — Best Project in AI for Education",
-      description:
-        "Recognized at Coding Fest 2025 (University of Sydney) for innovation and impact.",
-      sponsor: "Sponsored by Atlassian and Flow Traders.",
+      title: copy[1].highlight.title,
+      description: copy[1].highlight.description,
+      sponsor: copy[1].highlight.sponsor,
       cta: {
         href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
-        label: "View Award Certificate",
+        label: copy[1].highlight.ctaLabel,
       },
     },
     links: [
-      { href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: "View on GitHub" },
-      { href: "https://project-contest-platform.vercel.app/", label: "Live Demo" },
+      { href: "https://github.com/ShousenZHANG/project-contest-platform.git", label: dict.showcase.viewOnGithub },
+      { href: "https://project-contest-platform.vercel.app/", label: dict.showcase.liveDemo },
     ],
   },
 ];
