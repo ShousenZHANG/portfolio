@@ -12,10 +12,17 @@ import { prefersReducedMotion } from "../lib/motion.js";
 // Hover-decode: nav labels scramble briefly and collapse back — the same
 // measurement motif as the hero headline, echoed in the chrome.
 const NAV_GLYPHS = "!<>-_\\/[]{}=+*^?#";
+// Same width problem as the hero headline, one notch smaller: a two-hanzi nav
+// label scrambled with half-width ASCII shrinks by half, and the sliding
+// indicator — measured from offsetWidth — follows it.
+const NAV_GLYPHS_CJK = "口日田由甲申网目品回";
+const NAV_HAN_RE = /[一-鿿]/;
+
 const ScrambleText = ({ text, active }) => {
   const [display, setDisplay] = useState(text);
   useEffect(() => {
     if (!active || prefersReducedMotion()) { setDisplay(text); return undefined; }
+    const pool = NAV_HAN_RE.test(text) ? NAV_GLYPHS_CJK : NAV_GLYPHS;
     let f = 0;
     const iv = setInterval(() => {
       f += 1;
@@ -23,7 +30,7 @@ const ScrambleText = ({ text, active }) => {
       if (settled >= text.length) { setDisplay(text); clearInterval(iv); return; }
       let s = "";
       for (let i = 0; i < text.length; i++) {
-        s += i < settled ? text[i] : NAV_GLYPHS[(i * 5 + f * 3) % NAV_GLYPHS.length];
+        s += i < settled ? text[i] : pool[(i * 5 + f * 3) % pool.length];
       }
       setDisplay(s);
     }, 26);

@@ -4,7 +4,7 @@ import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Github from "lucide-react/dist/esm/icons/github";
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
 import Magnetic from "../components/Magnetic.jsx";
-import { dict } from "../i18n/index.js";
+import { dict, isZh } from "../i18n/index.js";
 
 // Channel values (email/phone) come from contact.channels — the footer only
 // owns the aria phrasings wrapped around them.
@@ -47,18 +47,21 @@ const Footer = () => {
 
           {/* Social icons */}
           <div className="flex items-center gap-3">
-            <Magnetic strength={0.5}>
-              <a
-                href="https://linkedin.com/in/eddy-shousen-zhang"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={dict.footer.socialAria.linkedin}
-                className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
-                style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
-              >
-                <Linkedin className="w-[18px] h-[18px]" />
-              </a>
-            </Magnetic>
+            {/* Absent on /zh — see the note in Contact.jsx. */}
+            {!isZh && (
+              <Magnetic strength={0.5}>
+                <a
+                  href="https://linkedin.com/in/eddy-shousen-zhang"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={dict.footer.socialAria.linkedin}
+                  className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors duration-300 hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                  style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+                >
+                  <Linkedin className="w-[18px] h-[18px]" />
+                </a>
+              </Magnetic>
+            )}
             <Magnetic strength={0.5}>
               <a
                 href="https://github.com/ShousenZHANG"

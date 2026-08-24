@@ -7,7 +7,7 @@ import AnimatedCounter from "../components/AnimatedCounter.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useMagnetic } from "../hooks/useMagnetic.js";
 import { useInView } from "../hooks/useInView.js";
-import { dict } from "../i18n/index.js";
+import { dict, isZh } from "../i18n/index.js";
 
 // CTA is a plain anchor: the global Lenis click handler routes #-links
 // through lenis.scrollTo, so easing matches every other in-page jump.
@@ -16,10 +16,20 @@ import { dict } from "../i18n/index.js";
 // into its final state — the site's measurement-collapse motif, applied to
 // the very first thing a visitor reads. Static under reduced motion.
 const GLYPHS = "!<>-_\\/[]{}—=+*^?#";
+// Han is full-width; the ASCII pool above is half-width. Scrambling a Chinese
+// headline with it collapses the word to roughly half its width and pumps it
+// back every 70ms, which at display size reads as the layout breaking rather
+// than as the word resolving. These are dense, common hanzi — noise that looks
+// like it is resolving into meaning — and every one is inside the subset face,
+// so nothing falls through to the system stack mid-animation.
+const GLYPHS_CJK = "口日田由甲申网目回品晶森淼囍罒面";
+const HAN_RE = /[一-鿿]/;
+
 const DecodeWord = ({ text }) => {
     const [out, setOut] = useState(text);
     useEffect(() => {
         if (prefersReducedMotion()) return undefined;
+        const pool = HAN_RE.test(text) ? GLYPHS_CJK : GLYPHS;
         let frame = 0;
         let raf = 0;
         let cancelled = false;
@@ -35,7 +45,7 @@ const DecodeWord = ({ text }) => {
                 for (let i = 0; i < text.length; i++) {
                     s += i < settled
                         ? text[i]
-                        : GLYPHS[(i * 7 + frame * 3) % GLYPHS.length];
+                        : pool[(i * 7 + frame * 3) % pool.length];
                 }
                 setOut(s);
                 raf = requestAnimationFrame(tick);
@@ -181,10 +191,15 @@ const Hero = () => {
                                             {w.sig ? <DecodeWord text={w.t} /> : w.t}
                                         </span>
                                     </span>
-                                    {/* The space is kept alongside <br> so the h1's text
-                                        content stays "I build intelligent agents." for
-                                        crawlers — a bare <br> glues the words together. */}
-                                    {w.br ? <> <br /></> : i < HEADLINE.length - 1 ? " " : ""}
+                                    {/* English keeps the space alongside <br> so the h1's
+                                        text content still reads as a sentence for crawlers —
+                                        a bare <br> glues the words together. Chinese has no
+                                        inter-word space, and injecting one opens a ~0.25em
+                                        gap mid-line that reads as a typesetting fault at
+                                        display size, so zh emits the break alone. */}
+                                    {w.br
+                                        ? (isZh ? <br /> : <> <br /></>)
+                                        : !isZh && i < HEADLINE.length - 1 ? " " : ""}
                                 </span>
                             ))}
                         </h1>

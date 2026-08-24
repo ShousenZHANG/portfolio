@@ -1940,6 +1940,303 @@ section {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* ══════════════════════════════════════════════════════════
+   /zh — CHINESE TYPOGRAPHY SCOPE
+
+   Everything below is gated on :root[lang^="zh"], which only the /zh entry
+   carries (see src/i18n/locale.js — <html lang> is the single source of truth
+   for locale, so it is also the only hook typography needs). The English page's
+   computed styles are untouched by construction: not one existing declaration
+   is edited, and nothing here is unscoped.
+
+   The premise: Latin type rules do not transfer to Han. A hanzi fills its em
+   box in both directions, so the leading, the tracking, the measure and the
+   weight ladder that make the English page look considered all fail in
+   specific, measurable ways here. Each block below names the failure.
+   ══════════════════════════════════════════════════════════ */
+
+/* ── The display face ────────────────────────────────────────────────────────
+   A stock Windows 11 box ships Microsoft YaHei, SimHei, SimSun and KaiTi and
+   nothing else, and YaHei has exactly three distinct weights (100-300 Light,
+   400 and 500 byte-identical, 600+ Bold). That is fine for body copy — it is
+   what a mainland reader expects to read — but it means a headline gets the
+   same blunt Bold as a caption, with none of the optical care Mona Sans gives
+   the Latin side. So ONE OFL face is self-hosted for headings only.
+
+   Same-origin under /assets, which satisfies `font-src 'self'` and inherits the
+   immutable one-year Cache-Control vercel.json already sets for that path; Vite
+   content-hashes the filename, so a regenerated subset busts its own cache.
+
+   `swap`, not `optional`: the requirement is that text is never invisible, and
+   the fallback here is a real Han face, so the swap is a shape change, not a
+   tofu→text pop. `block`/`optional` would trade that for the hero headline
+   never getting the good face at all on a cold, slow first load.
+
+   unicode-range is deliberately CJK-only. Latin in a Chinese heading — React,
+   GSAP, 2026 — must stay in Mona Sans, and restricting the range means the
+   browser will not even consider this face for it. The four General
+   Punctuation marks ARE listed, because “ ” … — are full-width glyphs inside a
+   Han face and narrow Latin ones inside Mona Sans; in Chinese text the wide
+   forms are the correct ones.
+
+   A hanzi that is NOT in the subset falls through to the system stack rather
+   than drawing tofu (the subset is built with notdef_outline off). That is the
+   safety property the whole approach rests on — and also why the pool must be
+   regenerated once the copy is real: a heading that is half Noto and half YaHei
+   is worse than a heading that is all YaHei.
+
+   REGENERATE:  python scripts/gen-zh-subset.py --from-dict src/i18n/zh.js
+   The committed file was built from a written-down candidate pool (382 chars:
+   top-frequency hanzi + this site's heading vocabulary + the scramble pool),
+   NOT from the shipped strings — see scripts/gen-zh-subset.py. */
+@font-face {
+    font-family: "Noto Sans SC Subset";
+    src: url("./assets/fonts/noto-sans-sc-subset-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+00B7, U+2014, U+2018-201D, U+2026, U+3000-303F,
+        U+4E00-9FFF, U+FF01-FF65;
+}
+
+:root[lang^="zh"] {
+    /* ── (a) Stacks ──────────────────────────────────────────────────────────
+       Mona Sans stays FIRST in every one of them. Font fallback is per
+       character, so Latin resolves in the site's own voice and Han falls
+       through to the next family that has it. */
+    --font-zh: "Mona Sans Variable", "Mona Sans", -apple-system, BlinkMacSystemFont,
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI",
+        system-ui, sans-serif;
+
+    /* Headings only, and only ever at 700 — that is the single weight the
+       subset ships. Do not point a 400 rule at this: with one @font-face weight
+       declared, a 400 request still matches it (closest available) and the
+       heading would silently come back Bold. */
+    --font-zh-display: "Mona Sans Variable", "Mona Sans", "Noto Sans SC Subset",
+        -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+
+    /* JetBrains Mono has ZERO Han coverage, and there are six hand-written
+       monospace sites plus every Tailwind `font-mono` use. The tail is the same
+       proportional system stack rather than a monospaced Han face, because none
+       worth naming is installed on a stock Windows box — and a Chinese label
+       set "proportionally" is monospaced anyway: hanzi are fixed-advance by
+       construction. Naming MiSans / HarmonyOS Sans / Noto Sans SC here would be
+       decoration: the probe found none of them installed, and the first two
+       ship under revocable vendor EULAs regardless. */
+    --font-zh-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", monospace;
+
+    /* Tailwind's font-sans / font-mono utilities resolve these theme vars, so
+       redefining them catches every utility use — present and future — without
+       reaching into a single JSX file. */
+    --font-sans: var(--font-zh);
+    --font-mono: var(--font-zh-mono);
+
+    /* 12px is where hanzi strokes start to close up on a near-black floor, and
+       --fs-eyebrow (0.78rem) and Tailwind's text-xs (0.75rem) both land under
+       it. One notch up for both; the ratio-based line-heights follow. */
+    --fs-eyebrow: 0.8125rem;
+    --text-xs: 0.8125rem;
+
+    /* ── (b) Weight ──────────────────────────────────────────────────────────
+       There is no real 500 or 600 on the Chinese system stack: YaHei's 400 and
+       500 masters are byte-identical and everything ≥600 is one Bold, while
+       macOS PingFang SC *does* have a true Medium — so a 500-weight token is
+       the one choice guaranteed to render differently on the two platforms a
+       mainland reader arrives on. Every weight in this scope is clamped to 400
+       or 700 below.
+
+       Synthesis off, both axes: `font-synthesis` defaults to
+       `weight style small-caps`, i.e. faux bold and faux oblique are ON unless
+       disabled. A synthetic Han bold is a smear of the regular master, and
+       there is no italic master for Han at all — the browser shears the upright
+       glyph, which destroys the stroke structure the character IS. */
+    font-synthesis-weight: none;
+    font-synthesis-style: none;
+
+    /* ── (f) Line breaking ───────────────────────────────────────────────────
+       Kinsoku: 、。」』 never open a line, 「『（ never close one. Chrome 4+,
+       Firefox 69+, Safari 3.1+ — ~97%, so this is a baseline, not a bet. */
+    line-break: strict;
+
+    /* PROGRESSIVE ENHANCEMENT ONLY — no layout may depend on either landing.
+       hanging-punctuation is still Safari-only in 2026 (~16%).
+       text-spacing-trim is Chrome 123+ AND font-dependent: it reads the font's
+       chws/halt features, which YaHei and SimSun do not carry — only the Noto
+       subset above does (the build keeps those two features), so it acts on
+       headings and nowhere else.
+       Deliberately absent: text-autospace. Measured in Chromium 148 the
+       computed default is `no-autospace` (contradicting MDN), Chrome drops
+       every longhand as invalid, and the zh copy authors the 盘古之白 spaces by
+       hand — enabling autospace would double them on new engines. */
+    hanging-punctuation: allow-end;
+    text-spacing-trim: trim-start;
+}
+
+/* `html, body` sets font-family on BOTH elements, so the :root declaration
+   above never reaches the page — body's own rule wins for everything under it.
+   (d) Leading: observed Chinese body practice runs 1.63-2.0 (cali.so 1.72,
+   lutaonan 1.63, yunyoujun 2.0, xaoxuu 1.87) against Latin's 1.5, because a
+   hanzi fills the em box vertically and leaves no air of its own. NOTE: W3C
+   CLReq specifies no body line-height for horizontal Chinese — 1.75 is
+   practitioner norm, not a spec figure. */
+:root[lang^="zh"] body {
+    font-family: var(--font-zh);
+    line-height: 1.75;
+}
+
+/* The six hand-written monospace sites name JetBrains Mono directly and so do
+   not see the theme var. Listed in one rule instead of edited in place, which
+   keeps the English page's computed font-family byte-identical to today's.
+   .nav-lang joins them for the day its label is not "EN". */
+:root[lang^="zh"] :is(.ed-eyebrow, .skill-hop, .ed-orb-label, .ed-tip,
+    .ed-msg-thinking, .ed-rec-clock, .nav-lang, .font-mono) {
+    font-family: var(--font-zh-mono);
+}
+
+/* (b) Everything Tailwind or this file marks 500/600 collapses to 400 — the
+   weight that actually exists. Body copy at 400 is also the anti-bloom rule:
+   at the same size a 国 covers ~1020px of >50% ink against ~427px for a Latin
+   "A", so on a dark ground each glyph emits 2-2.5x more light and heavier text
+   glows rather than reads. */
+:root[lang^="zh"] :is(.font-medium, .font-semibold, .navbar-link, .navbar-cta,
+    .ed-btn-ghost, .skip-link, .ed-orb-label) {
+    font-weight: 400;
+}
+
+/* …700 survives in exactly two situations. Display-sized type, where 40-80px
+   strokes cannot merge and the bloom reads as presence. And dark ink on a light
+   fill (.ed-btn is --sig-ink on --sig; the mobile CTA is the same pairing),
+   where the light-on-dark bloom that argues against bold does not exist at all.
+   Hierarchy the English page carried with 500 vs 600 is carried here by colour
+   and by the filled pill, which is how Chinese interfaces do it anyway. */
+:root[lang^="zh"] :is(h1, h2, h3, .counter-number, .ed-btn) {
+    font-weight: 700;
+}
+/* Split out rather than folded into the list above: an id inside :is() donates
+   its specificity to every other argument, which would quietly make `h1` here
+   outrank rules it has no business outranking. */
+:root[lang^="zh"] #mobile-dropdown a[href="#contact"] {
+    font-weight: 700;
+}
+
+/* ── (c)(d)(f) The two display primitives ────────────────────────────────────
+   Tracking: negative tracking is a Latin display technique — it reclaims
+   sidebearings that were drawn with room to spare. Hanzi are square and already
+   fill their box, so .ed-display's -0.035em and .ed-h2's -0.02em make adjacent
+   strokes touch. Zero is the floor for Han; there is no standard anywhere
+   recommending positive tracking on running Chinese text either.
+   Leading: 1.04 is set for Latin, where most of the em box above the cap line
+   is air. At 1.04 a two-line Chinese headline collides with itself. Chinese
+   headings run tighter than Chinese body but far looser than this: 1.2-1.4.
+   Breaking: Han needs no help — every inter-ideograph boundary is already a
+   break opportunity — but a display heading carrying a long unbroken Latin
+   token overflows .ed-shell instead of wrapping. `break-all` is the
+   universally-supported guarantee of a break, scoped to these two primitives so
+   body copy never gets a Latin word chopped mid-word. `auto-phrase` is
+   declared second on purpose: engines that understand it (Chrome 119+) take it
+   and get phrase-aware CJK wrapping AND intact Latin words — better on both
+   counts — while every other engine keeps the line above. text-justify is left
+   at `auto`; nothing here is justified, and CJK justification without hanging
+   punctuation (Safari-only) opens rivers at the line ends. */
+:root[lang^="zh"] :is(.ed-display, .ed-h2) {
+    font-family: var(--font-zh-display);
+    font-weight: 700;
+    letter-spacing: 0;
+    word-break: break-all;
+    word-break: auto-phrase;
+}
+:root[lang^="zh"] .ed-display { line-height: 1.28; }
+:root[lang^="zh"] .ed-h2 { line-height: 1.32; }
+/* The signature word inside the headline — 680 is the same non-existent weight
+   as 600, one notch up. */
+:root[lang^="zh"] .ed-display .sig { font-weight: 700; }
+
+/* (e) Measure. 46ch is a Latin measure hiding in a unit that means nothing
+   here: `ch` is the advance of "0" in the first available font, and Mona Sans'
+   zero measures 0.612em (measured, not assumed) — so 46ch is 28.2em, and since
+   a hanzi is exactly 1em wide that is 28 characters per line, under the 30-40
+   commonly cited as the comfortable Chinese measure, and it would drift again
+   the day the Latin face changed. `em` is the honest unit for Han: the number
+   in the CSS *is* the number of characters on the line. */
+:root[lang^="zh"] .ed-lead { max-width: 34em; }
+
+/* (d) Prose leading, on the two surfaces that set their own. */
+:root[lang^="zh"] :is(.ed-lead, .ed-msg) { line-height: 1.75; }
+
+/* …but 1.75 inside a control is 1.75 lines of box, and every pill on this site
+   is sized by padding around a single line. Chrome gets a chrome leading.
+   Enumerated rather than `button, input`, so nothing that holds a wrapped
+   sentence (the E.D. tip below is a button) is caught by accident. */
+:root[lang^="zh"] :is(.ed-btn, .ed-btn-ghost, .navbar-link, .navbar-cta,
+    .navbar-logo-text, .navbar-burger, .ed-eyebrow, .jd-chip, .skill-legend,
+    .skill-hop, .nav-lang, .ed-orb-label, .ed-status, .exp-now, .ed-icon-btn,
+    .ed-rec-clock, .ed-input-row input) {
+    line-height: 1.45;
+}
+
+/* (c) The eyebrow keeps BOTH its uppercase and its tracking, and the tracking
+   goes UP. This is the exact inverse of the body rule, and it is deliberate:
+   Chinese body copy is set at normal tracking on essentially every good site,
+   but hanzi are square and separable, so a SHORT label tolerates spacing far
+   past anything Latin would — mainland practice runs two-hanzi section labels
+   at ~0.5em (blog.zhheo.com sets 8px on 16px), which is the Chinese replacement
+   for tracked-out Latin small-caps. 0.18em is the bad middle: loose enough to
+   read as broken word spacing, not loose enough to read as a decision.
+   uppercase stays because the half of an eyebrow it can act on — "01 /",
+   "COPILOT STUDIO" — is exactly the index-and-product-name half it was written
+   for. It is a no-op on Han, not a corruption of it. */
+:root[lang^="zh"] .ed-eyebrow {
+    letter-spacing: 0.3em;
+    /* …but uppercase goes. On the English page it acts on every word; here it
+       acts on the Latin half only, and that half is 「Agent」 and 「AI」 — terms
+       the copy sets in mixed case everywhere else on the page. Rendering the
+       hero eyebrow as 「企业级 AGENT 落地」 while the lead two lines below says
+       「企业级 Agent 落地」 shouts the site's own key term and contradicts it in
+       the same viewport. The raised tracking above is what carries the label
+       treatment in Chinese; it does not need the shout as well. */
+    text-transform: none;
+}
+
+/* (c) Micro-labels. At 9-11px a hanzi packs six-plus strokes into nine device
+   pixels and merges into a grey block long before a Latin word of the same size
+   becomes illegible — which is why the English page gets away with these and
+   /zh cannot. Each is raised to the smallest size its box can still hold, and
+   the tracking is pulled back toward the label norm now that the glyphs carry
+   themselves. .exp-now is right-anchored beside the year numerals, so a wider
+   Chinese label grows leftward over them — push its offset back out to match.
+   (The 10px sites are left alone on purpose: both are <kbd> shortcut keys,
+   which stay Latin in either locale.) */
+:root[lang^="zh"] .ed-status { font-size: 12px; letter-spacing: 0.2em; }
+:root[lang^="zh"] .ed-orb-label { font-size: 12px; letter-spacing: 0.12em; }
+:root[lang^="zh"] .exp-now { font-size: 11px; letter-spacing: 0.1em; right: -18px; }
+:root[lang^="zh"] .text-\[11px\] { font-size: 12px; }
+
+/* The E.D. tip is a sentence, not a label: tracking back to normal, and the
+   leading opened to the Chinese body value because on a phone it wraps to three
+   lines inside a 260px cap. Ordered after the control-leading rule above (equal
+   specificity, later wins) so it keeps its own value. */
+:root[lang^="zh"] .ed-tip {
+    font-size: 12.5px;
+    letter-spacing: normal;
+    line-height: 1.7;
+}
+:root[lang^="zh"] .ed-msg-thinking { letter-spacing: normal; }
+
+/* (g) Colour is deliberately absent from this whole scope. The ladder already
+   tops out at --tx-0 (#f1f1f5) on #07080e rather than pure white on pure black,
+   which is the same call cali.so (#ecebe7 on #0f0d0a) and Ant Design dark
+   (rgba(255,255,255,0.85) on #141414) make — and with a hanzi emitting 2-2.5x
+   the light of a Latin capital, pure white is exactly what blooms. Nothing
+   above raises Chinese body text past 400.
+   `-webkit-font-smoothing: antialiased` is already global on `body`; it is not
+   repeated here. It thins text on macOS/iOS and is a silent no-op on Windows,
+   which is where the bloom actually lives — worth shipping, not a fix.
+   Because this scope paints nothing, the @supports sRGB fallback block at the
+   top of the file (old WeChat XWeb WebViews, which is most mainland traffic)
+   needs no extension: there are no colour-bearing rules here to fall back. */
+
 /* ── Print — a portfolio gets Ctrl+P'd by recruiters, and browsers drop
    background colours by default: --tx-0 body text would land near-white on
    white paper, under the fixed chrome stamped across page 1. ── */

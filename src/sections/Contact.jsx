@@ -11,7 +11,7 @@ import TitleHeader from "../components/TitleHeader";
 import Magnetic from "../components/Magnetic.jsx";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { useInView } from "../hooks/useInView.js";
-import { dict } from "../i18n/index.js";
+import { dict, isZh } from "../i18n/index.js";
 
 // pointer-coarse:text-base — anything under 16px makes iOS Safari zoom the
 // viewport the moment the field is tapped, which throws the rest of the form
@@ -115,13 +115,18 @@ const Contact = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-6">
-            <Magnetic strength={0.5}>
-              <a href="https://linkedin.com/in/eddy-shousen-zhang" target="_blank" rel="noopener noreferrer"
-                 aria-label={dict.contact.socialAria.linkedin} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
-                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
-                <Linkedin className="w-[18px] h-[18px]" />
-              </a>
-            </Magnetic>
+            {/* LinkedIn's China consumer service shut down in 2023, so on /zh
+                this is a dead end for the only audience that page is written
+                for — worse than absent, because it looks like a channel. */}
+            {!isZh && (
+              <Magnetic strength={0.5}>
+                <a href="https://linkedin.com/in/eddy-shousen-zhang" target="_blank" rel="noopener noreferrer"
+                   aria-label={dict.contact.socialAria.linkedin} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
+                   style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
+                  <Linkedin className="w-[18px] h-[18px]" />
+                </a>
+              </Magnetic>
+            )}
             <Magnetic strength={0.5}>
               <a href="https://github.com/ShousenZHANG" target="_blank" rel="noopener noreferrer"
                  aria-label={dict.contact.socialAria.github} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
