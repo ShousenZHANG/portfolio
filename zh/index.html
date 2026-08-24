@@ -22,8 +22,8 @@
     <!-- Raster only: iOS ignores an SVG here and screenshots the page instead. -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.zh.webmanifest" />
-    <!-- Fonts are self-hosted (see src/index.css) — no third-party font CDN. -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <!-- Fonts are self-hosted (see src/index.css) — no third-party font CDN.
+         No preconnect: every asset this page fetches is same-origin. -->
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eddyzhang.me/zh" />

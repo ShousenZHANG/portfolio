@@ -46,8 +46,12 @@ export const projects = [
       title: copy[1].highlight.title,
       description: copy[1].highlight.description,
       sponsor: copy[1].highlight.sponsor,
+      // Same-origin, not the Google Drive original: Drive is unreachable from
+      // mainland China, so on /zh the one link that proves the award would
+      // have hung and timed out. The file is the same scan already carried in
+      // this project's own carousel.
       cta: {
-        href: "https://drive.google.com/file/d/1zzoNxecwqmVFIoBu2cUXIJZdHUiay1Hi/view?usp=drive_link",
+        href: "/images/award_certificate.webp",
         label: copy[1].highlight.ctaLabel,
       },
     },

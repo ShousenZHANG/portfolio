@@ -1,26 +1,32 @@
 // Brand names — identical in every locale, so the list stays hardcoded;
 // only the eyebrow above the marquee is dictionary copy.
+//
+// The SVGs are served from /logos, not from jsDelivr. They are devicon's
+// originals, vendored: jsDelivr is intermittently unreachable from mainland
+// China, and a blank logo wall is exactly the wrong first impression on the
+// page written for that audience. It also removes a third-party origin from
+// the critical path for everyone else.
 const logoIconsList = [
     // Cloud & AI platform
-    { name: "Microsoft Azure", icon: "azure/azure-original.svg" },
-    { name: "Python", icon: "python/python-original.svg" },
+    { name: "Microsoft Azure", icon: "azure-original.svg" },
+    { name: "Python", icon: "python-original.svg" },
 
     // Backend & data
-    { name: "Java", icon: "java/java-original.svg" },
-    { name: "Spring Boot", icon: "spring/spring-original.svg" },
-    { name: "PostgreSQL", icon: "postgresql/postgresql-original.svg" },
-    { name: "MySQL", icon: "mysql/mysql-original.svg" },
-    { name: "RabbitMQ", icon: "rabbitmq/rabbitmq-original.svg" },
+    { name: "Java", icon: "java-original.svg" },
+    { name: "Spring Boot", icon: "spring-original.svg" },
+    { name: "PostgreSQL", icon: "postgresql-original.svg" },
+    { name: "MySQL", icon: "mysql-original.svg" },
+    { name: "RabbitMQ", icon: "rabbitmq-original.svg" },
 
     // Frontend
-    { name: "React", icon: "react/react-original.svg" },
-    { name: "TypeScript", icon: "typescript/typescript-original.svg" },
-    { name: "Tailwind CSS", icon: "tailwindcss/tailwindcss-original.svg" },
-    { name: "JavaScript", icon: "javascript/javascript-original.svg" },
+    { name: "React", icon: "react-original.svg" },
+    { name: "TypeScript", icon: "typescript-original.svg" },
+    { name: "Tailwind CSS", icon: "tailwindcss-original.svg" },
+    { name: "JavaScript", icon: "javascript-original.svg" },
 
     // DevOps
-    { name: "Docker", icon: "docker/docker-original.svg" },
-    { name: "GitHub", icon: "github/github-original.svg" },
+    { name: "Docker", icon: "docker-original.svg" },
+    { name: "GitHub", icon: "github-original.svg" },
 ];
 
 import { useInView } from "../hooks/useInView.js";
@@ -32,7 +38,7 @@ import { dict } from "../i18n/index.js";
 const LogoIcon = ({ name, icon, duplicate }) => (
     <div className="logo-cell flex-none flex items-center justify-center w-24 sm:w-28 h-16" aria-hidden={duplicate || undefined}>
         <img
-            src={icon.startsWith("http") ? icon : `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${icon}`}
+            src={`/logos/${icon}`}
             alt={name}
             title={name}
             width={48}

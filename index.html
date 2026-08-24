@@ -29,8 +29,8 @@
     <link rel="manifest" href="/site.webmanifest" />
     <!-- Fonts are self-hosted (see src/index.css) — no third-party font CDN.
          The display face is preloaded by the preloadDisplayFont plugin in vite.config.js;
-         its filename is content-hashed, so the tag is injected at build time. -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+         its filename is content-hashed, so the tag is injected at build time.
+         No preconnect: every asset this page fetches is same-origin. -->
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eddyzhang.me/" />

@@ -30,10 +30,17 @@ const GLYPHS = "!<>-_\\/[]{}=+*^?#";
 // size — Mona Sans has no CJK coverage. Tag the bubble that actually holds it.
 const HAN = /\p{Script=Han}/u;
 const KANA = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
+// Returns undefined when the reply is already in the document's language —
+// tagging it would be noise. The polarity therefore FLIPS between the two
+// entries: on /zh it is the English answers that need marking, or a screen
+// reader pronounces them with a Mandarin voice engine and the browser picks
+// CJK metrics for Latin glyphs.
 const langOf = (text) => {
     const s = typeof text === "string" ? text : "";
     if (KANA.test(s)) return "ja";     // kana present → Japanese, not Chinese
-    return HAN.test(s) ? "zh" : undefined;
+    const han = HAN.test(s);
+    if (isZh) return han ? undefined : "en";
+    return han ? "zh" : undefined;
 };
 
 /**
