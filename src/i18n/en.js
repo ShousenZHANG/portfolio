@@ -220,8 +220,7 @@ export const en = {
                 responsibilities: [
                     "Graduated with Excellence Honours (WAM 82.4/100).",
                     "Built the backend of the Coding Fest 2025 runner-up project — a Spring Cloud microservices competition platform.",
-                    "Explored AI disciplines including machine learning, NLP, and large language models (LLMs).",
-                ],
+                            ],
             },
             {
                 title: "Software Engineer — Newtouch Software Co., Ltd.",
@@ -292,7 +291,7 @@ export const en = {
         shippedIn: "Shipped in",
         linkedSkills: "Linked skills",
         interactive: "Interactive",
-        hint: "Click any node to see the projects and roles where I used that skill in production.",
+        hint: "Click any node to see the projects, roles and platforms behind each skill.",
         // Keys mirror the component's CATS keys (structure, not copy).
         cats: {
             ms: "Microsoft & Power Platform",
@@ -323,7 +322,7 @@ export const en = {
             python: { label: "Python", used: ["SSH desktop tool — 15+ formats"] },
             ts: { label: "TypeScript", used: ["Joblit", "this portfolio"] },
             react: { label: "React / Next", used: ["This portfolio", "Joblit"] },
-            azure: { label: "Azure", used: ["Microsoft 365 stack"] },
+            azure: { label: "Azure", used: ["The platform Copilot Studio and Dataverse run on"] },
             aws: { label: "AWS", used: ["Contest Platform"] },
             docker: { label: "Docker", used: ["Contest Platform", "Newtouch"] },
             cicd: { label: "CI/CD", used: ["Contest Platform", "Joblit"] },

@@ -326,7 +326,7 @@ export const zh = {
         shippedIn: "用在哪里",
         linkedSkills: "关联技能",
         interactive: "可交互",
-        hint: "点任意节点，看这项技能在哪些项目和岗位上真正跑过生产。",
+        hint: "点任意节点，看这项技能背后的项目、岗位或平台。",
         cats: {
             ms: "Microsoft 与 Power Platform",
             ai: "AI 与 Agent",
@@ -355,7 +355,7 @@ export const zh = {
             python: { label: "Python", used: ["自研客户端：15+ 种格式转 Markdown"] },
             ts: { label: "TypeScript", used: ["Joblit", "这个作品集站点"] },
             react: { label: "React / Next", used: ["这个作品集站点", "Joblit"] },
-            azure: { label: "Azure", used: ["Microsoft 365 技术栈"] },
+            azure: { label: "Azure", used: ["Copilot Studio 与 Dataverse 的运行平台"] },
             aws: { label: "AWS", used: ["项目竞赛管理平台"] },
             docker: { label: "Docker", used: ["项目竞赛管理平台", "新致软件"] },
             cicd: { label: "CI/CD", used: ["项目竞赛管理平台", "Joblit"] },
