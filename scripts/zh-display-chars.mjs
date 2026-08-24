@@ -13,8 +13,21 @@
 // Usage:
 //   node scripts/zh-display-chars.mjs > .zh-display-chars.txt
 //   python scripts/gen-zh-subset.py --from-dict .zh-display-chars.txt
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 import { zh } from "../src/i18n/zh.js";
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+// The decode animations substitute these INTO the headline and the nav, so
+// they are display glyphs too — a scramble character outside the subset falls
+// back mid-animation and the word visibly changes face while it resolves.
+// Read from source rather than duplicated here, so the pools cannot drift.
+const poolFrom = (file, name) => {
+  const src = readFileSync(resolve(root, file), "utf8");
+  return new RegExp(`${name} = "([^"]+)"`).exec(src)?.[1] ?? "";
+};
 
 const displayStrings = [
   ...zh.hero.headline.map((w) => w.t),
@@ -24,6 +37,8 @@ const displayStrings = [
   zh.skills.title,
   zh.contact.title,
   zh.footer.wordmark,
+  poolFrom("src/sections/Hero.jsx", "GLYPHS_CJK"),
+  poolFrom("src/components/NavBar.jsx", "NAV_GLYPHS_CJK"),
 ];
 
 const chars = [...new Set(displayStrings.join("").split(""))]

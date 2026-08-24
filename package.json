@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node scripts/check-i18n-parity.mjs && node --test \"test/**/*.test.mjs\"",
+    "test": "node scripts/check-i18n-parity.mjs && node scripts/check-zh-punctuation.mjs && node --test \"test/**/*.test.mjs\"",
     "lint": "eslint .",
     "preview": "vite preview"
   },

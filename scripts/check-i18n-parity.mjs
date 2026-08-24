@@ -17,12 +17,23 @@ import { zh } from "../src/i18n/zh.js";
 const SUBTREE_EXEMPT = ["hero.headline"];
 const exempt = (key) => SUBTREE_EXEMPT.some((p) => key === p || key.startsWith(p + "["));
 
+// Content lists whose LENGTH is legitimately locale-shaped: the two CVs differ
+// in detail, so a bullet backed by one and not the other must be droppable
+// without failing the gate. The KEY must still exist in both — this exempts the
+// count, not the entry.
+const LENGTH_EXEMPT = [/\.responsibilities$/, /\.outcomes$/, /\.used$/];
+const lengthExempt = (key) => LENGTH_EXEMPT.some((re) => re.test(key));
+
 function leaves(obj, prefix = "") {
   const out = [];
   for (const [k, v] of Object.entries(obj)) {
     const key = prefix ? `${prefix}.${k}` : k;
     if (exempt(key)) {
       out.push(`${key}:<locale-shaped>`);
+    } else if (Array.isArray(v) && lengthExempt(key)) {
+      // Presence and element type are still checked; only the count is not.
+      const kinds = [...new Set(v.map((x) => typeof x))].sort().join("|") || "empty";
+      out.push(`${key}[]:<locale-shaped list of ${kinds}>`);
     } else if (Array.isArray(v)) {
       out.push(`${key}[] len=${v.length}`);
       v.forEach((item, i) => {
