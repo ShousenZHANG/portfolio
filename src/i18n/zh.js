@@ -115,6 +115,26 @@ export const zh = {
         ],
     },
 
+    // 证书条带 —— 数字块正下方、JD 匹配器之上。证书正式名保留英文原文
+    //(证书名是专有名词),副行用中文简历自己的描述词。
+    certs: {
+        eyebrow: "证书与认证",
+        listAria: "专业认证",
+        verify: "验证",
+        items: [
+            {
+                name: "Microsoft Certified: AI Agent Builder Associate",
+                issuer: "微软 AI Agent 开发认证",
+                href: "https://learn.microsoft.com/api/credentials/share/en-au/EddyZhang-6413/5756621B66C96460?sharingId=D0B50DD46044F2FC",
+            },
+            {
+                name: "Claude Certified Architect — Foundations",
+                issuer: "Anthropic Claude 架构师认证",
+                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+            },
+        ],
+    },
+
     jd: {
         title: "把 JD 和我的简历比一比",
         sub: "01 / 实时 AI 演示",
@@ -248,7 +268,7 @@ export const zh = {
                 title: "信息技术硕士 — 新南威尔士大学（UNSW)",
                 date: "2023.09 – 2025.06",
                 responsibilities: [
-                    "专业前 10% 毕业，获优秀毕业生；超额修读学分提前毕业。",
+                    "QS 世界前 20；专业前 10% 毕业，获优秀毕业生；超额修读学分提前毕业。",
                     "负责澳洲高校编程大赛（Coding Fest 2025）亚军项目的后端：基于 Spring Cloud 的微服务竞赛平台。",
                 ],
             },
@@ -286,7 +306,7 @@ export const zh = {
                 // (对照下面那条:"以 {OAuth2 / JWT} 鉴权" 的边界是中西文,
                 // 空格必须写在花括号外面,否则会被算进高亮块里。)
                 description:
-                    "{一个人架构、开发并上线的 AI 求职工作流平台}。模型只按索引从候选人自有的技能库里挑技能，生成内容再过一道{确定性校验闸}：数字与技能必须在原始档案里查得到，从机制上堵住编造；{2,100+ 条自动化测试}通过后才自动部署。",
+                    "{一个人架构、开发并上线的 AI 求职工作流平台}。自研 {Hermes Agent 本地网关}做 API 编排——由候选人自有模型完成生成、服务端零模型密钥；技能按索引选取、再过{确定性校验闸}，从机制上堵住编造；{2,100+ 条自动化测试}通过后才自动部署。",
                 // 与上面的 description 分工:description 讲机制,outcomes 讲
                 // 产品闭环与上线证据,三条各说一件事,不重复同一个数字。
                 outcomes: [

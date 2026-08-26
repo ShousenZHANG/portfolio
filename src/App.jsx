@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import CustomCursor from "./components/CustomCursor.jsx";
 import InteractiveBackground from "./components/InteractiveBackground.jsx";
 import SiteReveal from "./components/SiteReveal.jsx";
+import CertBar from "./components/CertBar.jsx";
 import { useSmoothScroll } from "./hooks/useSmoothScroll.js";
 import { prefersReducedMotion } from "./lib/motion.js";
 import { dict } from "./i18n/index.js";
@@ -180,6 +181,7 @@ const App = () => {
                 without it focus() is a no-op and Tab falls back to the navbar. */}
             <main id="main-content" tabIndex={-1}>
                 <Hero />
+                <CertBar />
                 <JDQuickCheck />
                 <LogoSection />
                 <Experience />

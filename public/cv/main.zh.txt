@@ -1,9 +1,6 @@
 张守森 Shousen Zhang
-AI 应用工程师 | 企业级 Agent 0 到 1 落地,大模型输出可验证
+AI 应用工程师 | 企业级 Agent 0 到 1 落地
 (+86) 173 6813 9916 | 17368139916@163.com | github.com/ShousenZHANG | eddyzhang.me
-
-个人优势
-AI 应用工程师,做企业内部 Agent 的 0 到 1 落地。在澳洲顶级律所任技术负责人,主导可信知识管理 Agent,打通五个异构平台,让每条答案可回溯至原始文档;另交付每日值守 Agent Flow,替代约 30 分钟/天的人工排查。两个 Copilot Studio Agent 有 10+ 名员工日常使用,经 RAG 与 MCP 锚定权威文档而非依赖模型记忆。UNSW 信息技术硕士,专业前 10%,中英双语。
 
 工作经历
 
@@ -36,18 +33,19 @@ AI 工程师 | Stepping Stone House(澳大利亚非营利机构)| 澳大利亚 �
 
 Joblit — AI 求职工作流平台 | 独立开发 | 开源 | 已上线运行 | Next.js / TypeScript / PostgreSQL | joblit.tech | 2025.07 – 至今
 - 产品闭环:自动抓取岗位并解析 JD 需求,过滤掉不匹配的岗位;再由大模型结合岗位描述定制简历摘要与技能排序,一键渲染 LaTeX 导出可投递 PDF,把单个岗位的定制投递从半小时压到几分钟。
-- AI 设计:技能由模型按索引从候选人自有技能库中选取,只返回位置编号而不返回技能名;生成内容再过确定性校验闸,数字与技能须在原始档案中可查证,从机制上杜绝模型编造不存在的经历。
+- AI 设计:自研 Hermes Agent 本地网关与 API 编排,由候选人自有模型完成生成、服务端零模型密钥;技能由模型按索引从自有技能库中选取,只返回位置编号而不返回技能名,再经确定性校验闸查证,从机制上杜绝模型编造不存在的经历。
 - 上线与工程:独立完成全栈开发,自建 GitHub Actions CI/CD 流水线,2,100+ 自动化测试通过后自动部署至云端;项目已开源上线,有真实用户在用。
 
 项目竞赛管理平台 | Java / Spring Cloud / RabbitMQ / MySQL | 澳洲高校编程大赛亚军 | 2025.02 – 2025.06
 - Spring Cloud 微服务后端,OAuth2 / JWT 鉴权,RabbitMQ 事件驱动跨服务通知,JUnit 测试与 Docker CI/CD 部署。
 
 教育经历
-新南威尔士大学(UNSW)| 信息技术硕士 | 专业前 10%,优秀毕业生,超额修读提前毕业 | 2023.09 – 2025.06
-江苏科技大学苏州理工学院 | 工学学士 | 2016.09 – 2020.06
+新南威尔士大学(UNSW)| 信息技术硕士 | QS 世界前 20 · 专业前 10% · 优秀毕业生 · 超额修读提前毕业 | 澳大利亚 悉尼 | 2023.09 – 2025.06
+江苏科技大学苏州理工学院 | 工学学士 | 中国 苏州 | 2016.09 – 2020.06
 
 证书与认证
-Microsoft Certified: AI Agent Builder Associate | Microsoft
+Microsoft Certified: AI Agent Builder Associate | 微软 AI Agent 开发认证
+Claude Certified Architect - Foundations | Anthropic Claude 架构师认证
 
 专业技能
 - Agent 与大模型应用:Copilot Studio(Agents / Flows / Skills)、RAG 检索增强生成、Model Context Protocol(MCP)、大模型编排、提示词与上下文工程、Agent Harness 运行框架设计、Loop Engineering 循环控制与终止策略、AI 输出校验与可溯源设计

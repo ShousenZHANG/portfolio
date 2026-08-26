@@ -93,6 +93,27 @@ export const en = {
         ],
     },
 
+    // Certification strip — sits right under the counter tiles, above the JD
+    // matcher. The verify hrefs are locale data like the CV pair: same URLs on
+    // both pages today, but the slot exists so either side can diverge.
+    certs: {
+        eyebrow: "Certifications",
+        listAria: "Professional certifications",
+        verify: "Verify",
+        items: [
+            {
+                name: "Microsoft Certified: AI Agent Builder Associate",
+                issuer: "Microsoft",
+                href: "https://learn.microsoft.com/api/credentials/share/en-au/EddyZhang-6413/5756621B66C96460?sharingId=D0B50DD46044F2FC",
+            },
+            {
+                name: "Claude Certified Architect — Foundations",
+                issuer: "Anthropic",
+                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+            },
+        ],
+    },
+
     jd: {
         title: "Match a JD against my CV",
         sub: "01 / Live AI Demo",
@@ -208,17 +229,17 @@ export const en = {
                 date: "Mar 2026 – Jul 2026",
                 responsibilities: [
                     "Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.",
+                    "Engineered reusable agent Skills shared across the firm’s Copilot Studio agents, consolidating retrieval logic so each query loads only the context it needs rather than the full knowledge set.",
                     "Delivered and piloted the agent across five platforms — ServiceNow, SharePoint, Loop, NetDocs and Intapp — letting staff query trusted knowledge and submit articles through an AI-assisted review flow.",
                     "Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team — replacing ~30 minutes of daily manual triage.",
                     "Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.",
-                    "Engineered reusable agent Skills that raised answer accuracy while cutting per-query Copilot Credit cost across the firm's Copilot Studio agents.",
                 ],
             },
             {
                 title: "Master of Information Technology — UNSW Sydney",
                 date: "Sep 2023 – Jun 2025",
                 responsibilities: [
-                    "Graduated with Excellence Honours (WAM 82.4/100).",
+                    "Graduated with WAM 82.4/100 — Award Level: Excellence.",
                     "Built the backend of the Coding Fest 2025 runner-up project — a Spring Cloud microservices competition platform.",
                             ],
             },
@@ -227,7 +248,6 @@ export const en = {
                 date: "Aug 2022 – Apr 2023",
                 responsibilities: [
                     "Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.",
-                    "Containerised services with Docker and ran CI/CD pipelines on Linux for repeatable releases.",
                 ],
             },
         ],
@@ -255,9 +275,9 @@ export const en = {
                 description:
                     "A {local-first AI job platform, architected and shipped solo} — versioned prompt contracts, strict Zod validation of any LLM's JSON, and {no server-side model keys}, backed by {2,100+ automated tests} across five CI gates.",
                 outcomes: [
-                    "Evidence ledger: deterministic gate that blocks unsupported AI claims before publication",
-                    "ATS PDF validator enforcing page, text-layer and keyword-coverage rules",
+                    "Deterministic guardrails: skills are chosen by index into the candidate’s own profile — the model returns integer positions and cannot name a skill the profile does not carry",
                     "Any-LLM JSON is Zod-validated against versioned prompt contracts — no silent drift",
+                    "Local-first by design — no server-side model keys; generation runs on the candidate’s own model",
                 ],
             },
             {

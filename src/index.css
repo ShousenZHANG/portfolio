@@ -69,6 +69,57 @@
     --sp-gutter: clamp(1.25rem, 0.5rem + 3vw, 5rem);      /* page side gutter */
 }
 
+/* ── Certification strip — two verifiable credentials under the counters ── */
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--r-md);
+  background: var(--ink-1);
+}
+.cert-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  color: var(--sig);
+  background: var(--sig-glow);
+  border: 1px solid var(--sig-line);
+}
+.cert-name {
+  display: block;
+  color: var(--tx-0);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+.cert-issuer {
+  display: block;
+  margin-top: 2px;
+  color: var(--tx-2);
+  font-size: 0.8rem;
+}
+/* Same quiet mono voice as the eyebrows; warms to the signature on hover so
+   the whole card reads as one link, which it is. */
+.cert-verify {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tx-2);
+  transition: color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cert-card:hover .cert-verify { color: var(--sig); }
+}
+
 /* ── Legacy-engine fallback (WeChat XWeb, pre-Chromium-111 WebViews) ──
    oklch() and color-mix() land in Chrome 111/113; an engine that predates
    them DROPS the declaration, which for `color` on `background-color` means

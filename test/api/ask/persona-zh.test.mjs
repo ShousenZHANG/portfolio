@@ -40,6 +40,11 @@ test('no style shot claims more than the CV supports', () => {
   assert.ok(!/两家公司.*10\+/s.test(answers), 'the 10+ figure belongs to one employer');
 });
 
+test('zh persona carries both verifiable credentials', () => {
+  assert.ok(PERSONA_ZH.includes('Microsoft Certified: AI Agent Builder Associate'));
+  assert.ok(PERSONA_ZH.includes('Claude Certified Architect'));
+});
+
 test('zh persona forbids inventing the known unknowns', () => {
   assert.ok(/不许编造/.test(PERSONA_ZH));
   assert.ok(/期望薪资/.test(PERSONA_ZH));

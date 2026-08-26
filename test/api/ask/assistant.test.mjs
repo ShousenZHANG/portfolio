@@ -23,6 +23,8 @@ test('persona contains the load-bearing facts', () => {
   assert.ok(PERSONA.includes('Stepping Stone House'), 'current role');
   assert.ok(PERSONA.includes('Copilot Studio'), 'core skill');
   assert.ok(PERSONA.includes('eddy.zhang24@gmail.com'), 'contact');
+  assert.ok(PERSONA.includes('Microsoft Certified: AI Agent Builder Associate'), 'MS credential');
+  assert.ok(PERSONA.includes('Claude Certified Architect'), 'Anthropic credential');
 });
 
 test('persona forbids inventing the known unknowns', () => {
