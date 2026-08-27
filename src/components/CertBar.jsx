@@ -13,18 +13,23 @@ import { prefersReducedMotion } from "../lib/motion.js";
  * (Microsoft's Associate hexagon, the Credly-hosted Anthropic medallion),
  * vendored same-origin.
  *
- * The entrance is ONE timeline on ONE ScrollTrigger. The first cut ran a
- * section-level fade and a per-badge flip as separate triggers firing the
- * same instant — a parent animating opacity re-composites its whole subtree
- * every frame, with two 3D rotations inside it, both badges in lockstep. It
- * visibly hitched. Now: cards rise staggered, badges flip staggered inside
- * them, all sequenced in a single timeline, will-change held only while it
- * plays.
+ * The entrance is ONE timeline on ONE ScrollTrigger — an earlier cut ran a
+ * section-level fade and per-badge animations as separate triggers firing
+ * the same instant, and a parent animating opacity re-composites its whole
+ * subtree every frame. will-change is held only while the timeline plays.
  *
- * The badge's depth shadow is a STATIC pseudo-element, not drop-shadow().
- * A filter on an element under 3D rotation re-rasterises every frame — that
- * was the biggest single cost in the hitch. An ellipse under the badge is
- * painted once and never again.
+ * The entrance is a STAMP, not a flip. A flat badge image rotated through
+ * a large Y angle spends its first frames as a sliver — "half a badge" — and
+ * no easing hides that; it is inherent to rotating a plane you view edge-on.
+ * A credential's native gesture is being stamped anyway: the badge drops in
+ * from slightly above at ~1.6x with a touch of rotation, lands with a small
+ * overshoot, and its shadow contracts from wide-and-faint to tight as it
+ * touches down. The art stays face-on for every frame, and scale/y/opacity
+ * are pure compositor properties — cheaper than 3D rotation ever was.
+ *
+ * The shadow is a real <span>, not a pseudo-element, because GSAP animates
+ * elements only — and it must move with the landing. No filter anywhere near
+ * the animation: drop-shadow() under transform re-rasterises per frame.
  */
 const CertCard = ({ cert, verifyLabel }) => {
     const tiltRef = useTilt(6);
@@ -37,6 +42,7 @@ const CertCard = ({ cert, verifyLabel }) => {
             className="ed-tile cert-card"
         >
             <span className="cert-badge" aria-hidden="true">
+                <span className="cert-badge-shadow" />
                 {/* Decorative: the credential's name sits right beside it. */}
                 <img src={cert.badge} alt="" width={64} height={64} loading="lazy" decoding="async" />
             </span>
@@ -61,18 +67,21 @@ const CertBar = () => {
         if (!root) return;
         const eyebrow = root.querySelector(".ed-eyebrow");
         const cards = root.querySelectorAll(".cert-card");
-        const badges = root.querySelectorAll(".cert-badge");
+        const imgs = root.querySelectorAll(".cert-badge img");
+        const shadows = root.querySelectorAll(".cert-badge-shadow");
 
         if (prefersReducedMotion()) {
-            gsap.set([eyebrow, ...cards, ...badges], { opacity: 1, y: 0, rotationY: 0 });
+            gsap.set([eyebrow, ...cards, ...imgs, ...shadows], {
+                opacity: 1, y: 0, scale: 1, rotation: 0,
+            });
             return;
         }
 
         const tl = gsap.timeline({
             defaults: { ease: "power3.out" },
             scrollTrigger: { trigger: root, start: "top 85%", once: true },
-            onStart: () => gsap.set([...cards, ...badges], { willChange: "transform" }),
-            onComplete: () => gsap.set([...cards, ...badges], { willChange: "auto" }),
+            onStart: () => gsap.set([...cards, ...imgs], { willChange: "transform" }),
+            onComplete: () => gsap.set([...cards, ...imgs], { willChange: "auto" }),
         });
         tl.fromTo(eyebrow, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 })
             .fromTo(
@@ -81,13 +90,25 @@ const CertBar = () => {
                 { opacity: 1, y: 0, duration: 0.55, stagger: 0.12 },
                 "-=0.25"
             )
+            // The stamp: in from above at 1.6x with a hint of wrist-turn,
+            // landing with a small overshoot. back.out overshoots scale AND
+            // rotation together, which is what sells the "pressed in" read.
             .fromTo(
-                badges,
-                { rotationY: -85, transformPerspective: 500 },
-                { rotationY: 0, duration: 0.75, stagger: 0.12 },
-                // Start once its card is essentially opaque — flipping inside a
-                // still-fading parent re-composites the whole card per frame.
-                "-=0.15"
+                imgs,
+                { opacity: 0, scale: 1.6, y: -12, rotation: -8 },
+                {
+                    opacity: 1, scale: 1, y: 0, rotation: 0,
+                    duration: 0.55, ease: "back.out(2.4)", stagger: 0.14,
+                },
+                "-=0.2"
+            )
+            // The shadow contracts as the badge touches down — wide and faint
+            // while it is "airborne", tight when it lands.
+            .fromTo(
+                shadows,
+                { opacity: 0, scale: 1.7 },
+                { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out", stagger: 0.14 },
+                "<0.1"
             );
     }, { scope: sectionRef });
 

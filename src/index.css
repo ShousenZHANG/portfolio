@@ -90,8 +90,9 @@
   width: 64px;
   height: 64px;
 }
-.cert-badge::after {
-  content: "";
+/* A real span, not ::after — the landing animation contracts it, and GSAP
+   animates elements only. Same paint either way. */
+.cert-badge-shadow {
   position: absolute;
   left: 12%;
   right: 12%;
@@ -174,7 +175,7 @@
         .navbar.not-scrolled .navbar-inner { background: rgba(7, 8, 14, 0.72); }
         .navbar.scrolled .navbar-inner { background: rgba(7, 8, 14, 0.92); }
     }
-    .cert-badge::after { background: radial-gradient(ellipse at center, rgba(125, 127, 255, 0.28) 0%, transparent 70%); }
+    .cert-badge-shadow { background: radial-gradient(ellipse at center, rgba(125, 127, 255, 0.28) 0%, transparent 70%); }
 }
 
 html,
