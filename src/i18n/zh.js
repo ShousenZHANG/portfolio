@@ -125,11 +125,13 @@ export const zh = {
             {
                 name: "Microsoft Certified: AI Agent Builder Associate",
                 issuer: "微软 AI Agent 开发认证",
+                badge: "/certs/microsoft-certified-associate.svg",
                 href: "https://learn.microsoft.com/api/credentials/share/en-au/EddyZhang-6413/5756621B66C96460?sharingId=D0B50DD46044F2FC",
             },
             {
                 name: "Claude Certified Architect — Foundations",
                 issuer: "Anthropic Claude 架构师认证",
+                badge: "/certs/claude-architect-foundations.png",
                 href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
             },
         ],

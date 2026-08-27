@@ -78,17 +78,20 @@
   border-radius: var(--r-md);
   background: var(--ink-1);
 }
+/* The official badge art needs no frame — Microsoft's hexagon and the Credly
+   medallion ARE the shape. A soft signature-tinted drop shadow lifts them off
+   the ink instead; drop-shadow follows the art's alpha, not the box. */
 .cert-badge {
   flex: none;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-sm);
-  color: var(--sig);
-  background: var(--sig-glow);
-  border: 1px solid var(--sig-line);
+  width: 64px;
+  height: 64px;
+}
+.cert-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px oklch(0.66 0.19 279 / 0.22));
 }
 .cert-name {
   display: block;
@@ -158,6 +161,7 @@
         .navbar.not-scrolled .navbar-inner { background: rgba(7, 8, 14, 0.72); }
         .navbar.scrolled .navbar-inner { background: rgba(7, 8, 14, 0.92); }
     }
+    .cert-badge img { filter: drop-shadow(0 6px 16px rgba(125, 127, 255, 0.22)); }
 }
 
 html,
