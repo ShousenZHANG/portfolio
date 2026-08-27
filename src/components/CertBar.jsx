@@ -3,57 +3,31 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 import { dict } from "../i18n/index.js";
-import { useScrollReveal } from "../hooks/useScrollReveal";
 import { useTilt } from "../hooks/useTilt.js";
 import { prefersReducedMotion } from "../lib/motion.js";
 
 /**
  * Certification strip — two vendor credentials, directly under the counter
- * tiles so they land inside the first meaningful scroll. Each card IS the
- * verify link (the whole tile is the target, not a small trailing anchor):
- * a credential a recruiter cannot check in one click may as well be a claim,
- * and both issuers host a public verification page.
+ * tiles. Each card IS the verify link: a credential a recruiter cannot check
+ * in one click may as well be a claim. The badge art is the issuers' own
+ * (Microsoft's Associate hexagon, the Credly-hosted Anthropic medallion),
+ * vendored same-origin.
  *
- * The badge art is the ISSUERS' OWN — Microsoft's Associate badge and the
- * Credly-hosted Anthropic badge, vendored same-origin (Credly/MS Learn are
- * reachable from the mainland, but same-origin is faster everywhere and the
- * CSP's img-src is 'self'). Official art is the whole point: a recruiter
- * recognises these shapes, and no hand-drawn "badge" carries that.
+ * The entrance is ONE timeline on ONE ScrollTrigger. The first cut ran a
+ * section-level fade and a per-badge flip as separate triggers firing the
+ * same instant — a parent animating opacity re-composites its whole subtree
+ * every frame, with two 3D rotations inside it, both badges in lockstep. It
+ * visibly hitched. Now: cards rise staggered, badges flip staggered inside
+ * them, all sequenced in a single timeline, will-change held only while it
+ * plays.
  *
- * The 3D is deliberately faux. A real WebGL badge was tried elsewhere on this
- * site once and deleted — jank on integrated GPUs, dead weight in WeChat's
- * WebView. Here: the badge flips in once on scroll (GSAP rotationY, once) and
- * the card tilts under a fine pointer (useTilt — the same physics the counter
- * tiles have), with the existing .sheen sweep for the metallic pass. All
- * compositor-only, all gated, nothing runs at rest.
+ * The badge's depth shadow is a STATIC pseudo-element, not drop-shadow().
+ * A filter on an element under 3D rotation re-rasterises every frame — that
+ * was the biggest single cost in the hitch. An ellipse under the badge is
+ * painted once and never again.
  */
 const CertCard = ({ cert, verifyLabel }) => {
     const tiltRef = useTilt(6);
-    const badgeRef = useRef(null);
-
-    useGSAP(() => {
-        const el = badgeRef.current;
-        if (!el) return;
-        if (prefersReducedMotion()) {
-            gsap.set(el, { opacity: 1, rotationY: 0 });
-            return;
-        }
-        gsap.fromTo(
-            el,
-            { opacity: 0, rotationY: -85, transformPerspective: 600 },
-            {
-                opacity: 1,
-                rotationY: 0,
-                duration: 0.9,
-                ease: "power3.out",
-                // Promote only while the one-shot flip runs.
-                onStart: () => gsap.set(el, { willChange: "transform" }),
-                onComplete: () => gsap.set(el, { willChange: "auto" }),
-                scrollTrigger: { trigger: el, start: "top 88%", once: true },
-            }
-        );
-    }, []);
-
     return (
         <a
             ref={tiltRef}
@@ -62,7 +36,7 @@ const CertCard = ({ cert, verifyLabel }) => {
             rel="noopener noreferrer"
             className="ed-tile cert-card"
         >
-            <span className="cert-badge" ref={badgeRef} aria-hidden="true">
+            <span className="cert-badge" aria-hidden="true">
                 {/* Decorative: the credential's name sits right beside it. */}
                 <img src={cert.badge} alt="" width={64} height={64} loading="lazy" decoding="async" />
             </span>
@@ -80,7 +54,42 @@ const CertCard = ({ cert, verifyLabel }) => {
 };
 
 const CertBar = () => {
-    const sectionRef = useScrollReveal({ y: 24, duration: 0.7 });
+    const sectionRef = useRef(null);
+
+    useGSAP(() => {
+        const root = sectionRef.current;
+        if (!root) return;
+        const eyebrow = root.querySelector(".ed-eyebrow");
+        const cards = root.querySelectorAll(".cert-card");
+        const badges = root.querySelectorAll(".cert-badge");
+
+        if (prefersReducedMotion()) {
+            gsap.set([eyebrow, ...cards, ...badges], { opacity: 1, y: 0, rotationY: 0 });
+            return;
+        }
+
+        const tl = gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: { trigger: root, start: "top 85%", once: true },
+            onStart: () => gsap.set([...cards, ...badges], { willChange: "transform" }),
+            onComplete: () => gsap.set([...cards, ...badges], { willChange: "auto" }),
+        });
+        tl.fromTo(eyebrow, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 })
+            .fromTo(
+                cards,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.55, stagger: 0.12 },
+                "-=0.25"
+            )
+            .fromTo(
+                badges,
+                { rotationY: -85, transformPerspective: 500 },
+                { rotationY: 0, duration: 0.75, stagger: 0.12 },
+                // Start once its card is essentially opaque — flipping inside a
+                // still-fading parent re-composites the whole card per frame.
+                "-=0.15"
+            );
+    }, { scope: sectionRef });
 
     return (
         <section
