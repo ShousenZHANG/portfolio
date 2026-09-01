@@ -143,6 +143,11 @@ export const zh = {
     oss: {
         eyebrow: "开源贡献",
         listAria: "开源贡献",
+        // 身份写在页面上，而不是藏在链接的 ?author= 里：读者该在决定要不要
+        // 点进去之前就知道这些贡献是谁的，而且这就是页脚与联系方式里同一个
+        // GitHub 账号。
+        handle: "@ShousenZHANG",
+        handleHref: "https://github.com/ShousenZHANG",
         merged: (n) => `${n} 个 PR 已合并`,
         stars: "star",
         items: [

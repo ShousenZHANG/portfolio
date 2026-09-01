@@ -124,6 +124,12 @@ export const en = {
     oss: {
         eyebrow: "Open Source",
         listAria: "Open-source contributions",
+        // The identity claim, stated on the page rather than left buried in
+        // the ?author= of a link. A reader should know whose contributions
+        // these are BEFORE deciding whether to click through — and it is the
+        // same handle the footer and contact rows already point at.
+        handle: "@ShousenZHANG",
+        handleHref: "https://github.com/ShousenZHANG",
         merged: (n) => `${n} PRs merged`,
         stars: "stars",
         items: [

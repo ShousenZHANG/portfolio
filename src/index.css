@@ -138,6 +138,25 @@
 }
 
 /* ── Open-source strip — merged upstream work, same band as the certs ── */
+.oss-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.oss-head-row .ed-eyebrow { margin-bottom: 0; }
+.oss-handle {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--tx-2);
+  transition: color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .oss-handle:hover { color: var(--sig); }
+}
+
 .oss-card {
   display: flex;
   align-items: flex-start;

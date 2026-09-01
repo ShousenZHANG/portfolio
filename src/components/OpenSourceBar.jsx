@@ -21,9 +21,15 @@ import { prefersReducedMotion } from "../lib/motion.js";
  * glyph so no sentence has to.
  *
  * Each card links to GitHub's own filtered list of HIS merged PRs in that
- * repo — the same self-verifying move the certification cards make. The mark
- * is vendored from /logos (already self-hosted for the marquee; jsDelivr is
- * unreliable from the mainland).
+ * repo — the same self-verifying move the certification cards make. Linking
+ * the evidence is not optional on a site whose headline claim is that model
+ * output should be verifiable; and anyone inclined to check would search the
+ * username anyway, so withholding it buys nothing and looks like it cost
+ * something. The card descriptions name the work exactly (refactors, typing
+ * gates, a splitter fix) so that clicking through confirms the claim instead
+ * of deflating it — the failure mode is an overclaiming card, not an honest
+ * link. The mark is vendored from /logos (already self-hosted for the
+ * marquee; jsDelivr is unreliable from the mainland).
  *
  * Entrance mirrors the certification stamp so the two bands read as one
  * system: cards rise staggered, then the star figure counts into place with a
@@ -113,7 +119,20 @@ const OpenSourceBar = () => {
             className="ed-shell pt-8 md:pt-10"
             aria-label={dict.oss.listAria}
         >
-            <p className="ed-eyebrow mb-4">{dict.oss.eyebrow}</p>
+            <div className="oss-head-row mb-4">
+                <p className="ed-eyebrow">{dict.oss.eyebrow}</p>
+                {/* Whose contributions these are, said out loud. The links
+                    below filter on this account; a reader should not have to
+                    read a URL to learn that. */}
+                <a
+                    className="oss-handle"
+                    href={dict.oss.handleHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {dict.oss.handle}
+                </a>
+            </div>
             <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
                 {dict.oss.items.map((item) => (
                     <OssCard
