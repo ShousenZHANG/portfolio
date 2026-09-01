@@ -123,16 +123,46 @@ export const zh = {
         verify: "验证",
         items: [
             {
+                name: "Claude Certified Architect — Foundations",
+                issuer: "Anthropic Claude 架构师认证",
+                badge: "/certs/claude-architect-foundations.png",
+                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+            },
+            {
                 name: "Microsoft Certified: AI Agent Builder Associate",
                 issuer: "微软 AI Agent 开发认证",
                 badge: "/certs/microsoft-certified-associate.svg",
                 href: "https://learn.microsoft.com/api/credentials/share/en-au/EddyZhang-6413/5756621B66C96460?sharingId=D0B50DD46044F2FC",
             },
+        ],
+    },
+
+    // 开源条带 —— 在证书条带之下。星数是量级证明，卡片直接链到 GitHub 上
+    // 「他本人已合并 PR」的筛选结果，和证书一样能自证。星数用简历里保守的
+    // 取整（写稿时 Dify 已 154k、Haystack 26k）——只会涨的数字不会写错。
+    oss: {
+        eyebrow: "开源贡献",
+        listAria: "开源贡献",
+        merged: (n) => `${n} 个 PR 已合并`,
+        stars: "star",
+        items: [
             {
-                name: "Claude Certified Architect — Foundations",
-                issuer: "Anthropic Claude 架构师认证",
-                badge: "/certs/claude-architect-foundations.png",
-                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+                repo: "langgenius/dify",
+                name: "Dify",
+                blurb: "Agentic 大模型平台",
+                stars: "150k+",
+                prs: 5,
+                work: "API 层的 Pydantic 依赖注入重构",
+                href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
+            },
+            {
+                repo: "deepset-ai/haystack",
+                name: "Haystack",
+                blurb: "RAG 编排框架",
+                stars: "25k+",
+                prs: 4,
+                work: "mypy 类型闸与文档切分器缺陷修复",
+                href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
         ],
     },
@@ -247,7 +277,7 @@ export const zh = {
         currentBadge: "在职",
         cards: [
             {
-                title: "AI 工程师 — Stepping Stone House",
+                title: "AI 工程师（志愿）— Stepping Stone House",
                 date: "2026.07 – 2026.08",
                 responsibilities: [
                     "上线两个 Copilot Studio Agent,10+ 名员工日常在用；答案经 MCP 锚定 SharePoint 权威文档，可回溯到原文，而不是靠模型记忆。",
@@ -256,7 +286,7 @@ export const zh = {
                 ],
             },
             {
-                title: "集成与自动化分析师 — Corrs Chambers Westgarth",
+                title: "集成与自动化分析师（合同制）— Corrs Chambers Westgarth",
                 date: "2026.03 – 2026.07",
                 responsibilities: [
                     "任技术负责人，0 到 1 主导可信知识管理 Agent：独立完成技术选型，设计 Dataverse 数据模型与知识入库工作流，让每条记录都带来源标识、每条答案都能回溯至原始文档。",
@@ -308,13 +338,13 @@ export const zh = {
                 // (对照下面那条:"以 {OAuth2 / JWT} 鉴权" 的边界是中西文,
                 // 空格必须写在花括号外面,否则会被算进高亮块里。)
                 description:
-                    "{一个人架构、开发并上线的 AI 求职工作流平台}。自研 {Hermes Agent 本地网关}做 API 编排——由候选人自有模型完成生成、服务端零模型密钥；技能按索引选取、再过{确定性校验闸}，从机制上堵住编造；{2,100+ 条自动化测试}通过后才自动部署。",
+                    "{一个人架构并上线的生产级 AI 求职平台}。用 {LangGraph 状态机}把「生成 → 校验 → 修复」显式编排，跑在本地 {Hermes Agent 边车}上；技能按索引选取形成确定性护栏；{2,100+ 条自动化测试}过五道 CI 闸后才部署。",
                 // 与上面的 description 分工:description 讲机制,outcomes 讲
                 // 产品闭环与上线证据,三条各说一件事,不重复同一个数字。
                 outcomes: [
-                    "自动抓取岗位、解析 JD 需求并过滤掉不匹配的，再按岗位定制简历摘要与技能排序",
-                    "一键渲染 LaTeX 导出可投递 PDF，单个岗位的定制投递从半小时压到几分钟",
-                    "自建 GitHub Actions 流水线，测试全绿才自动部署；项目已开源上线，有真实用户在用",
+                    "「生成 → 校验 → 修复」是一台显式的 LangGraph 状态机，不是一次「发出去就指望它对」的调用",
+                    "确定性索引护栏：模型只返回候选人自有档案里的位置编号，说不出档案里没有的技能",
+                    "本地 Hermes Agent 边车用候选人自己的模型生成，服务端不持有任何模型密钥",
                 ],
             },
             {

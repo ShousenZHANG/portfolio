@@ -137,6 +137,72 @@
   .cert-card:hover .cert-verify { color: var(--sig); }
 }
 
+/* ── Open-source strip — merged upstream work, same band as the certs ── */
+.oss-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--r-md);
+  background: var(--ink-1);
+}
+.oss-mark {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--ink-2);
+  border: 1px solid var(--hair);
+}
+/* The GitHub mark ships as its brand black; invert it onto the ink surface. */
+.oss-mark img { width: 22px; height: 22px; filter: invert(1); opacity: 0.85; }
+
+.oss-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.oss-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.oss-name { color: var(--tx-0); font-size: 0.95rem; font-weight: 600; }
+
+/* The number the card exists to deliver — the only signature-warm element. */
+.oss-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--warn);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+.oss-stars-label {
+  color: var(--tx-2);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.oss-work { color: var(--tx-1); font-size: 0.82rem; line-height: 1.5; }
+.oss-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  color: var(--tx-2);
+  font-size: 11px;
+}
+.oss-merged {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--sig);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  letter-spacing: 0.04em;
+}
+.oss-blurb::before { content: "·"; margin-right: 0.5rem; }
+.oss-go { flex: none; color: var(--tx-2); transition: color 0.2s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .oss-card:hover .oss-go { color: var(--sig); }
+}
+
 /* ── Legacy-engine fallback (WeChat XWeb, pre-Chromium-111 WebViews) ──
    oklch() and color-mix() land in Chrome 111/113; an engine that predates
    them DROPS the declaration, which for `color` on `background-color` means

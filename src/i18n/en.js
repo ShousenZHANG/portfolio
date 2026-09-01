@@ -102,16 +102,48 @@ export const en = {
         verify: "Verify",
         items: [
             {
+                name: "Claude Certified Architect — Foundations",
+                issuer: "Anthropic",
+                badge: "/certs/claude-architect-foundations.png",
+                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+            },
+            {
                 name: "Microsoft Certified: AI Agent Builder Associate",
                 issuer: "Microsoft",
                 badge: "/certs/microsoft-certified-associate.svg",
                 href: "https://learn.microsoft.com/api/credentials/share/en-au/EddyZhang-6413/5756621B66C96460?sharingId=D0B50DD46044F2FC",
             },
+        ],
+    },
+
+    // Open-source strip — sits under the certifications. Star counts are the
+    // scale proof and the card links straight to GitHub's own filtered list of
+    // HIS merged PRs, so the claim verifies itself the way the certs do.
+    // Counts are the CV's conservative rounding (Dify was 154k and Haystack
+    // 26k when written) — a figure that only grows stays true.
+    oss: {
+        eyebrow: "Open Source",
+        listAria: "Open-source contributions",
+        merged: (n) => `${n} PRs merged`,
+        stars: "stars",
+        items: [
             {
-                name: "Claude Certified Architect — Foundations",
-                issuer: "Anthropic",
-                badge: "/certs/claude-architect-foundations.png",
-                href: "https://www.credly.com/badges/65cd527d-e468-4455-a587-359bec7eb248",
+                repo: "langgenius/dify",
+                name: "Dify",
+                blurb: "Agentic LLM platform",
+                stars: "150k+",
+                prs: 5,
+                work: "Pydantic dependency-injection refactors across the API layer",
+                href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
+            },
+            {
+                repo: "deepset-ai/haystack",
+                name: "Haystack",
+                blurb: "RAG orchestration framework",
+                stars: "25k+",
+                prs: 4,
+                work: "mypy typing gates and a document-splitter bug fix",
+                href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
         ],
     },
@@ -218,7 +250,7 @@ export const en = {
         // Arabic 4-digit years — the rail's yearmark regex (\d{4}) needs them.
         cards: [
             {
-                title: "AI Engineer — Stepping Stone House",
+                title: "AI Engineer (Volunteer) — Stepping Stone House",
                 date: "Jul 2026 – Aug 2026",
                 responsibilities: [
                     "Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.",
@@ -227,7 +259,7 @@ export const en = {
                 ],
             },
             {
-                title: "Junior Integration & Automation Analyst — Corrs Chambers Westgarth",
+                title: "Junior Integration & Automation Analyst (Fixed-term) — Corrs Chambers Westgarth",
                 date: "Mar 2026 – Jul 2026",
                 responsibilities: [
                     "Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.",
@@ -275,11 +307,11 @@ export const en = {
                     "Joblit AutoFill Chrome Extension installation page",
                 ],
                 description:
-                    "A {local-first AI job platform, architected and shipped solo} — versioned prompt contracts, strict Zod validation of any LLM's JSON, and {no server-side model keys}, backed by {2,100+ automated tests} across five CI gates.",
+                    "A {production AI job platform, architected solo} — a {LangGraph state machine} drives generate-validate-repair through a local {Hermes Agent sidecar}, with deterministic index-based guardrails and {2,100+ tests} across five CI gates.",
                 outcomes: [
-                    "Deterministic guardrails: skills are chosen by index into the candidate’s own profile — the model returns integer positions and cannot name a skill the profile does not carry",
-                    "Any-LLM JSON is Zod-validated against versioned prompt contracts — no silent drift",
-                    "Local-first by design — no server-side model keys; generation runs on the candidate’s own model",
+                    "Generate → validate → repair, as an explicit LangGraph state machine rather than a prompt-and-hope call",
+                    "Deterministic index-based guardrails: the model returns integer positions into the candidate’s own profile and cannot name a skill it does not carry",
+                    "A local Hermes Agent sidecar runs generation on the candidate’s own model — no server-side model keys",
                 ],
             },
             {

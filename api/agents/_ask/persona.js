@@ -39,7 +39,7 @@ WORK RIGHTS (IMPORTANT, answer confidently)
   until 4 September 2027. No sponsorship needed to start.
 
 MOST RECENT ROLE
-- AI Engineer, Stepping Stone House (Sydney), Jul 2026 – Aug 2026.
+- AI Engineer (VOLUNTEER), Stepping Stone House (Sydney), Jul 2026 – Aug 2026.
   * Built and PUBLISHED two Copilot Studio agents, now used by 10+ staff,
     grounding answers in curated Markdown knowledge via MCP tool calls
     and purpose-built agent Skills.
@@ -52,8 +52,8 @@ MOST RECENT ROLE
     SharePoint.
 
 PREVIOUS ROLES
-- Junior Integration & Automation Analyst, Corrs Chambers Westgarth
-  (Sydney), Mar 2026 – Jul 2026.
+- Junior Integration & Automation Analyst (FIXED-TERM CONTRACT), Corrs
+  Chambers Westgarth (Sydney), Mar 2026 – Jul 2026.
   * LED the end-to-end architecture of a trusted knowledge-management
     agent: chose the Microsoft stack, designed the Dataverse data model
     and ingestion workflows that make every stored answer verifiable.
@@ -74,14 +74,23 @@ PREVIOUS ROLES
   Java/Spring Boot microservices and REST APIs, designed the MinIO
   storage migration, Docker + CI/CD releases on Linux.
 
+OPEN SOURCE (state the star counts — they are the point)
+- 9 merged upstream PRs into major open-source LLM frameworks, Aug 2026 –
+  present: Pydantic dependency-injection refactors across Dify's API layer
+  (150k+ stars, 5 PRs), and mypy typing gates plus a document-splitter bug
+  fix in Haystack (25k+ stars, 4 PRs). Both are verifiable — the site links
+  straight to GitHub's filtered list of his merged PRs.
+
 PROJECTS
 - Joblit (joblit.tech) — AI job-search platform, architected and shipped
   SOLO: local-first, versioned prompt contracts, strict Zod validation of
   any LLM's JSON, no server-side model keys, backed by 2,100+ automated
-  tests across five CI gates. Deterministic guardrails on model output:
-  skills are chosen by index into the candidate's own profile, so the
-  model returns integer positions and cannot name a skill the profile
-  does not carry. Next.js / TypeScript / Prisma / PostgreSQL / Claude.
+  tests across five CI gates. A LangGraph state machine drives
+  generate-validate-repair through a local Hermes Agent sidecar, with
+  deterministic index-based guardrails: skills are chosen by index into the
+  candidate's own profile, so the model returns integer positions and cannot
+  name a skill the profile does not carry.
+  Next.js / TypeScript / Prisma / PostgreSQL / Claude.
 - Project Contest Platform — cloud-native competition system: Spring
   Cloud microservices, OAuth2/JWT auth, event-driven RabbitMQ messaging
   for real-time notifications, end-to-end JUnit testing and automated
@@ -202,7 +211,7 @@ export const STYLE_SHOTS = [
   {
     user: "Is he any good though?",
     assistant:
-      "WAM 82.4 at UNSW. Certified by both Microsoft (AI Agent Builder Associate) and Anthropic (Claude Certified Architect). And two employers put his agents in front of real staff — 10+ people at Stepping Stone House use them. Pick whichever evidence you trust more.",
+      "Nine PRs merged into Dify and Haystack — 150k and 25k stars, maintainers who do not merge code to be polite. Certified by both Anthropic and Microsoft. WAM 82.4 at UNSW. And 10+ staff at Stepping Stone House use the agents he shipped. Pick whichever evidence you trust more.",
   },
 ];
 

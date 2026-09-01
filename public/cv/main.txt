@@ -7,14 +7,14 @@ AI engineer building production LLM agents. Grounded knowledge agent across five
 
 Professional Experience
 
-Junior Integration & Automation Analyst | Corrs Chambers Westgarth | Sydney, Australia | Mar 2026 - Jul 2026
+Junior Integration & Automation Analyst (Fixed-term Contract) | Corrs Chambers Westgarth | Sydney, Australia | Mar 2026 - Jul 2026
 - Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.
 - Engineered reusable agent Skills shared across the firm's Copilot Studio agents, consolidating retrieval logic so each query loads only the context it needs rather than the full knowledge set.
 - Delivered and piloted the agent across five platforms - ServiceNow, SharePoint, Loop, NetDocs and Intapp - letting staff query trusted knowledge and submit articles through an AI-assisted review flow.
 - Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team - replacing ~30 minutes of daily manual triage.
 - Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.
 
-AI Engineer | Stepping Stone House | Sydney, Australia | Jul 2026 - Aug 2026
+AI Engineer (Volunteer) | Stepping Stone House | Sydney, Australia | Jul 2026 - Aug 2026
 - Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.
 - Built a C#/Python desktop tool converting 15+ document, audio and web formats into agent-ready Markdown via MarkItDown, faster-whisper and Playwright, powering the agents' curated knowledge base.
 - Automated audit archiving of Teams AI meeting notes: a weekly Power Automate workflow pulls ~10 meetings' notes via the Microsoft Graph meeting AI insights API, converts them to Word and files them in SharePoint.
@@ -22,25 +22,26 @@ AI Engineer | Stepping Stone House | Sydney, Australia | Jul 2026 - Aug 2026
 Software Engineer | Newtouch Software Co., Ltd. | Shanghai, China | Aug 2022 - Apr 2023
 - Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.
 
-Projects
+Projects & Open Source
+
+Open Source Contributions - Dify & Haystack | Agentic LLM & RAG platforms | Aug 2026 - Present
+- Merged 9 upstream PRs into major open-source LLM frameworks: Pydantic dependency-injection refactors across Dify's API layer (150k+ stars); mypy typing gates and a document-splitter bug fix in Haystack (25k+ stars).
 
 Joblit - AI Job Search Platform | Next.js, TypeScript, Prisma, PostgreSQL, Claude | joblit.tech | Jul 2025 - Present
-- Architected and shipped a local-first AI platform solo: versioned prompt contracts, strict Zod validation of any LLM's JSON, no server-side model keys, backed by 2,100+ automated tests across five CI gates.
-- Built deterministic guardrails on model output: skills are chosen by index into the candidate's own profile, so the model returns integer positions and cannot name a skill the profile does not carry.
+- Architected a production AI platform solo: a LangGraph state machine drives generate-validate-repair through a local Hermes Agent sidecar, with deterministic index-based guardrails and 2,100+ tests across five CI gates.
 
 Project Contest Platform | Java, MySQL, RabbitMQ, Docker, AWS | Runner-up, Coding Fest 2025 | Feb 2025 - Jun 2025
-- Built backend microservices with Spring Cloud and secured authentication with OAuth2/JWT; event-driven messaging via RabbitMQ powers real-time notifications across services.
-- Delivered end-to-end JUnit testing and automated Docker CI/CD deployment across services.
+- Built Spring Cloud backend microservices with OAuth2/JWT authentication and RabbitMQ event-driven notifications; delivered end-to-end JUnit testing and automated Docker CI/CD across services.
 
 Skills
-AI & Agents: RAG, Model Context Protocol (MCP), LLM Orchestration, Prompt & Context Engineering
+AI & Agents: RAG, MCP, LLM Orchestration, Prompt & Context Engineering, LLM Evaluation & Guardrails
 Microsoft & Power Platform: Copilot Studio (Agents, Flows, Skills), Power Automate, Power Apps, Dataverse
-Engineering & Cloud: Java, Spring Boot, Python, TypeScript, React, Next.js, Azure, AWS, Docker, GitHub Actions
-Integration & Data: Boomi, ServiceNow, Dataverse Data Modelling, REST APIs, SQL, Playwright
+Engineering & Cloud: Python, TypeScript, Java, Spring Boot, React, Next.js, Azure, AWS, Docker, GitHub Actions
+Integration & Data: Boomi, ServiceNow, Dataverse Data Modelling, REST APIs, SQL, PostgreSQL, Playwright
 
 Certifications
-Microsoft Certified: AI Agent Builder Associate
 Claude Certified Architect - Foundations (Anthropic)
+Microsoft Certified: AI Agent Builder Associate
 
 Education
 University of New South Wales - Master of Information Technology | Sydney, Australia | Sep 2023 - Jun 2025
