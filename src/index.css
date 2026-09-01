@@ -499,6 +499,12 @@ section {
         right: 0;
         height: 2px;
         transform-origin: left center;
+        /* Earns its layer for the same reason .navbar-indicator does: JS writes
+           scaleX here on every scrolled frame of the whole visit. It cannot
+           coast on the free layer a fixed element usually gets, because
+           .navbar carries a transform and is therefore its containing block —
+           without this the per-frame write repaints into the navbar's chunk. */
+        will-change: transform;
         background: linear-gradient(90deg, var(--sig), var(--sig-2));
         z-index: 200;
         opacity: 0.9;

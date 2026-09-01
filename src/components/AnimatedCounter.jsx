@@ -75,9 +75,12 @@ const AnimatedCounter = () => {
         duration: 0.8,
         stagger: 0.12,
         ease: "power3.out",
+        // See TitleHeader: play-forward only, so `once` costs nothing
+        // visually and retires the trigger once the tiles are past.
         scrollTrigger: {
           trigger: "#counter",
           start: "top 80%",
+          once: true,
         },
       }
     );

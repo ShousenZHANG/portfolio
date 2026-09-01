@@ -104,13 +104,24 @@ const ShowcaseSection = lazy(() => import("./sections/ShowcaseSection.jsx"));
 const Contact = lazy(() => import("./sections/Contact.jsx"));
 const EDPanel = lazy(() => import("./components/EDPanel.jsx"));
 
-// Warm the heavy chunks during idle time after first paint, so by the
-// time the user scrolls to a lazy section the JS is already cached and
-// the Suspense fallback never flashes. Browser-default scheduling (no
-// network races): runs at low priority, yields to user input.
-const prefetchLazyChunks = () => {
-    import("./sections/ShowcaseSection.jsx");
-    import("./sections/Contact.jsx");
+// Warm the heavy chunks after first paint, so by the time the user scrolls to
+// a lazy section the JS is already cached and the Suspense fallback never
+// flashes.
+//
+// Awaited one at a time on purpose. Firing all three at once put every module
+// evaluation into a single task, and it landed inside the same task as
+// ScrollTrigger's global refresh on window `load` — one 72ms block during
+// which a click or keypress just waits. Awaiting yields the thread between
+// each, so the longest task is one module instead of three.
+//
+// EDPanel is in the list because it is the one lazy chunk reached by a
+// deliberate click rather than by scrolling, and its Suspense fallback is
+// null — an un-warmed chunk means the orb does nothing at all until the
+// network answers.
+const prefetchLazyChunks = async () => {
+    await import("./sections/ShowcaseSection.jsx");
+    await import("./sections/Contact.jsx");
+    await import("./components/EDPanel.jsx");
 };
 
 const SectionLoader = ({ label = dict.misc.sectionLoader }) => (
@@ -160,8 +171,19 @@ const App = () => {
             typeof window !== "undefined" && "requestIdleCallback" in window
                 ? window.requestIdleCallback
                 : (cb) => window.setTimeout(cb, 1500);
-        const handle = schedule(prefetchLazyChunks, { timeout: 4000 });
+
+        // Hop a macrotask before even asking for idle time. requestIdleCallback
+        // can be served inside the tail of the `load` task, which is where
+        // ScrollTrigger runs its global refresh — the prefetch then piles onto
+        // a task that is already long. setTimeout(0) puts this after that task
+        // has drained, and idle scheduling takes over from there.
+        let handle = 0;
+        const kick = () => { handle = schedule(prefetchLazyChunks, { timeout: 4000 }); };
+        const hop = window.setTimeout(kick, 0);
+
         return () => {
+            window.clearTimeout(hop);
+            if (!handle) return;
             if (typeof window !== "undefined" && "cancelIdleCallback" in window) {
                 window.cancelIdleCallback?.(handle);
             } else {

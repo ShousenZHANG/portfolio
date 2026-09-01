@@ -31,7 +31,10 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
                 duration: 0.7,
                 ease: "power3.out",
                 stagger: 0.1,
-                scrollTrigger: { trigger: ref.current, start: "top 86%" },
+                // Play-forward only, so `once` is pixel-identical — and it
+                // lets GSAP dispose the trigger instead of walking it on
+                // every scroll frame for the rest of the visit.
+                scrollTrigger: { trigger: ref.current, start: "top 86%", once: true },
             }
         );
     }, { scope: ref });

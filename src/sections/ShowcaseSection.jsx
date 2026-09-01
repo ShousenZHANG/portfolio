@@ -74,9 +74,11 @@ const AppShowcase = () => {
             y: 0,
             duration: isMobile ? 0.6 : 0.8,
             ease: "power2.out",
+            // `once` like the image wipe below it — play-forward only.
             scrollTrigger: {
               trigger: el,
               start: "top 88%",
+              once: true,
             },
           }
         );
