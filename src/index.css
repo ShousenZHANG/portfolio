@@ -1024,6 +1024,11 @@ section {
   background: var(--sig);
   transition: opacity 0.3s ease;
 }
+/* Both start invisible. Until the first mousemove neither has a transform, so
+   they would otherwise paint at the viewport origin — which is exactly what
+   they did for as long as the component's wiring was broken. */
+.cursor-dot,
+.cursor-ring { opacity: 0; }
 .cursor-ring {
   width: 30px;
   height: 30px;

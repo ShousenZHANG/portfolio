@@ -25,6 +25,17 @@ export function useTilt(max = 8) {
         if (!fine || prefersReducedMotion()) return undefined;
 
         gsap.set(el, { transformPerspective: 700, transformStyle: "preserve-3d" });
+
+        // Take `transform` out of this element's CSS transition. .ed-tile
+        // transitions transform for its hover lift, but on a tilted card every
+        // inline transform GSAP writes — one per mousemove — starts a fresh
+        // 360ms CSS transition that then races GSAP's own ease. The rendered
+        // angle lags the computed one, and Blink builds a transition object per
+        // frame. Verified before the fix: getAnimations() returned a running
+        // CSSTransition:transform on a counter tile nobody had touched.
+        // Narrowed per element, so the other tiles keep the shared hover ease.
+        const prevTransition = el.style.transitionProperty;
+        el.style.transitionProperty = "border-color, background";
         const rx = gsap.quickTo(el, "rotationX", { duration: 0.4, ease: "power3.out" });
         const ry = gsap.quickTo(el, "rotationY", { duration: 0.4, ease: "power3.out" });
         const lift = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
@@ -68,6 +79,7 @@ export function useTilt(max = 8) {
             el.removeEventListener("mousemove", onMove);
             el.removeEventListener("mouseleave", onLeave);
             window.removeEventListener("scroll", onScroll);
+            el.style.transitionProperty = prevTransition;
             gsap.killTweensOf(el);
         };
     }, [max]);
