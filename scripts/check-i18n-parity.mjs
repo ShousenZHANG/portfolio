@@ -14,7 +14,15 @@ import { zh } from "../src/i18n/zh.js";
 // maps over it, and a Chinese sentence does not split into the same number of
 // words as its English counterpart. Exempt the whole subtree, not just its
 // length — the per-index leaves diverge with it.
-const SUBTREE_EXEMPT = ["hero.headline"];
+//
+// showcase.projects, skills.cats and skills.nodes are exempt for the same kind
+// of reason one level up: the two CVs list different projects and different
+// stacks, so each locale renders its own project set (constants/projects.js
+// builds per locale) and its own skill graph (data/skillGraph.js). Their
+// integrity is proven elsewhere — test/i18n/skill-graph.test.mjs checks each
+// graph against its own dictionary, and test/i18n/projects-copy.test.mjs each
+// project list against the shape its builder reads.
+const SUBTREE_EXEMPT = ["hero.headline", "showcase.projects", "skills.cats", "skills.nodes"];
 const exempt = (key) => SUBTREE_EXEMPT.some((p) => key === p || key.startsWith(p + "["));
 
 // Content lists whose LENGTH is legitimately locale-shaped: the two CVs differ
@@ -31,9 +39,12 @@ function leaves(obj, prefix = "") {
     if (exempt(key)) {
       out.push(`${key}:<locale-shaped>`);
     } else if (Array.isArray(v) && lengthExempt(key)) {
-      // Presence and element type are still checked; only the count is not.
-      const kinds = [...new Set(v.map((x) => typeof x))].sort().join("|") || "empty";
-      out.push(`${key}[]:<locale-shaped list of ${kinds}>`);
+      // Presence is still checked; only the count is not. Every exempt list
+      // is a list of display strings, and an empty one is legitimate (a
+      // degree with nothing to add under it), so the element check is
+      // "strings only" rather than "same kinds as the other locale".
+      out.push(`${key}[]:<locale-shaped list of string>`);
+      v.forEach((x, i) => { if (typeof x !== "string") out.push(`${key}[${i}]:NOT-A-STRING`); });
     } else if (Array.isArray(v)) {
       out.push(`${key}[] len=${v.length}`);
       v.forEach((item, i) => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
@@ -8,6 +8,7 @@ import { prefersReducedMotion } from "../lib/motion.js";
 import { useMagnetic } from "../hooks/useMagnetic.js";
 import { useInView } from "../hooks/useInView.js";
 import { dict, isZh } from "../i18n/index.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 // CTA is a plain anchor: the global Lenis click handler routes #-links
 // through lenis.scrollTo, so easing matches every other in-page jump.
@@ -79,6 +80,7 @@ const HERO_ANIM_TARGETS = [
 // Word array for the masked stagger — `sig` marks the decode word, `br`
 // breaks the line after it. headlineAria is the assembled sentence.
 const HEADLINE = dict.hero.headline;
+const STACK_ITEMS = dict.hero.stackLine.split(" · ");
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
@@ -174,7 +176,7 @@ const Hero = () => {
                     {/* LEFT — editorial headline */}
                     <div className="flex flex-col">
                         <p className="hero-eyebrow ed-eyebrow mb-6">
-                            {dict.hero.eyebrow}
+                            {mixedTrack(dict.hero.eyebrow)}
                         </p>
 
                         <h1 className="hero-display ed-display" aria-label={dict.hero.headlineAria}>
@@ -232,7 +234,17 @@ const Hero = () => {
                             <span className="ed-status-dot" aria-hidden="true" />
                             <span>{dict.hero.available}</span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
-                            <span className="font-mono text-xs tracking-wider">{dict.hero.stackLine}</span>
+                            {/* Each item is unbreakable and carries its own trailing
+                                separator, so a narrow screen wraps BETWEEN items and
+                                never opens a line on a bare "·". */}
+                            <span className="font-mono text-xs tracking-wider">
+                                {STACK_ITEMS.map((t, i) => (
+                                    <Fragment key={t}>
+                                        <span className="whitespace-nowrap">{t}{i < STACK_ITEMS.length - 1 ? " ·" : ""}</span>
+                                        {i < STACK_ITEMS.length - 1 ? " " : ""}
+                                    </Fragment>
+                                ))}
+                            </span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
                             <button
                                 type="button"
@@ -285,12 +297,12 @@ const Hero = () => {
                                                 <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.29-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z" />
                                             </svg>
                                         </span>
-                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>{dict.hero.playLabel}</span>
+                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>{mixedTrack(dict.hero.playLabel)}</span>
                                     </button>
                                 )}
                             </div>
                             <figcaption className="ed-eyebrow mt-3 px-1 pb-1">
-                                {dict.hero.figcaption}
+                                {mixedTrack(dict.hero.figcaption)}
                             </figcaption>
                         </figure>
                     </div>

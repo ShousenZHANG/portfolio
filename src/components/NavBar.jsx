@@ -120,8 +120,23 @@ const NavBar = () => {
     const register = (id) => {
       const el = document.getElementById(id);
       if (!el) return false;
+      // Set-only meant scrolling back up into the hero (or on into Contact,
+      // which has no link) left the last section lit forever. So leaving the
+      // FIRST section downward-out (it is now below the band: reader is above
+      // it) or the LAST one upward-out (reader is past it) clears the
+      // highlight. Leaving any other way keeps it — the sections are spaced
+      // by section padding wider than the 10% band, and clearing there would
+      // blink the indicator off and on between every pair.
+      const isFirst = id === ids[0];
+      const isLast = id === ids[ids.length - 1];
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        ([entry]) => {
+          if (entry.isIntersecting) { setActiveSection(id); return; }
+          const below = entry.boundingClientRect.top > (entry.rootBounds?.bottom ?? 0);
+          if ((isFirst && below) || (isLast && !below)) {
+            setActiveSection((cur) => (cur === id ? "" : cur));
+          }
+        },
         { rootMargin: "-45% 0px -45% 0px" }
       );
       obs.observe(el);

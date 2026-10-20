@@ -2,14 +2,19 @@
  * Project showcase data — structure only: ids, slide srcs/dimensions,
  * hrefs, autoplay timing, tech-brand tags. All copy (titles, alts,
  * descriptions, outcomes, highlight text, link labels) lives in the
- * dictionary, index-aligned with this array.
+ * dictionary, index-aligned with the locale's array.
  * Descriptions use plain text — highlighted phrases are wrapped at render time.
+ *
+ * The two locales show different projects. The English CV leads with two
+ * public products that have screenshots; the Chinese CV's three projects are
+ * internal enterprise systems with nothing public to capture, so each one is
+ * drawn as its real execution path (ProjectDiagram) instead of a carousel.
+ * The builders are functions so only the active locale's copy is ever read —
+ * the zh dictionary has no slide alts for the English shape to index into.
  */
-import { dict } from "../i18n/index.js";
+import { dict, isZh } from "../i18n/index.js";
 
-const copy = dict.showcase.projects;
-
-export const projects = [
+const buildEn = (copy) => [
   {
     id: "joblit",
     title: copy[0].title,
@@ -47,9 +52,8 @@ export const projects = [
       description: copy[1].highlight.description,
       sponsor: copy[1].highlight.sponsor,
       // Same-origin, not the Google Drive original: Drive is unreachable from
-      // mainland China, so on /zh the one link that proves the award would
-      // have hung and timed out. The file is the same scan already carried in
-      // this project's own carousel.
+      // mainland China, so the one link that proves the award would hang
+      // there. The file is the same scan already carried in the carousel.
       cta: {
         href: "/images/award_certificate.webp",
         label: copy[1].highlight.ctaLabel,
@@ -61,3 +65,27 @@ export const projects = [
     ],
   },
 ];
+
+// Alternating sides give three diagram-led rows an editorial rhythm; two
+// carousel rows on the English page read fine stacked the same way.
+const ZH_STRUCTURE = [
+  { id: "ticket-agent", desktopReverse: false, tech: ["LangChain", "RAG", "Milvus", "MongoDB", "Prompt Eng."] },
+  { id: "nl2sql-agent", desktopReverse: true, tech: ["LangGraph", "NL2SQL", "Milvus", "Elasticsearch", "MySQL"] },
+  { id: "bank-platform", desktopReverse: false, tech: ["Java", "Spring Boot", "MyBatis", "Oracle", "Redis", "MinIO", "Docker"] },
+];
+
+const buildZh = (copy) =>
+  ZH_STRUCTURE.map((p, i) => ({
+    ...p,
+    title: copy[i].title,
+    meta: copy[i].meta,
+    slides: [],
+    diagram: copy[i].diagram,
+    description: copy[i].description,
+    outcomes: copy[i].outcomes,
+    // Internal systems: no public repo or demo to link, and a dead CTA
+    // reads worse than none.
+    links: [],
+  }));
+
+export const projects = (isZh ? buildZh : buildEn)(dict.showcase.projects);

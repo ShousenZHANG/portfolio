@@ -222,6 +222,281 @@
   .oss-card:hover .oss-go { color: var(--sig); }
 }
 
+/* Skill graph — the detail panel's resting state: one row per cluster. */
+.skill-overview { list-style: none; margin: 0; padding-left: 0; display: flex; flex-direction: column; gap: 2px; }
+.skill-overview-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.5rem 1.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.5rem;
+  margin-inline: -0.5rem;
+  border-radius: var(--r-xs);
+  color: var(--tx-1);
+  font-size: 0.8rem;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.skill-overview-row.on { background: var(--ink-2); color: var(--tx-0); }
+@media (hover: hover) and (pointer: fine) {
+  .skill-overview-row:hover { background: var(--ink-1); color: var(--tx-0); }
+}
+.skill-overview-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.skill-overview-bar { height: 3px; border-radius: 2px; background: var(--hair); overflow: hidden; }
+.skill-overview-bar > span { display: block; height: 100%; transform-origin: left center; border-radius: inherit; }
+.skill-overview-num {
+  text-align: right;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--tx-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stat tile index — "01 / 04", the eyebrow voice at tile scale. */
+.counter-index {
+  display: inline-flex;
+  gap: 0.4em;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--tx-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The merged-PR count reads as a phrase on /zh (「94 个 PR 已合并」), and in
+   the mono stack its Han glyphs fell back to the system face while the
+   spaces stayed monospace-wide — "94   个   PR". Body face, no tracking. */
+:root[lang^="zh"] .oss-merged { font-family: var(--font-zh); letter-spacing: 0; }
+
+/* Experience bullet lead-in (「标签：」) — lifted one step up the text ladder. */
+.exp-lead-in { color: var(--tx-0); }
+
+/* ── Project diagram — an internal system drawn as its execution path ──
+   One period drives everything: the signal crosses the rail in the first 75%
+   of --pd-dur, and each step's node flashes at --pd-at of that crossing
+   (its measured position along the rail, set by ProjectDiagram.jsx; the
+   inline fallback is the even index spacing). All animated properties are
+   transform or opacity. */
+.pd {
+  --pd-dur: 7s;
+  --pd-travel: calc(var(--pd-dur) * 0.75);
+  --pd-node: 28px;
+  position: relative;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem 1.4rem 1.6rem;
+  background:
+    radial-gradient(110% 60% at 0% 0%, var(--sig-glow), transparent 62%),
+    var(--ink-1);
+}
+@media (min-width: 640px) {
+  .pd { padding: 1.75rem 2rem 1.9rem; }
+}
+.pd-head { display: flex; align-items: center; gap: 0.6rem; }
+.pd-head .ed-eyebrow { margin: 0; }
+/* The running lamp takes the place of the eyebrow's leading rule — both at
+   once read as two bullets for one label. */
+.pd-head .ed-eyebrow::before { display: none; }
+/* "Running" lamp — a fixed dot and a ring that breathes outward from it. */
+.pd-live {
+  position: relative;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.pd-live::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--ok);
+  opacity: 0;
+  animation: pd-live 2.4s var(--ease-soft) infinite;
+}
+@keyframes pd-live {
+  0% { transform: scale(0.4); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Vertically centred in the media box: on desktop the box stretches to the
+   copy column, and a pipeline hugging the top edge leaves a dead band under
+   it. */
+.pd-track { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.pd-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 2.2vw, 1.35rem);
+}
+.pd-step {
+  display: grid;
+  grid-template-columns: var(--pd-node) 1fr;
+  column-gap: 0.9rem;
+  align-items: start;
+}
+
+/* The rail runs from the first node's centre to the last's (both measured).
+   3px wide so the signal's glow has room; the visible hairline is the
+   ::before. */
+.pd-rail {
+  position: absolute;
+  left: calc(var(--pd-node) / 2 - 1.5px);
+  top: var(--pd-rail-top, calc(var(--pd-node) / 2));
+  height: var(--pd-rail-h, 0px);
+  width: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.pd-rail::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--hair-bright);
+}
+/* A comet: transparent tail fading into a bright head at the element's
+   bottom edge. translateY(-100%) parks the head at the rail's top; 0 parks it
+   at the bottom. */
+.pd-signal {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 62%, var(--sig) 94%, var(--tx-0) 100%);
+  transform: translateY(-100%);
+  animation: pd-signal var(--pd-dur) linear infinite;
+}
+@keyframes pd-signal {
+  0% { transform: translateY(-100%); opacity: 1; }
+  75% { transform: translateY(0); opacity: 1; }
+  88%, 100% { transform: translateY(0); opacity: 0; }
+}
+
+.pd-node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pd-node);
+  height: var(--pd-node);
+  border-radius: 50%;
+  background: var(--ink-0);
+  border: 1px solid var(--hair-bright);
+  color: var(--tx-2);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+/* The flash when the signal arrives — a signature ring with a soft bloom,
+   faded in and out on opacity alone. */
+.pd-node::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--sig);
+  box-shadow: 0 0 14px var(--sig-glow), 0 0 0 4px var(--sig-glow);
+  opacity: 0;
+  animation: pd-node var(--pd-dur) linear infinite;
+  animation-delay: calc(var(--pd-travel) * var(--pd-at));
+}
+@keyframes pd-node {
+  0% { opacity: 1; }
+  18% { opacity: 0; }
+  100% { opacity: 0; }
+}
+/* The output stage stays lit: it is where the run ends up. */
+.pd-step--end .pd-node {
+  background: var(--sig);
+  border-color: var(--sig);
+  color: var(--sig-ink);
+}
+
+.pd-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; padding-top: 3px; }
+/* In a wide card the steps read as a spec sheet: what the stage is (title,
+   chips, retry loop) on the left, what it does in the second column. Keyed to
+   the card's own width, not the viewport's — the same card is half a row on a
+   desktop and a full row on a tablet. */
+.pd { container-type: inline-size; }
+.pd-what { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+@container (min-width: 500px) {
+  .pd-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+  .pd-detail { padding-top: 2px; }
+}
+/* 400, not 500: the zh weight ladder is 400/700 only (see the zh scope) —
+   YaHei has no 500 and PingFang does, so a 500 would render differently on
+   the two platforms this page's readers arrive on. Hierarchy is carried by
+   colour: --tx-0 against the --tx-2 detail line. */
+.pd-title { color: var(--tx-0); font-size: 0.95rem; font-weight: 400; line-height: 1.4; }
+.pd-detail { color: var(--tx-2); font-size: 0.8rem; line-height: 1.55; }
+.pd-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pd-chip {
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--ink-0);
+  border: 1px solid var(--hair);
+  color: var(--tx-1);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.6;
+}
+/* The retry loop — the one non-linear edge in a pipeline. Dashed, in the
+   secondary accent, and its glyph turns once each time the signal reaches
+   this step (same delay maths as the node flash). */
+.pd-loop {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
+  border-radius: var(--r-pill);
+  border: 1px dashed var(--sig-2);
+  color: var(--sig-2);
+  background: var(--sig-2-glow);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+.pd-loop svg {
+  flex: none;
+  animation: pd-spin var(--pd-dur) var(--ease-standard) infinite;
+  animation-delay: calc(var(--pd-travel) * var(--pd-at));
+}
+@keyframes pd-spin {
+  0% { transform: rotate(0deg); }
+  14%, 100% { transform: rotate(360deg); }
+}
+
+/* Off-screen: freeze every loop (the section can sit in view for minutes,
+   but nothing should tick while it doesn't). Reduced motion: no loops at all,
+   and the signal is hidden rather than frozen mid-rail. */
+/* Spelled out rather than :is() — a pseudo-element inside :is() is invalid
+   and would drop the whole rule. */
+.pd:not(.in-view) .pd-live::after,
+.pd:not(.in-view) .pd-signal,
+.pd:not(.in-view) .pd-node::after,
+.pd:not(.in-view) .pd-loop svg {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-live::after, .pd-node::after, .pd-loop svg { animation: none; }
+  .pd-signal { animation: none; opacity: 0; }
+}
+
 /* ── Legacy-engine fallback (WeChat XWeb, pre-Chromium-111 WebViews) ──
    oklch() and color-mix() land in Chrome 111/113; an engine that predates
    them DROPS the declaration, which for `color` on `background-color` means
@@ -2164,12 +2439,36 @@ section {
         U+4E00-9FFF, U+FF01-FF65;
 }
 
+/* ── 破折号 and 省略号 ───────────────────────────────────────────────────────
+   Font fallback is per character, and Mona Sans — first in every zh stack so
+   Latin keeps the site's voice — HAS U+2014 and U+2026. So "——" drew as two
+   narrow Latin em dashes with a visible gap between them ("--"), and "……" as
+   two clusters of Latin dots: exactly the marks GB/T 15834 defines as one
+   continuous two-character-wide stroke. The display subset above lists both
+   code points, but sits behind Mona Sans in its stack and so never got them.
+   This alias, restricted by unicode-range to those two marks only, goes in
+   FRONT of Mona Sans: it resolves to whichever Han system face is installed
+   (each local() is tried in order; full names and PostScript names both, since
+   platforms disagree on which one local() matches), and every other character
+   — including the Latin middle dot in "AI Agent · RAG" — is untouched. */
+@font-face {
+    font-family: "ZH Punct";
+    src: local("PingFang SC"), local("PingFangSC-Regular"),
+        local("Microsoft YaHei"), local("MicrosoftYaHei"),
+        local("Hiragino Sans GB"), local("HiraginoSansGB-W3"),
+        local("Noto Sans CJK SC"), local("NotoSansCJKsc-Regular"),
+        local("Source Han Sans SC"), local("SourceHanSansSC-Regular");
+    font-weight: 100 900;
+    unicode-range: U+2014, U+2026;
+}
+
 :root[lang^="zh"] {
     /* ── (a) Stacks ──────────────────────────────────────────────────────────
-       Mona Sans stays FIRST in every one of them. Font fallback is per
-       character, so Latin resolves in the site's own voice and Han falls
-       through to the next family that has it. */
-    --font-zh: "Mona Sans Variable", "Mona Sans", -apple-system, BlinkMacSystemFont,
+       Mona Sans stays first for everything but the two marks "ZH Punct"
+       claims (see above). Font fallback is per character, so Latin resolves
+       in the site's own voice and Han falls through to the next family that
+       has it. */
+    --font-zh: "ZH Punct", "Mona Sans Variable", "Mona Sans", -apple-system, BlinkMacSystemFont,
         "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI",
         system-ui, sans-serif;
 
@@ -2177,7 +2476,7 @@ section {
        subset ships. Do not point a 400 rule at this: with one @font-face weight
        declared, a 400 request still matches it (closest available) and the
        heading would silently come back Bold. */
-    --font-zh-display: "Mona Sans Variable", "Mona Sans", "Noto Sans SC Subset",
+    --font-zh-display: "ZH Punct", "Mona Sans Variable", "Mona Sans", "Noto Sans SC Subset",
         -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
         "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
 
@@ -2249,14 +2548,23 @@ section {
 :root[lang^="zh"] body {
     font-family: var(--font-zh);
     line-height: 1.75;
+    /* No orphans: a paragraph never strands one hanzi on its last line
+       ("重构" breaking to leave a lone 构). Inherited, so every block of
+       running text gets it; the display headings keep their own `balance`.
+       Chrome re-flows only the last few lines, so the cost is bounded;
+       elsewhere it is ignored and lines break as before. */
+    text-wrap: pretty;
 }
 
-/* The six hand-written monospace sites name JetBrains Mono directly and so do
-   not see the theme var. Listed in one rule instead of edited in place, which
+/* The hand-written monospace sites name JetBrains Mono directly and so do
+   not see the theme var. (.cert-verify and .pd-chip carry Han — 「验证」,
+   「链路追踪」 — which without this fell to the bare `monospace` generic, and
+   on a Chinese Windows that is NSimSun: a serif.) Listed in one rule instead of edited in place, which
    keeps the English page's computed font-family byte-identical to today's.
    .nav-lang joins them for the day its label is not "EN". */
 :root[lang^="zh"] :is(.ed-eyebrow, .skill-hop, .ed-orb-label, .ed-tip,
-    .ed-msg-thinking, .ed-rec-clock, .nav-lang, .font-mono) {
+    .ed-msg-thinking, .ed-rec-clock, .nav-lang, .font-mono,
+    .cert-verify, .pd-chip) {
     font-family: var(--font-zh-mono);
 }
 
@@ -2312,6 +2620,15 @@ section {
     word-break: break-all;
     word-break: auto-phrase;
 }
+/* The footer wordmark kept the Latin -0.035em: outlined hanzi at negative
+   tracking draw their strokes through each other (森|聊 overlapped). Zero
+   tracking. It deliberately stays on the system face rather than the display
+   subset: that subset is instanced from a variable font whose glyphs are
+   built from overlapping contours, invisible when filled but drawn out
+   stroke-by-stroke by -webkit-text-stroke — every crossing showed. */
+:root[lang^="zh"] .footer-mark {
+    letter-spacing: 0;
+}
 :root[lang^="zh"] .ed-display { line-height: 1.28; }
 :root[lang^="zh"] .ed-h2 { line-height: 1.32; }
 /* The signature word inside the headline — 680 is the same non-existent weight
@@ -2363,6 +2680,18 @@ section {
        treatment in Chinese; it does not need the shout as well. */
     text-transform: none;
 }
+
+/* …and the Latin runs inside a zh label go back to Latin tracking.
+   mixedTrack() (src/lib/mixedTrack.jsx) wraps them; without this, 0.3em
+   turns "AI Agent" into "A I  A g e n t" and "NL2SQL" stops reading as one
+   token. 0.06em is the English eyebrow's own feel at this size, minus the
+   uppercase it no longer has. */
+:root[lang^="zh"] .ed-eyebrow .lat { letter-spacing: 0.06em; white-space: nowrap; }
+/* A label wraps between its segments, never inside a word: Han allows a break
+   between any two ideographs, so on a phone the hero label split 落|地 across
+   lines. keep-all leaves only the spaces around " · " and " / " as break
+   points — which is where a label is meant to give way. */
+:root[lang^="zh"] .ed-eyebrow { word-break: keep-all; }
 
 /* (c) Micro-labels. At 9-11px a hanzi packs six-plus strokes into nine device
    pixels and merges into a grey block long before a Latin word of the same size

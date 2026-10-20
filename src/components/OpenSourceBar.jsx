@@ -7,6 +7,7 @@ import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 import { dict } from "../i18n/index.js";
 import { useTilt } from "../hooks/useTilt.js";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
  * Open-source strip — merged upstream work on two frameworks a recruiter in
@@ -120,7 +121,7 @@ const OpenSourceBar = () => {
             aria-label={dict.oss.listAria}
         >
             <div className="oss-head-row mb-4">
-                <p className="ed-eyebrow">{dict.oss.eyebrow}</p>
+                <p className="ed-eyebrow">{mixedTrack(dict.oss.eyebrow)}</p>
                 {/* Whose contributions these are, said out loud. The links
                     below filter on this account; a reader should not have to
                     read a URL to learn that. */}

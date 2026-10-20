@@ -1,12 +1,16 @@
-// Brand names — identical in every locale, so the list stays hardcoded;
-// only the eyebrow above the marquee is dictionary copy.
+// Brand names — identical in every locale, so the lists stay hardcoded; only
+// the eyebrow above the marquee is dictionary copy. Each page shows the stack
+// its own CV describes: /zh's CV is LangChain retrieval agents on a Java
+// backend (Redis, MongoDB, Elasticsearch), not the Microsoft and
+// front-end set the English page leads with.
 //
 // The SVGs are served from /logos, not from jsDelivr. They are devicon's
-// originals, vendored: jsDelivr is intermittently unreachable from mainland
-// China, and a blank logo wall is exactly the wrong first impression on the
-// page written for that audience. It also removes a third-party origin from
-// the critical path for everyone else.
-const logoIconsList = [
+// originals (MIT), vendored: jsDelivr is intermittently unreachable from
+// mainland China, and a blank logo wall is exactly the wrong first impression
+// on the page written for that audience. It also removes a third-party origin
+// from the critical path for everyone else. Linux is devicon's "plain" cut —
+// the "original" Tux is a 190 KB illustration.
+const LOGOS_EN = [
     // Cloud & AI platform
     { name: "Microsoft Azure", icon: "azure-original.svg" },
     { name: "Python", icon: "python-original.svg" },
@@ -29,8 +33,30 @@ const logoIconsList = [
     { name: "GitHub", icon: "github-original.svg" },
 ];
 
+const LOGOS_ZH = [
+    // Agent & retrieval
+    { name: "Python", icon: "python-original.svg" },
+    { name: "Elasticsearch", icon: "elasticsearch-original.svg" },
+    { name: "MongoDB", icon: "mongodb-original.svg" },
+    { name: "MySQL", icon: "mysql-original.svg" },
+
+    // Java backend & middleware
+    { name: "Java", icon: "java-original.svg" },
+    { name: "Spring Boot", icon: "spring-original.svg" },
+    { name: "Redis", icon: "redis-original.svg" },
+    { name: "RabbitMQ", icon: "rabbitmq-original.svg" },
+
+    // Deployment
+    { name: "Docker", icon: "docker-original.svg" },
+    { name: "Linux", icon: "linux-plain.svg" },
+    { name: "GitHub", icon: "github-original.svg" },
+];
+
 import { useInView } from "../hooks/useInView.js";
-import { dict } from "../i18n/index.js";
+import { dict, isZh } from "../i18n/index.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
+
+const logoIconsList = isZh ? LOGOS_ZH : LOGOS_EN;
 
 // `duplicate` marks the second pass of the list — the half that exists only so
 // translateX(-50%) can loop seamlessly. Announcing all 13 logos twice is the
@@ -56,7 +82,12 @@ const LogoSection = () => {
 
     return (
         <section className="relative w-full overflow-hidden py-10 md:py-14">
-            <p className="ed-eyebrow ed-shell mb-7 md:mb-9">{dict.logos.eyebrow}</p>
+            {/* The shell is its own block: .ed-eyebrow is inline-flex, and
+                margin-inline:auto does not centre an inline-level box, so on a
+                wide screen the label sat ~60px left of every other section. */}
+            <div className="ed-shell mb-7 md:mb-9">
+                <p className="ed-eyebrow">{mixedTrack(dict.logos.eyebrow)}</p>
+            </div>
 
             {/* Edge fades — match the page floor so the track dissolves cleanly */}
             <div className="logo-fade logo-fade-left" aria-hidden="true" />

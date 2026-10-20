@@ -29,9 +29,12 @@ const COPY = {
   },
   zh: {
     title: "张守森",
-    subtitle: "AI 应用工程师 · Copilot Studio",
+    // Every glyph here must already be in the api/_og subsets — "工程师"
+    // rather than the CV's "开发" because 开/发 are not, and this way the
+    // card changes without re-cutting two fonts.
+    subtitle: "AI Agent 工程师 · RAG · NL2SQL",
     urlLabel: "eddyzhang.me",
-    tagline: "企业级 Agent 落地 · 大模型输出可验证 · Microsoft 365",
+    tagline: "LangChain · LangGraph · Milvus · 大模型输出可验证",
   },
 };
 

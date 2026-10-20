@@ -1,74 +1,28 @@
 import { useRef, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useInView } from "../hooks/useInView.js";
-import { dict } from "../i18n/index.js";
+import { dict, locale, isZh } from "../i18n/index.js";
+import { SKILL_GRAPHS } from "../data/skillGraph.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
 // the projects/experience that prove the skill. Edges link related work.
-// Foregrounds the Microsoft 365 agent stack (Copilot Studio / Power
-// Platform), with AI, integration, engineering, and cloud as support.
-// Category colours share one saturation band (C≈0.12-0.14) so the five
-// clusters read as siblings — distinct hues, no shouting.
-const CATS = {
-    ms: { label: dict.skills.cats.ms, color: "var(--sig)" },
-    ai: { label: dict.skills.cats.ai, color: "oklch(0.72 0.14 320)" },
-    data: { label: dict.skills.cats.data, color: "var(--sig-2)" },
-    eng: { label: dict.skills.cats.eng, color: "oklch(0.76 0.13 155)" },
-    cloud: { label: dict.skills.cats.cloud, color: "oklch(0.74 0.12 240)" },
-};
+// Each locale draws its own graph (the two CVs describe different stacks);
+// geometry lives in data/skillGraph.js, copy in dict.skills.
+const GRAPH = SKILL_GRAPHS[locale];
 
-// Copy ({ label, used }) lives in dict.skills.nodes, keyed by id; geometry,
-// categories and edges are structure and stay here.
-const NODES = [
-    // Microsoft & Power Platform (top center — the signature cluster)
-    { id: "copilot", cat: "ms", x: 47, y: 10, r: 7.5 },
-    { id: "pautomate", cat: "ms", x: 32, y: 20, r: 6 },
-    { id: "dataverse", cat: "ms", x: 55, y: 24, r: 6.5 },
-    { id: "powerapps", cat: "ms", x: 41, y: 33, r: 5 },
+const CATS = Object.fromEntries(
+    Object.entries(GRAPH.cats).map(([key, color]) => [key, { label: dict.skills.cats[key], color }])
+);
 
-    // AI & Agents (left)
-    { id: "agents", cat: "ai", x: 19, y: 30, r: 6.5 },
-    { id: "rag", cat: "ai", x: 9, y: 43, r: 5.5 },
-    { id: "mcp", cat: "ai", x: 23, y: 46, r: 5.5 },
-    { id: "llmorch", cat: "ai", x: 11, y: 56, r: 5.5 },
-    { id: "prompt", cat: "ai", x: 27, y: 59, r: 5.5 },
+const NODES = GRAPH.nodes.map((n) => ({ ...n, ...dict.skills.nodes[n.id] }));
 
-    // Integration & Data (lower center-left)
-    { id: "boomi", cat: "data", x: 41, y: 52, r: 6 },
-    { id: "servicenow", cat: "data", x: 45, y: 65, r: 5.5 },
-    { id: "playwright", cat: "data", x: 57, y: 71, r: 5 },
-    { id: "sql", cat: "data", x: 30, y: 70, r: 5 },
+const EDGES = GRAPH.edges;
 
-    // Software Engineering (right)
-    { id: "java", cat: "eng", x: 74, y: 13, r: 6.5 },
-    { id: "python", cat: "eng", x: 88, y: 23, r: 5.5 },
-    { id: "ts", cat: "eng", x: 67, y: 29, r: 5.5 },
-    { id: "react", cat: "eng", x: 84, y: 37, r: 6 },
-
-    // Cloud & DevOps (lower right)
-    { id: "azure", cat: "cloud", x: 65, y: 49, r: 6 },
-    { id: "aws", cat: "cloud", x: 80, y: 51, r: 5 },
-    { id: "docker", cat: "cloud", x: 73, y: 63, r: 5.5 },
-    { id: "cicd", cat: "cloud", x: 88, y: 61, r: 5.5 },
-].map((n) => ({ ...n, ...dict.skills.nodes[n.id] }));
-
-const EDGES = [
-    // Microsoft cluster
-    ["copilot", "pautomate"], ["copilot", "dataverse"], ["pautomate", "dataverse"],
-    ["copilot", "powerapps"], ["dataverse", "powerapps"],
-    // the agent story — Copilot Studio wired to AI + integration + cloud
-    ["copilot", "agents"], ["copilot", "mcp"], ["copilot", "llmorch"],
-    ["dataverse", "rag"], ["pautomate", "boomi"], ["azure", "copilot"],
-    // AI cluster
-    ["agents", "rag"], ["agents", "mcp"], ["agents", "prompt"], ["rag", "mcp"], ["llmorch", "prompt"],
-    // Integration & data
-    ["boomi", "servicenow"], ["servicenow", "sql"], ["servicenow", "mcp"], ["sql", "java"],
-    ["playwright", "python"], ["playwright", "copilot"],
-    // Engineering
-    ["java", "ts"], ["ts", "react"], ["python", "java"], ["python", "agents"],
-    // Cloud
-    ["azure", "aws"], ["azure", "docker"], ["docker", "cicd"], ["aws", "docker"], ["docker", "java"], ["cicd", "react"],
-];
+const CAT_COUNTS = Object.fromEntries(
+    Object.keys(CATS).map((key) => [key, NODES.filter((n) => n.cat === key).length])
+);
+const CAT_MAX = Math.max(...Object.values(CAT_COUNTS));
 
 const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
 
@@ -271,7 +225,7 @@ const SkillsConstellation = () => {
                             <div key={pinned} className="skill-detail flex flex-col">
                                 <div className="flex items-center justify-between mb-3">
                                     <span className="ed-eyebrow" style={{ color: CATS[detail.cat].color }}>
-                                        {CATS[detail.cat].label}
+                                        {mixedTrack(CATS[detail.cat].label)}
                                     </span>
                                     <span className="font-mono text-xs" style={{ color: "var(--tx-2)" }}>
                                         {dict.skills.linksCount(linkedIds.length)}
@@ -325,11 +279,39 @@ const SkillsConstellation = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-start justify-center h-full min-h-[160px]">
-                                <p className="ed-eyebrow mb-3">{dict.skills.interactive}</p>
+                            <div className={`flex flex-col justify-center ${isZh ? "flex-1" : "items-start h-full"} min-h-[160px]`}>
+                                <p className="ed-eyebrow mb-3">{mixedTrack(dict.skills.interactive)}</p>
                                 <p className="text-sm" style={{ color: "var(--tx-2)" }}>
                                     {dict.skills.hint}
                                 </p>
+                                {/* /zh: until a node is picked the panel was an empty
+                                    dark slab half the graph's size. It shows the graph's
+                                    shape instead — nodes per cluster, as a bar, each a
+                                    shortcut to the same spotlight the legend applies.
+                                    The English page keeps its original resting state. */}
+                                {isZh && (
+                                <ul className="skill-overview pt-6">
+                                    {Object.entries(CATS).map(([key, c]) => {
+                                        const count = CAT_COUNTS[key];
+                                        return (
+                                            <li key={key}>
+                                                <button
+                                                    type="button"
+                                                    className={`skill-overview-row ${catFilter === key ? "on" : ""}`}
+                                                    aria-pressed={catFilter === key}
+                                                    onClick={() => { setCatFilter(catFilter === key ? null : key); setActive(null); }}
+                                                >
+                                                    <span className="skill-overview-name">{c.label}</span>
+                                                    <span className="skill-overview-bar" aria-hidden="true">
+                                                        <span style={{ transform: `scaleX(${count / CAT_MAX})`, background: c.color }} />
+                                                    </span>
+                                                    <span className="skill-overview-num">{count}</span>
+                                                </button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                )}
                             </div>
                         )}
                     </div>

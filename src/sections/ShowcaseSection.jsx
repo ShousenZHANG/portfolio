@@ -9,9 +9,11 @@ import "swiper/css/effect-fade";
 
 import { projects } from "../constants/projects";
 import TitleHeader from "../components/TitleHeader";
+import ProjectDiagram from "../components/ProjectDiagram.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { dict } from "../i18n/index.js";
 import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
  * Render plain-text description, highlighting {curly brace} phrases.
@@ -119,10 +121,18 @@ const AppShowcase = () => {
               ref={(el) => (projectRefs.current[index] = el)}
               className={`flex flex-col ${project.desktopReverse ? "lg:flex-row-reverse" : "lg:flex-row"} items-stretch gap-8 lg:gap-12`}
             >
-              {/* Image / Carousel */}
-              <div className="lg:w-1/2 w-full">
-                <div className="project-media ed-tile relative overflow-hidden h-[280px] sm:h-[340px] md:h-[400px]">
-                  {project.slides.length > 0 ? (
+              {/* Image / Carousel / Diagram */}
+              {/* A diagram follows its title on a phone — a pipeline read before
+                  you know what system it belongs to is just boxes. Screenshots
+                  keep leading: they ARE the introduction. */}
+              <div className={`lg:w-1/2 w-full ${project.diagram ? "order-last lg:order-none" : ""}`}>
+                {/* A diagram is text and sizes to its steps — a fixed media
+                    height would clip it on a narrow phone. It stretches with
+                    the copy column on desktop. */}
+                <div className={`project-media ed-tile relative overflow-hidden ${project.diagram ? "h-full" : "h-[280px] sm:h-[340px] md:h-[400px]"}`}>
+                  {project.diagram ? (
+                    <ProjectDiagram diagram={project.diagram} />
+                  ) : project.slides.length > 0 ? (
                     <Swiper
                       onSwiper={(s) => { swiperRefs.current[index] = s; }}
                       modules={[Autoplay, Pagination, EffectFade]}
@@ -161,6 +171,7 @@ const AppShowcase = () => {
 
               {/* Content */}
               <div className="lg:w-1/2 w-full flex flex-col justify-center">
+                {project.meta && <p className="ed-eyebrow mb-3">{mixedTrack(project.meta)}</p>}
                 <h3 className="text-2xl md:text-3xl font-bold mb-3 leading-tight" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
 
                 <p className="md:text-base leading-relaxed mb-4" style={{ color: "var(--tx-1)" }}>{renderHighlighted(project.description)}</p>

@@ -5,6 +5,7 @@ import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 import { dict } from "../i18n/index.js";
 import { useTilt } from "../hooks/useTilt.js";
 import { prefersReducedMotion } from "../lib/motion.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
  * Certification strip — two vendor credentials, directly under the counter
@@ -119,7 +120,7 @@ const CertBar = () => {
             className="ed-shell pt-10 md:pt-12"
             aria-label={dict.certs.listAria}
         >
-            <p className="ed-eyebrow mb-4">{dict.certs.eyebrow}</p>
+            <p className="ed-eyebrow mb-4">{mixedTrack(dict.certs.eyebrow)}</p>
             <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
                 {dict.certs.items.map((c) => (
                     <CertCard key={c.name} cert={c} verifyLabel={dict.certs.verify} />

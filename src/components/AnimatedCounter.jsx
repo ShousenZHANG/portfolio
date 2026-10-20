@@ -10,10 +10,17 @@ import Code2 from "lucide-react/dist/esm/icons/code-2";
 import Briefcase from "lucide-react/dist/esm/icons/briefcase";
 import Bot from "lucide-react/dist/esm/icons/bot";
 import Terminal from "lucide-react/dist/esm/icons/terminal";
+import { isZh } from "../i18n/index.js";
 
 const ICONS = [Code2, Briefcase, Bot, Terminal];
 
-const StatTile = ({ item, Icon }) => {
+// /zh: no icon per tile. Four stock glyphs (code, briefcase, bot, terminal) in
+// tinted squares say nothing about 「45% 故障排查周期缩短」 — they read as the
+// most template-like thing on the page. The zh tile carries the editorial
+// index the section eyebrows use ("01 / 04") instead, so the numeral is the
+// only loud element. The English page keeps its icons unchanged.
+const StatTile = ({ item, index, total }) => {
+  const Icon = ICONS[index % ICONS.length];
   const tiltRef = useTilt(8);
   return (
     <div
@@ -33,14 +40,20 @@ const StatTile = ({ item, Icon }) => {
         aria-hidden="true"
       />
 
-      {/* icon */}
-      <div
-        className="w-10 h-10 rounded-[var(--r-sm)] flex items-center justify-center"
-        style={{ background: "var(--sig-glow)", border: "1px solid var(--sig-line)" }}
-        aria-hidden="true"
-      >
-        <Icon className="w-[18px] h-[18px]" style={{ color: "var(--sig)" }} />
-      </div>
+      {isZh ? (
+        <div className="counter-index" aria-hidden="true">
+          <span style={{ color: "var(--sig)" }}>{String(index + 1).padStart(2, "0")}</span>
+          <span>/ {String(total).padStart(2, "0")}</span>
+        </div>
+      ) : (
+        <div
+          className="w-10 h-10 rounded-[var(--r-sm)] flex items-center justify-center"
+          style={{ background: "var(--sig-glow)", border: "1px solid var(--sig-line)" }}
+          aria-hidden="true"
+        >
+          <Icon className="w-[18px] h-[18px]" style={{ color: "var(--sig)" }} />
+        </div>
+      )}
 
       {/* number + label, bottom-anchored */}
       <div className="mt-6">
@@ -90,7 +103,7 @@ const AnimatedCounter = () => {
     <div id="counter" ref={counterRef} className="ed-shell xl:mt-0 mt-16">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {counterItems.map((item, i) => (
-          <StatTile key={item.label} item={item} Icon={ICONS[i % ICONS.length]} />
+          <StatTile key={item.label} item={item} index={i} total={counterItems.length} />
         ))}
       </div>
     </div>

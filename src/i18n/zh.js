@@ -72,7 +72,7 @@ export const zh = {
     },
 
     hero: {
-        eyebrow: "AI 应用工程师 · 企业级 Agent 落地 · 现居悉尼",
+        eyebrow: "AI Agent 开发 · RAG 与 NL2SQL 落地 · 现居悉尼",
         // 三段切分,断点在第一个词的 br 上:
         //   我构建
         //   可验证的智能体。
@@ -86,17 +86,17 @@ export const zh = {
         ],
         headlineAria: "我构建可验证的智能体。",
         // HR 扫一份简历只有一分钟,自动筛选还会先跑一遍关键词。所以这段
-        // 必须把 JD 上真会出现的词都用明文摆出来:Agent、Copilot Studio、
-        // MCP、Power Automate、Dataverse、RAG、大模型 —— 一个都不藏在图里。
-        lead: "我在 Microsoft 生态里做企业级 Agent 落地：Copilot Studio、MCP、Power Automate、Dataverse，答案经 RAG 锚定权威文档、可回溯到原文；大模型产品也能一个人从零做到上线。下面这块 JD 匹配器就是其中之一——粘一份岗位描述进去，我的 AI 当场算出匹配度。",
+        // 必须把 JD 上真会出现的词都用明文摆出来:Agent、LangChain、
+        // LangGraph、RAG、Milvus、Elasticsearch、NL2SQL —— 一个都不藏在图里。
+        lead: "过去一年多，我在一家 2000 人规模的律所做企业级 Agent 落地：LangChain、LangGraph 编排，Milvus 向量检索、Elasticsearch 全文检索与 MySQL 结构化查询多路召回；每条答案标注来源，每条 SQL 先过校验再执行。下面这块 JD 匹配器也是我写的——粘一份岗位描述进去，当场算出匹配度。",
         ctaPrimary: "试试实时 AI 匹配",
         ctaCv: "下载简历",
         // 简历文件是「本地化数据」而不是资源常量:中文页发的是另一份 PDF,
         // 落到下载文件夹里也该是一个中文招聘方一眼认得出的名字。
         cvHref: "/files/Eddy_Zhang_CV_zh.pdf",
-        cvDownloadName: "张守森-AI应用工程师-简历.pdf",
+        cvDownloadName: "张守森-AI Agent开发-简历.pdf",
         available: "目前可到岗",
-        stackLine: "Copilot Studio · Power Automate · Dataverse · MCP",
+        stackLine: "LangChain · LangGraph · Milvus · Elasticsearch",
         askEd: "让 E.D. 替他回答 ↗",
         videoAria: "张守森的个人介绍视频",
         playAria: "播放 30 秒自我介绍",
@@ -106,12 +106,17 @@ export const zh = {
 
     counter: {
         // 数字是数据(CountUp 负责动画),标签接在数字后面读成一句完整中文:
-        //「2 个 Copilot Agent 已上线」。每个数字都能在中文简历里找到出处。
+        //「45% 故障排查周期缩短」。每个数字都能在中文简历里找到出处:
+        // 45% / 55% 是两个 Agent 项目各自的成果行;10+ 是工单助手接入的
+        // 技术系统工具数;100+ 是 GitHub 上实测的已合并 PR(写稿时 Dify 94、
+        // Haystack 14),简历写的就是「累计 100+」。
+        // 标签控制在 8 个字宽以内:手机上四格两列,再长就会在词中间折行
+        //(实测「接入 Agent」被拆成「接 / 入」)。
         items: [
-            { value: 2, suffix: "", label: "Copilot Agent 已上线" },
-            { value: 10, suffix: "+", label: "员工日常使用" },
-            { value: 5, suffix: "", label: "企业平台已打通" },
-            { value: 2100, suffix: "+", label: "自动化测试支撑 Joblit" },
+            { value: 45, suffix: "%", label: "故障排查周期缩短" },
+            { value: 55, suffix: "%", label: "SQL 错误率下降" },
+            { value: 10, suffix: "+", label: "技术系统工具接入" },
+            { value: 100, suffix: "+", label: "开源 PR 已合并" },
         ],
     },
 
@@ -139,7 +144,9 @@ export const zh = {
 
     // 开源条带 —— 在证书条带之下。星数是量级证明，卡片直接链到 GitHub 上
     // 「他本人已合并 PR」的筛选结果，和证书一样能自证。星数用简历里保守的
-    // 取整（写稿时 Dify 已 154k、Haystack 26k）——只会涨的数字不会写错。
+    // 取整（写稿时 Dify 已 158k、Haystack 26.7k）——只会涨的数字不会写错。
+    // PR 数同理：写的是 2026 年 10 月 gh search 的实测值，只会往上走，
+    // 点进链接看到的只会比这里多。
     oss: {
         eyebrow: "开源贡献",
         listAria: "开源贡献",
@@ -156,16 +163,16 @@ export const zh = {
                 name: "Dify",
                 blurb: "Agentic 大模型平台",
                 stars: "150k+",
-                prs: 5,
-                work: "API 层的 Pydantic 依赖注入重构",
+                prs: 94,
+                work: "API 层严格类型化与 Pydantic 依赖注入重构",
                 href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
             {
                 repo: "deepset-ai/haystack",
                 name: "Haystack",
                 blurb: "RAG 编排框架",
-                stars: "25k+",
-                prs: 4,
+                stars: "26k+",
+                prs: 14,
                 work: "mypy 类型闸与文档切分器缺陷修复",
                 href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
@@ -180,14 +187,17 @@ export const zh = {
         // 英文站的三条样例都押在澳洲工作权上,对大陆招聘方毫无意义。
         // 重写成三条真实读感的国内 JD(岗位职责 / 任职要求 / 年限 / 学历 /
         // 城市),分别打中匹配器的三条路径:高匹配、相邻领域、硬性不符。
+        // 高匹配那条故意留了一个他没有的加分项(Kubernetes),免得读起来
+        // 像照着简历写的;相邻领域选的是大模型算法 —— 他做的是 Agent 与
+        // RAG 工程,没有训练与微调经历,引擎应当如实给出中段分。
         samples: [
             {
-                label: "AI 应用工程师",
-                body: "AI 应用工程师｜20-35K·14薪｜远程优先。企业服务方向，三十人团队。岗位职责：搭建面向内部员工的知识问答助手，负责 RAG 检索链路、知识入库与更新流程；打通 OA、工单、文档库等系统的数据接入；做提示词与上下文工程，把模型输出约束在可核查的范围内。任职要求：1-3 年后端或 AI 应用开发经验；熟练 Python 或 C#；有 LangChain、Dify、扣子等框架，或 MCP、向量检索的实际落地项目；本科及以上。加分项：Microsoft 365、Power Platform 相关经验；做过让模型输出可溯源、可审计的机制。",
+                label: "AI Agent 开发",
+                body: "AI Agent 开发工程师｜25-40K·14薪｜上海，可远程。企业服务方向。岗位职责：基于 LangChain / LangGraph 开发面向内部员工的智能体，负责 RAG 检索链路（文档解析、向量化、混合召回）；建设 NL2SQL 智能问数能力；设计 Tools 接入与提示词工程，抑制模型幻觉。任职要求：1-3 年 AI 应用或后端开发经验；熟悉 Python 或 Java；有 Milvus、Elasticsearch 等检索组件的落地经验；本科及以上。加分项：有 Dify、Haystack 等开源项目贡献；熟悉 Spring Cloud 微服务；了解 Kubernetes。",
             },
             {
-                label: "Java 后端工程师",
-                body: "Java 后端工程师｜18-30K·13薪｜上海张江，可弹性远程。产品是一套面向制造业客户的 SaaS。岗位职责：负责 Spring Boot 微服务的接口设计与开发，参与数据库设计与查询优化；对接对象存储与消息队列；配合测试完成容器化发布。任职要求：2 年以上 Java 服务端经验；熟悉 Spring Boot、MySQL 或 PostgreSQL、Docker；了解 RabbitMQ 或 Kafka；本科及以上。加分项：有 CI/CD 流水线搭建经验。",
+                label: "大模型算法工程师",
+                body: "大模型算法工程师｜35-55K·15薪｜杭州。岗位职责：负责行业大模型的继续预训练、SFT 与 RLHF，搭建数据清洗与评测体系；优化推理性能与显存占用。任职要求：3 年以上 NLP 或大模型算法经验；精通 PyTorch，熟悉 DeepSpeed、Megatron 等分布式训练框架；有 LoRA、QLoRA 微调实战；在顶会发表过论文者优先；硕士及以上学历。",
             },
             {
                 label: "资深后端 · 8 年 · 北京现场",
@@ -276,46 +286,44 @@ export const zh = {
         title: "工作与教育经历",
         sub: "02 / 经历",
         currentAria: "当前在职",
-        // 中文简历没有在职岗位(Stepping Stone House 合同 2026 年 8 月结束),
-        // 下面的日期一条都不会命中 /present/i,这两个徽标是休眠文案。
+        // 中文简历没有在职岗位(Corrs 的工作 2026 年 9 月结束),下面的日期
+        // 一条都不会命中 /present/i,这两个徽标是休眠文案。
         nowBadge: "现在",
         currentBadge: "在职",
+        // 卡片只讲「做了什么、结果多少」,一条一件事;两个 Agent 项目的完整
+        // 机制在下面「精选项目」里展开,这里不重复同一段描述。
         cards: [
             {
-                title: "AI 工程师（志愿）— Stepping Stone House",
-                date: "2026.07 – 2026.08",
+                title: "AI Agent 开发 — 科尔斯律师事务所（Corrs Chambers Westgarth）",
+                date: "2025.07 – 2026.09",
                 responsibilities: [
-                    "上线两个 Copilot Studio Agent,10+ 名员工日常在用；答案经 MCP 锚定 SharePoint 权威文档，可回溯到原文，而不是靠模型记忆。",
-                    "自研 C#/Python 客户端（MarkItDown、faster-whisper、Playwright），把 15+ 种文档、音频与网页格式统一转成 Markdown，存进 SharePoint 权威文档库供 Agent 检索。",
-                    "会议纪要合规归档：Power Automate 每周定时流程经 Microsoft Graph 抓取约 10 场会议的 AI 纪要，转 Word 后归档到指定 SharePoint 站点，用于留痕与合规审计。",
+                    "AI 工单智能助手：面向全所 2000 人规模的 IT 技术支持，基于 LangChain 搭建 RAG 管道，标准化接入 10 余个技术系统工具，自动排查并辅助定位根因；故障排查周期缩短 45%。",
+                    "智能问数 Agent：基于 LangGraph 编排可观测的 NL2SQL 工作流，Milvus、Elasticsearch、MySQL 三路并行召回；常规取数从按天排期缩短到分钟级。",
+                    "幻觉抑制：分层级系统提示词、事实核查与知识溯源，每条排查方案标注来源文档与章节；SQL 先经 EXPLAIN 校验、失败自动纠错，生成错误率下降 55%。",
+                    "对话记忆：MongoDB 存储会话与排查过程，每个工单会话独立维护上下文；无法在线解决的问题自动生成工单草稿，经人工确认后进入内部工单系统。",
                 ],
             },
             {
-                title: "集成与自动化分析师（合同制）— Corrs Chambers Westgarth",
-                date: "2026.03 – 2026.07",
-                responsibilities: [
-                    "任技术负责人，0 到 1 主导可信知识管理 Agent：独立完成技术选型，设计 Dataverse 数据模型与知识入库工作流，让每条记录都带来源标识、每条答案都能回溯至原始文档。",
-                    "已交付并完成试点，打通 ServiceNow、SharePoint、Loop、NetDocs、Intapp 五个平台；员工以对话方式拿到可溯源答案，新知识经 AI 辅助审核后发布。",
-                    "选用 Microsoft 生态而不是自建检索栈，直接继承企业既有的权限模型，不必另建一套权限体系。",
-                    "交付生产日志值守 Agent Flow：每日定时经 Boomi API 拉取日志，由大模型归类报错并分发到对应团队，错误与解法沉淀进 Dataverse 知识库，替代约 30 分钟/天的人工排查。",
-                    "设计可复用的 Agent Skills，提升回答准确率、同时压低单次查询的 Copilot Credit 消耗；另完成自然语言生成集成流的原型验证，业务同事描述需求即可产出集成流与简易前端。",
-                ],
-            },
-            {
-                title: "信息技术硕士 — 新南威尔士大学（UNSW)",
+                title: "信息技术硕士 — 新南威尔士大学（UNSW）",
                 date: "2023.09 – 2025.06",
                 responsibilities: [
-                    "QS 世界前 20；专业前 10% 毕业，获优秀毕业生；超额修读学分提前毕业。",
+                    "QS 世界排名第 19；专业前 10%。",
                     "负责澳洲高校编程大赛（Coding Fest 2025）亚军项目的后端：基于 Spring Cloud 的微服务竞赛平台。",
                 ],
             },
             {
-                title: "软件工程师 — 上海新致软件股份有限公司",
+                title: "Java 后端开发 — 上海新致软件股份有限公司",
                 date: "2022.08 – 2023.04",
                 responsibilities: [
-                    "Java / Spring Boot 微服务与 RESTful API 开发，并设计 MinIO 对象存储集成与数据迁移方案。",
-                    "Docker 容器化与 Linux CI/CD 部署，让每次发布都可复现。",
+                    "银行核心业务中台：负责保单管理、单据处理、产品配置等核心模块的接口设计与开发，累计交付 8 个模块、120+ 个后端接口，接口复用率 42%。",
+                    "性能优化：Redis 多级缓存与 SQL 执行计划优化，核心查询接口平均耗时从 780ms 降到 190ms，峰值 QPS 提升 3 倍。",
+                    "文件存储：基于 MinIO 搭建分布式存储，业务文件与数据库分流，集成分级下载、只读预览等细粒度权限管控，满足金融合规要求。",
                 ],
+            },
+            {
+                title: "机械电子工程学士 — 江苏科技大学苏州理工学院",
+                date: "2016.09 – 2020.06",
+                responsibilities: [],
             },
         ],
     },
@@ -326,47 +334,78 @@ export const zh = {
         fallbackEyebrow: "企业项目",
         viewOnGithub: "GitHub 源码",
         liveDemo: "在线体验",
-        // 与 constants/projects.js 按下标对齐。只有文案住在这里;图片路径、
-        // 尺寸、链接、id、技术标签留在数据文件里。
+        // 中文站的项目区与英文站不同构:中文简历的三段项目经历都是企业内部
+        // 系统,没有可截图的公开界面,所以这里不放轮播,改由 ProjectDiagram
+        // 把每个项目的真实执行链路画出来 —— 招聘方要判断的正是「这条链路
+        // 他是不是真搭过」。与 constants/projects.js 按下标对齐;技术标签、
+        // id 在数据文件里,文案(含图里的每个节点名)住在这里。整棵子树在
+        // check-i18n-parity 里豁免,形状由 projects.js 的 zh 分支消费。
+        //
+        // 花括号=渲染期高亮。边界落在汉字或全角标点之间不加空格;落在汉字
+        // 与拉丁/数字之间,空格写在花括号「外面」—— 写在里面会把高亮块
+        // 推出一格。
         projects: [
             {
-                title: "Joblit",
-                alts: [
-                    "Joblit 首页与实时演示",
-                    "Joblit 岗位工作台，AI 高亮关键词",
-                    "Joblit Chrome 扩展自动填写 ATS 申请表",
-                    "Joblit 简历生成器与 PDF 预览",
-                    "Joblit AutoFill Chrome 扩展安装页",
-                ],
-                // 花括号=渲染期高亮。这里三处边界都落在汉字或全角标点上,
-                // 所以一个空格都不能加 —— 加了就在高亮块和正文之间开一道缝。
-                // (对照下面那条:"以 {OAuth2 / JWT} 鉴权" 的边界是中西文,
-                // 空格必须写在花括号外面,否则会被算进高亮块里。)
+                title: "法律业务 AI 工单智能助手",
+                meta: "Corrs Chambers Westgarth · 2025.07 – 2026.09",
                 description:
-                    "{一个人架构并上线的生产级 AI 求职平台}。用 {LangGraph 状态机}把「生成 → 校验 → 修复」显式编排，跑在本地 {Hermes Agent 边车}上；技能按索引选取形成确定性护栏；{2,100+ 条自动化测试}过五道 CI 闸后才部署。",
-                // 与上面的 description 分工:description 讲机制,outcomes 讲
-                // 产品闭环与上线证据,三条各说一件事,不重复同一个数字。
+                    "面向全所 2000 人规模的 IT 技术支持：基于 {LangChain} 搭建 RAG 管道，在律所专属的 {Milvus 技术知识向量库}里语义检索，叠加链路节点、系统模块、异常类型等维度过滤；Agent 经 {10 余个标准化 Tools} 实时调取运行数据，自动排查并辅助定位根因，每条方案都标注来源文档与章节。",
                 outcomes: [
-                    "「生成 → 校验 → 修复」是一台显式的 LangGraph 状态机，不是一次「发出去就指望它对」的调用",
-                    "确定性索引护栏：模型只返回候选人自有档案里的位置编号，说不出档案里没有的技能",
-                    "本地 Hermes Agent 边车用候选人自己的模型生成，服务端不持有任何模型密钥",
+                    "技术工单平均故障排查周期缩短 45%，一线技术支持人员日均处理工单量提升 40%",
+                    "一线研发重复介入低危常规工单的比例下降 55%，常见技术问题自动排查覆盖率 65%",
+                    "无法在线解决的问题自动沉淀排查上下文、生成工单草稿，经人工确认后进入内部工单系统并附完整排查记录",
                 ],
+                diagram: {
+                    label: "排查链路",
+                    steps: [
+                        { t: "多源知识采集", d: "架构文档、排障 SOP、历史工单，增量同步" },
+                        { t: "向量化入库", chips: ["Embedding", "Milvus"] },
+                        { t: "RAG 检索 + 维度过滤", d: "链路节点、系统模块、异常类型、合规等级" },
+                        { t: "Agent 调用 Tools", chips: ["链路追踪", "系统监控", "接口健康", "SAP 校验"], d: "等 10 余个技术系统工具" },
+                        { t: "可溯源方案 / 工单草稿", d: "标注来源文档与章节，未解决自动生成工单", end: true },
+                    ],
+                },
             },
             {
-                title: "项目竞赛管理平台",
-                alts: [
-                    "Coding Fest 2025 亚军证书",
-                    "Coding Fest 2025 颁奖现场团队合影",
-                    "系统架构图",
-                    "CI/CD 流水线",
-                ],
+                title: "法律业务智能问数 Agent",
+                meta: "Corrs Chambers Westgarth · NL2SQL",
                 description:
-                    "云原生竞赛系统：{Spring Cloud 微服务}以 {OAuth2 / JWT} 鉴权，{RabbitMQ 事件驱动消息}支撑跨服务的实时通知。",
-                highlight: {
-                    title: "亚军：AI for Education 最佳项目",
-                    description: "Coding Fest 2025（悉尼大学）评出，表彰项目的创新性与实际影响。",
-                    sponsor: "由 Atlassian 与 Flow Traders 赞助。",
-                    ctaLabel: "查看获奖证书",
+                    "让全所 2000 名律师与运营、财务、合规人员用一句话自助取数：{LangGraph} 编排可观测的 NL2SQL 工作流，{Milvus 语义检索}、{Elasticsearch 全文检索}与 {MySQL 结构化查询}并行召回字段、指标与取值；大模型只能基于召回到的真实表字段写 SQL，再经 {EXPLAIN 校验}，失败自动纠错。",
+                outcomes: [
+                    "常规数据查询从按天排期缩短到分钟级，业务人员自助取数覆盖率 65%",
+                    "SQL 生成错误率下降 55%，核心指标计算口径 100% 对齐官方标准",
+                    "数据团队人均处理需求吞吐量提升 40%",
+                ],
+                diagram: {
+                    label: "LangGraph 工作流",
+                    steps: [
+                        { t: "关键词抽取", d: "分词抽取业务关键词" },
+                        { t: "多路并行召回", chips: ["Milvus", "Elasticsearch", "MySQL"] },
+                        { t: "合并 · 二次过滤", d: "剔除无关表与指标，补充环境上下文" },
+                        { t: "生成 SQL", loop: "EXPLAIN 校验 · 失败自动纠错" },
+                        { t: "返回结果", d: "分钟级，口径对齐官方标准", end: true },
+                    ],
+                },
+            },
+            {
+                title: "银行核心业务平台升级",
+                meta: "上海新致软件 · 2022.08 – 2023.04",
+                description:
+                    "面向银行客户的核心业务中台：向下封装通用技术与业务组件，向上支撑保险业务线快速二次开发。我负责保单管理、单据处理、产品配置等核心模块的需求拆解与接口开发，并用 {Redis 多级缓存}与 {SQL 执行计划优化}完成高并发场景的性能适配。",
+                outcomes: [
+                    "累计交付 8 个核心业务模块、120+ 个后端接口，接口复用率 42%，支撑 3 条保险业务线上线",
+                    "模块化框架改造后，新增业务场景的二次开发工作量降低 50%",
+                    "核心查询接口平均耗时从 780ms 降到 190ms，峰值 QPS 提升 3 倍",
+                ],
+                diagram: {
+                    label: "平台分层",
+                    steps: [
+                        { t: "保险业务线", chips: ["保单管理", "单据处理", "产品配置"] },
+                        { t: "通用组件 · 扩展点", d: "二次开发工作量降低 50%" },
+                        { t: "RESTful 跨系统接口", d: "120+ 个接口，复用率 42%" },
+                        { t: "多级缓存", chips: ["Redis", "SQL 执行计划"], d: "780ms → 190ms" },
+                        { t: "分流存储", chips: ["Oracle", "MinIO"], end: true },
+                    ],
                 },
             },
         ],
@@ -375,7 +414,7 @@ export const zh = {
     skills: {
         title: "技能图谱",
         sub: "04 / 技术栈",
-        lead: "我日常在用的 Microsoft 365 Agent 技术栈：Copilot Studio、Power Platform，以及围绕它们的 AI 能力，按彼此的连接关系铺开。悬停或点一下节点，看它连着什么；选中一个，能看到我用它交付过什么。",
+        lead: "我日常在用的 Agent 与后端技术栈，按彼此的连接关系铺开：LangChain、LangGraph 负责编排，Milvus、Elasticsearch、MySQL 负责召回，Java 与 Spring Cloud 打底。悬停或点一下节点，看它连着什么；选中一个，能看到我用它交付过什么。",
         graphAria: "可交互技能关系图",
         // category 是该节点所属分类的中文标签。
         nodeAria: (label, category) => `${label},${category}`,
@@ -384,38 +423,43 @@ export const zh = {
         linkedSkills: "关联技能",
         interactive: "可交互",
         hint: "点任意节点，看这项技能背后的项目、岗位或平台。",
+        // 中文站的图谱是另一张图(节点集按中文简历的「专业技能」重画),
+        // 几何与连线在 src/data/skillGraph.js 的 zh 分支,这里只放文案。
+        // cats / nodes 两棵子树在 check-i18n-parity 里豁免,由
+        // test/i18n/skill-graph.test.mjs 逐个核对:每个节点都有文案、
+        // 每条连线两端都存在、标签互不重叠。
         cats: {
-            ms: "Microsoft 与 Power Platform",
-            ai: "AI 与 Agent",
-            data: "集成与数据",
-            eng: "软件工程",
-            cloud: "云与 DevOps",
+            agent: "Agent 与大模型",
+            retrieval: "检索与数据",
+            java: "Java 与微服务",
+            mw: "中间件",
+            ops: "部署与运维",
         },
         // 按节点 id 索引。label 是产品名,必须保持英文 —— 它们以固定字号
         // 渲染成 SVG 文本、挤在固定 viewBox 里,换成全角汉字会和邻居撞上。
-        // used 是证据行,逐条按中文简历重写。坐标、半径、分类、连线留在组件里。
+        // used 是证据行,逐条出自中文简历。
         nodes: {
-            copilot: { label: "Copilot Studio", used: ["Stepping Stone House:2 个 Agent 已上线", "Corrs：可信知识管理 Agent"] },
-            pautomate: { label: "Power Automate", used: ["会议纪要合规归档流程", "Corrs：每日日志值守 Flow"] },
-            dataverse: { label: "Dataverse", used: ["Corrs：可溯源知识数据模型", "可复用 Agent Skills"] },
-            powerapps: { label: "Power Apps", used: ["Microsoft Power Platform"] },
-            agents: { label: "AI Agents", used: ["2 个 Agent 上线，10+ 名员工在用", "Corrs 知识 Agent：打通 5 个平台并试点"] },
-            rag: { label: "RAG", used: ["Stepping Stone House：自建 Markdown 知识库", "Corrs：每条答案可溯源"] },
-            mcp: { label: "MCP", used: ["Agent 经 MCP 锚定 SharePoint 权威文档"] },
-            llmorch: { label: "LLM Orchestration", used: ["Joblit：任意大模型，输出过 Zod 校验"] },
-            prompt: { label: "Prompt Eng.", used: ["Joblit 提示词契约", "本页这个 JD 匹配器"] },
-            boomi: { label: "Boomi", used: ["Corrs 日志值守（约 30 分钟/天）", "自然语言生成集成流原型"] },
-            servicenow: { label: "ServiceNow", used: ["Corrs Agent 打通的五个平台之一"] },
-            playwright: { label: "Playwright", used: ["Markdown 转换客户端的网页抓取"] },
-            sql: { label: "SQL / REST", used: ["新致软件的接口开发", "项目竞赛管理平台"] },
-            java: { label: "Java + Spring", used: ["新致软件（含 MinIO 迁移）", "项目竞赛管理平台"] },
-            python: { label: "Python", used: ["自研客户端：15+ 种格式转 Markdown"] },
-            ts: { label: "TypeScript", used: ["Joblit", "这个作品集站点"] },
-            react: { label: "React / Next", used: ["这个作品集站点", "Joblit"] },
-            azure: { label: "Azure", used: ["Copilot Studio 与 Dataverse 的运行平台"] },
-            aws: { label: "AWS", used: ["项目竞赛管理平台"] },
-            docker: { label: "Docker", used: ["项目竞赛管理平台", "新致软件"] },
-            cicd: { label: "CI/CD", used: ["项目竞赛管理平台", "Joblit"] },
+            langchain: { label: "LangChain", used: ["AI 工单智能助手：完整 RAG 管道", "Agent 核心逻辑与 Tools 调用"] },
+            langgraph: { label: "LangGraph", used: ["智能问数 Agent：可观测 NL2SQL 工作流", "每一步执行状态与中间明细可追溯"] },
+            rag: { label: "RAG", used: ["语义检索叠加律所 IT 维度过滤", "排查方案标注来源文档与章节"] },
+            nl2sql: { label: "NL2SQL", used: ["取数从按天排期缩短到分钟级", "SQL 生成错误率下降 55%"] },
+            prompt: { label: "Prompt Eng.", used: ["分层级场景化系统提示词", "事实核查与知识溯源抑制幻觉"] },
+            tools: { label: "Agent Tools", used: ["10 余个技术系统工具标准化接入", "链路追踪、系统监控、SAP 节点校验"] },
+            embedding: { label: "Embedding", used: ["技术资料向量化", "数仓字段与指标向量化"] },
+            milvus: { label: "Milvus", used: ["律所 IT 专属技术知识向量库", "字段与指标语义向量库"] },
+            es: { label: "Elasticsearch", used: ["字段取值全文索引", "多引擎混合召回的一路"] },
+            mysql: { label: "MySQL", used: ["多引擎混合召回：结构化查询"] },
+            mongodb: { label: "MongoDB", used: ["会话历史与排查过程存储", "每个工单会话独立维护上下文"] },
+            java: { label: "Java", used: ["银行核心业务中台：8 个模块、120+ 个接口"] },
+            springboot: { label: "Spring Boot", used: ["银行核心业务平台", "编程大赛亚军项目的后端"] },
+            springcloud: { label: "Spring Cloud", used: ["Nacos、Dubbo、OpenFeign、Sentinel、Gateway、Seata", "编程大赛亚军项目：微服务竞赛平台"] },
+            mybatis: { label: "MyBatis", used: ["银行核心业务平台的持久层"] },
+            oracle: { label: "Oracle", used: ["银行核心业务平台的数据库"] },
+            redis: { label: "Redis", used: ["多级缓存：核心查询 780ms → 190ms", "缓存穿透、雪崩、击穿的预防方案"] },
+            rabbitmq: { label: "RabbitMQ", used: ["消息可靠性、幂等与堆积处理", "竞赛平台的事件驱动通知"] },
+            minio: { label: "MinIO", used: ["分布式文件存储，业务文件与数据库分流"] },
+            docker: { label: "Docker", used: ["银行核心业务平台的容器化部署"] },
+            linux: { label: "Linux", used: ["独立完成项目部署"] },
         },
     },
 
@@ -484,7 +528,7 @@ export const zh = {
         // 怎么联系。药丸很窄,每条压到 10 个字以内。
         chips: [
             "他真正上线过什么？",
-            "为什么转做企业 Agent?",
+            "NL2SQL 是怎么做的？",
             "什么时候能到岗？",
             "怎么联系他？",
         ],

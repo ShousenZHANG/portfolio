@@ -28,16 +28,30 @@ test('zh persona drops the visa axis entirely', () => {
   assert.ok(!/签证|485|work rights/i.test(PERSONA_ZH));
 });
 
-test('zh persona states the delivery record with the CV’s own verbs', () => {
-  // 上线 and 试点 are not interchangeable, and the page's own counter says two.
-  assert.ok(PERSONA_ZH.includes('上线两个 Copilot Studio Agent'), 'two shipped');
-  assert.ok(PERSONA_ZH.includes('已交付并完成试点'), 'the law-firm agent was a pilot');
+test('zh persona states the delivery record with the CV’s own figures', () => {
+  // Each figure is a line in the CV's 项目成果 — and the page's own counter
+  // shows two of them, so E.D. contradicting the page is the failure mode.
+  assert.ok(PERSONA_ZH.includes('故障排查周期缩短 45%'), 'ticket assistant outcome');
+  assert.ok(PERSONA_ZH.includes('SQL 生成错误率下降 55%'), 'NL2SQL outcome');
+  assert.ok(PERSONA_ZH.includes('10 余个技术系统 Tools'), 'the tool count is "10 余个", not a round 10');
+  assert.ok(PERSONA_ZH.includes('2025.07–2026.09'), 'the Corrs dates as the zh CV states them');
+});
+
+test('zh persona has no trace of the superseded Copilot Studio CV', () => {
+  // The previous zh CV told a different story (Copilot Studio, Stepping Stone
+  // House, Joblit). One stale line and E.D. answers from a CV the page no
+  // longer offers for download.
+  assert.ok(!/Copilot Studio|Stepping Stone|Joblit|Dataverse/.test(PERSONA_ZH));
+  const answers = STYLE_SHOTS_ZH.map((s) => s.assistant).join('\n');
+  assert.ok(!/Copilot Studio|Stepping Stone|Joblit|Dataverse/.test(answers));
 });
 
 test('no style shot claims more than the CV supports', () => {
   const answers = STYLE_SHOTS_ZH.map((s) => s.assistant).join('\n');
-  assert.ok(!/三个 Copilot/.test(answers), 'two shipped + one piloted is not three');
-  assert.ok(!/两家公司.*10\+/s.test(answers), 'the 10+ figure belongs to one employer');
+  // "100 多个" is the verified total across both repos (94 + 14 at writing);
+  // never a per-repo figure.
+  assert.ok(!/Dify[^。]*100/.test(answers), 'the 100+ is the total, not Dify alone');
+  assert.ok(!/三个 Agent|3 个 Agent/.test(answers), 'two agent projects, not three');
 });
 
 test('zh persona carries both verifiable credentials', () => {

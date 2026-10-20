@@ -6,6 +6,7 @@ import Check from "lucide-react/dist/esm/icons/check";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { dict } from "../i18n/index.js";
 import RevealText from "./RevealText.jsx";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
  * Editorial section header. Renders an h2 by default (the single h1
@@ -55,7 +56,7 @@ const TitleHeader = ({ title, sub, anchor, align = "center" }) => {
 
     return (
         <div ref={ref} className={`flex flex-col gap-4 ${alignClass}`}>
-            {sub && <p className="ed-eyebrow th-fade">{sub}</p>}
+            {sub && <p className="ed-eyebrow th-fade">{mixedTrack(sub)}</p>}
 
             <div className="group relative flex items-center gap-2">
                 <RevealText as="h2" className="ed-h2" text={title} />

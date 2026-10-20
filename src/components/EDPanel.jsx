@@ -6,6 +6,7 @@ import Volume2 from "lucide-react/dist/esm/icons/volume-2";
 import VolumeX from "lucide-react/dist/esm/icons/volume-x";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { dict, locale, isZh } from "../i18n/index.js";
+import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
  * E.D. — Eddy's Digital Deputy. Full-screen command deck (lazy chunk).
@@ -480,7 +481,7 @@ const EDPanel = ({ onClose }) => {
         >
             <div className="ed-panel-inner" ref={innerRef} onKeyDown={onTrapKeyDown}>
                 <header className="flex items-center justify-between mb-6">
-                    <p className="ed-eyebrow">{dict.ed.eyebrow}</p>
+                    <p className="ed-eyebrow">{mixedTrack(dict.ed.eyebrow)}</p>
                     <div className="flex items-center gap-2">
                         <button
                             type="button"

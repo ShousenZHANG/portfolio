@@ -9,6 +9,23 @@ import { prefersReducedMotion } from "../lib/motion.js";
 import { useInView } from "../hooks/useInView.js";
 import { dict } from "../i18n/index.js";
 
+// A bullet written as 「标签：正文」 gets its label lifted to the primary text
+// colour, so a scanning reader can run down the left edge and read the four
+// headings without reading the four paragraphs. Keyed on the full-width colon
+// and a short label, which only the Chinese copy uses — English bullets have
+// no such prefix and render exactly as before.
+const LEAD_IN = /^([^：]{2,16})：/;
+function leadIn(text) {
+    const m = LEAD_IN.exec(text);
+    if (!m) return text;
+    return (
+        <>
+            <span className="exp-lead-in">{m[1]}：</span>
+            {text.slice(m[0].length)}
+        </>
+    );
+}
+
 const Experience = () => {
     const containerRef = useRef(null);
     // One observer on the timeline block, two duties: it parks the two NOW
@@ -140,7 +157,7 @@ const Experience = () => {
 
                                 {/* Card content */}
                                 <div className="exp-tile ed-tile flex-1 p-6 md:p-8 transition-all duration-300">
-                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-5">
+                                    <div className={`flex flex-col md:flex-row md:items-start md:justify-between gap-3 ${card.responsibilities.length ? "mb-5" : ""}`}>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2.5 flex-wrap">
                                                 <h3 className="text-xl md:text-2xl font-semibold leading-tight" style={{ color: "var(--tx-0)" }}>
@@ -171,6 +188,7 @@ const Experience = () => {
                                         </div>
                                     </div>
 
+                                    {card.responsibilities.length > 0 && (
                                     <ul className="space-y-3">
                                         {card.responsibilities.map((r) => (
                                             <li
@@ -181,10 +199,11 @@ const Experience = () => {
                                                 <span className="mt-1.5 flex-shrink-0" style={{ color: "var(--sig-dim)" }}>
                                                     <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor"><circle cx="3" cy="3" r="3"/></svg>
                                                 </span>
-                                                <span>{r}</span>
+                                                <span>{leadIn(r)}</span>
                                             </li>
                                         ))}
                                     </ul>
+                                    )}
                                 </div>
                             </div>
                             );
