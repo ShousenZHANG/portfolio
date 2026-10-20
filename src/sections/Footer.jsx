@@ -1,5 +1,3 @@
-import Mail from "lucide-react/dist/esm/icons/mail";
-import Phone from "lucide-react/dist/esm/icons/phone";
 import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Github from "lucide-react/dist/esm/icons/github";
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
@@ -8,8 +6,6 @@ import { dict, isZh } from "../i18n/index.js";
 
 // Channel values (email/phone) come from contact.channels — the footer only
 // owns the aria phrasings wrapped around them.
-const { email, phoneDisplay, phoneHref } = dict.contact.channels;
-
 const Footer = () => {
   return (
     <footer style={{ borderTop: "1px solid var(--hair)" }}>
@@ -20,31 +16,10 @@ const Footer = () => {
           {dict.footer.wordmark}
         </a>
 
-        {/* Top row: Links + Social */}
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 mb-8">
-          {/* Contact links */}
-          <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-6 gap-y-3">
-            <a
-              href={`mailto:${email}`}
-              aria-label={dict.footer.emailAria(email)}
-              className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
-              style={{ color: "var(--tx-1)" }}
-            >
-              <Mail className="w-4 h-4" />
-              <span>{email}</span>
-            </a>
-
-            <a
-              href={phoneHref}
-              aria-label={dict.footer.phoneAria(phoneDisplay)}
-              className="u-grow flex items-center gap-2 text-sm transition-colors duration-300 hover:!text-[var(--sig)]"
-              style={{ color: "var(--tx-1)" }}
-            >
-              <Phone className="w-4 h-4" />
-              <span>{phoneDisplay}</span>
-            </a>
-          </div>
-
+        {/* Email and phone used to repeat here, one scroll below the Contact
+            cards that already carry them; the footer keeps only the exits that
+            are not on the page above — profiles and back-to-top. */}
+        <div className="flex items-center justify-between gap-6 mb-8">
           {/* Social icons */}
           <div className="flex items-center gap-3">
             {/* Absent on /zh — see the note in Contact.jsx. */}
@@ -95,7 +70,7 @@ const Footer = () => {
         <div className="h-px mb-6" style={{ background: "var(--hair)" }} />
 
         {/* Bottom row: Copyright + Location */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono" style={{ color: "var(--tx-2)" }}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono" style={{ color: "var(--tx-2)" }}>
           <p>{dict.footer.rights(new Date().getFullYear())}</p>
           <p>{dict.footer.location}</p>
         </div>

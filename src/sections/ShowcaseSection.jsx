@@ -1,18 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, EffectFade } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 
 import { projects } from "../constants/projects";
 import TitleHeader from "../components/TitleHeader";
 import ProjectDiagram from "../components/ProjectDiagram.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { dict } from "../i18n/index.js";
-import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right";
 import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 /**
@@ -23,7 +17,7 @@ function renderHighlighted(text) {
   const parts = text.split(/\{([^}]+)\}/g);
   return parts.map((part, i) =>
     i % 2 === 1 ? (
-      <span key={`hl-${i}`} className="font-semibold" style={{ color: "var(--sig)" }}>{part}</span>
+      <span key={`hl-${i}`} className="hl" style={{ color: "var(--sig)" }}>{part}</span>
     ) : (
       <span key={`t-${i}`}>{part}</span>
     )
@@ -31,30 +25,7 @@ function renderHighlighted(text) {
 }
 
 const AppShowcase = () => {
-  const sectionRef = useRef(null);
   const projectRefs = useRef([]);
-  const swiperRefs = useRef([]);
-
-  // Swiper autoplay keeps cross-fading (and repainting a ~400px image plus
-  // its pagination bullets) even when the carousel is nowhere near the
-  // viewport. Run it only while the project is on screen.
-  useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return undefined;
-    const observers = projectRefs.current.filter(Boolean).map((el, i) => {
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          const swiper = swiperRefs.current[i];
-          if (!swiper || swiper.destroyed || !swiper.autoplay) return;
-          if (entry.isIntersecting) swiper.autoplay.start();
-          else swiper.autoplay.stop();
-        },
-        { rootMargin: "200px 0px" }
-      );
-      obs.observe(el);
-      return obs;
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
@@ -76,15 +47,11 @@ const AppShowcase = () => {
             y: 0,
             duration: isMobile ? 0.6 : 0.8,
             ease: "power2.out",
-            // `once` like the image wipe below it — play-forward only.
-            scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              once: true,
-            },
+            // `once` like the wipe below it — play-forward only.
+            scrollTrigger: { trigger: el, start: "top 88%", once: true },
           }
         );
-        // Image reveal — clip-path wipe from the leading edge
+        // Diagram reveal — clip-path wipe from the leading edge
         const media = el.querySelector(".project-media");
         if (media) {
           gsap.fromTo(
@@ -105,149 +72,73 @@ const AppShowcase = () => {
   }, []);
 
   return (
-    <section id="projects" ref={sectionRef} className="ed-shell py-[var(--sp-section)]">
-      <div>
-        <TitleHeader
-          title={dict.showcase.title}
-          sub={dict.showcase.sub}
-          anchor="projects"
-          align="left"
-        />
+    <section id="projects" className="ed-shell py-[var(--sp-section)]">
+      <TitleHeader
+        title={dict.showcase.title}
+        sub={dict.showcase.sub}
+        anchor="projects"
+        align="left"
+      />
 
-        <div className="flex flex-col gap-16 mt-14">
-          {projects.map((project, index) => (
-            <div
-              key={project.id}
-              ref={(el) => (projectRefs.current[index] = el)}
-              className={`flex flex-col ${project.desktopReverse ? "lg:flex-row-reverse" : "lg:flex-row"} items-stretch gap-8 lg:gap-12`}
-            >
-              {/* Image / Carousel / Diagram */}
-              {/* A diagram follows its title on a phone — a pipeline read before
-                  you know what system it belongs to is just boxes. Screenshots
-                  keep leading: they ARE the introduction. */}
-              <div className={`lg:w-1/2 w-full ${project.diagram ? "order-last lg:order-none" : ""}`}>
-                {/* A diagram is text and sizes to its steps — a fixed media
-                    height would clip it on a narrow phone. It stretches with
-                    the copy column on desktop. */}
-                <div className={`project-media ed-tile relative overflow-hidden ${project.diagram ? "h-full" : "h-[280px] sm:h-[340px] md:h-[400px]"}`}>
-                  {project.diagram ? (
-                    <ProjectDiagram diagram={project.diagram} />
-                  ) : project.slides.length > 0 ? (
-                    <Swiper
-                      onSwiper={(s) => { swiperRefs.current[index] = s; }}
-                      modules={[Autoplay, Pagination, EffectFade]}
-                      autoplay={{ delay: project.autoplayDelay || 4000, disableOnInteraction: false }}
-                      pagination={{ clickable: true }}
-                      effect="fade"
-                      fadeEffect={{ crossFade: true }}
-                      loop={true}
-                      className="!bg-transparent h-full w-full"
-                    >
-                      {project.slides.map((img, slideIndex) => (
-                        <SwiperSlide key={`${project.id}-${img.src}`}>
-                          <div className="flex items-center justify-center w-full h-full bg-black/10 p-3 sm:p-4">
-                            <img
-                              src={img.src}
-                              alt={img.alt}
-                              width={img.w}
-                              height={img.h}
-                              className="max-w-full max-h-full object-contain rounded-lg"
-                              loading={slideIndex === 0 ? "eager" : "lazy"}
-                              decoding="async"
-                            />
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div className="h-full w-full p-6 md:p-8 flex flex-col justify-center items-center text-center" style={{ background: "var(--ink-2)" }}>
-                      <p className="ed-eyebrow">{dict.showcase.fallbackEyebrow}</p>
-                      <h3 className="mt-3 text-xl md:text-2xl font-bold" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
-                    </div>
-                  )}
-                  <span className="sheen" aria-hidden="true" />
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="lg:w-1/2 w-full flex flex-col justify-center">
-                {project.meta && <p className="ed-eyebrow mb-3">{mixedTrack(project.meta)}</p>}
-                <h3 className="text-2xl md:text-3xl font-bold mb-3 leading-tight" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
-
-                <p className="md:text-base leading-relaxed mb-4" style={{ color: "var(--tx-1)" }}>{renderHighlighted(project.description)}</p>
-
-                {project.details && (
-                  <p className="text-sm md:text-base leading-relaxed mb-4" style={{ color: "var(--tx-2)" }}>{renderHighlighted(project.details)}</p>
-                )}
-
-                {/* Tech tags */}
-                {project.tech?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {project.tech.map((item) => (
-                      <span
-                        key={`${project.id}-tech-${item}`}
-                        className="px-2.5 py-1 rounded-full text-xs font-mono"
-                        style={{ background: "var(--ink-2)", border: "1px solid var(--hair)", color: "var(--tx-1)" }}
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Outcomes */}
-                {project.outcomes?.length > 0 && (
-                  <div className="mb-5 space-y-2">
-                    {project.outcomes.map((outcome) => (
-                      <p key={`${project.id}-o-${outcome.slice(0, 20)}`} className="project-outcome text-sm" style={{ color: "var(--tx-1)" }}>
-                        {outcome}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                {/* Award highlight */}
-                {project.highlight && (
-                  <div className="rounded-[var(--r-sm)] p-4 mb-5" style={{ border: "1px solid var(--sig-line)", background: "var(--sig-glow)" }}>
-                    <h4 className="text-base md:text-lg font-semibold" style={{ color: "var(--sig)" }}>
-                      {project.highlight.title}
-                    </h4>
-                    <p className="text-sm mt-1.5" style={{ color: "var(--tx-1)" }}>{project.highlight.description}</p>
-                    <p className="text-sm mt-1" style={{ color: "var(--tx-2)" }}>{project.highlight.sponsor}</p>
-                    <a
-                      href={project.highlight.cta.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/cta u-grow inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors"
-                      style={{ color: "var(--sig)" }}
-                    >
-                      {project.highlight.cta.label}
-                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
-                    </a>
-                  </div>
-                )}
-
-                {/* CTA links */}
-                {project.links.length > 0 && (
-                  <div className="flex flex-wrap gap-3">
-                    {project.links.map((link, linkIndex) => (
-                      <a
-                        key={`${project.id}-${link.href}`}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`group/btn ${linkIndex === 0 ? "ed-btn" : "ed-btn-ghost"}`}
-                      >
-                        {link.label}
-                        <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                      </a>
-                    ))}
-                  </div>
-                )}
+      <div className="flex flex-col gap-16 md:gap-20 mt-14">
+        {projects.map((project, index) => (
+          <article
+            key={project.id}
+            id={project.id}
+            ref={(el) => (projectRefs.current[index] = el)}
+            className={`project-row flex flex-col ${project.desktopReverse ? "lg:flex-row-reverse" : "lg:flex-row"} items-stretch gap-8 lg:gap-12`}
+          >
+            {/* The diagram follows its title on a phone — a pipeline read
+                before you know what system it belongs to is just boxes. It
+                sizes to its steps (a fixed height would clip it on a narrow
+                screen) and stretches with the copy column on desktop. */}
+            <div className="lg:w-1/2 w-full order-last lg:order-none lg:self-start">
+              <div className="project-media ed-tile relative overflow-hidden">
+                <ProjectDiagram diagram={project.diagram} />
+                <span className="sheen" aria-hidden="true" />
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* Top-aligned with the diagram's own label (same top inset), so
+                all three rows share one baseline grid instead of floating the
+                copy to whatever height centring gave each. */}
+            <div className="lg:w-1/2 w-full flex flex-col lg:pt-7">
+              <p className="ed-eyebrow mb-3">
+                {mixedTrack(`${String(index + 1).padStart(2, "0")} / ${String(projects.length).padStart(2, "0")} · ${project.meta}`)}
+              </p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-3 leading-tight" style={{ color: "var(--tx-0)" }}>{project.title}</h3>
+
+              <p className="md:text-base leading-relaxed mb-4" style={{ color: "var(--tx-1)" }}>{renderHighlighted(project.description)}</p>
+
+              <ul className="flex flex-wrap gap-2 mb-5">
+                {project.tech.map((item) => (
+                  <li
+                    key={`${project.id}-tech-${item}`}
+                    className="px-2.5 py-1 rounded-full text-xs font-mono"
+                    style={{ background: "var(--ink-2)", border: "1px solid var(--hair)", color: "var(--tx-1)" }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {/* One focal number per project — the result the whole pipeline
+                  on the left exists to produce. */}
+              <p className="project-lead">
+                <span className="project-lead-value">{project.lead.value}</span>
+                <span className="project-lead-label">{project.lead.label}</span>
+              </p>
+
+              <ul className="space-y-2">
+                {project.outcomes.map((outcome) => (
+                  <li key={`${project.id}-o-${outcome.slice(0, 20)}`} className="project-outcome text-sm" style={{ color: "var(--tx-1)" }}>
+                    {outcome}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

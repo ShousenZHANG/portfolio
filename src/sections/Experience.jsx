@@ -5,22 +5,26 @@ import { useGSAP } from "@gsap/react";
 import { expCards } from "../constants";
 import TitleHeader from "../components/TitleHeader";
 import CalendarDays from "lucide-react/dist/esm/icons/calendar-days";
+import ArrowDown from "lucide-react/dist/esm/icons/arrow-down";
+import { projects } from "../constants/projects";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { useInView } from "../hooks/useInView.js";
 import { dict } from "../i18n/index.js";
 
-// A bullet written as 「标签：正文」 gets its label lifted to the primary text
-// colour, so a scanning reader can run down the left edge and read the four
-// headings without reading the four paragraphs. Keyed on the full-width colon
-// and a short label, which only the Chinese copy uses — English bullets have
-// no such prefix and render exactly as before.
-const LEAD_IN = /^([^：]{2,16})：/;
+// A bullet written as "Label: body" (「标签：正文」 on /zh) gets its label
+// lifted to the primary text colour, so a scanning reader can run down the
+// left edge and read the headings without reading the paragraphs. The label
+// must be short — a long run before the first colon is a sentence, not a
+// label, and is left alone. "Short" differs by script: 14 hanzi is already a
+// clause, 32 Latin characters is a four-word label.
+const LEAD_IN = /^(?:[^：]{2,14}：|[^:：]{2,32}: )/;
+
 function leadIn(text) {
     const m = LEAD_IN.exec(text);
     if (!m) return text;
     return (
         <>
-            <span className="exp-lead-in">{m[1]}：</span>
+            <span className="exp-lead-in">{m[0]}</span>
             {text.slice(m[0].length)}
         </>
     );
@@ -108,7 +112,7 @@ const Experience = () => {
                 <div ref={scopeRef} className={`relative mt-14 ping-scope ${scopeInView ? "in-view" : ""}`}>
                     {/* Vertical rail — centred on the node (w-14 / 4.6rem). The
                         fill line grows with scroll; nodes light as it passes. */}
-                    <div className="exp-rail absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px" aria-hidden="true">
+                    <div className="exp-rail hidden sm:block absolute left-[1.75rem] md:left-[2.3rem] top-0 bottom-0 w-px" aria-hidden="true">
                         {/* The scrub transforms both of these on every scroll frame,
                             so the layer earns its keep — but only here. Inline wins
                             over the base rule's blanket `will-change: transform`,
@@ -132,12 +136,16 @@ const Experience = () => {
                             // Timeline convention: a year is marked once; further
                             // entries in the same year ride the rail as dots.
                             const repeatYear = startYear === prevYear;
+                            const hasBody = card.responsibilities.length > 0 || card.projects.length > 0;
                             return (
                             <div key={card.title} className="exp-card group/exp relative flex gap-5 md:gap-8">
                                 {/* Timeline marker — bare editorial year pressed onto
                                     the rail (magazine folio style), or a dot for a
                                     same-year follow-up entry */}
-                                <div className="flex-shrink-0 w-14 md:w-[4.6rem] flex flex-col items-center">
+                                {/* On a phone the year column cost ~95 of 390px and squeezed
+                                    every line to ~25 characters; the date pill already says
+                                    when, so the rail and the folio sit out below sm. */}
+                                <div className="hidden sm:flex flex-shrink-0 w-14 md:w-[4.6rem] flex-col items-center">
                                     {repeatYear ? (
                                         <div className="exp-node exp-dot" aria-hidden="true" />
                                     ) : (
@@ -156,8 +164,14 @@ const Experience = () => {
                                 </div>
 
                                 {/* Card content */}
-                                <div className="exp-tile ed-tile flex-1 p-6 md:p-8 transition-all duration-300">
-                                    <div className={`flex flex-col md:flex-row md:items-start md:justify-between gap-3 ${card.responsibilities.length ? "mb-5" : ""}`}>
+                                {/* With a body, a wide card splits: who/where/when on the
+                                    left, what on the right — the bullets ran ~150 characters
+                                    a line across the full card. */}
+                                {/* An entry with no body (the bachelor's) is a single compact row —
+                                    as a split card it was a 190px box with an empty
+                                    700px right column. */}
+                                <div className={`exp-tile ed-tile flex-1 min-w-0 transition-all duration-300 ${hasBody ? "exp-split p-6 md:p-8" : "exp-compact p-5 md:px-8 md:py-6"}`}>
+                                    <div className={`exp-head flex flex-col md:flex-row md:items-start md:justify-between gap-3 ${hasBody ? "mb-5" : ""}`}>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2.5 flex-wrap">
                                                 <h3 className="text-xl md:text-2xl font-semibold leading-tight" style={{ color: "var(--tx-0)" }}>
@@ -171,11 +185,18 @@ const Experience = () => {
                                                     </span>
                                                 )}
                                             </div>
-                                            {company && (
-                                                <p className="text-sm md:text-base mt-1 font-medium" style={{ color: "var(--sig-2)" }}>
-                                                    {company}
-                                                </p>
-                                            )}
+                                            {company && (() => {
+                                                // 「科尔斯律师事务所（Corrs Chambers Westgarth）」 wrapped
+                                                // mid-name in the narrow left column; the bracketed
+                                                // original goes on its own quieter line instead.
+                                                const m = company.match(/^(.+?)[（(](.+)[）)]$/);
+                                                return (
+                                                    <p className="text-sm md:text-base mt-1 font-medium" style={{ color: "var(--sig-2)" }}>
+                                                        {m ? m[1] : company}
+                                                        {m && <span className="exp-company-alt">{m[2]}</span>}
+                                                    </p>
+                                                );
+                                            })()}
                                         </div>
                                         {/* Dates read as data, not as a footnote: brighter
                                             text, and the signature accent while current. */}
@@ -188,6 +209,8 @@ const Experience = () => {
                                         </div>
                                     </div>
 
+                                    {hasBody && (
+                                    <div className="exp-body">
                                     {card.responsibilities.length > 0 && (
                                     <ul className="space-y-3">
                                         {card.responsibilities.map((r) => (
@@ -203,6 +226,19 @@ const Experience = () => {
                                             </li>
                                         ))}
                                     </ul>
+                                    )}
+                                    {card.projects.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-5">
+                                            {card.projects.map((pi) => (
+                                                <a key={projects[pi].id} href={`#${projects[pi].id}`} className="exp-proj">
+                                                    <span className="exp-proj-k">{dict.experience.seeProject}</span>
+                                                    {projects[pi].title}
+                                                    <ArrowDown className="w-3.5 h-3.5" aria-hidden="true" />
+                                                </a>
+                                            ))}
+                                        </div>
+                                    )}
+                                    </div>
                                     )}
                                 </div>
                             </div>

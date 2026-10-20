@@ -23,9 +23,9 @@ export const config = { runtime: "edge" };
 const COPY = {
   en: {
     title: "Eddy Zhang",
-    subtitle: "AI Engineer · Copilot Studio",
+    subtitle: "AI Agent Engineer · RAG · NL2SQL",
     urlLabel: "eddyzhang.me",
-    tagline: "Power Platform · Dataverse · AI Agents · Microsoft 365",
+    tagline: "LangChain · LangGraph · Milvus · LLM output you can verify",
   },
   zh: {
     title: "张守森",

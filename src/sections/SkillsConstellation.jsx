@@ -1,15 +1,13 @@
 import { useRef, useState } from "react";
 import TitleHeader from "../components/TitleHeader.jsx";
 import { useInView } from "../hooks/useInView.js";
-import { dict, locale, isZh } from "../i18n/index.js";
-import { SKILL_GRAPHS } from "../data/skillGraph.js";
+import { dict } from "../i18n/index.js";
+import { SKILL_GRAPH as GRAPH } from "../data/skillGraph.js";
 import { mixedTrack } from "../lib/mixedTrack.jsx";
 
 // Skill graph — nodes carry a category, viewBox coords (100 x 76), and
 // the projects/experience that prove the skill. Edges link related work.
-// Each locale draws its own graph (the two CVs describe different stacks);
-// geometry lives in data/skillGraph.js, copy in dict.skills.
-const GRAPH = SKILL_GRAPHS[locale];
+// Geometry lives in data/skillGraph.js, copy in dict.skills.
 
 const CATS = Object.fromEntries(
     Object.entries(GRAPH.cats).map(([key, color]) => [key, { label: dict.skills.cats[key], color }])
@@ -23,6 +21,13 @@ const CAT_COUNTS = Object.fromEntries(
     Object.keys(CATS).map((key) => [key, NODES.filter((n) => n.cat === key).length])
 );
 const CAT_MAX = Math.max(...Object.values(CAT_COUNTS));
+
+// Hubs for the resting panel: the four nodes with the most edges.
+const HUBS = NODES
+    .map((n) => ({ n, deg: EDGES.filter((e) => e.includes(n.id)).length }))
+    .sort((a, b) => b.deg - a.deg)
+    .slice(0, 4)
+    .map(({ n }) => n);
 
 const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
 
@@ -100,7 +105,7 @@ const SkillsConstellation = () => {
 
             <div className="ed-tile p-4 md:p-6">
                 {/* Legend — click a category to spotlight just that cluster */}
-                <div className="flex flex-wrap gap-2 mb-4 font-mono text-xs">
+                <div className="hidden sm:flex flex-wrap gap-2 mb-4 font-mono text-xs">
                     {Object.entries(CATS).map(([key, c]) => (
                         <button
                             key={key}
@@ -116,11 +121,40 @@ const SkillsConstellation = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-4 items-stretch">
+                    {/* Phone: the graph's labels render at ~8px in a 390px column —
+                        unreadable, and the nodes are too close to tap reliably. The
+                        same nodes as grouped chips; tapping one opens the same
+                        detail panel below. */}
+                    <div className="sm:hidden flex flex-col gap-4">
+                        {Object.entries(CATS).map(([key, c]) => (
+                            <div key={key}>
+                                <p className="skill-group-label">
+                                    <span className="inline-block w-2 h-2 rounded-full" style={{ background: c.color }} aria-hidden="true" />
+                                    {c.label}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {NODES.filter((n) => n.cat === key).map((n) => (
+                                        <button
+                                            key={n.id}
+                                            type="button"
+                                            aria-pressed={pinned === n.id}
+                                            onClick={() => setPinned(pinned === n.id ? null : n.id)}
+                                            className={`skill-chip ${pinned === n.id ? "on" : ""}`}
+                                            style={{ "--c": c.color }}
+                                        >
+                                            {n.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                     {/* Graph */}
                     <svg
                         ref={graphRef}
                         viewBox="0 0 100 76"
-                        className={`skill-graph w-full h-auto select-none ${graphInView ? "in-view" : ""}`}
+                        className={`skill-graph hidden sm:block w-full h-auto select-none ${graphInView ? "in-view" : ""}`}
                         role="img"
                         aria-label={dict.skills.graphAria}
                         onMouseLeave={() => setActive(null)}
@@ -217,8 +251,10 @@ const SkillsConstellation = () => {
                     </svg>
 
                     {/* Detail panel */}
+                    {/* On a phone the resting panel is only a hint the chips above
+                        already make obvious — it stays out until a chip is picked. */}
                     <div
-                        className="rounded-[var(--r-md)] p-5 flex flex-col overflow-hidden"
+                        className={`rounded-[var(--r-md)] p-5 flex-col overflow-hidden ${detail ? "flex" : "hidden sm:flex"}`}
                         style={{ background: "var(--ink-0)", border: "1px solid var(--hair)" }}
                     >
                         {detail ? (
@@ -279,18 +315,16 @@ const SkillsConstellation = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className={`flex flex-col justify-center ${isZh ? "flex-1" : "items-start h-full"} min-h-[160px]`}>
+                            <div className="flex flex-col flex-1 min-h-[160px]">
                                 <p className="ed-eyebrow mb-3">{mixedTrack(dict.skills.interactive)}</p>
                                 <p className="text-sm" style={{ color: "var(--tx-2)" }}>
                                     {dict.skills.hint}
                                 </p>
-                                {/* /zh: until a node is picked the panel was an empty
-                                    dark slab half the graph's size. It shows the graph's
+                                {/* Until a node is picked the panel was an empty dark
+                                    slab half the graph's size. It shows the graph's
                                     shape instead — nodes per cluster, as a bar, each a
-                                    shortcut to the same spotlight the legend applies.
-                                    The English page keeps its original resting state. */}
-                                {isZh && (
-                                <ul className="skill-overview pt-6">
+                                    shortcut to the same spotlight the legend applies. */}
+                                <ul className="skill-overview hidden sm:flex pt-6">
                                     {Object.entries(CATS).map(([key, c]) => {
                                         const count = CAT_COUNTS[key];
                                         return (
@@ -311,7 +345,27 @@ const SkillsConstellation = () => {
                                         );
                                     })}
                                 </ul>
-                                )}
+                                <div className="hidden sm:block pt-6">
+                                    <p className="text-xs font-mono uppercase tracking-wider mb-2.5" style={{ color: "var(--tx-2)" }}>
+                                        {dict.skills.mostLinked}
+                                    </p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {HUBS.map((n) => (
+                                            <button
+                                                key={n.id}
+                                                type="button"
+                                                onClick={() => setPinned(n.id)}
+                                                className="skill-hop"
+                                                style={{
+                                                    color: CATS[n.cat].color,
+                                                    borderColor: `color-mix(in oklab, ${CATS[n.cat].color} 40%, transparent)`,
+                                                }}
+                                            >
+                                                {n.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>

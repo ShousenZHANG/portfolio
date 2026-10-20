@@ -1,52 +1,66 @@
 Eddy Zhang
-AI Engineer | eddy.zhang24@gmail.com | (+61) 468 761 056
+AI Agent Engineer | eddy.zhang24@gmail.com | (+61) 468 761 056
 linkedin.com/in/eddy-shousen-zhang | github.com/ShousenZHANG | eddyzhang.me
 
 Summary
-AI engineer building production LLM agents. Grounded knowledge agent across five enterprise systems at a top-tier Australian law firm; Joblit, a solo-built LLM product in production. Copilot Studio, MCP, Python, TypeScript.
+AI agent engineer building enterprise LLM agents: a RAG ticket-triage assistant and an NL2SQL analytics agent for a 2,000-person Australian law firm, on LangChain, LangGraph, Milvus, Elasticsearch and MySQL, with source tracing and SQL validation against hallucination. Java and Spring Cloud backend foundation. 100+ merged PRs into Dify and Haystack.
 
 Professional Experience
 
-Junior Integration & Automation Analyst (Fixed-term Contract) | Corrs Chambers Westgarth | Sydney, Australia | Mar 2026 - Jul 2026
-- Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.
-- Engineered reusable agent Skills shared across the firm's Copilot Studio agents, consolidating retrieval logic so each query loads only the context it needs rather than the full knowledge set.
-- Delivered and piloted the agent across five platforms - ServiceNow, SharePoint, Loop, NetDocs and Intapp - letting staff query trusted knowledge and submit articles through an AI-assisted review flow.
-- Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team - replacing ~30 minutes of daily manual triage.
-- Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.
+AI Agent Engineer | Corrs Chambers Westgarth | Sydney, Australia | Jul 2025 - Sep 2026
 
-AI Engineer (Volunteer) | Stepping Stone House | Sydney, Australia | Jul 2026 - Aug 2026
-- Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.
-- Built a C#/Python desktop tool converting 15+ document, audio and web formats into agent-ready Markdown via MarkItDown, faster-whisper and Playwright, powering the agents' curated knowledge base.
-- Automated audit archiving of Teams AI meeting notes: a weekly Power Automate workflow pulls ~10 meetings' notes via the Microsoft Graph meeting AI insights API, converts them to Word and files them in SharePoint.
+AI Ticket Assistant for Legal IT Support
+Context: IT support for a top-tier independent Australian law firm of 2,000 people, spanning the legal advice centre, matter management, document collaboration and SAP. An agent that triages technical tickets automatically, helps locate root causes and gives standardised fix guidance; issues it cannot resolve online become standardised tickets carrying the full triage trail.
+- Multi-source knowledge base: standardised interfaces pull architecture docs, troubleshooting runbooks, API specifications, compliance review notes, incident post-mortems and historical tickets, with document versioning and incremental sync.
+- Vector store: Embedding-based vectorisation into a firm-specific Milvus technical knowledge base for semantic retrieval and fault matching.
+- Tools: designed and integrated 10+ standardised internal-system tools (matter-chain tracing, document search, system monitoring, API health checks, SAP node validation, channel fault checks, compliance and permission checks, alert lookups) so the agent works from live operational data.
+- Layered system prompts per fault scenario (routine triage, peak-hour incidents, root-cause location, high-risk compliance alerts), tuned continuously from support-team feedback.
+- LangChain RAG pipeline and agent core logic, combining semantic retrieval with legal-IT metadata filters (service chain, system module, fault type, business scenario, compliance tier).
+- Hallucination control and source tracing: prompt constraints, fact-checking and knowledge provenance; every generated fix cites its source document and section and links related past incidents.
+- Conversation memory in MongoDB: per-ticket session context and triage history, reloaded on each turn for coherent multi-turn diagnosis.
+- Unresolved issues: the agent summarises the triage context into a compliant ticket draft, which is filed into the internal ticketing system after human review with the full record attached.
+Outcomes: average fault-triage time down 45%; tickets handled per support engineer per day up 40%; engineers pulled into low-risk routine tickets down 55%; 65% of common technical issues triaged automatically.
 
-Software Engineer | Newtouch Software Co., Ltd. | Shanghai, China | Aug 2022 - Apr 2023
-- Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.
+NL2SQL Analytics Agent
+Context: self-serve data for the firm's 2,000 lawyers and its matter operations, finance and compliance staff, over a warehouse fed by the legal advice centre, matter management, SAP, CRM and timesheet systems. Natural-language questions become validated SQL.
+- Warehouse metadata knowledge base: config-driven extraction of fact and dimension tables, field attributes, metric definitions and enum values across matters, clients, finance, time and compliance, with incremental sync and versioning.
+- Milvus semantic index of fields and metrics, plus an Elasticsearch full-text index of field values.
+- Hybrid recall: Milvus semantic search, Elasticsearch full-text and MySQL structured queries recall fields, metrics and values in parallel after keyword extraction, filtered by business domain.
+- LangGraph observable NL2SQL workflow: keyword extraction, parallel recall, merge, second-pass filtering of irrelevant tables and metrics, context enrichment — every step's state and output traceable.
+- Generate-validate-correct loop: the model may only use retrieved real fields; warehouse EXPLAIN validates syntax and feasibility, and failures trigger automatic correction.
+Outcomes: routine data requests from days in a queue to minutes; 65% of requests self-served; data-team throughput per person up 40%; SQL generation errors down 55%; core metric definitions 100% aligned with the official standard.
 
-Projects & Open Source
+Java Backend Engineer | Newtouch Software Co., Ltd. | Shanghai, China | Aug 2022 - Apr 2023
 
-Open Source Contributions - Dify & Haystack | Agentic LLM & RAG platforms | Aug 2026 - Present
-- Merged 9 upstream PRs into major open-source LLM frameworks: Pydantic dependency-injection refactors across Dify's API layer (150k+ stars); mypy typing gates and a document-splitter bug fix in Haystack (25k+ stars).
+Banking Core Platform Upgrade | Java, Spring Boot, MyBatis, Oracle, Redis, MinIO, Docker, Linux
+Context: a modular core business platform for a bank, wrapping shared technical and business components so insurance product lines can build on it quickly.
+- Requirements breakdown and API design for policy management, document processing and product configuration, with standardised CRUD endpoints and integration testing.
+- Modular framework refactor: shared business components and extension points; multi-level Redis caching and SQL execution-plan optimisation for high-concurrency queries.
+- RESTful cross-system APIs supporting data exchange between the bank's business platforms.
+- MinIO-based distributed file storage separating business files from the database, with fine-grained access control (tiered downloads, read-only preview) for financial compliance.
+Outcomes: 8 core modules and 120+ endpoints delivered, 42% endpoint reuse, supporting 3 insurance product lines, 35% faster feature iteration; 50% less custom development for new business scenarios after the refactor; core query latency from 780 ms to 190 ms, peak QPS tripled.
 
-Joblit - AI Job Search Platform | Next.js, TypeScript, Prisma, PostgreSQL, Claude | joblit.tech | Jul 2025 - Present
-- Architected a production AI platform solo: a LangGraph state machine drives generate-validate-repair through a local Hermes Agent sidecar, with deterministic index-based guardrails and 2,100+ tests across five CI gates.
-
-Project Contest Platform | Java, MySQL, RabbitMQ, Docker, AWS | Runner-up, Coding Fest 2025 | Feb 2025 - Jun 2025
-- Built Spring Cloud backend microservices with OAuth2/JWT authentication and RabbitMQ event-driven notifications; delivered end-to-end JUnit testing and automated Docker CI/CD across services.
+Open Source
+- 100+ merged PRs into major open-source LLM frameworks: Dify (150k+ stars, 94 PRs: strict typing and Pydantic dependency injection across the API layer) and Haystack (26k+ stars, 14 PRs: mypy typing gates and a document-splitter bug fix). github.com/ShousenZHANG
 
 Skills
-AI & Agents: RAG, MCP, LLM Orchestration, Prompt & Context Engineering, LLM Evaluation & Guardrails
-Microsoft & Power Platform: Copilot Studio (Agents, Flows, Skills), Power Automate, Power Apps, Dataverse
-Engineering & Cloud: Python, TypeScript, Java, Spring Boot, React, Next.js, Azure, AWS, Docker, GitHub Actions
-Integration & Data: Boomi, ServiceNow, Dataverse Data Modelling, REST APIs, SQL, PostgreSQL, Playwright
+Agents & LLMs: LangChain, LangGraph, workflow orchestration, standardised tool integration, observable execution chains, NL2SQL, RAG end to end, prompt engineering, conversation memory and context management
+Retrieval & Data: Embedding, Milvus, Elasticsearch, MySQL, MongoDB, Oracle
+Java & Microservices: Java SE and design patterns, Spring Boot, MyBatis, Spring Cloud (Nacos, Dubbo, OpenFeign, Sentinel, Gateway, Seata)
+Middleware & Deployment: Redis (persistence, clustering, cache penetration/avalanche/breakdown), RabbitMQ (reliability, idempotency, backlog handling), MinIO, Docker, Linux
 
-Certifications
+Certifications & Awards
 Claude Certified Architect - Foundations (Anthropic)
 Microsoft Certified: AI Agent Builder Associate
+Runner-up, Coding Fest 2025 (Australian university coding competition) - backend of a Spring Cloud microservices competition platform
 
 Education
 University of New South Wales - Master of Information Technology | Sydney, Australia | Sep 2023 - Jun 2025
-WAM 82.4/100, Award Level: Excellence
-Jiangsu University of Science and Technology - Bachelor of Engineering | Jiangsu, China | Sep 2016 - Jun 2020
+QS world #19; top 10% of cohort, WAM 82.4/100
+Jiangsu University of Science and Technology (Suzhou Institute of Technology) - Bachelor of Mechatronic Engineering | Jiangsu, China | Sep 2016 - Jun 2020
 
 Work Rights
 485 Graduate Work Visa with full work rights in Australia, valid until 4 Sep 2027. No sponsorship needed.
+
+Availability
+Based in Sydney; the Corrs role ended in September 2026, available now.

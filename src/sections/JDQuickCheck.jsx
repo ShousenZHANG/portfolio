@@ -141,15 +141,24 @@ const JDQuickCheck = () => {
 
   return (
     <section id="jd-check" className="ed-shell pt-20 md:pt-24 pb-[var(--sp-section)]">
-      <div className="max-w-[860px] mx-auto">
-        <TitleHeader title={dict.jd.title} sub={dict.jd.sub} anchor="jd-check" align="left" />
+      {/* Left-aligned to the shell like every other section — it was the one
+          centred column on the page, so its heading started 180px right of
+          all the others. */}
+      <TitleHeader title={dict.jd.title} sub={dict.jd.sub} anchor="jd-check" align="left" />
 
-        <p className="ed-lead mt-5 mb-8">
-          {dict.jd.lead}
-        </p>
+      <p className="ed-lead mt-5 mb-8">
+        {dict.jd.lead}
+      </p>
 
-        <div ref={tileRef} className={`ed-tile p-5 md:p-7 ${tileInView ? "in-view" : ""}`} style={{ background: "var(--ink-1)" }}>
-          <span className="jd-beacon" aria-hidden="true" />
+      {/* Full shell width, input and verdict side by side on a desktop: the
+          result lands next to the JD that produced it instead of a scroll
+          below, and the right half is never the ~300px of nothing it was
+          when the card was a narrow column. */}
+      <div ref={tileRef} className={`ed-tile p-5 md:p-7 ${tileInView ? "in-view" : ""}`} style={{ background: "var(--ink-1)" }}>
+        <span className="jd-beacon" aria-hidden="true" />
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-6 lg:gap-10">
+        {/* The input rides along while a long verdict scrolls past it. */}
+        <div className="min-w-0 lg:self-start lg:sticky lg:top-28">
           {/* Sample chips — selected state derives from the textarea content */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-xs font-mono mr-1" style={{ color: "var(--tx-2)" }}>{dict.jd.tryLabel}</span>
@@ -176,8 +185,8 @@ const JDQuickCheck = () => {
               16px on coarse pointers stops iOS Safari zooming the viewport on focus, and
               overscroll-behavior keeps a long JD's scroll from chaining into the page. */}
           <textarea
-            className="w-full rounded-[var(--r-sm)] px-4 py-3 text-sm pointer-coarse:text-base resize-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sig)]"
-            style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", minHeight: 130, overscrollBehavior: "contain" }}
+            className="w-full min-h-[130px] lg:min-h-[280px] rounded-[var(--r-sm)] px-4 py-3 text-sm pointer-coarse:text-base resize-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sig)]"
+            style={{ background: "var(--ink-0)", border: "1px solid var(--hair)", color: "var(--tx-0)", overscrollBehavior: "contain" }}
             placeholder={dict.jd.placeholder}
             rows="5"
             maxLength={MAX_JD_CHARS}
@@ -208,9 +217,10 @@ const JDQuickCheck = () => {
           {error && (
             <p className="text-sm mt-3" role="alert" style={{ color: "var(--danger-tx)" }}>{error}</p>
           )}
+        </div>
 
           {/* ── States ── */}
-          <div className="mt-6" aria-busy={loading}>
+          <div className="min-w-0" aria-busy={loading}>
             {/* Concise SR announcement — avoids dumping the whole result tree
                 into a live region. Detailed panels below are not live. */}
             <p className="sr-only" role="status" aria-live="polite">
@@ -236,9 +246,33 @@ const JDQuickCheck = () => {
               </div>
             )}
 
+            {/* Empty state = the result's own skeleton, ghosted: the gauge, the
+                four dimensions it will be scored on (real labels), and the
+                instruction. It shows what the engine will return without
+                inventing a score — a dashed "results render here" box beside
+                the most original feature on the page undersold it. */}
             {!result && !loading && (
-              <div className="rounded-[var(--r-md)] p-8 text-center" style={{ border: "1px dashed var(--hair-bright)" }}>
-                <p className="text-sm" style={{ color: "var(--tx-2)" }}>
+              <div className="jd-ghost">
+                <div className="flex items-center gap-6">
+                  <svg width="112" height="112" viewBox="0 0 140 140" className="flex-none" aria-hidden="true">
+                    <circle cx="70" cy="70" r="52" fill="none" stroke="var(--hair-bright)" strokeWidth="9" strokeDasharray="3 7" />
+                    <text x="70" y="78" textAnchor="middle" fontSize="26" fontWeight="600" fill="var(--tx-2)">—</text>
+                  </svg>
+                  <div className="flex-1 space-y-2.5" aria-hidden="true">
+                    <span className="jd-ghost-line" style={{ width: "34%" }} />
+                    <span className="jd-ghost-line" style={{ width: "88%" }} />
+                    <span className="jd-ghost-line" style={{ width: "64%" }} />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 mt-7" aria-hidden="true">
+                  {Object.values(dict.jd.dims).map((label) => (
+                    <div key={label}>
+                      <div className="text-xs mb-1.5" style={{ color: "var(--tx-2)" }}>{label}</div>
+                      <div className="h-1.5 rounded-full" style={{ background: "var(--hair)" }} />
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm mt-7" style={{ color: "var(--tx-2)" }}>
                   {/* Assembled from dictionary segments — the CTA name carries its
                       own styled span mid-sentence, so the string can't be one piece.
                       The segments own their edge spaces. */}

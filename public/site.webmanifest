@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Eddy Zhang — AI Engineer",
+  "name": "Eddy Zhang — AI Agent Engineer",
   "short_name": "Eddy Zhang",
-  "description": "Portfolio of Eddy Zhang, an AI Engineer building production AI agents across the Microsoft 365 ecosystem.",
+  "description": "Portfolio of Eddy Zhang, an AI agent engineer shipping enterprise RAG and NL2SQL agents — LLM output you can verify.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

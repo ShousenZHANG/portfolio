@@ -20,11 +20,26 @@ const httpErr = (status) => Object.assign(new Error(`HTTP ${status}`), { status 
 
 test('persona contains the load-bearing facts', () => {
   assert.ok(PERSONA.includes('4 September 2027'), 'visa expiry');
-  assert.ok(PERSONA.includes('Stepping Stone House'), 'current role');
-  assert.ok(PERSONA.includes('Copilot Studio'), 'core skill');
+  assert.ok(PERSONA.includes('Jul 2025 – Sep 2026'), 'the Corrs dates, same as the zh CV');
+  assert.ok(PERSONA.includes('NL2SQL'), 'core skill');
   assert.ok(PERSONA.includes('eddy.zhang24@gmail.com'), 'contact');
   assert.ok(PERSONA.includes('Microsoft Certified: AI Agent Builder Associate'), 'MS credential');
   assert.ok(PERSONA.includes('Claude Certified Architect'), 'Anthropic credential');
+});
+
+test('persona has no trace of the superseded Copilot Studio CV', () => {
+  // The page and the zh persona now tell one story; one stale line here and
+  // E.D. contradicts the page it sits on.
+  assert.ok(!/Copilot Studio|Stepping Stone|Joblit|Dataverse/.test(PERSONA));
+  const answers = STYLE_SHOTS.map((s) => s.assistant).join(String.fromCharCode(10));
+  assert.ok(!/Copilot Studio|Stepping Stone|Joblit|Dataverse/.test(answers));
+});
+
+test('en and zh personas agree on the load-bearing figures', async () => {
+  const { PERSONA_ZH } = await import('../../../api/agents/_ask/persona.zh.js');
+  for (const fig of ['45%', '55%', '65%', '120+', '42%', '780', '190', '150k+', '26k+']) {
+    assert.ok(PERSONA.includes(fig) && PERSONA_ZH.includes(fig), `${fig} in both personas`);
+  }
 });
 
 test('persona forbids inventing the known unknowns', () => {

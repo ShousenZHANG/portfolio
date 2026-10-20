@@ -62,10 +62,17 @@
     --fs-lead: clamp(1.1rem, 1rem + 0.6vw, 1.375rem);
     --fs-h3: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
     --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
-    --fs-display: clamp(2.5rem, 1.6rem + 4vw, 5rem);      /* hero — refined, not shouty */
+    /* Hero. Was capped at 5rem: the headline then used a third of a 1440px
+       screen and the lede beside it carried nearly as much weight, so the
+       hero had no focal point. 7rem still fits "verifiable" inside the left
+       column at 1440. */
+    --fs-display: clamp(3.25rem, 1.2rem + 6vw, 7rem);
 
     /* Spacing rhythm (4px base) */
-    --sp-section: clamp(5rem, 3rem + 8vw, 9rem);          /* between sections */
+    /* Section padding. Applied top AND bottom, so the gap between two
+       sections is twice this — at 9rem that was ~290px of nothing between
+       every pair. */
+    --sp-section: clamp(4rem, 2.5rem + 5vw, 6.5rem);
     --sp-gutter: clamp(1.25rem, 0.5rem + 3vw, 5rem);      /* page side gutter */
 }
 
@@ -223,7 +230,36 @@
 }
 
 /* Skill graph — the detail panel's resting state: one row per cluster. */
-.skill-overview { list-style: none; margin: 0; padding-left: 0; display: flex; flex-direction: column; gap: 2px; }
+/* No `display` here: the element toggles with Tailwind's hidden/sm:flex, and
+   an unlayered display would beat the layered utility and never hide. */
+.skill-overview { list-style: none; margin: 0; padding-left: 0; flex-direction: column; gap: 2px; }
+
+/* Phone: the graph's nodes as grouped chips. */
+.skill-group-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--tx-2);
+}
+.skill-chip {
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in oklab, var(--c) 35%, transparent);
+  background: var(--ink-1);
+  color: var(--tx-1);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.skill-chip.on {
+  background: color-mix(in oklab, var(--c) 18%, var(--ink-1));
+  border-color: var(--c);
+  color: var(--tx-0);
+}
 .skill-overview-row {
   width: 100%;
   display: grid;
@@ -253,7 +289,72 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Stat tile index — "01 / 04", the eyebrow voice at tile scale. */
+/* Eyebrow segments (mixedTrack splits a label on " · "). Below sm they
+   stack one per line and the dots go — a phone never shows a line ending in
+   a stranded "·" — and the leading rule aligns with the FIRST line, not the
+   middle of a three-line block. */
+.mt-segs .seg { display: inline; }
+@media (max-width: 639.98px) {
+  .mt-segs .seg { display: block; }
+  .mt-segs .sep { display: none; }
+  .ed-eyebrow:has(.mt-segs) { align-items: flex-start; }
+  .ed-eyebrow:has(.mt-segs)::before { margin-top: 0.62em; }
+}
+
+/* Experience entry with no body: one compact row. */
+@media (min-width: 768px) {
+  .exp-compact .exp-head { flex-direction: row; align-items: center; }
+}
+
+/* JD matcher — the result's ghosted skeleton, shown before the first run. */
+.jd-ghost {
+  height: 100%;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--hair-bright);
+  padding: 1.5rem;
+}
+@media (min-width: 640px) { .jd-ghost { padding: 1.75rem 2rem; } }
+.jd-ghost-line {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--hair) 0%, var(--hair-bright) 50%, var(--hair) 100%);
+  background-size: 200% 100%;
+  animation: jd-ghost-shimmer 2.4s var(--ease-soft) infinite;
+}
+@keyframes jd-ghost-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+.ed-tile:not(.in-view) .jd-ghost-line { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .jd-ghost-line { animation: none; } }
+
+/* Stat band — one statement divided by hairlines. */
+.stat-band {
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.6rem 1.25rem 1.5rem;
+}
+.stat + .stat { border-left: 1px solid var(--hair); }
+/* Two columns below lg: the third stat starts a row, so it loses its left
+   rule and the second row gets a top one. */
+@media (max-width: 1023.98px) {
+  .stat:nth-child(3) { border-left: 0; }
+  .stat:nth-child(n + 3) { border-top: 1px solid var(--hair); }
+}
+@media (min-width: 1024px) {
+  .stat { padding: 2rem 2rem 1.9rem; }
+  .stat:first-child { padding-left: 0; }
+}
+.stat-number { font-size: clamp(2.5rem, 1.6rem + 3vw, 4rem); line-height: 1; }
+.stat-label { color: var(--tx-2); font-size: 0.875rem; line-height: 1.4; }
+
+/* Stat index — "01 / 04", the eyebrow voice at stat scale. */
 .counter-index {
   display: inline-flex;
   gap: 0.4em;
@@ -271,6 +372,96 @@
 
 /* Experience bullet lead-in (「标签：」) — lifted one step up the text ladder. */
 .exp-lead-in { color: var(--tx-0); }
+.exp-body ul { max-width: 68ch; }
+@media (min-width: 1024px) {
+  .exp-split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    column-gap: 2.5rem;
+    align-items: start;
+  }
+  .exp-split .exp-head { flex-direction: column; margin-bottom: 0; }
+}
+/* "Project · <title> ↓" — the role links down to its projects instead of
+   restating them. */
+.exp-proj {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--sig-line);
+  background: var(--sig-glow);
+  color: var(--tx-0);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.exp-proj-k {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sig);
+}
+@media (hover: hover) and (pointer: fine) {
+  .exp-proj:hover { background: color-mix(in oklab, var(--sig) 26%, transparent); border-color: var(--sig); }
+}
+/* Anchored project rows land below the fixed navbar, not under it. */
+.project-row { scroll-margin-top: 6.5rem; }
+
+/* Contact profile links — labelled, so a single one (/zh has no LinkedIn)
+   reads as a link rather than a stray icon. */
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--hair);
+  color: var(--tx-1);
+  font-size: 0.875rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .social-pill:hover { color: var(--sig); border-color: var(--sig-line); }
+}
+
+/* Project description highlights. Not .font-semibold: the zh weight ladder
+   resets that utility to 400 in a later rule of equal specificity, which
+   erased the emphasis on /zh while the English page kept it. Short runs, so
+   700 holds on Han without blooming. */
+.hl { font-weight: 600; }
+:root[lang^="zh"] .hl { font-weight: 700; }
+
+/* A project's one focal number. */
+.project-lead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  margin: 0.25rem 0 1.25rem;
+}
+.project-lead-value {
+  font-size: clamp(2.5rem, 1.8rem + 2vw, 3.5rem);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--tx-0);
+  font-variant-numeric: tabular-nums;
+}
+:root[lang^="zh"] .project-lead-value { font-weight: 700; letter-spacing: 0; }
+.project-lead-label { color: var(--tx-2); font-size: 0.9rem; }
+
+/* The bracketed original of a localised company name, on its own line. */
+.exp-company-alt {
+  display: block;
+  margin-top: 2px;
+  color: var(--tx-2);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
 
 /* ── Project diagram — an internal system drawn as its execution path ──
    One period drives everything: the signal crosses the rail in the first 75%
@@ -324,10 +515,9 @@
   100% { transform: scale(1.6); opacity: 0; }
 }
 
-/* Vertically centred in the media box: on desktop the box stretches to the
-   copy column, and a pipeline hugging the top edge leaves a dead band under
-   it. */
-.pd-track { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+/* The card hugs its steps (the row no longer stretches it), so the gap from
+   label to first step is the same in every project. */
+.pd-track { position: relative; flex: 1; display: flex; flex-direction: column; }
 .pd-steps {
   list-style: none;
   margin: 0;
@@ -549,6 +739,12 @@ body {
     font-family: "Mona Sans Variable", "Mona Sans", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* No orphans: a paragraph never strands one word — or one hanzi, "重构"
+       breaking to leave a lone 构 — on its last line. Inherited, so every
+       block of running text gets it; the display headings keep their own
+       `balance`. Chrome re-flows only the last few lines, so the cost is
+       bounded; elsewhere it is ignored and lines break as before. */
+    text-wrap: pretty;
 }
 
 /* ── Scrollbar — slim, ink-matched (the OS default reads cheap on dark) ── */
@@ -805,12 +1001,14 @@ section {
         @apply relative pl-4;
     }
 
+    /* Fixed height at the first line: a bar spanning the item's full height
+       became a 6px stub on one-line items and a long rule on three-line ones. */
     .project-outcome::before {
         content: "";
         position: absolute;
         left: 0;
-        top: 0.35rem;
-        bottom: 0.35rem;
+        top: 0.3em;
+        height: 1em;
         width: 2px;
         border-radius: 9999px;
         background: var(--sig);
@@ -1142,76 +1340,43 @@ section {
     animation-play-state: paused;
 }
 
-/* Edge fades — dissolve the track into the page floor (not pure black) */
-.logo-fade {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 12%;
-    min-width: 64px;
-    max-width: 200px;
-    z-index: 10;
-    pointer-events: none;
-}
-.logo-fade-left {
-    left: 0;
-    background: linear-gradient(90deg, var(--ink-0) 0%, transparent 100%);
-}
-.logo-fade-right {
-    right: 0;
-    background: linear-gradient(270deg, var(--ink-0) 0%, transparent 100%);
+/* Edge fades are a MASK on the track, not two painted ink-0 rectangles: the
+   rectangles had hard top and bottom edges that cut straight through the
+   fixed background glow behind them, drawing a dark band across the page. */
+.marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
 /* Monochrome by default → full colour + lift on hover (cohesive, premium) */
 /* No will-change here: `will-change: filter` on 26 marquee logos promoted
    26 permanent compositing layers for a hover-only effect. */
+/* One silhouette treatment for every mark: grayscale alone left a hairline
+   dolphin next to a solid block, eight different weights in a row. */
 .logo-img {
-    filter: grayscale(1) brightness(1.35) opacity(0.45);
+    filter: grayscale(1) brightness(0) invert(1) opacity(0.5);
     transition: filter 0.35s var(--ease-standard), transform 0.35s var(--ease-emphasis);
 }
 .logo-cell:hover .logo-img {
-    filter: grayscale(0) brightness(1) opacity(1);
+    filter: grayscale(0) brightness(1) invert(0) opacity(1);
     transform: scale(1.18);
 }
+
+.logo-name {
+    font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--tx-2);
+    white-space: nowrap;
+    transition: color 0.35s var(--ease-standard);
+}
+.logo-cell:hover .logo-name { color: var(--tx-0); }
 
 @media (prefers-reduced-motion: reduce) {
     /* No animation here, so the .in-view promotion would be a layer for nothing */
     .marquee-box { animation: none !important; transform: none !important; will-change: auto !important; }
     .marquee { overflow-x: auto; }
     .logo-img { transition: none; }
-}
-
-/* --- Swiper Pagination Enhancement --- */
-.swiper-pagination-bullet {
-    width: 8px !important;
-    height: 8px !important;
-    background: rgba(255, 255, 255, 0.3) !important;
-    opacity: 1 !important;
-    transition: all 0.3s ease !important;
-}
-.swiper-pagination-bullet-active {
-    background: var(--sig) !important;
-    width: 24px !important;
-    border-radius: 4px !important;
-    box-shadow: 0 0 8px var(--sig-glow);
-}
-
-/* --- Swiper Fade Fix --- */
-.swiper-slide {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s !important;
-}
-
-.swiper-slide-active {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transition: opacity 0.8s ease-in-out, visibility 0s linear 0s !important;
 }
 
 @layer base {
@@ -1487,8 +1652,16 @@ section {
    ink-coloured text-shadows forms a glyph-hugging halo that swallows the
    rail where it passes behind the numerals — masking that follows the
    letterforms instead of stamping a dark rectangle over the backdrop. */
+/* The glyph-hugging text-shadow halo was not enough once the rail turned
+   into a 2px glowing fill — the line still read straight through "2025". A
+   floor-coloured plate under the numerals cuts the rail cleanly where the
+   year sits. */
 .exp-yearmark {
-  padding: 6px 2px;
+  position: relative;
+  z-index: 1;
+  padding: 6px 4px;
+  background: var(--ink-0);
+  border-radius: 6px;
 }
 .exp-year {
   font-size: 24px;
@@ -1695,16 +1868,17 @@ section {
 .footer-mark {
   display: block;
   width: fit-content;
-  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  /* Sized to the viewport so the sign-off fills the measure on a phone (it
+     was ~36px and half the width), capped where it would crowd a desktop. */
+  font-size: clamp(2.8rem, 13.2vw, 12rem);
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.035em;
   color: transparent;
-  /* Alpha raised 0.35 → 0.55. The stroke is the ONLY affordance this real
-     link has at rest (the gradient fill only sweeps in on hover), and at 0.35
-     it composited to #4b4c5a over --ink-0 — 2.36:1, under the 3:1 floor even
-     for large text. 0.55 composites to #727386: 4.30:1. */
-  -webkit-text-stroke: 1px oklch(0.85 0.04 285 / 0.55);
+  /* The stroke is the ONLY affordance this real link has at rest (the
+     gradient fill sweeps in on hover). At 1px and 55% alpha it read as a
+     disabled control; 1.5px in --tx-1 reads as type. */
+  -webkit-text-stroke: 1.5px var(--tx-1);
   background: linear-gradient(90deg, var(--sig), var(--sig-2));
   -webkit-background-clip: text;
   background-clip: text;
@@ -1720,17 +1894,6 @@ section {
   .footer-mark { background-size: 100% 100%; -webkit-text-stroke: 0; }
 }
 
-/* Project media — slow zoom + saturation lift on hover */
-.project-media img {
-  transition: transform 0.7s var(--ease-standard), filter 0.7s ease;
-}
-.project-media:hover img {
-  transform: scale(1.04);
-  filter: saturate(1.12);
-}
-@media (prefers-reduced-motion: reduce) {
-  .project-media:hover img { transform: none; filter: none; }
-}
 
 /* ── Press physics — every control compresses under the finger and
    springs back on release (overshoot bezier). Transform-only. ── */
@@ -2548,12 +2711,6 @@ section {
 :root[lang^="zh"] body {
     font-family: var(--font-zh);
     line-height: 1.75;
-    /* No orphans: a paragraph never strands one hanzi on its last line
-       ("重构" breaking to leave a lone 构). Inherited, so every block of
-       running text gets it; the display headings keep their own `balance`.
-       Chrome re-flows only the last few lines, so the cost is bounded;
-       elsewhere it is ignored and lines break as before. */
-    text-wrap: pretty;
 }
 
 /* The hand-written monospace sites name JetBrains Mono directly and so do
@@ -2628,8 +2785,18 @@ section {
    stroke-by-stroke by -webkit-text-stroke — every crossing showed. */
 :root[lang^="zh"] .footer-mark {
     letter-spacing: 0;
+    /* Seven full-width glyphs: sized so the line fills the measure the way
+       the English one does. */
+    font-size: clamp(2.4rem, 11.2vw, 10.5rem);
 }
-:root[lang^="zh"] .ed-display { line-height: 1.28; }
+:root[lang^="zh"] .ed-display {
+    line-height: 1.28;
+    /* A hanzi fills its whole em box where a Latin lowercase fills about half
+       of it, so at the same font-size the Chinese headline reads ~20% bigger
+       and, three lines tall at 1.28 leading, pushed the CTAs to the fold.
+       Optically matched to the English headline instead. */
+    font-size: clamp(2.75rem, 1rem + 5vw, 5.75rem);
+}
 :root[lang^="zh"] .ed-h2 { line-height: 1.32; }
 /* The signature word inside the headline — 680 is the same non-existent weight
    as 600, one notch up. */
@@ -2658,19 +2825,15 @@ section {
     line-height: 1.45;
 }
 
-/* (c) The eyebrow keeps BOTH its uppercase and its tracking, and the tracking
-   goes UP. This is the exact inverse of the body rule, and it is deliberate:
-   Chinese body copy is set at normal tracking on essentially every good site,
-   but hanzi are square and separable, so a SHORT label tolerates spacing far
-   past anything Latin would — mainland practice runs two-hanzi section labels
-   at ~0.5em (blog.zhheo.com sets 8px on 16px), which is the Chinese replacement
-   for tracked-out Latin small-caps. 0.18em is the bad middle: loose enough to
-   read as broken word spacing, not loose enough to read as a decision.
-   uppercase stays because the half of an eyebrow it can act on — "01 /",
-   "COPILOT STUDIO" — is exactly the index-and-product-name half it was written
-   for. It is a no-op on Han, not a corruption of it. */
+/* (c) The eyebrow keeps a little tracking — hanzi are square and separable, so
+   a short label tolerates some air — but far less than first shipped: see the
+   note on the value below. Uppercase is a no-op on Han and is dropped. */
 :root[lang^="zh"] .ed-eyebrow {
-    letter-spacing: 0.3em;
+    /* Was 0.3em. On a page whose English twin tracks its eyebrows at 0.18em,
+       「证 书 与 认 证」 read as spaced-out letters rather than a label, and the
+       two languages no longer looked like one design system. 0.12em keeps a
+       label's air without breaking the word apart. */
+    letter-spacing: 0.12em;
     /* …but uppercase goes. On the English page it acts on every word; here it
        acts on the Latin half only, and that half is 「Agent」 and 「AI」 — terms
        the copy sets in mixed case everywhere else on the page. Rendering the
@@ -2758,9 +2921,6 @@ section {
     transform: none !important;
     animation: none !important;
   }
-  /* …except the carousel slides, which are stacked absolutely — only the
-     visible one can print without landing on top of its siblings. */
-  .swiper-slide:not(.swiper-slide-active) { display: none !important; }
   .ed-tile, .exp-card, .counter-card { break-inside: avoid; }
   /* On paper a link's destination is otherwise unrecoverable */
   a[href^="http"]::after {

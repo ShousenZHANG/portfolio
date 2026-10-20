@@ -1,10 +1,14 @@
 /**
- * English dictionary — the source language. Every string is lifted VERBATIM
- * from the components; the English page must render byte-identically to the
- * pre-i18n site. Punctuation is load-bearing: em dashes (—), en dashes (–) in
- * date ranges, middle dots (·), ellipses (…) and the curly apostrophes (’)
- * that came from &rsquo; are the exact glyphs the components rendered — do
- * not "fix" them to ASCII.
+ * English dictionary. Same facts as zh.js — both pages tell one story, drawn
+ * from the Chinese CV (the source of truth for the AI Agent role at Corrs,
+ * the two agent projects and the banking platform). The English page differs
+ * only where the market does: Australian contact details, the work-rights
+ * axis in the JD matcher and E.D., and copy written for an English reader
+ * rather than translated line by line.
+ *
+ * Punctuation is load-bearing: em dashes (—), en dashes (–) in date ranges,
+ * middle dots (·), ellipses (…) and curly apostrophes (’) are the exact
+ * glyphs the components render — do not "fix" them to ASCII.
  *
  * What deliberately does NOT live here: element ids, in-page anchor hrefs,
  * asset paths (except the per-locale CV pair in `hero`), event names,
@@ -56,18 +60,23 @@ export const en = {
     },
 
     hero: {
-        eyebrow: "AI Engineer · Copilot Studio · Sydney",
+        eyebrow: "AI Agent Engineer · RAG & NL2SQL · Sydney",
         // Word array for the masked stagger — `sig` marks the decode word,
         // `br` breaks the line after it. headlineAria must always read as the
-        // assembled sentence (it is the h1's accessible name).
+        // assembled sentence (it is the h1's accessible name). "verifiable"
+        // is the same hook the zh headline carries (「可验证」): sourced
+        // answers, SQL that is checked before it runs.
         headline: [
             { t: "I", sig: false },
             { t: "build", sig: false, br: true },
-            { t: "intelligent", sig: true },
+            { t: "verifiable", sig: true },
             { t: "agents.", sig: false },
         ],
-        headlineAria: "I build intelligent agents.",
-        lead: "I build production agents across the Microsoft ecosystem — Copilot Studio, MCP, Power Automate, Dataverse — and ship end-to-end LLM products solo. Below is a live one: paste any job description and watch my AI score the fit in real time.",
+        headlineAria: "I build verifiable agents.",
+        // Recruiters scan, and ATS filters run keywords first — so every term a
+        // JD would carry is spelled out in plain text here: agent, LangChain,
+        // LangGraph, RAG, Milvus, Elasticsearch, NL2SQL.
+        lead: "For the past year I shipped enterprise agents for a 2,000‑person law firm — LangChain and LangGraph, with hybrid recall across Milvus, Elasticsearch and MySQL. Every answer cites its source; every SQL query is checked before it runs.",
         ctaPrimary: "Try the live AI matcher",
         ctaCv: "Download CV",
         // The CV pair is locale DATA, not an asset constant — the zh entry
@@ -75,7 +84,6 @@ export const en = {
         cvHref: "/files/Eddy_Zhang_CV.pdf",
         cvDownloadName: "Eddy_Zhang_CV.pdf",
         available: "Available for work",
-        stackLine: "Copilot Studio · Power Automate · Dataverse · MCP",
         askEd: "Ask E.D. about him ↗",
         videoAria: "Personal introduction video by Eddy Zhang",
         playAria: "Play 30-second intro",
@@ -85,11 +93,16 @@ export const en = {
 
     counter: {
         // Numbers stay data — CountUp animates `value`, `suffix` renders raw.
+        // Scope, not results: each project row below carries its own result
+        // figure, and the same 45% printed in the band, the lead number and a
+        // bullet read as padding. 2,000 is the firm the agents serve; 2 is the
+        // production agents; 10+ the internal systems wired in as tools; 100+
+        // merged PRs measured on GitHub (Dify 94 + Haystack 14 when written).
         items: [
-            { value: 2, suffix: "", label: "Copilot Agents Published" },
-            { value: 10, suffix: "+", label: "Staff Using His Agents" },
-            { value: 5, suffix: "", label: "Enterprise Systems Unified" },
-            { value: 2100, suffix: "+", label: "Automated Tests Behind Joblit" },
+            { value: 2000, suffix: "", label: "Staff Served by His Agents" },
+            { value: 2, suffix: "", label: "Production Agents Shipped" },
+            { value: 10, suffix: "+", label: "Systems Wired to Agents" },
+            { value: 100, suffix: "+", label: "Open-source PRs Merged" },
         ],
     },
 
@@ -119,8 +132,9 @@ export const en = {
     // Open-source strip — sits under the certifications. Star counts are the
     // scale proof and the card links straight to GitHub's own filtered list of
     // HIS merged PRs, so the claim verifies itself the way the certs do.
-    // Counts are the CV's conservative rounding (Dify was 154k and Haystack
-    // 26k when written) — a figure that only grows stays true.
+    // Stars are conservative rounding (Dify 158k, Haystack 26.7k when
+    // written); PR counts are what `gh search prs --merged` returned in
+    // October 2026. Both only grow, so the link always shows at least this.
     oss: {
         eyebrow: "Open Source",
         listAria: "Open-source contributions",
@@ -138,16 +152,16 @@ export const en = {
                 name: "Dify",
                 blurb: "Agentic LLM platform",
                 stars: "150k+",
-                prs: 5,
-                work: "Pydantic dependency-injection refactors across the API layer",
+                prs: 94,
+                work: "Strict typing and Pydantic dependency injection across the API layer",
                 href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
             {
                 repo: "deepset-ai/haystack",
                 name: "Haystack",
                 blurb: "RAG orchestration framework",
-                stars: "25k+",
-                prs: 4,
+                stars: "26k+",
+                prs: 14,
                 work: "mypy typing gates and a document-splitter bug fix",
                 href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
@@ -159,18 +173,23 @@ export const en = {
         sub: "01 / Live AI Demo",
         lead: "Paste any job description — my own AI engine scores how well I fit, in real time. Same RAG + LLM stack I ship in production.",
         tryLabel: "Try:",
+        // Three real-reading Australian JDs, one per path through the scorer:
+        // a strong match (with one bonus he does not have — Kubernetes — so it
+        // does not read as written from the CV), an adjacent field (model
+        // training, which he has not done), and a hard fail on two eligibility
+        // axes at once (years and citizenship).
         samples: [
             {
-                label: "Senior React Engineer",
-                body: "Senior React Engineer — Sydney (hybrid). 5+ years with React and TypeScript, building component libraries and design systems. Strong with Node.js REST APIs and AWS. You will mentor junior engineers and own frontend architecture. Full working rights in Australia required.",
+                label: "AI Agent Engineer",
+                body: "AI Agent Engineer — Sydney (hybrid). Build internal agents with LangChain / LangGraph: own the RAG pipeline (parsing, embeddings, hybrid retrieval), ship an NL2SQL analytics assistant, and design tool integrations and prompts that keep model output grounded. 1–3 years in AI application or backend engineering; Python or Java; hands-on with Milvus, Elasticsearch or a similar retrieval stack. Bonus: open-source contributions to LLM frameworks, Spring Cloud microservices, Kubernetes. Full working rights in Australia required.",
             },
             {
-                label: "ML / AI Engineer",
-                body: "Machine Learning Engineer. Ship production AI features: LLM agents, RAG pipelines, prompt engineering, vector databases. Python and cloud-native services. Experience with OpenAI / Anthropic APIs. Remote within Australia.",
+                label: "LLM Research Engineer",
+                body: "LLM Research Engineer — Melbourne. Own continued pre-training, SFT and RLHF for our domain models; build data-cleaning and evaluation pipelines; optimise inference latency and GPU memory. 3+ years in NLP or LLM research; expert PyTorch; DeepSpeed or Megatron for distributed training; hands-on LoRA / QLoRA fine-tuning. Publications at top venues preferred; PhD or Master's in a related field.",
             },
             {
-                label: "Full-Stack (PR required)",
-                body: "Full-Stack Developer — Next.js, PostgreSQL, Docker, CI/CD on Vercel. Own features end to end. Must be an Australian citizen or hold permanent residency.",
+                label: "Backend Lead (8 yrs, citizen)",
+                body: "Senior Backend Engineering Lead — Canberra, on-site only. Architect and scale a high-throughput trading platform and lead a team of 5+ backend engineers. 8+ years of Java backend experience including 3+ years in people leadership; deep JVM tuning, distributed transactions and high-concurrency middleware. Must be an Australian citizen eligible for NV1 security clearance.",
             },
         ],
         loadingSteps: ["Parsing the JD", "Matching against my CV", "Scoring the fit"],
@@ -240,55 +259,61 @@ export const en = {
     },
 
     logos: {
-        // The 13 logo names stay in LogoSection.jsx — brand names, identical
-        // in every locale, rendered as alt + title straight from the list.
+        // The logo names stay in LogoSection.jsx — brand names, identical in
+        // every locale, rendered as alt + title straight from the list.
         eyebrow: "Tools I work with daily",
     },
 
     experience: {
-        title: "Professional Experience",
+        // The rail carries two degrees as well as the roles, so the title
+        // says so — a reader should not take the degree cards for jobs.
+        title: "Experience & Education",
         sub: "02 / Experience",
         currentAria: "current role",
         nowBadge: "NOW",
         currentBadge: "Current",
+        // Prefix for the "see the project" links under a role.
+        seeProject: "Project",
         // Card titles keep the " — " (space, U+2014, space) separator —
         // Experience.jsx splits role/company on exactly that. Dates keep
         // Arabic 4-digit years — the rail's yearmark regex (\d{4}) needs them.
+        // `projects` holds indexes into showcase.projects: the card links down
+        // to them instead of restating their mechanics and figures.
         cards: [
             {
-                title: "AI Engineer (Volunteer) — Stepping Stone House",
-                date: "Jul 2026 – Aug 2026",
+                title: "AI Agent Engineer — Corrs Chambers Westgarth",
+                date: "Jul 2025 – Sep 2026",
+                // Scope only — the figures live once, in Selected Work, which
+                // these cards link to. Repeating 45% / 55% in three places made
+                // the page read as padding.
                 responsibilities: [
-                    "Built and published two Copilot Studio agents now used by 10+ staff, grounding answers in curated Markdown knowledge via MCP tool calls and purpose-built agent Skills.",
-                    "Built a C#/Python desktop tool converting 15+ document, audio and web formats into agent-ready Markdown via MarkItDown, faster-whisper and Playwright, powering the agents' curated knowledge base.",
-                    "Automated audit archiving of Teams AI meeting notes: a weekly Power Automate workflow pulls ~10 meetings' notes via the Microsoft Graph meeting AI insights API, converts them to Word and files them in SharePoint.",
+                    "Built two production agents for the firm: an AI ticket assistant for IT support, and an NL2SQL agent for self-serve analytics.",
+                    "Owned the hallucination controls across both: layered system prompts, fact-checking and source tracing, SQL validated before it runs, and MongoDB conversation memory.",
                 ],
-            },
-            {
-                title: "Junior Integration & Automation Analyst (Fixed-term) — Corrs Chambers Westgarth",
-                date: "Mar 2026 – Jul 2026",
-                responsibilities: [
-                    "Led end-to-end architecture of a trusted knowledge-management agent: chose the Microsoft stack and designed the Dataverse data model and ingestion workflows that make every stored answer verifiable.",
-                    "Engineered reusable agent Skills shared across the firm’s Copilot Studio agents, consolidating retrieval logic so each query loads only the context it needs rather than the full knowledge set.",
-                    "Delivered and piloted the agent across five platforms — ServiceNow, SharePoint, Loop, NetDocs and Intapp — letting staff query trusted knowledge and submit articles through an AI-assisted review flow.",
-                    "Built a daily agent flow calling the Boomi API to pull production logs, AI-analyse failures and route findings to the support team — replacing ~30 minutes of daily manual triage.",
-                    "Prototyped natural-language creation of Boomi integration flows from a Copilot agent: payroll staff describe a need and the agent builds the flow, database connection and a simple front end via the Boomi Flow API.",
-                ],
+                projects: [0, 1],
             },
             {
                 title: "Master of Information Technology — UNSW Sydney",
                 date: "Sep 2023 – Jun 2025",
                 responsibilities: [
-                    "Graduated with WAM 82.4/100 — Award Level: Excellence.",
+                    "QS world #19; graduated in the top 10% of the cohort (WAM 82.4/100).",
                     "Built the backend of the Coding Fest 2025 runner-up project — a Spring Cloud microservices competition platform.",
-                            ],
+                ],
+                projects: [],
             },
             {
-                title: "Software Engineer — Newtouch Software Co., Ltd.",
+                title: "Java Backend Engineer — Newtouch Software Co., Ltd.",
                 date: "Aug 2022 – Apr 2023",
                 responsibilities: [
-                    "Developed Java/Spring Boot microservices and RESTful APIs, and designed the MinIO storage migration.",
+                    "Java backend on a bank’s core business platform: policy, document and product-configuration modules, multi-level Redis caching and MinIO file storage.",
                 ],
+                projects: [2],
+            },
+            {
+                title: "Bachelor of Mechatronic Engineering — Jiangsu University of Science and Technology",
+                date: "Sep 2016 – Jun 2020",
+                responsibilities: [],
+                projects: [],
             },
         ],
     },
@@ -296,45 +321,77 @@ export const en = {
     showcase: {
         title: "Selected Work",
         sub: "03 / Selected Work",
-        fallbackEyebrow: "Enterprise Project", // no-slides fallback — latent, kept translatable
-        viewOnGithub: "View on GitHub",
-        liveDemo: "Live Demo",
-        // Index-aligned with constants/projects.js. Only copy lives here;
-        // srcs, dimensions, hrefs, ids and tech-brand tags stay in the data
-        // file. {curly} spans are render-time highlight markers — verbatim.
+        // Index-aligned with constants/projects.js (ids and tech tags live
+        // there). All three are internal enterprise systems with no public UI
+        // to screenshot, so each is drawn as its real execution path by
+        // ProjectDiagram — which is the thing a technical reader wants to
+        // judge anyway: did he actually build this pipeline? {curly} spans are
+        // render-time highlight markers.
         projects: [
             {
-                title: "Joblit",
-                alts: [
-                    "Joblit AI-powered landing page with live demo",
-                    "Joblit jobs workspace with AI keyword highlighting",
-                    "Joblit Chrome Extension auto-filling ATS application form",
-                    "Joblit resume builder with PDF preview",
-                    "Joblit AutoFill Chrome Extension installation page",
-                ],
+                title: "AI Ticket Assistant for Legal IT",
+                meta: "Corrs Chambers Westgarth · Jul 2025 – Sep 2026",
                 description:
-                    "A {production AI job platform, architected solo} — a {LangGraph state machine} drives generate-validate-repair through a local {Hermes Agent sidecar}, with deterministic index-based guardrails and {2,100+ tests} across five CI gates.",
+                    "IT support for a 2,000‑person law firm: a {LangChain} RAG pipeline searches a firm-specific {Milvus knowledge base}, filtered by service chain, system module and fault type; the agent calls {10+ standardised tools} for live operational data, triages automatically and helps pinpoint root causes — and every fix cites its source document and section.",
+                lead: { value: "45%", label: "shorter fault triage" },
                 outcomes: [
-                    "Generate → validate → repair, as an explicit LangGraph state machine rather than a prompt-and-hope call",
-                    "Deterministic index-based guardrails: the model returns integer positions into the candidate’s own profile and cannot name a skill it does not carry",
-                    "A local Hermes Agent sidecar runs generation on the candidate’s own model — no server-side model keys",
+                    "Tickets handled per support engineer per day up 40%",
+                    "Escalations of low-risk routine tickets to engineers down 55%; 65% of common issues triaged automatically",
+                    "Unresolved issues become drafted tickets with the full triage trail attached, filed after human review",
                 ],
+                diagram: {
+                    label: "Triage pipeline",
+                    steps: [
+                        { t: "Multi-source ingestion", d: "Architecture docs, runbooks, past tickets — synced incrementally" },
+                        { t: "Vector indexing", chips: ["Embedding", "Milvus"] },
+                        { t: "RAG + metadata filters", d: "Service chain, system module, fault type, compliance tier" },
+                        { t: "Agent calls tools", chips: ["Tracing", "Monitoring", "API health", "SAP checks"], d: "10+ internal systems in all" },
+                        { t: "Sourced fix / drafted ticket", d: "Cites document and section; unresolved cases become tickets", end: true },
+                    ],
+                },
             },
             {
-                title: "Scalable Competition Platform",
-                alts: [
-                    "Coding Fest 2025 Runner-up Certificate",
-                    "Coding Fest 2025 Award Ceremony Team Photo",
-                    "System Architecture",
-                    "CI/CD Pipeline",
-                ],
+                title: "NL2SQL Analytics Agent",
+                meta: "Corrs Chambers Westgarth · Jul 2025 – Sep 2026",
                 description:
-                    "Cloud-native competition system — {Spring Cloud microservices} secured with {OAuth2/JWT}, with {event-driven RabbitMQ messaging} powering real-time notifications across services.",
-                highlight: {
-                    title: "Runner-up — Best Project in AI for Education",
-                    description: "Recognized at Coding Fest 2025 (University of Sydney) for innovation and impact.",
-                    sponsor: "Sponsored by Atlassian and Flow Traders.",
-                    ctaLabel: "View Award Certificate",
+                    "Self-serve data for the firm’s 2,000 lawyers and its operations, finance and compliance staff: {LangGraph} runs an observable NL2SQL workflow that recalls fields, metrics and real values in parallel from {Milvus semantic search}, {Elasticsearch full-text} and {MySQL structured queries}. The model may only write SQL against fields it actually retrieved — then {EXPLAIN validation} gates it and auto-corrects failures.",
+                lead: { value: "55%", label: "fewer SQL generation errors" },
+                outcomes: [
+                    "Routine data requests: from days in a queue to minutes; 65% of requests now self-served",
+                    "Core metric definitions 100% aligned with the official standard",
+                    "Data-team throughput per person up 40%",
+                ],
+                diagram: {
+                    label: "LangGraph workflow",
+                    steps: [
+                        { t: "Keyword extraction", d: "Tokenise the question into business terms" },
+                        { t: "Parallel recall", chips: ["Milvus", "Elasticsearch", "MySQL"] },
+                        { t: "Merge · second-pass filter", d: "Drop irrelevant tables and metrics; add context" },
+                        { t: "Generate SQL", loop: "EXPLAIN check · auto-correct" },
+                        { t: "Return result", d: "In minutes, on official metric definitions", end: true },
+                    ],
+                },
+            },
+            {
+                title: "Banking Core Platform Upgrade",
+                meta: "Newtouch Software · Aug 2022 – Apr 2023",
+                description:
+                    "A core business platform for a bank: shared technical and business components below, fast custom development for insurance product lines above. I owned requirements breakdown and API development for policy management, document processing and product configuration, and tuned the high-concurrency paths with {multi-level Redis caching} and {SQL execution-plan optimisation}.",
+                lead: { value: "190 ms", label: "core query latency, from 780 ms" },
+                outcomes: [
+                    "8 core modules and 120+ endpoints delivered, 42% endpoint reuse, supporting 3 insurance product lines",
+                    "After the modular refactor, custom development for a new business scenario took 50% less effort",
+                    "Peak QPS up 3× under high concurrency",
+                ],
+                diagram: {
+                    label: "Platform layers",
+                    steps: [
+                        { t: "Insurance product lines", chips: ["Policies", "Documents", "Product config"] },
+                        { t: "Shared components · extension points", d: "50% less custom development" },
+                        { t: "RESTful cross-system APIs", d: "120+ endpoints, 42% reuse" },
+                        { t: "Multi-level caching", chips: ["Redis", "SQL plans"], d: "780 ms → 190 ms" },
+                        { t: "Split storage", chips: ["Oracle", "MinIO"], end: true },
+                    ],
                 },
             },
         ],
@@ -343,56 +400,57 @@ export const en = {
     skills: {
         title: "Skill Constellation",
         sub: "04 / Stack",
-        lead: "The Microsoft 365 agent stack I build with — Copilot Studio, Power Platform, and the AI around them — mapped by how it connects. Tap or hover a node to trace its links; select one to see what I shipped with it.",
+        lead: "The agent and backend stack I work with, mapped by how it connects — LangChain and LangGraph orchestrate, Milvus, Elasticsearch and MySQL retrieve, Java and Spring Cloud carry it. Hover or tap a node to trace its links; select one to see what I shipped with it.",
         graphAria: "Interactive skills graph",
-        // `category` is the localised CATS label for the node's cluster.
+        // `category` is the localised cats label for the node's cluster.
         nodeAria: (label, category) => `${label}, ${category}`,
         linksCount: (n) => `${n} links`,
         shippedIn: "Shipped in",
         linkedSkills: "Linked skills",
+        // The resting panel's shortcut list: the best-connected nodes.
+        mostLinked: "Most connected",
         interactive: "Interactive",
         hint: "Click any node to see the projects, roles and platforms behind each skill.",
-        // Keys mirror the component's CATS keys (structure, not copy).
+        // Keys mirror the cats in data/skillGraph.js (structure, not copy).
         cats: {
-            ms: "Microsoft & Power Platform",
-            ai: "AI & Agents",
-            data: "Integration & Data",
-            eng: "Software Engineering",
-            cloud: "Cloud & DevOps",
+            agent: "Agents & LLMs",
+            retrieval: "Retrieval & Data",
+            java: "Java & Microservices",
+            mw: "Middleware",
+            ops: "Deployment",
         },
-        // Keyed by NODE id. Labels are product names (identical in zh, kept
-        // here as data so the shape contract stays exhaustive); the `used`
-        // evidence lines are prose and DO get rewritten per locale.
-        // Coordinates, radii, categories and edges stay in the component.
+        // Keyed by node id. Labels are product names; the `used` evidence
+        // lines are prose and get written per locale. Geometry, categories and
+        // edges live in data/skillGraph.js.
         nodes: {
-            copilot: { label: "Copilot Studio", used: ["Stepping Stone House — 2 published agents", "Corrs — trusted KM agent"] },
-            pautomate: { label: "Power Automate", used: ["Teams meeting-notes archiving", "Corrs daily log-triage flow"] },
-            dataverse: { label: "Dataverse", used: ["Corrs — verifiable KM data model", "reusable agent Skills"] },
-            powerapps: { label: "Power Apps", used: ["Microsoft Power Platform"] },
-            agents: { label: "AI Agents", used: ["2 published agents — 10+ staff (SSH)", "Corrs KM agent — piloted across 5 platforms"] },
-            rag: { label: "RAG", used: ["Curated Markdown knowledge (SSH)", "Corrs trusted answers"] },
-            mcp: { label: "MCP", used: ["SSH agents — grounded via MCP tool calls"] },
-            llmorch: { label: "LLM Orchestration", used: ["Joblit — any-LLM, Zod-validated"] },
-            prompt: { label: "Prompt Eng.", used: ["Joblit prompt contracts", "JD matcher"] },
-            boomi: { label: "Boomi", used: ["Corrs log triage (~30 min/day saved)", "NL flow-building prototype"] },
-            servicenow: { label: "ServiceNow", used: ["1 of 5 platforms the Corrs agent spans"] },
-            playwright: { label: "Playwright", used: ["SSH Markdown conversion tool"] },
-            sql: { label: "SQL / REST", used: ["Newtouch APIs", "Contest Platform"] },
-            java: { label: "Java + Spring", used: ["Newtouch (+ MinIO migration)", "Contest Platform"] },
-            python: { label: "Python", used: ["SSH desktop tool — 15+ formats"] },
-            ts: { label: "TypeScript", used: ["Joblit", "this portfolio"] },
-            react: { label: "React / Next", used: ["This portfolio", "Joblit"] },
-            azure: { label: "Azure", used: ["The platform Copilot Studio and Dataverse run on"] },
-            aws: { label: "AWS", used: ["Contest Platform"] },
-            docker: { label: "Docker", used: ["Contest Platform", "Newtouch"] },
-            cicd: { label: "CI/CD", used: ["Contest Platform", "Joblit"] },
+            langchain: { label: "LangChain", used: ["AI ticket assistant — full RAG pipeline", "Agent core logic and tool calls"] },
+            langgraph: { label: "LangGraph", used: ["NL2SQL agent — observable workflow", "Every step’s state and output traceable"] },
+            rag: { label: "RAG", used: ["Semantic search + legal-IT metadata filters", "Every fix cites document and section"] },
+            nl2sql: { label: "NL2SQL", used: ["Data requests: days → minutes", "SQL generation errors down 55%"] },
+            prompt: { label: "Prompt Eng.", used: ["Layered, scenario-specific system prompts", "Fact-checking and source tracing vs. hallucination"] },
+            tools: { label: "Agent Tools", used: ["10+ internal systems wired in as tools", "Tracing, monitoring, SAP node checks"] },
+            embedding: { label: "Embedding", used: ["Technical knowledge vectorised", "Warehouse fields and metrics vectorised"] },
+            milvus: { label: "Milvus", used: ["Firm-specific IT knowledge base", "Field and metric semantic index"] },
+            es: { label: "Elasticsearch", used: ["Full-text index of field values", "One leg of the hybrid recall"] },
+            mysql: { label: "MySQL", used: ["Hybrid recall — structured queries"] },
+            mongodb: { label: "MongoDB", used: ["Session history and triage trail", "Per-ticket conversation context"] },
+            java: { label: "Java", used: ["Banking core platform — 8 modules, 120+ endpoints"] },
+            springboot: { label: "Spring Boot", used: ["Banking core platform", "Coding Fest runner-up backend"] },
+            springcloud: { label: "Spring Cloud", used: ["Nacos, Dubbo, OpenFeign, Sentinel, Gateway, Seata", "Coding Fest runner-up — microservices platform"] },
+            mybatis: { label: "MyBatis", used: ["Banking platform persistence layer"] },
+            oracle: { label: "Oracle", used: ["Banking platform database"] },
+            redis: { label: "Redis", used: ["Multi-level cache — 780 ms → 190 ms", "Cache penetration, avalanche, breakdown defences"] },
+            rabbitmq: { label: "RabbitMQ", used: ["Reliable, idempotent messaging and backlog handling", "Event-driven notifications — contest platform"] },
+            minio: { label: "MinIO", used: ["Distributed file store, kept out of the database"] },
+            docker: { label: "Docker", used: ["Banking platform containerised releases"] },
+            linux: { label: "Linux", used: ["Owns his own deployments end to end"] },
         },
     },
 
     contact: {
         title: "Get in Touch",
         sub: "05 / Contact",
-        lead: "Open to full-time roles and interesting collaborations. Quick to learn, clear in communication, honest about trade-offs — the fastest way to reach me is below, or send a note and I'll reply soon.",
+        lead: "Hiring for agents, RAG or NL2SQL? Paste the JD into the matcher above for an instant read — or reach me directly below. Open to full-time roles in Sydney or remote.",
         // The mailto href is derived at render (`mailto:` + email) — only the
         // address itself is locale data.
         channels: {
@@ -427,12 +485,8 @@ export const en = {
     },
 
     footer: {
-        wordmark: "Let’s build.", // &rsquo; in source — keep the curly apostrophe
+        wordmark: "Let’s build.",
         wordmarkAria: "Go to the contact section",
-        // Channel values come from contact.channels — the footer only owns
-        // the aria phrasings wrapped around them.
-        emailAria: (email) => `Email ${email}`,
-        phoneAria: (phone) => `Phone ${phone}`,
         socialAria: {
             linkedin: "LinkedIn profile",
             github: "GitHub profile",
@@ -444,13 +498,13 @@ export const en = {
 
     ed: {
         chips: [
-            "What's Eddy's visa status?",
-            "Why did he pivot to Copilot Studio?",
             "What has he actually shipped?",
+            "How does his NL2SQL agent work?",
+            "What's Eddy's visa status?",
             "How do I get in touch with him?",
         ],
         panelAria: "E.D. — Eddy's AI assistant",
-        eyebrow: "E.D. · Eddy’s Digital Deputy", // &rsquo; in source
+        eyebrow: "E.D. · Eddy’s Digital Deputy",
         voiceOn: "Voice replies on",
         voiceOff: "Voice replies off",
         close: "Close E.D.",

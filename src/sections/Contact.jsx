@@ -114,24 +114,24 @@ const Contact = () => {
             </a>
           </div>
 
-          <div className="flex items-center gap-3 mt-6">
+          <div className="flex flex-wrap items-center gap-3 mt-6">
             {/* LinkedIn's China consumer service shut down in 2023, so on /zh
                 this is a dead end for the only audience that page is written
                 for — worse than absent, because it looks like a channel. */}
             {!isZh && (
               <Magnetic strength={0.5}>
                 <a href="https://linkedin.com/in/eddy-shousen-zhang" target="_blank" rel="noopener noreferrer"
-                   aria-label={dict.contact.socialAria.linkedin} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
-                   style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
-                  <Linkedin className="w-[18px] h-[18px]" />
+                   className="social-pill">
+                  <Linkedin className="w-4 h-4" aria-hidden="true" />
+                  {dict.contact.socialAria.linkedin}
                 </a>
               </Magnetic>
             )}
             <Magnetic strength={0.5}>
               <a href="https://github.com/ShousenZHANG" target="_blank" rel="noopener noreferrer"
-                 aria-label={dict.contact.socialAria.github} className="w-11 h-11 flex items-center justify-center rounded-[var(--r-sm)] transition-colors hover:!border-[var(--sig-line)] hover:!text-[var(--sig)]"
-                 style={{ border: "1px solid var(--hair)", color: "var(--tx-1)" }}>
-                <Github className="w-[18px] h-[18px]" />
+                 className="social-pill">
+                <Github className="w-4 h-4" aria-hidden="true" />
+                {dict.contact.socialAria.github}
               </a>
             </Magnetic>
             <span ref={pingRef} className={`ping-scope ${pingInView ? "in-view" : ""} inline-flex items-center gap-2 ml-1 text-sm`} style={{ color: "var(--tx-1)" }}>

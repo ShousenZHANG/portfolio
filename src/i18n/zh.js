@@ -73,22 +73,25 @@ export const zh = {
 
     hero: {
         eyebrow: "AI Agent 开发 · RAG 与 NL2SQL 落地 · 现居悉尼",
-        // 三段切分,断点在第一个词的 br 上:
+        // 三行,断点落在 br 上:
         //   我构建
-        //   可验证的智能体。
+        //   可验证的
+        //   智能体。
+        // 不让「的」开头起一行 —— 虚词起行是中文标题排版的忌讳。
         // 「可验证」单独成词,既是解码词也是签名色词 —— 这是中文简历抬头
         //「大模型输出可验证」的钩子,也是全网中文个人站没人占的那个词。
         // Hero.jsx 的词间空格已按 locale 关掉,中文这里不会出现可见空隙。
         headline: [
             { t: "我构建", sig: false, br: true },
             { t: "可验证", sig: true },
-            { t: "的智能体。", sig: false },
+            { t: "的", sig: false, br: true },
+            { t: "智能体。", sig: false },
         ],
         headlineAria: "我构建可验证的智能体。",
         // HR 扫一份简历只有一分钟,自动筛选还会先跑一遍关键词。所以这段
         // 必须把 JD 上真会出现的词都用明文摆出来:Agent、LangChain、
         // LangGraph、RAG、Milvus、Elasticsearch、NL2SQL —— 一个都不藏在图里。
-        lead: "过去一年多，我在一家 2000 人规模的律所做企业级 Agent 落地：LangChain、LangGraph 编排，Milvus 向量检索、Elasticsearch 全文检索与 MySQL 结构化查询多路召回；每条答案标注来源，每条 SQL 先过校验再执行。下面这块 JD 匹配器也是我写的——粘一份岗位描述进去，当场算出匹配度。",
+        lead: "过去一年多，我为一家 2000 人规模的律所落地企业级 Agent：LangChain、LangGraph 编排，Milvus、Elasticsearch 与 MySQL 多路召回；每条答案标注来源，每条 SQL 先校验再执行。",
         ctaPrimary: "试试实时 AI 匹配",
         ctaCv: "下载简历",
         // 简历文件是「本地化数据」而不是资源常量:中文页发的是另一份 PDF,
@@ -96,7 +99,6 @@ export const zh = {
         cvHref: "/files/Eddy_Zhang_CV_zh.pdf",
         cvDownloadName: "张守森-AI Agent开发-简历.pdf",
         available: "目前可到岗",
-        stackLine: "LangChain · LangGraph · Milvus · Elasticsearch",
         askEd: "让 E.D. 替他回答 ↗",
         videoAria: "张守森的个人介绍视频",
         playAria: "播放 30 秒自我介绍",
@@ -112,9 +114,13 @@ export const zh = {
         // Haystack 14),简历写的就是「累计 100+」。
         // 标签控制在 8 个字宽以内:手机上四格两列,再长就会在词中间折行
         //(实测「接入 Agent」被拆成「接 / 入」)。
+        // 写范围,不写成果:每个项目行下面都有自己的成果数字,同一个 45%
+        // 在数字条、项目大字和要点里各出现一次,读起来像凑字数。2000 是
+        // Agent 服务的律所规模;2 是上线的生产级 Agent;10+ 是接入的技术
+        // 系统工具;100+ 是 GitHub 实测的已合并 PR。
         items: [
-            { value: 45, suffix: "%", label: "故障排查周期缩短" },
-            { value: 55, suffix: "%", label: "SQL 错误率下降" },
+            { value: 2000, suffix: "", label: "服务全所员工" },
+            { value: 2, suffix: "", label: "生产级 Agent 上线" },
             { value: 10, suffix: "+", label: "技术系统工具接入" },
             { value: 100, suffix: "+", label: "开源 PR 已合并" },
         ],
@@ -290,40 +296,44 @@ export const zh = {
         // 一条都不会命中 /present/i,这两个徽标是休眠文案。
         nowBadge: "现在",
         currentBadge: "在职",
+        // 岗位卡片下「看项目」链接的前缀。
+        seeProject: "项目",
         // 卡片只讲「做了什么、结果多少」,一条一件事;两个 Agent 项目的完整
         // 机制在下面「精选项目」里展开,这里不重复同一段描述。
         cards: [
             {
                 title: "AI Agent 开发 — 科尔斯律师事务所（Corrs Chambers Westgarth）",
                 date: "2025.07 – 2026.09",
+                // 只写范围,不重复数字 —— 数字只在下面「精选项目」里出现一次,
+                // 卡片直接链过去。同一个 45% 在三处出现,读起来像凑字数。
                 responsibilities: [
-                    "AI 工单智能助手：面向全所 2000 人规模的 IT 技术支持，基于 LangChain 搭建 RAG 管道，标准化接入 10 余个技术系统工具，自动排查并辅助定位根因；故障排查周期缩短 45%。",
-                    "智能问数 Agent：基于 LangGraph 编排可观测的 NL2SQL 工作流，Milvus、Elasticsearch、MySQL 三路并行召回；常规取数从按天排期缩短到分钟级。",
-                    "幻觉抑制：分层级系统提示词、事实核查与知识溯源，每条排查方案标注来源文档与章节；SQL 先经 EXPLAIN 校验、失败自动纠错，生成错误率下降 55%。",
-                    "对话记忆：MongoDB 存储会话与排查过程，每个工单会话独立维护上下文；无法在线解决的问题自动生成工单草稿，经人工确认后进入内部工单系统。",
+                    "为律所落地两个生产级 Agent：面向 IT 技术支持的 AI 工单智能助手，与面向业务自助取数的 NL2SQL 智能问数 Agent。",
+                    "两个 Agent 的幻觉抑制都由我负责，包括分层级系统提示词、事实核查与知识溯源、SQL 先校验再执行，以及 MongoDB 对话记忆。",
                 ],
+                projects: [0, 1],
             },
             {
                 title: "信息技术硕士 — 新南威尔士大学（UNSW）",
                 date: "2023.09 – 2025.06",
                 responsibilities: [
-                    "QS 世界排名第 19；专业前 10%。",
+                    "QS 世界排名第 19；专业前 10% 毕业（WAM 82.4/100）。",
                     "负责澳洲高校编程大赛（Coding Fest 2025）亚军项目的后端：基于 Spring Cloud 的微服务竞赛平台。",
                 ],
+                projects: [],
             },
             {
                 title: "Java 后端开发 — 上海新致软件股份有限公司",
                 date: "2022.08 – 2023.04",
                 responsibilities: [
-                    "银行核心业务中台：负责保单管理、单据处理、产品配置等核心模块的接口设计与开发，累计交付 8 个模块、120+ 个后端接口，接口复用率 42%。",
-                    "性能优化：Redis 多级缓存与 SQL 执行计划优化，核心查询接口平均耗时从 780ms 降到 190ms，峰值 QPS 提升 3 倍。",
-                    "文件存储：基于 MinIO 搭建分布式存储，业务文件与数据库分流，集成分级下载、只读预览等细粒度权限管控，满足金融合规要求。",
+                    "银行核心业务中台的 Java 后端：保单、单据、产品配置模块，Redis 多级缓存与 MinIO 文件存储。",
                 ],
+                projects: [2],
             },
             {
                 title: "机械电子工程学士 — 江苏科技大学苏州理工学院",
                 date: "2016.09 – 2020.06",
                 responsibilities: [],
+                projects: [],
             },
         ],
     },
@@ -331,15 +341,11 @@ export const zh = {
     showcase: {
         title: "精选项目",
         sub: "03 / 精选项目",
-        fallbackEyebrow: "企业项目",
-        viewOnGithub: "GitHub 源码",
-        liveDemo: "在线体验",
-        // 中文站的项目区与英文站不同构:中文简历的三段项目经历都是企业内部
-        // 系统,没有可截图的公开界面,所以这里不放轮播,改由 ProjectDiagram
-        // 把每个项目的真实执行链路画出来 —— 招聘方要判断的正是「这条链路
-        // 他是不是真搭过」。与 constants/projects.js 按下标对齐;技术标签、
-        // id 在数据文件里,文案(含图里的每个节点名)住在这里。整棵子树在
-        // check-i18n-parity 里豁免,形状由 projects.js 的 zh 分支消费。
+        // 三段项目都是企业内部系统,没有可截图的公开界面,所以每个项目由
+        // ProjectDiagram 画出真实执行链路 —— 招聘方要判断的正是「这条链路
+        // 他是不是真搭过」。中英两版同构,与 constants/projects.js 按下标
+        // 对齐;技术标签、id 在数据文件里,文案(含图里的每个节点名)住在
+        // 这里。
         //
         // 花括号=渲染期高亮。边界落在汉字或全角标点之间不加空格;落在汉字
         // 与拉丁/数字之间,空格写在花括号「外面」—— 写在里面会把高亮块
@@ -347,11 +353,12 @@ export const zh = {
         projects: [
             {
                 title: "法律业务 AI 工单智能助手",
-                meta: "Corrs Chambers Westgarth · 2025.07 – 2026.09",
+                meta: "科尔斯律师事务所 · 2025.07 – 2026.09",
                 description:
                     "面向全所 2000 人规模的 IT 技术支持：基于 {LangChain} 搭建 RAG 管道，在律所专属的 {Milvus 技术知识向量库}里语义检索，叠加链路节点、系统模块、异常类型等维度过滤；Agent 经 {10 余个标准化 Tools} 实时调取运行数据，自动排查并辅助定位根因，每条方案都标注来源文档与章节。",
+                lead: { value: "45%", label: "故障排查周期缩短" },
                 outcomes: [
-                    "技术工单平均故障排查周期缩短 45%，一线技术支持人员日均处理工单量提升 40%",
+                    "一线技术支持人员日均处理工单量提升 40%",
                     "一线研发重复介入低危常规工单的比例下降 55%，常见技术问题自动排查覆盖率 65%",
                     "无法在线解决的问题自动沉淀排查上下文、生成工单草稿，经人工确认后进入内部工单系统并附完整排查记录",
                 ],
@@ -368,12 +375,13 @@ export const zh = {
             },
             {
                 title: "法律业务智能问数 Agent",
-                meta: "Corrs Chambers Westgarth · NL2SQL",
+                meta: "科尔斯律师事务所 · 2025.07 – 2026.09",
                 description:
                     "让全所 2000 名律师与运营、财务、合规人员用一句话自助取数：{LangGraph} 编排可观测的 NL2SQL 工作流，{Milvus 语义检索}、{Elasticsearch 全文检索}与 {MySQL 结构化查询}并行召回字段、指标与取值；大模型只能基于召回到的真实表字段写 SQL，再经 {EXPLAIN 校验}，失败自动纠错。",
+                lead: { value: "55%", label: "SQL 生成错误率下降" },
                 outcomes: [
                     "常规数据查询从按天排期缩短到分钟级，业务人员自助取数覆盖率 65%",
-                    "SQL 生成错误率下降 55%，核心指标计算口径 100% 对齐官方标准",
+                    "核心指标计算口径 100% 对齐官方标准",
                     "数据团队人均处理需求吞吐量提升 40%",
                 ],
                 diagram: {
@@ -392,10 +400,11 @@ export const zh = {
                 meta: "上海新致软件 · 2022.08 – 2023.04",
                 description:
                     "面向银行客户的核心业务中台：向下封装通用技术与业务组件，向上支撑保险业务线快速二次开发。我负责保单管理、单据处理、产品配置等核心模块的需求拆解与接口开发，并用 {Redis 多级缓存}与 {SQL 执行计划优化}完成高并发场景的性能适配。",
+                lead: { value: "190ms", label: "核心查询平均耗时（原 780ms）" },
                 outcomes: [
                     "累计交付 8 个核心业务模块、120+ 个后端接口，接口复用率 42%，支撑 3 条保险业务线上线",
                     "模块化框架改造后，新增业务场景的二次开发工作量降低 50%",
-                    "核心查询接口平均耗时从 780ms 降到 190ms，峰值 QPS 提升 3 倍",
+                    "高并发场景下峰值 QPS 提升 3 倍",
                 ],
                 diagram: {
                     label: "平台分层",
@@ -421,11 +430,12 @@ export const zh = {
         linksCount: (n) => `${n} 条连接`,
         shippedIn: "用在哪里",
         linkedSkills: "关联技能",
+        // 面板静止态的捷径列表:连接最多的几个节点。
+        mostLinked: "连接最多",
         interactive: "可交互",
         hint: "点任意节点，看这项技能背后的项目、岗位或平台。",
-        // 中文站的图谱是另一张图(节点集按中文简历的「专业技能」重画),
-        // 几何与连线在 src/data/skillGraph.js 的 zh 分支,这里只放文案。
-        // cats / nodes 两棵子树在 check-i18n-parity 里豁免,由
+        // 中英两版是同一张图(节点集按中文简历的「专业技能」画),几何与
+        // 连线在 src/data/skillGraph.js,这里只放文案。由
         // test/i18n/skill-graph.test.mjs 逐个核对:每个节点都有文案、
         // 每条连线两端都存在、标签互不重叠。
         cats: {
@@ -466,7 +476,7 @@ export const zh = {
     contact: {
         title: "联系方式",
         sub: "05 / 联系",
-        lead: "在找全职机会，也欢迎有意思的合作。沟通尽量说清楚，取舍会摊开讲。下面是最快的联系方式，留个言我也会尽快回复。",
+        lead: "在招 Agent、RAG 或 NL2SQL 方向的人？先把 JD 粘到上面的匹配器里看一眼——或者直接用下面的方式联系我。在找全职机会，悉尼或远程均可。",
         // mailto 在渲染时拼("mailto:" + email),这里只放地址本身。
         channels: {
             emailLabel: "邮箱",
@@ -508,9 +518,6 @@ export const zh = {
         // .footer-mark 的 clamp 字号,再长在窄屏上会顶出栏宽。
         wordmark: "找张守森聊聊。",
         wordmarkAria: "跳转到联系方式",
-        // 渠道值来自 contact.channels,页脚只负责包在外面的读屏措辞。
-        emailAria: (email) => `发邮件到 ${email}`,
-        phoneAria: (phone) => `拨打电话 ${phone}`,
         socialAria: {
             linkedin: "领英主页",
             github: "GitHub 主页",

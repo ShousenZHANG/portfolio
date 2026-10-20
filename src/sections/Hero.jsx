@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Download from "lucide-react/dist/esm/icons/download";
@@ -80,7 +80,6 @@ const HERO_ANIM_TARGETS = [
 // Word array for the masked stagger — `sig` marks the decode word, `br`
 // breaks the line after it. headlineAria is the assembled sentence.
 const HEADLINE = dict.hero.headline;
-const STACK_ITEMS = dict.hero.stackLine.split(" · ");
 
 const Hero = () => {
     const [videoLoaded, setVideoLoaded] = useState(false);
@@ -210,12 +209,15 @@ const Hero = () => {
                             {dict.hero.lead}
                         </p>
 
-                        <div className="hero-cta mt-9 flex flex-wrap items-center gap-3">
+                        {/* Stacked, full-width thumb targets on a phone; a row from sm up.
+                            Left to flex-wrap, the English pair wrapped and the Chinese
+                            pair did not — the two pages disagreed on the same screen. */}
+                        <div className="hero-cta mt-9 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
                             <a
                                 ref={magneticCta}
                                 href="#jd-check"
                                 data-magnetic
-                                className="ed-btn"
+                                className="ed-btn justify-center"
                             >
                                 {dict.hero.ctaPrimary}
                                 <ArrowDown className="w-4 h-4" />
@@ -223,28 +225,18 @@ const Hero = () => {
                             <a
                                 href={dict.hero.cvHref}
                                 download={dict.hero.cvDownloadName}
-                                className="ed-btn-ghost"
+                                className="ed-btn-ghost justify-center"
                             >
                                 <Download className="w-4 h-4" />
                                 {dict.hero.ctaCv}
                             </a>
                         </div>
 
-                        <div ref={pingRef} className={`hero-meta ping-scope ${pingInView ? "in-view" : ""} mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm`} style={{ color: "var(--tx-2)" }}>
+                        {/* Availability and the E.D. shortcut only. The tool list
+                            that used to sit here repeated the lede word for word. */}
+                        <div ref={pingRef} className={`hero-meta ping-scope ${pingInView ? "in-view" : ""} mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm`} style={{ color: "var(--tx-2)" }}>
                             <span className="ed-status-dot" aria-hidden="true" />
                             <span>{dict.hero.available}</span>
-                            <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
-                            {/* Each item is unbreakable and carries its own trailing
-                                separator, so a narrow screen wraps BETWEEN items and
-                                never opens a line on a bare "·". */}
-                            <span className="font-mono text-xs tracking-wider">
-                                {STACK_ITEMS.map((t, i) => (
-                                    <Fragment key={t}>
-                                        <span className="whitespace-nowrap">{t}{i < STACK_ITEMS.length - 1 ? " ·" : ""}</span>
-                                        {i < STACK_ITEMS.length - 1 ? " " : ""}
-                                    </Fragment>
-                                ))}
-                            </span>
                             <span aria-hidden="true" style={{ color: "var(--hair-bright)" }}>/</span>
                             <button
                                 type="button"
@@ -259,7 +251,10 @@ const Hero = () => {
                     {/* RIGHT — editorial framed video */}
                     <div className="hero-aside">
                         <figure className="ed-tile p-2.5 rounded-[var(--r-lg)]">
-                            <div className="sheen-host relative w-full aspect-[16/10] rounded-[var(--r-md)] overflow-hidden bg-black/50">
+                            {/* The frame takes the clip's own ratio (1280×704). At 16/10,
+                                object-fit: cover cropped ~6% off each side and cut the
+                                burned-in timestamp mid-word. */}
+                            <div className="sheen-host relative w-full aspect-[1280/704] rounded-[var(--r-md)] overflow-hidden bg-black/50">
                                 {!videoLoaded && (
                                     <div className="absolute inset-0 animate-pulse" style={{ background: "var(--ink-2)" }} />
                                 )}
@@ -297,7 +292,6 @@ const Hero = () => {
                                                 <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.29-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z" />
                                             </svg>
                                         </span>
-                                        <span className="ed-eyebrow" style={{ color: "var(--tx-1)" }}>{mixedTrack(dict.hero.playLabel)}</span>
                                     </button>
                                 )}
                             </div>

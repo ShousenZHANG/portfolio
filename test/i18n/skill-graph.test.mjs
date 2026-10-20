@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SKILL_GRAPHS, VIEWBOX } from '../../src/data/skillGraph.js';
+import { SKILL_GRAPH, VIEWBOX } from '../../src/data/skillGraph.js';
 import { en } from '../../src/i18n/en.js';
 import { zh } from '../../src/i18n/zh.js';
 
-// check-i18n-parity exempts skills.cats / skills.nodes because the two locales
-// draw different graphs. That exemption is only safe if something else proves
-// each graph is whole — this file is that something.
+// One graph, two dictionaries. Parity proves the two dictionaries carry the
+// same keys; only this file proves those keys match the GRAPH — and that the
+// labels, at their real rendered size in each language, fit.
 
 const DICTS = { en, zh };
 
@@ -41,8 +41,9 @@ const discHits = (box, n) => {
 // vector, so two labels never close on each other by the full drift.
 const boxesHit = (a, b) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
 
-for (const [locale, graph] of Object.entries(SKILL_GRAPHS)) {
-  const copy = DICTS[locale].skills;
+for (const [locale, dict] of Object.entries(DICTS)) {
+  const graph = SKILL_GRAPH;
+  const copy = dict.skills;
   const ids = graph.nodes.map((n) => n.id);
   const byId = Object.fromEntries(graph.nodes.map((n) => [n.id, n]));
 

@@ -14,15 +14,7 @@ import { zh } from "../src/i18n/zh.js";
 // maps over it, and a Chinese sentence does not split into the same number of
 // words as its English counterpart. Exempt the whole subtree, not just its
 // length — the per-index leaves diverge with it.
-//
-// showcase.projects, skills.cats and skills.nodes are exempt for the same kind
-// of reason one level up: the two CVs list different projects and different
-// stacks, so each locale renders its own project set (constants/projects.js
-// builds per locale) and its own skill graph (data/skillGraph.js). Their
-// integrity is proven elsewhere — test/i18n/skill-graph.test.mjs checks each
-// graph against its own dictionary, and test/i18n/projects-copy.test.mjs each
-// project list against the shape its builder reads.
-const SUBTREE_EXEMPT = ["hero.headline", "showcase.projects", "skills.cats", "skills.nodes"];
+const SUBTREE_EXEMPT = ["hero.headline"];
 const exempt = (key) => SUBTREE_EXEMPT.some((p) => key === p || key.startsWith(p + "["));
 
 // Content lists whose LENGTH is legitimately locale-shaped: the two CVs differ

@@ -82,7 +82,6 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined
-          if (id.includes('swiper')) return 'swiper-vendor'
           if (id.includes('gsap')) return 'gsap-vendor'
           if (id.includes('lucide-react')) return 'icons-vendor'
           return undefined
