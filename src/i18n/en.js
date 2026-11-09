@@ -78,7 +78,7 @@ export const en = {
         // Recruiters scan, and ATS filters run keywords first — so every term a
         // JD would carry is spelled out in plain text here: agent, LangChain,
         // LangGraph, RAG, Milvus, Elasticsearch, NL2SQL.
-        lead: "At Corrs Chambers Westgarth, a law firm of ~2,000 staff, I built an IT support ticket agent and an NL2SQL analytics agent — LangChain and LangGraph, with hybrid recall across Milvus, Elasticsearch and MySQL. Every answer cites its source; every SQL query is checked before it runs.",
+        lead: "At Corrs Chambers Westgarth, a law firm of ~2,000 staff, I\u00A0built an IT support ticket agent and an NL2SQL analytics agent — LangChain and LangGraph, with hybrid recall across Milvus, Elasticsearch and MySQL. Every answer cites its source; every SQL query is checked before it runs.",
         ctaPrimary: "Try the live AI matcher",
         ctaCv: "Download CV",
         // The CV pair is locale DATA, not an asset constant — the zh entry
@@ -99,10 +99,10 @@ export const en = {
         // the firm the agents serve; 2 the agents built there; 10+ the
         // troubleshooting tools wired in; 100+ merged PRs (the CV's own total).
         items: [
-            { value: 2000, suffix: "", label: "Staff Served by His Agents" },
-            { value: 2, suffix: "", label: "Enterprise Agents Built" },
-            { value: 10, suffix: "+", label: "Systems Wired to Agents" },
-            { value: 100, suffix: "+", label: "Open-source PRs Merged" },
+            { value: 2000, prefix: "~", suffix: "", label: "Staff Served by My Agents" },
+            { value: 2, prefix: "", suffix: "", label: "Enterprise Agents Built" },
+            { value: 10, prefix: "", suffix: "+", label: "Systems Wired to Agents" },
+            { value: 100, prefix: "", suffix: "+", label: "Open-source PRs Merged" },
         ],
     },
 
@@ -388,7 +388,7 @@ export const en = {
                     label: "Platform layers",
                     steps: [
                         { t: "Insurance product lines", chips: ["Policies", "Documents", "Product config"] },
-                        { t: "Shared components · extension points", d: "New scenarios plug in; platform code stays untouched" },
+                        { t: "Shared components & extension points", d: "New scenarios plug in; platform code stays untouched" },
                         { t: "RESTful cross-system APIs", d: "Data exchange across the bank’s platforms" },
                         { t: "Multi-level caching", chips: ["Redis", "SQL plans"], d: "High-concurrency query paths" },
                         { t: "Split storage", chips: ["Oracle", "MinIO"], end: true },

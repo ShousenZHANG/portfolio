@@ -170,7 +170,7 @@ const Experience = () => {
                                 {/* An entry with no body (the bachelor's) is a single compact row —
                                     as a split card it was a 190px box with an empty
                                     700px right column. */}
-                                <div className={`exp-tile ed-tile flex-1 min-w-0 transition-all duration-300 ${hasBody ? "exp-split p-6 md:p-8" : "exp-compact p-5 md:px-8 md:py-6"}`}>
+                                <div className={`exp-tile ed-tile flex-1 min-w-0 transition-all duration-300 ${hasBody ? "exp-split p-6 md:p-8" : "exp-compact p-6 md:px-8 md:py-6"}`}>
                                     <div className={`exp-head flex flex-col md:flex-row md:items-start md:justify-between gap-3 ${hasBody ? "mb-5" : ""}`}>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2.5 flex-wrap">

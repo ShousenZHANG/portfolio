@@ -22,7 +22,7 @@ const StatTile = ({ item, index, total }) => (
     >
       {/* Thousands separator only where the locale writes one: "2,000"
           in English, 「2000」 in Chinese, as both CVs print it. */}
-      <CountUp suffix={item.suffix} end={item.value} separator={isZh ? "" : ","} enableScrollSpy scrollSpyOnce />
+      <CountUp prefix={item.prefix} suffix={item.suffix} end={item.value} separator={isZh ? "" : ","} enableScrollSpy scrollSpyOnce />
     </div>
     <div className="stat-label">{item.label}</div>
   </div>

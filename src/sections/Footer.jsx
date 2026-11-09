@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="ed-shell py-10 md:py-12">
         {/* Giant outlined wordmark — the exit-point hook. Gradient fills on
             hover; routed through Lenis via the global anchor handler. */}
-        <a href="#contact" className="footer-mark mb-10 md:mb-12" aria-label={dict.footer.wordmarkAria}>
+        <a href="#contact" className="footer-mark mb-10 md:mb-12" data-text={dict.footer.wordmark} aria-label={dict.footer.wordmarkAria}>
           {dict.footer.wordmark}
         </a>
 

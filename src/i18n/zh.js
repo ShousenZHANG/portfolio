@@ -118,10 +118,10 @@ export const zh = {
         // 服务的律所规模;2 是落地的两个 Agent;10+ 是接入的技术系统工具;
         // 100+ 是简历自己写的已合并 PR 总数。
         items: [
-            { value: 2000, suffix: "", label: "服务全所员工" },
-            { value: 2, suffix: "", label: "企业级 Agent 落地" },
-            { value: 10, suffix: "+", label: "技术系统工具接入" },
-            { value: 100, suffix: "+", label: "开源 PR 已合并" },
+            { value: 2000, prefix: "", suffix: "", label: "服务全所员工" },
+            { value: 2, prefix: "", suffix: "", label: "企业级 Agent 落地" },
+            { value: 10, prefix: "", suffix: "+", label: "技术系统工具接入" },
+            { value: 100, prefix: "", suffix: "+", label: "开源 PR 已合并" },
         ],
     },
 
@@ -411,7 +411,7 @@ export const zh = {
                     label: "平台分层",
                     steps: [
                         { t: "保险业务线", chips: ["保单管理", "单据处理", "产品配置"] },
-                        { t: "通用组件 · 扩展点", d: "新场景实现扩展点即可，不改平台代码" },
+                        { t: "通用组件与扩展点", d: "新场景实现扩展点即可，不改平台代码" },
                         { t: "RESTful 跨系统接口", d: "行内多个业务平台数据互通" },
                         { t: "多级缓存", chips: ["Redis", "SQL 执行计划"], d: "高并发查询路径" },
                         { t: "分流存储", chips: ["Oracle", "MinIO"], end: true },

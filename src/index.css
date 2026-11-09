@@ -224,6 +224,12 @@
   letter-spacing: 0.04em;
 }
 .oss-blurb::before { content: "·"; margin-right: 0.5rem; }
+/* On a phone the blurb wraps under the PR count; a line must not open on
+   its separator dot. */
+@media (max-width: 639.98px) {
+  .oss-blurb { flex-basis: 100%; }
+  .oss-blurb::before { content: none; }
+}
 .oss-go { flex: none; color: var(--tx-2); transition: color 0.2s ease; }
 @media (hover: hover) and (pointer: fine) {
   .oss-card:hover .oss-go { color: var(--sig); }
@@ -478,11 +484,30 @@
   line-height: 1.25;
   letter-spacing: -0.015em;
 }
-:root[lang^="zh"] .shift-to .shift-v { font-weight: 700; letter-spacing: 0; }
+:root[lang^="zh"] .shift-to .shift-v {
+    font-weight: 700;
+    letter-spacing: 0;
+    /* Han at the Latin size matched the project title and competed with it. */
+    font-size: clamp(1.15rem, 0.95rem + 0.8vw, 1.45rem);
+}
+/* A 1px rule vanishes into the horizontal strokes of hanzi. */
+:root[lang^="zh"] .shift-from .shift-v {
+    text-decoration-thickness: 2px;
+    text-decoration-color: color-mix(in oklab, var(--sig) 60%, transparent);
+}
 :root[lang^="zh"] .shift-k { letter-spacing: 0.08em; }
 /* Diagram detail lines sit in a narrow column; on Han, break at the commas
    rather than anywhere (「补充环境上下 / 文」 stranded one character). */
-:root[lang^="zh"] .pd-detail { word-break: keep-all; overflow-wrap: anywhere; }
+/* Han breaks between any two characters, so short claim lines split words
+   (合|并, 草|稿, 计|算). keep-all limits breaks to punctuation and spaces —
+   these lines are comma-rich, so the rag stays even — and overflow-wrap
+   still breaks a run that genuinely cannot fit. Highlights are short
+   phrases and stay whole. Running paragraphs keep normal breaking. */
+:root[lang^="zh"] :is(.pd-detail, .project-outcome, .oss-work, .shift-v, .exp-body li, .stat-label) {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}
+:root[lang^="zh"] .hl { white-space: nowrap; }
 
 /* The bracketed original of a localised company name, on its own line. */
 .exp-company-alt {
@@ -1896,32 +1921,47 @@ section {
 
 /* ── Footer wordmark — giant outlined type, gradient fill sweeps in on hover ── */
 .footer-mark {
+  position: relative;
   display: block;
   width: fit-content;
-  /* Sized to the viewport so the sign-off fills the measure on a phone (it
-     was ~36px and half the width), capped where it would crowd a desktop. */
-  font-size: clamp(2.8rem, 13.2vw, 12rem);
+  /* Sized to the viewport so the sign-off fills the measure on a phone,
+     capped where it would crowd a desktop. */
+  font-size: clamp(2.8rem, 17vw, 12rem);
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.035em;
+  /* The outline is a stroke drawn UNDER an ink fill (paint-order). Mona Sans
+     is a variable font whose glyphs overlap their own contours; a plain
+     -webkit-text-stroke traced every overlap, leaving stray marks inside the
+     L and across the e. Painting the fill last covers the inner half of the
+     stroke and every interior contour, so only the true silhouette shows —
+     hence a 3px stroke for a 1.5px visible line. */
+  color: var(--ink-0);
+  -webkit-text-stroke: 3px var(--tx-1);
+  paint-order: stroke fill;
+}
+/* The hover fill is a copy of the word (data-text) clipped in from the left,
+   not a background-clip on the word itself: an opaque fill and a background
+   showing through the glyphs cannot share one element. */
+.footer-mark::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
   color: transparent;
-  /* The stroke is the ONLY affordance this real link has at rest (the
-     gradient fill sweeps in on hover). At 1px and 55% alpha it read as a
-     disabled control; 1.5px in --tx-1 reads as type. */
-  -webkit-text-stroke: 1.5px var(--tx-1);
+  -webkit-text-stroke: 0;
   background: linear-gradient(90deg, var(--sig), var(--sig-2));
   -webkit-background-clip: text;
   background-clip: text;
-  background-size: 0% 100%;
-  background-repeat: no-repeat;
-  transition: background-size 0.7s var(--ease-standard);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.7s var(--ease-standard);
+  pointer-events: none;
 }
-.footer-mark:hover,
-.footer-mark:focus-visible {
-  background-size: 100% 100%;
+.footer-mark:hover::after,
+.footer-mark:focus-visible::after {
+  clip-path: inset(0 0 0 0);
 }
 @media (prefers-reduced-motion: reduce) {
-  .footer-mark { background-size: 100% 100%; -webkit-text-stroke: 0; }
+  .footer-mark::after { clip-path: none; transition: none; }
 }
 
 
@@ -2815,9 +2855,9 @@ section {
    stroke-by-stroke by -webkit-text-stroke — every crossing showed. */
 :root[lang^="zh"] .footer-mark {
     letter-spacing: 0;
-    /* Seven full-width glyphs: sized so the line fills the measure the way
-       the English one does. */
-    font-size: clamp(2.4rem, 11.2vw, 10.5rem);
+    /* Seven full-width glyphs, each 1em wide: 12.2vw x 7 fills a 390px
+       phone's measure on one line (13.5vw wrapped to two). */
+    font-size: clamp(2.4rem, 12.2vw, 10.5rem);
 }
 :root[lang^="zh"] .ed-display {
     line-height: 1.28;
