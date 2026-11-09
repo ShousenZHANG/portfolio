@@ -19,12 +19,12 @@ const BLUE = "oklch(0.74 0.12 240)";
 
 export const SKILL_GRAPH = {
     // Agents and retrieval on the left (the signature cluster leads, top-left,
-    // where a left-to-right reader lands first); the Java backend that the
-    // second half of the CV is about fills the right.
+    // where a left-to-right reader lands first); the Python and Java
+    // engineering the rest of the CV is about fills the right.
     cats: {
         agent: "var(--sig)",
         retrieval: "var(--sig-2)",
-        java: GREEN,
+        eng: GREEN,
         mw: BLUE,
         ops: PINK,
     },
@@ -44,12 +44,12 @@ export const SKILL_GRAPH = {
         { id: "mysql", cat: "retrieval", x: 23, y: 66, r: 5.5 },
         { id: "mongodb", cat: "retrieval", x: 47, y: 65, r: 5.5 },
 
-        // Java & microservices (top-right)
-        { id: "java", cat: "java", x: 72, y: 9, r: 6.5 },
-        { id: "springboot", cat: "java", x: 87, y: 19, r: 6 },
-        { id: "springcloud", cat: "java", x: 68, y: 27, r: 6 },
-        { id: "mybatis", cat: "java", x: 89, y: 34, r: 5 },
-        { id: "oracle", cat: "java", x: 76, y: 43, r: 5 },
+        // Python & Java (top-right)
+        { id: "java", cat: "eng", x: 72, y: 9, r: 6.5 },
+        { id: "springboot", cat: "eng", x: 87, y: 19, r: 6 },
+        { id: "python", cat: "eng", x: 68, y: 27, r: 6 },
+        { id: "mybatis", cat: "eng", x: 89, y: 34, r: 5 },
+        { id: "oracle", cat: "eng", x: 76, y: 43, r: 5 },
 
         // Middleware (lower-centre-right)
         { id: "redis", cat: "mw", x: 61, y: 52, r: 6 },
@@ -69,14 +69,14 @@ export const SKILL_GRAPH = {
         ["rag", "embedding"], ["embedding", "milvus"], ["rag", "milvus"],
         ["nl2sql", "milvus"], ["nl2sql", "es"], ["nl2sql", "mysql"], ["milvus", "es"],
         ["langchain", "mongodb"], ["mongodb", "milvus"],
-        // Java backend
-        ["java", "springboot"], ["springboot", "springcloud"], ["java", "springcloud"],
+        // Engineering
+        ["java", "springboot"], ["python", "java"],
         ["springboot", "mybatis"], ["mybatis", "oracle"], ["mybatis", "mysql"],
         // Middleware and deployment
-        ["springboot", "redis"], ["springcloud", "rabbitmq"], ["redis", "oracle"], ["springboot", "minio"],
-        ["docker", "linux"], ["docker", "springcloud"], ["minio", "docker"],
-        // Where the two halves meet: agent tools call the backend's interfaces
-        ["tools", "springcloud"],
+        ["springboot", "redis"], ["springboot", "rabbitmq"], ["redis", "oracle"], ["springboot", "minio"],
+        ["docker", "linux"], ["docker", "python"], ["minio", "docker"],
+        // Where the two halves meet: the agents and their tools are Python
+        ["tools", "python"], ["langchain", "python"],
     ],
 };
 

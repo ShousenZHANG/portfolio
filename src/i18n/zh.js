@@ -114,13 +114,12 @@ export const zh = {
         // Haystack 14),简历写的就是「累计 100+」。
         // 标签控制在 8 个字宽以内:手机上四格两列,再长就会在词中间折行
         //(实测「接入 Agent」被拆成「接 / 入」)。
-        // 写范围,不写成果:每个项目行下面都有自己的成果数字,同一个 45%
-        // 在数字条、项目大字和要点里各出现一次,读起来像凑字数。2000 是
-        // Agent 服务的律所规模;2 是上线的生产级 Agent;10+ 是接入的技术
-        // 系统工具;100+ 是 GitHub 实测的已合并 PR。
+        // 写范围,不写成果 —— 中文简历的项目成果已不写百分比。2000 是 Agent
+        // 服务的律所规模;2 是落地的两个 Agent;10+ 是接入的技术系统工具;
+        // 100+ 是简历自己写的已合并 PR 总数。
         items: [
             { value: 2000, suffix: "", label: "服务全所员工" },
-            { value: 2, suffix: "", label: "生产级 Agent 上线" },
+            { value: 2, suffix: "", label: "企业级 Agent 落地" },
             { value: 10, suffix: "+", label: "技术系统工具接入" },
             { value: 100, suffix: "+", label: "开源 PR 已合并" },
         ],
@@ -151,8 +150,8 @@ export const zh = {
     // 开源条带 —— 在证书条带之下。星数是量级证明，卡片直接链到 GitHub 上
     // 「他本人已合并 PR」的筛选结果，和证书一样能自证。星数用简历里保守的
     // 取整（写稿时 Dify 已 158k、Haystack 26.7k）——只会涨的数字不会写错。
-    // PR 数同理：写的是 2026 年 10 月 gh search 的实测值，只会往上走，
-    // 点进链接看到的只会比这里多。
+    // PR 数与英文简历一致(Dify 91、Haystack 14)。GitHub 上的实际数只会往上走
+    // (写稿时 Dify 已 120),点进链接看到的只会比这里多。
     oss: {
         eyebrow: "开源贡献",
         listAria: "开源贡献",
@@ -169,8 +168,8 @@ export const zh = {
                 name: "Dify",
                 blurb: "Agentic 大模型平台",
                 stars: "150k+",
-                prs: 94,
-                work: "API 层严格类型化与 Pydantic 依赖注入重构",
+                prs: 91,
+                work: "API 请求校验迁移到 Pydantic 模型，测试套件启用严格 mypy",
                 href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
             {
@@ -179,7 +178,7 @@ export const zh = {
                 blurb: "RAG 编排框架",
                 stars: "26k+",
                 prs: 14,
-                work: "mypy 类型闸与文档切分器缺陷修复",
+                work: "修复 Embedding 文档切分器尾块未合并，测试启用严格 mypy",
                 href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
         ],
@@ -316,8 +315,8 @@ export const zh = {
                 title: "信息技术硕士 — 新南威尔士大学（UNSW）",
                 date: "2023.09 – 2025.06",
                 responsibilities: [
-                    "QS 世界排名第 19；专业前 10% 毕业（WAM 82.4/100）。",
-                    "负责澳洲高校编程大赛（Coding Fest 2025）亚军项目的后端：基于 Spring Cloud 的微服务竞赛平台。",
+                    "QS 世界排名第 19；专业前 10%，优秀毕业生。",
+                    "澳洲高校编程大赛（Coding Fest 2025）亚军。",
                 ],
                 projects: [],
             },
@@ -325,7 +324,7 @@ export const zh = {
                 title: "Java 后端开发 — 上海新致软件股份有限公司",
                 date: "2022.08 – 2023.04",
                 responsibilities: [
-                    "银行核心业务中台的 Java 后端：保单、单据、产品配置模块，Redis 多级缓存与 MinIO 文件存储。",
+                    "参与银行核心业务中台的核心模块需求分析，负责保险业务域保单、单据、产品配置等模块的后端开发与迭代交付。",
                 ],
                 projects: [2],
             },
@@ -341,6 +340,9 @@ export const zh = {
     showcase: {
         title: "精选项目",
         sub: "03 / 精选项目",
+        // 每个项目「之前 → 之后」那一块的两个小标题。
+        before: "之前",
+        after: "之后",
         // 三段项目都是企业内部系统,没有可截图的公开界面,所以每个项目由
         // ProjectDiagram 画出真实执行链路 —— 招聘方要判断的正是「这条链路
         // 他是不是真搭过」。中英两版同构,与 constants/projects.js 按下标
@@ -356,20 +358,21 @@ export const zh = {
                 meta: "科尔斯律师事务所 · 2025.07 – 2026.09",
                 description:
                     "面向全所 2000 人规模的 IT 技术支持：基于 {LangChain} 搭建 RAG 管道，在律所专属的 {Milvus 技术知识向量库}里语义检索，叠加链路节点、系统模块、异常类型等维度过滤；Agent 经 {10 余个标准化 Tools} 实时调取运行数据，自动排查并辅助定位根因，每条方案都标注来源文档与章节。",
-                lead: { value: "45%", label: "故障排查周期缩短" },
+                // 中文简历的项目成果不写百分比,写的是排查方式的转变,所以焦点
+                // 元素是「之前 → 之后」。
+                lead: { from: "人工逐个系统翻查", to: "Agent 排查，人只核对结论" },
                 outcomes: [
-                    "一线技术支持人员日均处理工单量提升 40%",
-                    "一线研发重复介入低危常规工单的比例下降 55%，常见技术问题自动排查覆盖率 65%",
-                    "无法在线解决的问题自动沉淀排查上下文、生成工单草稿，经人工确认后进入内部工单系统并附完整排查记录",
+                    "常见技术工单由 Agent 自动调用工具完成排查，并给出标注来源的处理方案",
+                    "低危、常规工单在一线即可闭环；无法在线解决的问题自动生成附带完整排查记录的工单草稿，研发接手无需从头复现",
                 ],
                 diagram: {
                     label: "排查链路",
                     steps: [
-                        { t: "多源知识采集", d: "架构文档、排障 SOP、历史工单，增量同步" },
+                        { t: "多源知识采集", d: "架构文档、排障 SOP、复盘报告、历史工单，版本化增量同步" },
                         { t: "向量化入库", chips: ["Embedding", "Milvus"] },
-                        { t: "RAG 检索 + 维度过滤", d: "链路节点、系统模块、异常类型、合规等级" },
-                        { t: "Agent 调用 Tools", chips: ["链路追踪", "系统监控", "接口健康", "SAP 校验"], d: "等 10 余个技术系统工具" },
-                        { t: "可溯源方案 / 工单草稿", d: "标注来源文档与章节，未解决自动生成工单", end: true },
+                        { t: "RAG 检索 + 维度过滤", d: "系统模块、异常类型、合规等级" },
+                        { t: "Agent 调用 Tools", chips: ["链路追踪", "系统监控", "接口健康", "SAP 校验"], d: "10 余个标准化排查工具" },
+                        { t: "可溯源方案 / 工单草稿", d: "标注来源文档与章节，未解决的生成草稿", end: true },
                     ],
                 },
             },
@@ -378,11 +381,10 @@ export const zh = {
                 meta: "科尔斯律师事务所 · 2025.07 – 2026.09",
                 description:
                     "让全所 2000 名律师与运营、财务、合规人员用一句话自助取数：{LangGraph} 编排可观测的 NL2SQL 工作流，{Milvus 语义检索}、{Elasticsearch 全文检索}与 {MySQL 结构化查询}并行召回字段、指标与取值；大模型只能基于召回到的真实表字段写 SQL，再经 {EXPLAIN 校验}，失败自动纠错。",
-                lead: { value: "55%", label: "SQL 生成错误率下降" },
+                lead: { from: "提需求、等按天排期", to: "自然语言自助，分钟级出结果" },
                 outcomes: [
-                    "常规数据查询从按天排期缩短到分钟级，业务人员自助取数覆盖率 65%",
-                    "核心指标计算口径 100% 对齐官方标准",
-                    "数据团队人均处理需求吞吐量提升 40%",
+                    "数据团队从重复取数中释放出来",
+                    "SQL 只基于召回的真实表字段生成，经 EXPLAIN 校验、失败自动纠错；指标按官方口径计算，可直接用于经营分析与合规审计",
                 ],
                 diagram: {
                     label: "LangGraph 工作流",
@@ -390,29 +392,28 @@ export const zh = {
                         { t: "关键词抽取", d: "分词抽取业务关键词" },
                         { t: "多路并行召回", chips: ["Milvus", "Elasticsearch", "MySQL"] },
                         { t: "合并 · 二次过滤", d: "剔除无关表与指标，补充环境上下文" },
-                        { t: "生成 SQL", loop: "EXPLAIN 校验 · 失败自动纠错" },
-                        { t: "返回结果", d: "分钟级，口径对齐官方标准", end: true },
+                        { t: "生成 SQL", loop: "EXPLAIN 校验 · 回传纠错" },
+                        { t: "返回结果", d: "分钟级，自助取数", end: true },
                     ],
                 },
             },
             {
-                title: "银行核心业务平台升级",
+                title: "银行核心业务平台",
                 meta: "上海新致软件 · 2022.08 – 2023.04",
                 description:
-                    "面向银行客户的核心业务中台：向下封装通用技术与业务组件，向上支撑保险业务线快速二次开发。我负责保单管理、单据处理、产品配置等核心模块的需求拆解与接口开发，并用 {Redis 多级缓存}与 {SQL 执行计划优化}完成高并发场景的性能适配。",
-                lead: { value: "190ms", label: "核心查询平均耗时（原 780ms）" },
+                    "面向银行客户的核心业务中台：向下封装通用技术与业务组件，向上支撑多条保险业务线快速二次开发。我参与核心模块需求分析，负责保单管理、单据处理、产品配置等模块的后端接口开发，抽象{通用组件与扩展点}，并用 {Redis 多级缓存}与 {SQL 执行计划优化}应对高并发查询。",
+                lead: { from: "改动平台核心代码", to: "实现扩展点即可上线" },
                 outcomes: [
-                    "累计交付 8 个核心业务模块、120+ 个后端接口，接口复用率 42%，支撑 3 条保险业务线上线",
-                    "模块化框架改造后，新增业务场景的二次开发工作量降低 50%",
-                    "高并发场景下峰值 QPS 提升 3 倍",
+                    "后端接口按统一规范交付并完成联调，通用组件在多条保险业务线复用",
+                    "高并发查询经 Redis 多级缓存与 SQL 执行计划优化后，核心接口响应明显加快",
                 ],
                 diagram: {
                     label: "平台分层",
                     steps: [
                         { t: "保险业务线", chips: ["保单管理", "单据处理", "产品配置"] },
-                        { t: "通用组件 · 扩展点", d: "二次开发工作量降低 50%" },
-                        { t: "RESTful 跨系统接口", d: "120+ 个接口，复用率 42%" },
-                        { t: "多级缓存", chips: ["Redis", "SQL 执行计划"], d: "780ms → 190ms" },
+                        { t: "通用组件 · 扩展点", d: "新场景实现扩展点即可，不改平台代码" },
+                        { t: "RESTful 跨系统接口", d: "行内多个业务平台数据互通" },
+                        { t: "多级缓存", chips: ["Redis", "SQL 执行计划"], d: "高并发查询路径" },
                         { t: "分流存储", chips: ["Oracle", "MinIO"], end: true },
                     ],
                 },
@@ -423,7 +424,7 @@ export const zh = {
     skills: {
         title: "技能图谱",
         sub: "04 / 技术栈",
-        lead: "我日常在用的 Agent 与后端技术栈，按彼此的连接关系铺开：LangChain、LangGraph 负责编排，Milvus、Elasticsearch、MySQL 负责召回，Java 与 Spring Cloud 打底。悬停或点一下节点，看它连着什么；选中一个，能看到我用它交付过什么。",
+        lead: "我日常在用的 Agent 与后端技术栈，按彼此的连接关系铺开：LangChain、LangGraph 负责编排，Milvus、Elasticsearch、MySQL 负责召回，Python 与 Java 打底。悬停或点一下节点，看它连着什么；选中一个，能看到我在哪里用过它。",
         graphAria: "可交互技能关系图",
         // category 是该节点所属分类的中文标签。
         nodeAria: (label, category) => `${label},${category}`,
@@ -441,7 +442,7 @@ export const zh = {
         cats: {
             agent: "Agent 与大模型",
             retrieval: "检索与数据",
-            java: "Java 与微服务",
+            eng: "Python 与 Java",
             mw: "中间件",
             ops: "部署与运维",
         },
@@ -449,26 +450,26 @@ export const zh = {
         // 渲染成 SVG 文本、挤在固定 viewBox 里,换成全角汉字会和邻居撞上。
         // used 是证据行,逐条出自中文简历。
         nodes: {
-            langchain: { label: "LangChain", used: ["AI 工单智能助手：完整 RAG 管道", "Agent 核心逻辑与 Tools 调用"] },
-            langgraph: { label: "LangGraph", used: ["智能问数 Agent：可观测 NL2SQL 工作流", "每一步执行状态与中间明细可追溯"] },
-            rag: { label: "RAG", used: ["语义检索叠加律所 IT 维度过滤", "排查方案标注来源文档与章节"] },
-            nl2sql: { label: "NL2SQL", used: ["取数从按天排期缩短到分钟级", "SQL 生成错误率下降 55%"] },
+            langchain: { label: "LangChain", used: ["工单助手：RAG 管道与 Agent 核心逻辑", "10 余个排查工具的工具调用"] },
+            langgraph: { label: "LangGraph", used: ["智能问数 Agent：可观测 NL2SQL 工作流", "SQL 生成-校验-纠错闭环"] },
+            rag: { label: "RAG", used: ["语义检索叠加系统模块等维度过滤", "排查方案标注来源文档与章节"] },
+            nl2sql: { label: "NL2SQL", used: ["取数从按天排期变为分钟级自助", "SQL 只基于召回的真实表字段生成"] },
             prompt: { label: "Prompt Eng.", used: ["分层级场景化系统提示词", "事实核查与知识溯源抑制幻觉"] },
-            tools: { label: "Agent Tools", used: ["10 余个技术系统工具标准化接入", "链路追踪、系统监控、SAP 节点校验"] },
+            tools: { label: "Agent Tools", used: ["Function Calling 与 MCP 协议接入", "链路追踪、系统监控、SAP 节点校验"] },
             embedding: { label: "Embedding", used: ["技术资料向量化", "数仓字段与指标向量化"] },
             milvus: { label: "Milvus", used: ["律所 IT 专属技术知识向量库", "字段与指标语义向量库"] },
             es: { label: "Elasticsearch", used: ["字段取值全文索引", "多引擎混合召回的一路"] },
             mysql: { label: "MySQL", used: ["多引擎混合召回：结构化查询"] },
-            mongodb: { label: "MongoDB", used: ["会话历史与排查过程存储", "每个工单会话独立维护上下文"] },
-            java: { label: "Java", used: ["银行核心业务中台：8 个模块、120+ 个接口"] },
-            springboot: { label: "Spring Boot", used: ["银行核心业务平台", "编程大赛亚军项目的后端"] },
-            springcloud: { label: "Spring Cloud", used: ["Nacos、Dubbo、OpenFeign、Sentinel、Gateway、Seata", "编程大赛亚军项目：微服务竞赛平台"] },
+            mongodb: { label: "MongoDB", used: ["按工单会话保存对话与排查过程", "后续交互自动加载已排查节点"] },
+            java: { label: "Java", used: ["银行核心业务平台：保险业务域后端接口"] },
+            springboot: { label: "Spring Boot", used: ["银行核心业务平台：增删改查接口与联调"] },
+            python: { label: "Python", used: ["LangChain、LangGraph 的 Agent 开发", "Dify、Haystack 贡献中的 Pydantic、pytest、mypy"] },
             mybatis: { label: "MyBatis", used: ["银行核心业务平台的持久层"] },
             oracle: { label: "Oracle", used: ["银行核心业务平台的数据库"] },
-            redis: { label: "Redis", used: ["多级缓存：核心查询 780ms → 190ms", "缓存穿透、雪崩、击穿的预防方案"] },
-            rabbitmq: { label: "RabbitMQ", used: ["消息可靠性、幂等与堆积处理", "竞赛平台的事件驱动通知"] },
-            minio: { label: "MinIO", used: ["分布式文件存储，业务文件与数据库分流"] },
-            docker: { label: "Docker", used: ["银行核心业务平台的容器化部署"] },
+            redis: { label: "Redis", used: ["高并发查询的多级缓存", "缓存穿透、雪崩、击穿的应对"] },
+            rabbitmq: { label: "RabbitMQ", used: ["消息可靠性、幂等与堆积处理"] },
+            minio: { label: "MinIO", used: ["业务文件批量处理工具，分级下载与只读预览"] },
+            docker: { label: "Docker", used: ["项目容器化部署"] },
             linux: { label: "Linux", used: ["独立完成项目部署"] },
         },
     },

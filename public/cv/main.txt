@@ -1,66 +1,51 @@
 Eddy Zhang
-AI Agent Engineer | eddy.zhang24@gmail.com | (+61) 468 761 056
+AI Agent Engineer | eddy.zhang24@gmail.com | (+86) 173 6813 9916
 linkedin.com/in/eddy-shousen-zhang | github.com/ShousenZHANG | eddyzhang.me
 
 Summary
-AI agent engineer building enterprise LLM agents: a RAG ticket-triage assistant and an NL2SQL analytics agent for a 2,000-person Australian law firm, on LangChain, LangGraph, Milvus, Elasticsearch and MySQL, with source tracing and SQL validation against hallucination. Java and Spring Cloud backend foundation. 100+ merged PRs into Dify and Haystack.
+AI Agent engineer building LLM agents with Python, LangChain and LangGraph - RAG, tool calling/MCP and NL2SQL with validation loops. Java backend background; 100+ merged PRs to Dify and Haystack; builds with Claude Code and Codex.
 
 Professional Experience
 
-AI Agent Engineer | Corrs Chambers Westgarth | Sydney, Australia | Jul 2025 - Sep 2026
+Junior Integration & Automation Analyst (Fixed-term Contract) | Corrs Chambers Westgarth - top-tier Australian independent law firm, ~2,000 staff | Sydney, Australia | Mar 2026 - Jul 2026
 
-AI Ticket Assistant for Legal IT Support
-Context: IT support for a top-tier independent Australian law firm of 2,000 people, spanning the legal advice centre, matter management, document collaboration and SAP. An agent that triages technical tickets automatically, helps locate root causes and gives standardised fix guidance; issues it cannot resolve online become standardised tickets carrying the full triage trail.
-- Multi-source knowledge base: standardised interfaces pull architecture docs, troubleshooting runbooks, API specifications, compliance review notes, incident post-mortems and historical tickets, with document versioning and incremental sync.
-- Vector store: Embedding-based vectorisation into a firm-specific Milvus technical knowledge base for semantic retrieval and fault matching.
-- Tools: designed and integrated 10+ standardised internal-system tools (matter-chain tracing, document search, system monitoring, API health checks, SAP node validation, channel fault checks, compliance and permission checks, alert lookups) so the agent works from live operational data.
-- Layered system prompts per fault scenario (routine triage, peak-hour incidents, root-cause location, high-risk compliance alerts), tuned continuously from support-team feedback.
-- LangChain RAG pipeline and agent core logic, combining semantic retrieval with legal-IT metadata filters (service chain, system module, fault type, business scenario, compliance tier).
-- Hallucination control and source tracing: prompt constraints, fact-checking and knowledge provenance; every generated fix cites its source document and section and links related past incidents.
-- Conversation memory in MongoDB: per-ticket session context and triage history, reloaded on each turn for coherent multi-turn diagnosis.
-- Unresolved issues: the agent summarises the triage context into a compliant ticket draft, which is filed into the internal ticketing system after human review with the full record attached.
-Outcomes: average fault-triage time down 45%; tickets handled per support engineer per day up 40%; engineers pulled into low-risk routine tickets down 55%; 65% of common technical issues triaged automatically.
+IT Support Ticket Agent | GPT, Claude, LangChain, Milvus, MongoDB
+- Built a LangChain RAG pipeline over SOPs, architecture docs, incident reviews and past tickets, embedded into Milvus with versioned incremental sync so the knowledge base tracks system and rule changes.
+- Integrated 10+ standardised troubleshooting tools - link tracing, monitoring, API health, SAP node and permission checks - so the agent diagnoses issues from live operational data.
+- Layered metadata filters (system module, error type, compliance level) on semantic search to block look-alike matches from the wrong system; scenario-specific system prompts cover routine, peak-hour, root-cause and compliance cases.
+- Curbed hallucination with fact checking and source attribution to document, section and related tickets; per-ticket MongoDB memory reloads checked nodes and conclusions across turns.
+- Moved common tickets from manual multi-system triage to agent-led diagnosis that staff only verify; unresolved issues become compliant ticket drafts, filed after human confirmation with the full trace attached.
 
-NL2SQL Analytics Agent
-Context: self-serve data for the firm's 2,000 lawyers and its matter operations, finance and compliance staff, over a warehouse fed by the legal advice centre, matter management, SAP, CRM and timesheet systems. Natural-language questions become validated SQL.
-- Warehouse metadata knowledge base: config-driven extraction of fact and dimension tables, field attributes, metric definitions and enum values across matters, clients, finance, time and compliance, with incremental sync and versioning.
-- Milvus semantic index of fields and metrics, plus an Elasticsearch full-text index of field values.
-- Hybrid recall: Milvus semantic search, Elasticsearch full-text and MySQL structured queries recall fields, metrics and values in parallel after keyword extraction, filtered by business domain.
-- LangGraph observable NL2SQL workflow: keyword extraction, parallel recall, merge, second-pass filtering of irrelevant tables and metrics, context enrichment — every step's state and output traceable.
-- Generate-validate-correct loop: the model may only use retrieved real fields; warehouse EXPLAIN validates syntax and feasibility, and failures trigger automatic correction.
-Outcomes: routine data requests from days in a queue to minutes; 65% of requests self-served; data-team throughput per person up 40%; SQL generation errors down 55%; core metric definitions 100% aligned with the official standard.
+NL2SQL Analytics Agent | GPT, Claude, LangGraph, Milvus, Elasticsearch, MySQL
+- Built a config-driven metadata layer (tables, fields, metric definitions, enum values) indexed in Milvus for meaning and Elasticsearch for exact field values, with parallel hybrid recall alongside MySQL in a traceable LangGraph workflow.
+- Closed a generate-validate-repair loop - SQL constrained to the recalled schema, checked with EXPLAIN and fixed by feeding errors back to the model - turning day-long data-team queues into minute-level self-service queries.
 
-Java Backend Engineer | Newtouch Software Co., Ltd. | Shanghai, China | Aug 2022 - Apr 2023
-
-Banking Core Platform Upgrade | Java, Spring Boot, MyBatis, Oracle, Redis, MinIO, Docker, Linux
-Context: a modular core business platform for a bank, wrapping shared technical and business components so insurance product lines can build on it quickly.
-- Requirements breakdown and API design for policy management, document processing and product configuration, with standardised CRUD endpoints and integration testing.
-- Modular framework refactor: shared business components and extension points; multi-level Redis caching and SQL execution-plan optimisation for high-concurrency queries.
-- RESTful cross-system APIs supporting data exchange between the bank's business platforms.
-- MinIO-based distributed file storage separating business files from the database, with fine-grained access control (tiered downloads, read-only preview) for financial compliance.
-Outcomes: 8 core modules and 120+ endpoints delivered, 42% endpoint reuse, supporting 3 insurance product lines, 35% faster feature iteration; 50% less custom development for new business scenarios after the refactor; core query latency from 780 ms to 190 ms, peak QPS tripled.
+Software Engineer (Java Backend) | Newtouch Software Co., Ltd. - banking client's core business platform | Shanghai, China | Aug 2022 - Apr 2023
+- Delivered integration-tested Java CRUD APIs (Spring Boot, MyBatis, Oracle) for insurance policy, document and product-configuration modules in a 20-person agile team.
+- Extended the modular framework with reusable components and extension points, so new insurance scenarios ship by implementing extension points rather than changing platform code.
+- Tuned high-concurrency queries with multi-level Redis caching and execution-plan optimisation; built RESTful cross-system interfaces and a MinIO file tool with tiered download and read-only preview permissions.
 
 Open Source
-- 100+ merged PRs into major open-source LLM frameworks: Dify (150k+ stars, 94 PRs: strict typing and Pydantic dependency injection across the API layer) and Haystack (26k+ stars, 14 PRs: mypy typing gates and a document-splitter bug fix). github.com/ShousenZHANG
 
-Skills
-Agents & LLMs: LangChain, LangGraph, workflow orchestration, standardised tool integration, observable execution chains, NL2SQL, RAG end to end, prompt engineering, conversation memory and context management
-Retrieval & Data: Embedding, Milvus, Elasticsearch, MySQL, MongoDB, Oracle
-Java & Microservices: Java SE and design patterns, Spring Boot, MyBatis, Spring Cloud (Nacos, Dubbo, OpenFeign, Sentinel, Gateway, Seata)
-Middleware & Deployment: Redis (persistence, clustering, cache penetration/avalanche/breakdown), RabbitMQ (reliability, idempotency, backlog handling), MinIO, Docker, Linux
-
-Certifications & Awards
-Claude Certified Architect - Foundations (Anthropic)
-Microsoft Certified: AI Agent Builder Associate
-Runner-up, Coding Fest 2025 (Australian university coding competition) - backend of a Spring Cloud microservices competition platform
+Contributor - Dify & Haystack | Agentic LLM & RAG frameworks | Aug 2026 - Present
+- Merged 100+ maintainer-reviewed PRs into Dify (150k+ stars, 91 PRs) and Haystack (26k+ stars, 14 PRs).
+- Migrated Dify's API request validation to Pydantic models; fixed Haystack's embedding-based splitter leaving a short trailing chunk unmerged; extended strict mypy checks across test suites.
+- Worked test-first with Claude Code: failing test first, then the fix, a local CI run and line-by-line self-review.
 
 Education
 University of New South Wales - Master of Information Technology | Sydney, Australia | Sep 2023 - Jun 2025
-QS world #19; top 10% of cohort, WAM 82.4/100
-Jiangsu University of Science and Technology (Suzhou Institute of Technology) - Bachelor of Mechatronic Engineering | Jiangsu, China | Sep 2016 - Jun 2020
+WAM 82.4/100 (Excellence) · Top 10% of cohort · QS #19 · Coding Fest 2025 runner-up
+Suzhou Institute of Technology, Jiangsu University of Science and Technology - Bachelor of Engineering, Mechatronic Engineering | Suzhou, China | Sep 2016 - Jun 2020
+
+Skills & Certifications
+AI & Agents: LangChain, LangGraph, RAG, Function Calling, MCP, NL2SQL, Prompt & Context Engineering, Guardrails
+Retrieval & Data: Embeddings, Milvus, Elasticsearch, Hybrid Retrieval, MySQL, MongoDB, Oracle, SQL
+Engineering: Python (Pydantic, pytest, mypy), Java, Spring Boot, MyBatis, Redis, RabbitMQ, Docker, Linux
+AI Dev Tools: Claude Code, Codex - test-first development and line-by-line code review
+Certifications: Claude Certified Architect - Foundations | Microsoft Certified: AI Agent Builder Associate
 
 Work Rights
 485 Graduate Work Visa with full work rights in Australia, valid until 4 Sep 2027. No sponsorship needed.
 
 Availability
-Based in Sydney; the Corrs role ended in September 2026, available now.
+The Corrs contract ended in July 2026; available now.

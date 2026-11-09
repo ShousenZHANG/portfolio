@@ -122,12 +122,19 @@ const AppShowcase = () => {
                 ))}
               </ul>
 
-              {/* One focal number per project — the result the whole pipeline
-                  on the left exists to produce. */}
-              <p className="project-lead">
-                <span className="project-lead-value">{project.lead.value}</span>
-                <span className="project-lead-label">{project.lead.label}</span>
-              </p>
+              {/* The project's focal point: what it changed, before → after.
+                  Neither CV states outcome percentages, so the shift itself is
+                  the result — the thing the pipeline on the left exists for. */}
+              <div className="project-shift">
+                <p className="shift-row shift-from">
+                  <span className="shift-k">{dict.showcase.before}</span>
+                  <span className="shift-v">{project.lead.from}</span>
+                </p>
+                <p className="shift-row shift-to">
+                  <span className="shift-k">{dict.showcase.after}</span>
+                  <span className="shift-v">{project.lead.to}</span>
+                </p>
+              </div>
 
               <ul className="space-y-2">
                 {project.outcomes.map((outcome) => (

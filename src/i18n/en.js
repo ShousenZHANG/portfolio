@@ -1,10 +1,12 @@
 /**
- * English dictionary. Same facts as zh.js — both pages tell one story, drawn
- * from the Chinese CV (the source of truth for the AI Agent role at Corrs,
- * the two agent projects and the banking platform). The English page differs
- * only where the market does: Australian contact details, the work-rights
- * axis in the JD matcher and E.D., and copy written for an English reader
- * rather than translated line by line.
+ * English dictionary. Its single source of truth is the English CV
+ * (public/files/Eddy_Zhang_CV.pdf, text in public/cv/main.txt): every date,
+ * title and figure on this page must be one that CV states. The Chinese page
+ * follows the Chinese CV the same way, and the two CVs differ on purpose
+ * (the Corrs role is dated and titled differently in each), so do not copy a
+ * date or figure across from zh.js. Structure stays isomorphic with zh.js;
+ * check-i18n-parity enforces it, and test/i18n/cv-grounding.test.mjs checks
+ * every date and figure here against main.txt.
  *
  * Punctuation is load-bearing: em dashes (—), en dashes (–) in date ranges,
  * middle dots (·), ellipses (…) and curly apostrophes (’) are the exact
@@ -26,8 +28,8 @@
 // Contact data surfaces in three places (Contact rows, Footer links, E.D.'s
 // failure message) — one source here so the zh wave swaps it exactly once.
 const EMAIL = "eddy.zhang24@gmail.com";
-const PHONE_DISPLAY = "+61 0468 761 056";
-const PHONE_HREF = "tel:+610468761056";
+const PHONE_DISPLAY = "(+86) 173 6813 9916";
+const PHONE_HREF = "tel:+8617368139916";
 
 export const en = {
     // App chrome + shared atoms (App skip link/loader, ErrorBoundary,
@@ -76,13 +78,13 @@ export const en = {
         // Recruiters scan, and ATS filters run keywords first — so every term a
         // JD would carry is spelled out in plain text here: agent, LangChain,
         // LangGraph, RAG, Milvus, Elasticsearch, NL2SQL.
-        lead: "For the past year I shipped enterprise agents for a 2,000‑person law firm — LangChain and LangGraph, with hybrid recall across Milvus, Elasticsearch and MySQL. Every answer cites its source; every SQL query is checked before it runs.",
+        lead: "At Corrs Chambers Westgarth, a law firm of ~2,000 staff, I built an IT support ticket agent and an NL2SQL analytics agent — LangChain and LangGraph, with hybrid recall across Milvus, Elasticsearch and MySQL. Every answer cites its source; every SQL query is checked before it runs.",
         ctaPrimary: "Try the live AI matcher",
         ctaCv: "Download CV",
         // The CV pair is locale DATA, not an asset constant — the zh entry
         // ships a different file under a different download name.
         cvHref: "/files/Eddy_Zhang_CV.pdf",
-        cvDownloadName: "Eddy_Zhang_CV.pdf",
+        cvDownloadName: "Eddy_Zhang_AI_Agent_Engineer_CV.pdf",
         available: "Available for work",
         askEd: "Ask E.D. about him ↗",
         videoAria: "Personal introduction video by Eddy Zhang",
@@ -93,14 +95,12 @@ export const en = {
 
     counter: {
         // Numbers stay data — CountUp animates `value`, `suffix` renders raw.
-        // Scope, not results: each project row below carries its own result
-        // figure, and the same 45% printed in the band, the lead number and a
-        // bullet read as padding. 2,000 is the firm the agents serve; 2 is the
-        // production agents; 10+ the internal systems wired in as tools; 100+
-        // merged PRs measured on GitHub (Dify 94 + Haystack 14 when written).
+        // Scope, not results — the CV states no outcome percentages. ~2,000 is
+        // the firm the agents serve; 2 the agents built there; 10+ the
+        // troubleshooting tools wired in; 100+ merged PRs (the CV's own total).
         items: [
             { value: 2000, suffix: "", label: "Staff Served by His Agents" },
-            { value: 2, suffix: "", label: "Production Agents Shipped" },
+            { value: 2, suffix: "", label: "Enterprise Agents Built" },
             { value: 10, suffix: "+", label: "Systems Wired to Agents" },
             { value: 100, suffix: "+", label: "Open-source PRs Merged" },
         ],
@@ -132,9 +132,9 @@ export const en = {
     // Open-source strip — sits under the certifications. Star counts are the
     // scale proof and the card links straight to GitHub's own filtered list of
     // HIS merged PRs, so the claim verifies itself the way the certs do.
-    // Stars are conservative rounding (Dify 158k, Haystack 26.7k when
-    // written); PR counts are what `gh search prs --merged` returned in
-    // October 2026. Both only grow, so the link always shows at least this.
+    // Stars and PR counts are the CV's (Dify 91, Haystack 14). GitHub's own
+    // count only grows (Dify was 120 when this was written), so the link
+    // always shows at least what the card claims.
     oss: {
         eyebrow: "Open Source",
         listAria: "Open-source contributions",
@@ -152,8 +152,8 @@ export const en = {
                 name: "Dify",
                 blurb: "Agentic LLM platform",
                 stars: "150k+",
-                prs: 94,
-                work: "Strict typing and Pydantic dependency injection across the API layer",
+                prs: 91,
+                work: "API request validation migrated to Pydantic models; strict mypy across test suites",
                 href: "https://github.com/langgenius/dify/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
             {
@@ -162,7 +162,7 @@ export const en = {
                 blurb: "RAG orchestration framework",
                 stars: "26k+",
                 prs: 14,
-                work: "mypy typing gates and a document-splitter bug fix",
+                work: "Embedding-based splitter fix for an unmerged trailing chunk; strict mypy checks",
                 href: "https://github.com/deepset-ai/haystack/pulls?q=is%3Apr+author%3AShousenZHANG+is%3Amerged",
             },
         ],
@@ -281,14 +281,13 @@ export const en = {
         // to them instead of restating their mechanics and figures.
         cards: [
             {
-                title: "AI Agent Engineer — Corrs Chambers Westgarth",
-                date: "Jul 2025 – Sep 2026",
-                // Scope only — the figures live once, in Selected Work, which
-                // these cards link to. Repeating 45% / 55% in three places made
-                // the page read as padding.
+                title: "Junior Integration & Automation Analyst (Fixed-term) — Corrs Chambers Westgarth",
+                date: "Mar 2026 – Jul 2026",
+                // Scope only — the mechanics live once, in Selected Work,
+                // which these cards link to.
                 responsibilities: [
-                    "Built two production agents for the firm: an AI ticket assistant for IT support, and an NL2SQL agent for self-serve analytics.",
-                    "Owned the hallucination controls across both: layered system prompts, fact-checking and source tracing, SQL validated before it runs, and MongoDB conversation memory.",
+                    "Built two LLM agents for a law firm of ~2,000 staff: an IT support ticket agent and an NL2SQL analytics agent.",
+                    "Hallucination control across both: scenario-specific system prompts, fact checking and source attribution, and SQL constrained to the recalled schema and checked with EXPLAIN.",
                 ],
                 projects: [0, 1],
             },
@@ -296,21 +295,21 @@ export const en = {
                 title: "Master of Information Technology — UNSW Sydney",
                 date: "Sep 2023 – Jun 2025",
                 responsibilities: [
-                    "QS world #19; graduated in the top 10% of the cohort (WAM 82.4/100).",
-                    "Built the backend of the Coding Fest 2025 runner-up project — a Spring Cloud microservices competition platform.",
+                    "WAM 82.4/100 (Excellence), top 10% of the cohort, at a QS #19 university.",
+                    "Runner-up, Coding Fest 2025.",
                 ],
                 projects: [],
             },
             {
-                title: "Java Backend Engineer — Newtouch Software Co., Ltd.",
+                title: "Software Engineer (Java Backend) — Newtouch Software Co., Ltd.",
                 date: "Aug 2022 – Apr 2023",
                 responsibilities: [
-                    "Java backend on a bank’s core business platform: policy, document and product-configuration modules, multi-level Redis caching and MinIO file storage.",
+                    "Integration-tested Java CRUD APIs (Spring Boot, MyBatis, Oracle) for a bank’s core business platform, in a 20-person agile team.",
                 ],
                 projects: [2],
             },
             {
-                title: "Bachelor of Mechatronic Engineering — Jiangsu University of Science and Technology",
+                title: "Bachelor of Engineering (Mechatronic) — Suzhou Institute of Technology, Jiangsu University of Science and Technology",
                 date: "Sep 2016 – Jun 2020",
                 responsibilities: [],
                 projects: [],
@@ -321,6 +320,9 @@ export const en = {
     showcase: {
         title: "Selected Work",
         sub: "03 / Selected Work",
+        // Captions on each project's before → after shift.
+        before: "Before",
+        after: "After",
         // Index-aligned with constants/projects.js (ids and tech tags live
         // there). All three are internal enterprise systems with no public UI
         // to screenshot, so each is drawn as its real execution path by
@@ -329,37 +331,37 @@ export const en = {
         // render-time highlight markers.
         projects: [
             {
-                title: "AI Ticket Assistant for Legal IT",
-                meta: "Corrs Chambers Westgarth · Jul 2025 – Sep 2026",
+                title: "IT Support Ticket Agent",
+                meta: "Corrs Chambers Westgarth · Mar 2026 – Jul 2026",
                 description:
-                    "IT support for a 2,000‑person law firm: a {LangChain} RAG pipeline searches a firm-specific {Milvus knowledge base}, filtered by service chain, system module and fault type; the agent calls {10+ standardised tools} for live operational data, triages automatically and helps pinpoint root causes — and every fix cites its source document and section.",
-                lead: { value: "45%", label: "shorter fault triage" },
+                    "IT support for a law firm of ~2,000 staff: a {LangChain} RAG pipeline over SOPs, architecture docs, incident reviews and past tickets, embedded into {Milvus} with versioned incremental sync. Metadata filters keep look-alike matches from the wrong system out, and the agent calls {10+ standardised tools} — link tracing, monitoring, API health, SAP node and permission checks — to diagnose from live operational data.",
+                // The shift the project made, in the CV's own terms: it states
+                // no percentages, so the focal element is before → after.
+                lead: { from: "Manual triage, system by system", to: "Agent diagnoses, staff verify" },
                 outcomes: [
-                    "Tickets handled per support engineer per day up 40%",
-                    "Escalations of low-risk routine tickets to engineers down 55%; 65% of common issues triaged automatically",
-                    "Unresolved issues become drafted tickets with the full triage trail attached, filed after human review",
+                    "Every answer cites its document, section and related tickets; per-ticket MongoDB memory reloads checked nodes and conclusions across turns",
+                    "Unresolved issues become compliant ticket drafts, filed after human confirmation with the full trace attached",
                 ],
                 diagram: {
                     label: "Triage pipeline",
                     steps: [
-                        { t: "Multi-source ingestion", d: "Architecture docs, runbooks, past tickets — synced incrementally" },
+                        { t: "Multi-source ingestion", d: "SOPs, architecture docs, incident reviews, past tickets — versioned, synced incrementally" },
                         { t: "Vector indexing", chips: ["Embedding", "Milvus"] },
-                        { t: "RAG + metadata filters", d: "Service chain, system module, fault type, compliance tier" },
-                        { t: "Agent calls tools", chips: ["Tracing", "Monitoring", "API health", "SAP checks"], d: "10+ internal systems in all" },
-                        { t: "Sourced fix / drafted ticket", d: "Cites document and section; unresolved cases become tickets", end: true },
+                        { t: "RAG + metadata filters", d: "System module, error type, compliance level" },
+                        { t: "Agent calls tools", chips: ["Tracing", "Monitoring", "API health", "SAP checks"], d: "10+ standardised tools" },
+                        { t: "Sourced fix / drafted ticket", d: "Cites document and section; unresolved cases become drafts", end: true },
                     ],
                 },
             },
             {
                 title: "NL2SQL Analytics Agent",
-                meta: "Corrs Chambers Westgarth · Jul 2025 – Sep 2026",
+                meta: "Corrs Chambers Westgarth · Mar 2026 – Jul 2026",
                 description:
-                    "Self-serve data for the firm’s 2,000 lawyers and its operations, finance and compliance staff: {LangGraph} runs an observable NL2SQL workflow that recalls fields, metrics and real values in parallel from {Milvus semantic search}, {Elasticsearch full-text} and {MySQL structured queries}. The model may only write SQL against fields it actually retrieved — then {EXPLAIN validation} gates it and auto-corrects failures.",
-                lead: { value: "55%", label: "fewer SQL generation errors" },
+                    "A config-driven metadata layer — tables, fields, metric definitions, enum values — indexed in {Milvus} for meaning and {Elasticsearch} for exact field values, recalled in parallel alongside {MySQL} inside a traceable {LangGraph} workflow. SQL is constrained to the recalled schema, checked with {EXPLAIN} and repaired by feeding the error back to the model.",
+                lead: { from: "Day-long data-team queues", to: "Minute-level self-service" },
                 outcomes: [
-                    "Routine data requests: from days in a queue to minutes; 65% of requests now self-served",
-                    "Core metric definitions 100% aligned with the official standard",
-                    "Data-team throughput per person up 40%",
+                    "Staff ask in plain language instead of filing a request and waiting for the data team",
+                    "Generate–validate–repair loop: SQL may only use recalled fields, and an EXPLAIN failure goes back to the model to fix",
                 ],
                 diagram: {
                     label: "LangGraph workflow",
@@ -367,29 +369,28 @@ export const en = {
                         { t: "Keyword extraction", d: "Tokenise the question into business terms" },
                         { t: "Parallel recall", chips: ["Milvus", "Elasticsearch", "MySQL"] },
                         { t: "Merge · second-pass filter", d: "Drop irrelevant tables and metrics; add context" },
-                        { t: "Generate SQL", loop: "EXPLAIN check · auto-correct" },
-                        { t: "Return result", d: "In minutes, on official metric definitions", end: true },
+                        { t: "Generate SQL", loop: "EXPLAIN check · repair" },
+                        { t: "Return result", d: "Minute-level, self-served", end: true },
                     ],
                 },
             },
             {
-                title: "Banking Core Platform Upgrade",
+                title: "Banking Core Platform",
                 meta: "Newtouch Software · Aug 2022 – Apr 2023",
                 description:
-                    "A core business platform for a bank: shared technical and business components below, fast custom development for insurance product lines above. I owned requirements breakdown and API development for policy management, document processing and product configuration, and tuned the high-concurrency paths with {multi-level Redis caching} and {SQL execution-plan optimisation}.",
-                lead: { value: "190 ms", label: "core query latency, from 780 ms" },
+                    "A bank’s core business platform for its insurance lines. In a 20-person agile team I delivered integration-tested Java CRUD APIs for policy, document and product-configuration modules, extended the framework with {reusable components and extension points}, and tuned high-concurrency queries with {multi-level Redis caching} and {execution-plan optimisation}.",
+                lead: { from: "Changing platform code", to: "Implementing an extension point" },
                 outcomes: [
-                    "8 core modules and 120+ endpoints delivered, 42% endpoint reuse, supporting 3 insurance product lines",
-                    "After the modular refactor, custom development for a new business scenario took 50% less effort",
-                    "Peak QPS up 3× under high concurrency",
+                    "New insurance scenarios ship by implementing extension points rather than changing platform code",
+                    "RESTful cross-system interfaces, and a MinIO file tool with tiered download and read-only preview permissions",
                 ],
                 diagram: {
                     label: "Platform layers",
                     steps: [
                         { t: "Insurance product lines", chips: ["Policies", "Documents", "Product config"] },
-                        { t: "Shared components · extension points", d: "50% less custom development" },
-                        { t: "RESTful cross-system APIs", d: "120+ endpoints, 42% reuse" },
-                        { t: "Multi-level caching", chips: ["Redis", "SQL plans"], d: "780 ms → 190 ms" },
+                        { t: "Shared components · extension points", d: "New scenarios plug in; platform code stays untouched" },
+                        { t: "RESTful cross-system APIs", d: "Data exchange across the bank’s platforms" },
+                        { t: "Multi-level caching", chips: ["Redis", "SQL plans"], d: "High-concurrency query paths" },
                         { t: "Split storage", chips: ["Oracle", "MinIO"], end: true },
                     ],
                 },
@@ -400,12 +401,12 @@ export const en = {
     skills: {
         title: "Skill Constellation",
         sub: "04 / Stack",
-        lead: "The agent and backend stack I work with, mapped by how it connects — LangChain and LangGraph orchestrate, Milvus, Elasticsearch and MySQL retrieve, Java and Spring Cloud carry it. Hover or tap a node to trace its links; select one to see what I shipped with it.",
+        lead: "The agent and backend stack I work with, mapped by how it connects — LangChain and LangGraph orchestrate, Milvus, Elasticsearch and MySQL retrieve, Python and Java carry it. Hover or tap a node to trace its links; select one to see where I used it.",
         graphAria: "Interactive skills graph",
         // `category` is the localised cats label for the node's cluster.
         nodeAria: (label, category) => `${label}, ${category}`,
         linksCount: (n) => `${n} links`,
-        shippedIn: "Shipped in",
+        shippedIn: "Used in",
         linkedSkills: "Linked skills",
         // The resting panel's shortcut list: the best-connected nodes.
         mostLinked: "Most connected",
@@ -415,7 +416,7 @@ export const en = {
         cats: {
             agent: "Agents & LLMs",
             retrieval: "Retrieval & Data",
-            java: "Java & Microservices",
+            eng: "Python & Java",
             mw: "Middleware",
             ops: "Deployment",
         },
@@ -423,27 +424,27 @@ export const en = {
         // lines are prose and get written per locale. Geometry, categories and
         // edges live in data/skillGraph.js.
         nodes: {
-            langchain: { label: "LangChain", used: ["AI ticket assistant — full RAG pipeline", "Agent core logic and tool calls"] },
-            langgraph: { label: "LangGraph", used: ["NL2SQL agent — observable workflow", "Every step’s state and output traceable"] },
-            rag: { label: "RAG", used: ["Semantic search + legal-IT metadata filters", "Every fix cites document and section"] },
-            nl2sql: { label: "NL2SQL", used: ["Data requests: days → minutes", "SQL generation errors down 55%"] },
-            prompt: { label: "Prompt Eng.", used: ["Layered, scenario-specific system prompts", "Fact-checking and source tracing vs. hallucination"] },
-            tools: { label: "Agent Tools", used: ["10+ internal systems wired in as tools", "Tracing, monitoring, SAP node checks"] },
-            embedding: { label: "Embedding", used: ["Technical knowledge vectorised", "Warehouse fields and metrics vectorised"] },
-            milvus: { label: "Milvus", used: ["Firm-specific IT knowledge base", "Field and metric semantic index"] },
-            es: { label: "Elasticsearch", used: ["Full-text index of field values", "One leg of the hybrid recall"] },
+            langchain: { label: "LangChain", used: ["Ticket agent — RAG pipeline and agent core", "Tool calling across 10+ troubleshooting tools"] },
+            langgraph: { label: "LangGraph", used: ["NL2SQL agent — traceable workflow", "Generate–validate–repair loop"] },
+            rag: { label: "RAG", used: ["Semantic search + metadata filters", "Answers cite document, section and tickets"] },
+            nl2sql: { label: "NL2SQL", used: ["Day-long queues → minute-level self-service", "SQL constrained to the recalled schema"] },
+            prompt: { label: "Prompt Eng.", used: ["Scenario-specific system prompts", "Fact checking and source attribution"] },
+            tools: { label: "Agent Tools", used: ["Function calling and MCP", "Link tracing, monitoring, API health, SAP checks"] },
+            embedding: { label: "Embedding", used: ["SOPs, docs and past tickets vectorised", "Warehouse metadata vectorised"] },
+            milvus: { label: "Milvus", used: ["Ticket knowledge base, versioned sync", "Field and metric semantic index"] },
+            es: { label: "Elasticsearch", used: ["Exact field-value index", "One leg of the hybrid recall"] },
             mysql: { label: "MySQL", used: ["Hybrid recall — structured queries"] },
-            mongodb: { label: "MongoDB", used: ["Session history and triage trail", "Per-ticket conversation context"] },
-            java: { label: "Java", used: ["Banking core platform — 8 modules, 120+ endpoints"] },
-            springboot: { label: "Spring Boot", used: ["Banking core platform", "Coding Fest runner-up backend"] },
-            springcloud: { label: "Spring Cloud", used: ["Nacos, Dubbo, OpenFeign, Sentinel, Gateway, Seata", "Coding Fest runner-up — microservices platform"] },
+            mongodb: { label: "MongoDB", used: ["Per-ticket conversation memory", "Checked nodes and conclusions reloaded"] },
+            java: { label: "Java", used: ["Banking platform — insurance policy, document and product APIs"] },
+            springboot: { label: "Spring Boot", used: ["Banking platform — integration-tested CRUD APIs"] },
+            python: { label: "Python", used: ["Agent pipelines in LangChain and LangGraph", "Pydantic, pytest and mypy in Dify and Haystack PRs"] },
             mybatis: { label: "MyBatis", used: ["Banking platform persistence layer"] },
             oracle: { label: "Oracle", used: ["Banking platform database"] },
-            redis: { label: "Redis", used: ["Multi-level cache — 780 ms → 190 ms", "Cache penetration, avalanche, breakdown defences"] },
-            rabbitmq: { label: "RabbitMQ", used: ["Reliable, idempotent messaging and backlog handling", "Event-driven notifications — contest platform"] },
-            minio: { label: "MinIO", used: ["Distributed file store, kept out of the database"] },
-            docker: { label: "Docker", used: ["Banking platform containerised releases"] },
-            linux: { label: "Linux", used: ["Owns his own deployments end to end"] },
+            redis: { label: "Redis", used: ["Multi-level caching for high-concurrency queries"] },
+            rabbitmq: { label: "RabbitMQ", used: ["Reliable, idempotent messaging"] },
+            minio: { label: "MinIO", used: ["File tool with tiered download and read-only preview"] },
+            docker: { label: "Docker", used: ["Containerised deployment"] },
+            linux: { label: "Linux", used: ["Deploys his own services end to end"] },
         },
     },
 

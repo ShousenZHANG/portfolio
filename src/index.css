@@ -435,24 +435,54 @@
 .hl { font-weight: 600; }
 :root[lang^="zh"] .hl { font-weight: 700; }
 
-/* A project's one focal number. */
-.project-lead {
+/* A project's focal point: the shift it made, before → after. A rail on the
+   left runs from muted to signature, the "after" sits at display scale. */
+.project-shift {
+  position: relative;
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.85rem;
-  margin: 0.25rem 0 1.25rem;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0.25rem 0 1.4rem;
+  padding: 0.15rem 0 0.15rem 1.15rem;
 }
-.project-lead-value {
-  font-size: clamp(2.5rem, 1.8rem + 2vw, 3.5rem);
-  line-height: 1;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+.project-shift::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, var(--hair-bright), var(--sig));
+}
+.shift-row { display: flex; flex-direction: column; gap: 0.2rem; margin: 0; }
+.shift-k {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tx-2);
+}
+.shift-to .shift-k { color: var(--sig); }
+.shift-from .shift-v {
+  color: var(--tx-2);
+  font-size: 0.95rem;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in oklab, var(--tx-2) 55%, transparent);
+  text-decoration-thickness: 1px;
+}
+.shift-to .shift-v {
   color: var(--tx-0);
-  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.35rem, 1.05rem + 1vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
-:root[lang^="zh"] .project-lead-value { font-weight: 700; letter-spacing: 0; }
-.project-lead-label { color: var(--tx-2); font-size: 0.9rem; }
+:root[lang^="zh"] .shift-to .shift-v { font-weight: 700; letter-spacing: 0; }
+:root[lang^="zh"] .shift-k { letter-spacing: 0.08em; }
+/* Diagram detail lines sit in a narrow column; on Han, break at the commas
+   rather than anywhere (「补充环境上下 / 文」 stranded one character). */
+:root[lang^="zh"] .pd-detail { word-break: keep-all; overflow-wrap: anywhere; }
 
 /* The bracketed original of a localised company name, on its own line. */
 .exp-company-alt {

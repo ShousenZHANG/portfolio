@@ -28,12 +28,10 @@ test('zh persona drops the visa axis entirely', () => {
   assert.ok(!/签证|485|work rights/i.test(PERSONA_ZH));
 });
 
-test('zh persona states the delivery record with the CV’s own figures', () => {
-  // Each figure is a line in the CV's 项目成果 — and the page's own counter
-  // shows two of them, so E.D. contradicting the page is the failure mode.
-  assert.ok(PERSONA_ZH.includes('故障排查周期缩短 45%'), 'ticket assistant outcome');
-  assert.ok(PERSONA_ZH.includes('SQL 生成错误率下降 55%'), 'NL2SQL outcome');
-  assert.ok(PERSONA_ZH.includes('10 余个技术系统 Tools'), 'the tool count is "10 余个", not a round 10');
+test('zh persona states the delivery record in the CV’s own terms', () => {
+  // The zh CV states outcomes as shifts, not percentages; E.D. must too.
+  assert.ok(PERSONA_ZH.includes('10 余个技术系统工具'), 'the tool count is "10 余个", not a round 10');
+  assert.ok(PERSONA_ZH.includes('分钟级'), 'the NL2SQL shift');
   assert.ok(PERSONA_ZH.includes('2025.07–2026.09'), 'the Corrs dates as the zh CV states them');
 });
 
